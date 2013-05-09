@@ -57,6 +57,7 @@
 	
 	IBOutlet NSSegmentedControl *segmentedButton;
 	IBOutlet NSTableView *tableView;
+    IBOutlet NSScrollView *scrollView;
 	
 	IBOutlet NSPanel *newPlan;
 	IBOutlet NSTextField *newPlanName;

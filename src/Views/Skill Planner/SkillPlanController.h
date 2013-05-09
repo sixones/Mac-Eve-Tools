@@ -28,6 +28,7 @@
 #import "SkillSearchCharacterDatasource.h"
 #import "SkillSearchShipDatasource.h"
 #import "SkillSearchCertDatasource.h"
+#import "SkillSearchModuleDatasource.h"
 
 #import "PlanView2.h"
 @class PlanView2Datasource;
@@ -56,6 +57,7 @@
 	SkillSearchCharacterDatasource *skillCharDatasource; /*this is one possible datasource for the SkillSearchView*/
 	SkillSearchShipDatasource *skillShipDatasource;
 	SkillSearchCertDatasource *skillCertDatasource;
+    SkillSearchModuleDatasource *skillItemDatasource;
 	
 	id<METInstance> mainApp;
 }

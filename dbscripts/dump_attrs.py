@@ -29,9 +29,9 @@ def dumpAttribute(conn,query,attrNum):
 			row2 = row[2]
 
 		insertQuery = "INSERT INTO metAttributeTypes VALUES (" + str(row[0]) + "," + str(row1) + "," \
-			+ str(row2) + ",'" + str(row[3]) + "','"+ str(row[4])+"'," + str(attrNum) + ");"
+			+ str(row2) + ",\"" + str(row[3]) + "\",\"" + str(row[4]) + "\"," + str(attrNum) + ");"
 	
-	#	print insertQuery
+		print insertQuery
 
 		conn.query(insertQuery)
 

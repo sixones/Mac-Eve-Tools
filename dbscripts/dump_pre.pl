@@ -7,7 +7,7 @@ use DBI;
 
 my $q_type_id = 'SELECT typeID FROM invTypes where published = 1 AND groupID IN (SELECT groupID FROM invGroups WHERE categoryID IN (6,7,8,16));';
 
-my $conn = DBI->connect('DBI:mysql:eve','matt',undef) or die 'Could not connect';
+my $conn = DBI->connect('DBI:mysql:eve','',undef) or die 'Could not connect';
 
 my $table_query = <<EOF;
 SELECT taSkill.typeID,

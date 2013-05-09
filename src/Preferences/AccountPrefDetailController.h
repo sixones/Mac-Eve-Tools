@@ -15,7 +15,7 @@
 	IBOutlet NSProgressIndicator *updatingIndicator;
 	IBOutlet NSTextField *accountName;
 	IBOutlet NSTextField *userId;
-	IBOutlet NSTextField *apiKey;
+	IBOutlet NSTextField *verificationCode;
 	IBOutlet NSTableView *characterTable;
 	IBOutlet AccountPrefTableController *accountTableController;
 	
@@ -27,7 +27,7 @@
 @property (assign) IBOutlet NSProgressIndicator *updatingIndicator;
 @property (assign) IBOutlet NSTextField *accountName;
 @property (assign) IBOutlet NSTextField *userId;
-@property (assign) IBOutlet NSTextField *apiKey;
+@property (assign) IBOutlet NSTextField *verificationCode;
 @property (assign) IBOutlet NSTableView *characterTable;
 @property (assign) IBOutlet AccountPrefTableController *accountTableController;
 

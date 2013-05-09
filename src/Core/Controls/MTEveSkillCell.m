@@ -183,19 +183,19 @@
 	skillLevel = [skill skillLevel];
 }
 
-#define PADDING_BEFORE_IMAGE 5.0
+#define PADDING_BEFORE_IMAGE 0.0
 #define PADDING_BETWEEN_TITLE_AND_IMAGE 4.0
-#define VERTICAL_PADDING_FOR_IMAGE 3.0
+#define VERTICAL_PADDING_FOR_IMAGE 1.0
 #define INFO_IMAGE_SIZE 13.0
 #define PADDING_AROUND_INFO_IMAGE 2.0
 #define IMAGE_SIZE 32.0
 
 #define BOOK_RIGHT_PADDING 5.5
 
-#define INFO_RIGHT_PADDING 8.0
+#define INFO_RIGHT_PADDING 0.0
 
-#define BOX_RIGHT_PADDING ( INFO_RIGHT_PADDING + 5.5 )
-#define BOX_TOP_PADDING 8.5
+#define BOX_RIGHT_PADDING ( INFO_RIGHT_PADDING + 4 )
+#define BOX_TOP_PADDING 0.0
 
 #define BOX_WIDTH 47.0
 #define BOX_HEIGHT 9.0
@@ -211,11 +211,7 @@
 #define PROGRESS_ZONE_WIDTH 47.0
 #define PROGRESS_ZONE_HEIGHT (BOX_HEIGHT + PROGRESS_HEIGHT + BOX_PROGRESS_PADDING)
 
-
-
-
 #define PROGRESS_BAR_HEIGHT 2.0
-
 #define TEXT_RIGHT_PADDING 5.0
 
 
@@ -593,7 +589,7 @@
 	/*Draw the Level X string, next to the progress boxes*/
 	CGFloat topMaxX = [self drawTrainingToLevel:skillBoxRect.origin.x - 3.5 yBaseline:skillBoxRect.origin.y - 1.0];
 	
-	CGFloat bottomMaxX = [self drawTimeLeftString:skillBoxRect.origin.x - 3.5 yBaseline:skillBoxRect.origin.y + 15.0];
+	CGFloat bottomMaxX = [self drawTimeLeftString:skillBoxRect.origin.x - 3.5 yBaseline:skillBoxRect.origin.y + 13.0];
 	
 	/*FINISHED DRAWING SKILL PROGRESS BOXES*/
 	
@@ -602,7 +598,7 @@
 	//Skill name and rank
 	NSString *skillName = [skill skillName];
 	if(skillName == nil){
-		NSLog(@"nil skill name");
+		NSLog(@"nil skill name for -> %@", [skill typeID ]);
 	}
 	str = [NSString stringWithFormat:@"%@ (%ldx)",[skill skillName],[skill skillRank]];
 	astr = [[[NSMutableAttributedString alloc]initWithString:str]autorelease];

@@ -171,11 +171,20 @@
 
 -(void) serverPlayerCount:(NSInteger)playerCount
 {
-	NSString *str = @"Tranquility";
-	if(playerCount > 0){
-		str = [str stringByAppendingFormat:@" (%ld)",playerCount];
+	NSMutableString *str = [[NSMutableString alloc] init];
+    [str appendString: @"Tranquility"];
+    
+	if(playerCount > 0){        
+        NSNumberFormatter *countFormatter = [[NSNumberFormatter alloc] init];
+        [countFormatter setNumberStyle: NSNumberFormatterDecimalStyle];
+        [countFormatter setMaximumFractionDigits: 0];
+                
+        [str appendFormat: @" (%@)", [countFormatter stringFromNumber: @(playerCount)] ];
+        
+        [countFormatter release];
 	}
-	[serverName setStringValue:str];
+    
+	[serverName setStringValue: str];
 }
 
 /*NSApplication delegate*/
@@ -444,9 +453,8 @@
 
 -(void) prefWindowWillClose:(NSNotification *)notification
 {
-#ifndef MACEVEAPI_DEBUG
 	[NSApp stopModal];
-#endif
+
 	[[[MBPreferencesController sharedController] moduleForIdentifier:@"AccountPrefView"] willBeClosed];
 	//[[Config sharedInstance] clearAccounts];
 	[self reloadAllCharacters];
@@ -509,21 +517,22 @@
 		
 	NSMutableDictionary *prefDefaults = [[NSMutableDictionary alloc] init];
 	
-		//NSData *data = ;
 	[prefDefaults setObject:[NSNumber numberWithBool:YES] forKey:UD_SUBMIT_STATS];
 	[prefDefaults setObject:[NSNumber numberWithBool:YES] forKey:UD_CHECK_FOR_UPDATES];
 	[prefDefaults setObject:[NSNumber numberWithInt:l_EN] forKey:UD_DATABASE_LANG];
 	
-	[prefDefaults setObject:[@"~/Library/Application Support/MacEveApi" stringByExpandingTildeInPath] forKey:UD_ROOT_PATH];
-	[prefDefaults setObject:[[@"~/Library/Application Support/MacEveApi" stringByExpandingTildeInPath] stringByAppendingFormat:@"/database.sqlite"] forKey:UD_ITEM_DB_PATH];
+    // FIXME: should all be moved to compile definitions
+	[prefDefaults setObject:[@"~/Library/Application Support/Vitality" stringByExpandingTildeInPath] forKey:UD_ROOT_PATH];
+	[prefDefaults setObject:[[@"~/Library/Application Support/Vitality" stringByExpandingTildeInPath] stringByAppendingFormat:@"/database.sqlite"] forKey:UD_ITEM_DB_PATH];
 	[prefDefaults setObject:@"http://api.eve-online.com" forKey:UD_API_URL];
 	[prefDefaults setObject:@"http://image.eveonline.com/Character/" forKey:UD_PICTURE_URL];
+    [prefDefaults setObject:@"http://image.eveonline.com/" forKey:UD_IMAGE_URL];
 	
-	[prefDefaults setObject:@"http://mtyson.id.au/MacEveApi-appcast.xml" forKey:UD_UPDATE_FEED_URL];
-	[prefDefaults setObject:@"http://www.mtyson.id.au/MacEveApi/MacEveApi-database.xml" forKey:UD_DB_UPDATE_URL];
-	[prefDefaults setObject:@"http://www.mtyson.id.au/MacEveApi/database.sql.bz2" forKey:UD_DB_SQL_URL];
-	[prefDefaults setObject:@"http://www.mtyson.id.au/MacEveApi/images" forKey:UD_IMAGE_URL];
-	[prefDefaults setObject:[NSNumber numberWithInt:8] forKey:UD_DATABASE_MIN_VERSION];
+	[prefDefaults setObject:@"http://labs.sixones.com/vitality/appcast.xml" forKey:UD_UPDATE_FEED_URL];
+	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.xml" forKey:UD_DB_UPDATE_URL];
+	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.sql.bz2" forKey:UD_DB_SQL_URL];
+	
+	[prefDefaults setObject:[NSNumber numberWithInt:9] forKey:UD_DATABASE_MIN_VERSION];
 	 	
 	[[NSUserDefaults standardUserDefaults] registerDefaults:prefDefaults];
 	[prefDefaults release];
@@ -532,8 +541,9 @@
 	/* Init window */
 	
 	NSWindow *window = [self window];
-	[window setRepresentedFilename:WINDOW_SAVE_NAME];
+	//[window setRepresentedFilename:WINDOW_SAVE_NAME];
 	[window setFrameAutosaveName:WINDOW_SAVE_NAME];
+    [window setReleasedWhenClosed: true];
 		
 	[noCharsPanel setDefaultButtonCell:[noCharsButton cell]]; //alert if you don't have an account set up
 	
@@ -604,7 +614,7 @@
 	
 	NSLog(@"Current character is %@",[currentCharacter characterName]);
 	
-	[[self window]setTitle:[NSString stringWithFormat:@"Mac Eve Tools - %@",[currentCharacter characterName]]];
+	[[self window]setTitle: [currentCharacter characterName]];
 }
 
 -(IBAction)charSelectorClick:(id)sender
@@ -667,7 +677,7 @@
 
 -(void) updateAllCharacters
 {
-	[self statusMessage:NSLocalizedString(@"Updating Characters", nil)];
+	[self statusMessage:NSLocalizedString(@"Updating Characters ...", nil)];
 	[characterManager updateAllCharacters:self];
 	[fetchCharButton setEnabled:NO];
 	[charButton setEnabled:NO];
@@ -686,23 +696,7 @@
 
 -(IBAction) showPrefPanel:(id)sender;
 {
-	/*if(prefPanel == nil){
-		prefPanel = [[PreferenceController alloc]init];
-		[[NSNotificationCenter defaultCenter]
-		 addObserver:self 
-			selector:@selector(prefWindowWillClose:)
-				name:NSWindowWillCloseNotification 
-		 object:[prefPanel window]];
-	}*/
-	
-	//NSLog(@"Opening pref pane %@",[self window]);
-#ifdef MACEVEAPI_DEBUG
-		//[prefPanel showWindow:self]; //if it crashes in a modal window it's impossible to debug
-	[[MBPreferencesController sharedController] showWindow:self];
-#else
-		//[NSApp runModalForWindow:[prefPanel window]];
-	[NSApp runModalForWindow:[[MBPreferencesController sharedController] window]];
-#endif
+    [NSApp runModalForWindow:[[MBPreferencesController sharedController] window]];
 }
 
 -(IBAction) toolbarButtonClick:(id)sender
@@ -755,6 +749,10 @@
 	SUUpdater *updater = [SUUpdater sharedUpdater];
 	[updater checkForUpdates:[self window]];
 #endif
+    
+    DBManager *manager = [[DBManager alloc] init];
+    
+    [manager checkForUpdate];
 }
 
 -(void) newDatabaseAvailable:(DBManager*)manager status:(BOOL)status
@@ -778,11 +776,6 @@
 		default:
 			break;
 	}
-}
-
--(IBAction) checkForDatabase:(id)sender
-{
-	//[dbManager performCheck];
 }
 
 -(void) serverStatusUpdate:(NSNotification*)notification
@@ -809,7 +802,7 @@
 -(void) setToolbarMessage:(NSString *)message
 {
 	//Set a permanat message
-	[self setStatusMessage:message 
+	[self setStatusMessage:message
 				imageState:StatusHidden
 					  time:0];
 }

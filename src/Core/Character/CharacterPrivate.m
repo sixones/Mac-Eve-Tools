@@ -143,12 +143,12 @@
 {
 
 	NSString *apiUrl = [Config getApiUrl:docPath 
-							   accountID:[account accountID] 
-								  apiKey:[account apiKey]
+							   keyID:[account keyID] 
+								  verificationCode:[account verificationCode]
 								  charId:characterId];
 
 	
-	NSString *characterDir = [Config charDirectoryPath:[account accountID] 
+	NSString *characterDir = [Config charDirectoryPath:[account keyID] 
 											 character:[self characterId]];
 	
 	XMLDownloadOperation *op;

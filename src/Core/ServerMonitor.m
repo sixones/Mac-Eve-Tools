@@ -40,7 +40,7 @@
 
 -(void) startMonitoring
 {
-#ifndef MACEVEAPI_DEBUG
+//#ifndef MACEVEAPI_DEBUG
 	timer = 
 	[NSTimer scheduledTimerWithTimeInterval:300.0
 									 target:self
@@ -48,7 +48,7 @@
 								   userInfo:nil 
 									repeats:YES];
 	[self checkServerStatus];
-#endif
+//#endif
 }
 
 -(void) stopMonitoring
@@ -69,7 +69,7 @@
 
 -(void) checkServerStatus
 {
-	NSString *urlPath = [Config getApiUrl:XMLAPI_SERVER_STATUS accountID:nil apiKey:nil charId:nil];
+	NSString *urlPath = [Config getApiUrl:XMLAPI_SERVER_STATUS keyID:nil verificationCode:nil charId:nil];
 	NSURL *url = [NSURL URLWithString:urlPath];
 	NSURLRequest *request = [NSURLRequest requestWithURL:url];
 	[NSURLConnection connectionWithRequest:request delegate:self];
@@ -152,10 +152,9 @@
 {
 	[self parseXmlData:xmlData];
 	[xmlData setLength:0];
-	
-	NSLog(@"Tranquility: %@ (%ld)",
-		  status == ServerUp ? @"online" : @"offline",
-		  numPlayers);
+    
+	NSLog(@"Tranquility: %@ (%ld)", status == ServerUp ? @"online" : @"offline", numPlayers);
+    
 	[self notifyListeners];
 }
 

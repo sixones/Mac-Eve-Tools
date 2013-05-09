@@ -12,13 +12,13 @@
 
 @implementation AccountPrefDetailController
 
-@synthesize account, updateCharacters, updatingIndicator, accountName, userId, apiKey, characterTable, accountTableController;
+@synthesize account, updateCharacters, updatingIndicator, accountName, userId, verificationCode, characterTable, accountTableController;
 
 - (void) updateAllControls {
 	BOOL hasAccount = self.account != NULL;
 	[accountName setEditable:hasAccount];
 	[userId setEditable:hasAccount];
-	[apiKey setEditable:hasAccount];
+	[verificationCode setEditable:hasAccount];
 	[updateCharacters setEnabled:hasAccount];
 	[characterTable setEnabled:hasAccount];
 	
@@ -49,18 +49,18 @@
 			[accountName setStringValue:@""];
 		}
 
-		if ([self.account accountID] != nil) {
-			[userId setStringValue:[self.account accountID]];
+		if ([self.account keyID] != nil) {
+			[userId setStringValue:[self.account keyID]];
 		}
 		else {
 			[userId setStringValue:@""];
 		}
 		
-		if ([self.account apiKey] != nil) {
-			[apiKey setStringValue:[self.account apiKey]];
+		if ([self.account verificationCode] != nil) {
+			[verificationCode setStringValue:[self.account verificationCode]];
 		}
 		else {
-			[apiKey setStringValue:@""];
+			[verificationCode setStringValue:@""];
 		}
 		
 		[self updateAllControls];
@@ -78,11 +78,11 @@
 	}
 	
 	if (sender == userId) {
-		self.account.accountID = value;
+		self.account.keyID = value;
 	}
 	
-	if (sender == apiKey) {
-		self.account.apiKey = value;
+	if (sender == verificationCode) {
+		self.account.verificationCode = value;
 	}
 }
 
@@ -99,7 +99,7 @@
 	/* get the latest data from the input controls */
 	[self updateDataFromControls:accountName withValue:[accountName stringValue]];
 	[self updateDataFromControls:userId withValue:[userId stringValue]];
-	[self updateDataFromControls:apiKey withValue:[apiKey stringValue]];
+	[self updateDataFromControls:verificationCode withValue:[verificationCode stringValue]];
 	
 	[self.account loadAccount:self];
 	

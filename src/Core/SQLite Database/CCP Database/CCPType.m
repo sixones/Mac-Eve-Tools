@@ -45,10 +45,10 @@
 
 -(CCPType*) initWithType:(NSInteger)tID
 				   group:(NSInteger)gID
-				 graphic:(NSInteger)grID
+				 //graphic:(NSInteger)grID
 					race:(NSInteger)rID
 			 marketGroup:(NSInteger)mgID
-				  radius:(double)rad
+				  //radius:(double)rad
 					mass:(double)mas
 				  volume:(double)vol
 				capacity:(double)cap
@@ -60,10 +60,10 @@
 	if(self = [super init]){
 		typeID = tID;
 		groupID = gID;
-		graphicID = grID;
+		//graphicID = grID;
 		raceID = rID;
 		marketGroupID = mgID;
-		radius = rad;
+		//radius = rad;
 		mass = mas;
 		volume = vol;
 		capacity = cap;

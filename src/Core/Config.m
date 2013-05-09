@@ -95,16 +95,16 @@ static Config *sharedSingletonCfg = nil;
 }
 
 +(NSString*) getApiUrl:(NSString*)xmlPage 
-			 accountID:(NSString*)accountId 
-				apiKey:(NSString*)apiKey 
+			 keyID:(NSString*)accountId 
+				verificationCode:(NSString*)verificationCode 
 				charId:(NSString*)characterId
 {
 	NSMutableString *str = [[[NSMutableString alloc]init] autorelease];
 	
 	
 	[str appendFormat:@"%@%@",[[NSUserDefaults standardUserDefaults] stringForKey:UD_API_URL],xmlPage];
-	if(accountId && apiKey){
-		[str appendFormat:@"?userID=%@&apiKey=%@",accountId,apiKey];
+	if(accountId && verificationCode){
+		[str appendFormat:@"?keyID=%@&vCode=%@",accountId,verificationCode];
 		if(characterId){
 			[str appendFormat:@"&characterID=%@",characterId];
 		}
@@ -217,12 +217,12 @@ static Config *sharedSingletonCfg = nil;
 		
 		/*we have found an account object*/
 		Account *acct = [[Account alloc]init];
-		NSString *accountId = findAttribute(accountNode,(xmlChar*)"accountID");
-		NSString *apiKey = findAttribute(accountNode,(xmlChar*)"apiKey");
+		NSString *accountId = findAttribute(accountNode,(xmlChar*)"keyID");
+		NSString *verificationCode = findAttribute(accountNode,(xmlChar*)"verificationCode");
 		NSString *acctName = findAttribute(accountNode,(xmlChar*)"name");
 		
-		acct.apiKey = apiKey;
-		acct.accountID = accountId;
+		acct.verificationCode = verificationCode;
+		acct.keyID = accountId;
 		acct.accountName = acctName;
 		
 		/*parse the XML document for this account.*/
@@ -397,7 +397,7 @@ static Config *sharedSingletonCfg = nil;
 
 -(NSString*) pathForImageType:(NSInteger)typeID
 {
-	NSMutableString *url = [NSString stringWithFormat:@"%@/images/types/256_256/%ld.png", [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH],typeID];
+	NSMutableString *url = [NSString stringWithFormat:@"%@/Cache/types/%ld_64.png", [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH],typeID];
 	
 	return url;
 }
@@ -407,17 +407,24 @@ static Config *sharedSingletonCfg = nil;
 	NSMutableString *url = [NSMutableString string];
 	
 	[url appendFormat:@"%@", [[NSUserDefaults standardUserDefaults] stringForKey:UD_IMAGE_URL]];
-	[url appendFormat:@"/types/256_256/%ld.png",typeID];
+	[url appendFormat:@"Type/%ld_64.png",typeID];
 	
 	return url;
 }
 
--(NSString*) urlForIcon:(NSString*)icon size:(enum ImageSize)size
-{	
+-(NSString*) pathForImageRender:(NSInteger)typeID
+{
+	NSMutableString *url = [NSString stringWithFormat:@"%@/Cache/renders/%ld_64.png", [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH],typeID];
+	
+	return url;
+}
+
+-(NSString*) urlForImageRender:(NSInteger)typeID
+{
 	NSMutableString *url = [NSMutableString string];
 	
 	[url appendFormat:@"%@", [[NSUserDefaults standardUserDefaults] stringForKey:UD_IMAGE_URL]];
-	[url appendFormat:@"/icons/%d_%d/%s.png",(int)size,(int)size,icon];
+	[url appendFormat:@"Render/%ld_64.png",typeID];
 	
 	return url;
 }

@@ -45,7 +45,7 @@
 /*Generate the save path*/
 -(NSString*)savePath
 {
-	NSString *str = [Config filePath:XMLAPI_CHAR_LIST,accountID,nil];
+	NSString *str = [Config filePath:XMLAPI_CHAR_LIST,keyID,nil];
 	return str;
 }
 
@@ -83,8 +83,8 @@
 		CharacterTemplate *template;
 		template = [[CharacterTemplate alloc]
 					initWithDetails:name 
-					accountId:self.accountID
-					apiKey:self.apiKey 
+					accountId:self.keyID
+					verificationCode:self.verificationCode 
 					charId:characterID 
 					active:NO 
 					primary:NO];
@@ -102,8 +102,8 @@
 	XmlFetcher *f = [[XmlFetcher alloc]initWithDelegate:self];
 	
 	NSString *apiUrl = [Config getApiUrl:XMLAPI_CHAR_LIST 
-							   accountID:self.accountID 
-								  apiKey:self.apiKey
+							   keyID:self.keyID 
+								  verificationCode:self.verificationCode
 								  charId:nil];
 	
 	if(modalDelegate){
@@ -186,8 +186,8 @@
 
 @implementation Account
 
-@synthesize accountID;
-@synthesize apiKey;
+@synthesize keyID;
+@synthesize verificationCode;
 @synthesize accountName;
 @synthesize characters;
 
@@ -239,8 +239,8 @@
 
 -(void) dealloc
 {
-	[self.accountID release];
-	[self.apiKey release];
+	[self.keyID release];
+	[self.verificationCode release];
 	[self.characters release];
 	[self.accountName release];
 	[super dealloc];
@@ -257,8 +257,8 @@
 -(Account*) initWithDetails:(NSString*)acctID acctKey:(NSString*)key
 {
 	if([self init]){
-		self.accountID = [acctID retain];
-		self.apiKey = [key retain];
+		self.keyID = [acctID retain];
+		self.verificationCode = [key retain];
 	}
 	
 	return self;
@@ -307,8 +307,8 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	self = [super init];
 	if (self != nil) {
 		self.accountName = [aDecoder decodeObjectForKey:@"accountName"];
-		self.accountID = [aDecoder decodeObjectForKey:@"accountID"];
-		self.apiKey = [aDecoder decodeObjectForKey:@"apiKey"];
+		self.keyID = [aDecoder decodeObjectForKey:@"keyID"];
+		self.verificationCode = [aDecoder decodeObjectForKey:@"verificationCode"];
 		self.characters = [aDecoder decodeObjectForKey:@"characters"];
 	}
 	return self;
@@ -316,8 +316,8 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
 - (void) encodeWithCoder:(NSCoder *)aCoder {
 	[aCoder encodeObject:self.accountName forKey:@"accountName"];
-	[aCoder encodeObject:self.accountID forKey:@"accountID"];
-	[aCoder encodeObject:self.apiKey forKey:@"apiKey"];
+	[aCoder encodeObject:self.keyID forKey:@"keyID"];
+	[aCoder encodeObject:self.verificationCode forKey:@"verificationCode"];
 	[aCoder encodeObject:self.characters forKey:@"characters"];
 }
 

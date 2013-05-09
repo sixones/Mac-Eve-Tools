@@ -41,8 +41,8 @@
 */
 
 @interface Account : NSObject <NSCoding> { //<NSTableViewDataSource, NSCoding> {
-	NSString *accountID;
-	NSString *apiKey;
+	NSString *keyID;
+	NSString *verificationCode;
 	NSString *accountName; /*user supplied name to identify this account*/
 	
 	/*an array of all characters that belong to this account, regardless of active state*/
@@ -51,8 +51,8 @@
 	id <AccountUpdateDelegate> delegate;
 }
 
-@property (retain) NSString* accountID;
-@property (retain) NSString* apiKey;
+@property (retain) NSString* keyID;
+@property (retain) NSString* verificationCode;
 @property (retain) NSString* accountName;
 @property (retain) NSMutableArray *characters;
 

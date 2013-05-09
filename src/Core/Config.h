@@ -45,8 +45,8 @@
 	xmlPage should be in the form of @"/foo/bar.xml".  see macros.h for the page macros
  */
 +(NSString*) getApiUrl:(NSString*)xmlPage 
-			 accountID:(NSString*)accountId 
-				apiKey:(NSString*)apiKey 
+			 keyID:(NSString*)accountId 
+				verificationCode:(NSString*)verificationCode 
 				charId:(NSString*)characterId;
 
 

@@ -22,7 +22,7 @@ WHERE published = 1
 AND categoryID IN ($CATEGORIES);"
 
 /usr/bin/python $SCRIPT -t invTypes -f $1 \
--q "SELECT typeID,groupID,typeName,description,iconID,radius,mass,volume,capacity,raceID,basePrice,marketGroupID 
+-q "SELECT typeID,groupID,typeName,description,mass,volume,capacity,raceID,basePrice,marketGroupID 
 FROM invTypes 
 WHERE published = 1
 AND groupID IN (SELECT groupID FROM invGroups WHERE published = 1 AND categoryID IN ($CATEGORIES));"
@@ -73,6 +73,6 @@ AND attributeID IN
 /usr/bin/python $SCRIPT -t crtRelationships -f $1 \
 -q "SELECT relationshipID, parentID, parentTypeID, parentLevel, childID from crtRelationships;";
 
-/usr/local/bin/perl dump_pre.pl >> $1
+/opt/local/bin/perl dump_pre.pl >> $1
 /usr/bin/python dump_attrs.py -f $1
 

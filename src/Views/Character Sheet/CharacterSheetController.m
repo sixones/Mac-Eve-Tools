@@ -429,6 +429,8 @@
 	[skillTree setAction:@selector(skillTreeSingleClick:)];
 	[skillTree setTarget:self];
 	[skillTree setDelegate:self];
+    [skillTree setIndentationPerLevel: .5];
+    [skillTree setIndentationMarkerFollowsCell: true];
 	
 	/*set up the cell for drawing skills*/
 	MTEveSkillCell *cell = [[skillTree tableColumnWithIdentifier:COL_SKILL_NAME]dataCell];

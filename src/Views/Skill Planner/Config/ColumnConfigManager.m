@@ -53,7 +53,7 @@
 	col = [[PlannerColumn alloc]initWithName:NSLocalizedString(@"Skill Name",@"Skill plan column header")
 								  identifier:COL_PLAN_SKILLNAME 
 									  status:YES
-									   width:175.0f];
+									   width:270.0];
 	[array addObject:col];
 	[col release];
 	
@@ -81,21 +81,21 @@
 	col = [[PlannerColumn alloc]initWithName:NSLocalizedString(@"Start Date",@"Skill plan column header")
 								  identifier:COL_PLAN_CALSTART
 									  status:YES
-									   width:125.0f];
+									   width:135.0f];
 	[array addObject:col];
 	[col release];
 	
 	col = [[PlannerColumn alloc]initWithName:NSLocalizedString(@"Finish Date",@"Skill plan column header")
 								  identifier:COL_PLAN_CALFINISH
-									  status:NO
-									   width:125.0f];
+									  status:YES
+									   width:135.0f];
 	[array addObject:col];
 	[col release];
 	
 	col = [[PlannerColumn alloc]initWithName:NSLocalizedString(@"Progress",@"Skill plan column header")
 								  identifier:COL_PLAN_PERCENT
 									  status:YES
-									   width:50.0f];
+									   width:90.0];
 	[array addObject:col];
 	[col release];
 	

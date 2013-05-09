@@ -2,6 +2,7 @@ import MySQLdb
 import sys
 import codecs
 from types import *
+from decimal import *
 from optparse import OptionParser
 
 def writeObject(obj,fileObj):
@@ -11,6 +12,8 @@ def writeObject(obj,fileObj):
 	elif t is long:
 		fileObj.write(str(obj))
 	elif t is float:
+		fileObj.write(str(obj))
+	elif t is Decimal:
 		fileObj.write(str(obj))
 	elif t is str:
 		#all strings should be of type 'unicode'

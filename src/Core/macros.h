@@ -355,5 +355,5 @@ typedef enum DatabaseLanguage DatabaseLanguage;
 	#define xfabs(x) fabsf((x))
 #endif
 
-///http://api.eve-online.com/char/CharacterSheet.xml.aspx?userID=<userid>&apiKey=<apikey>&characterID=<characterID>
-///http://api.eve-online.com/char/CharacterSheet.xml.aspx?userID=<userid>&apiKey=<apikey>&characterID=<characterID>
+///http://api.eve-online.com/char/CharacterSheet.xml.aspx?userID=<userid>&verificationCode=<apikey>&characterID=<characterID>
+///http://api.eve-online.com/char/CharacterSheet.xml.aspx?userID=<userid>&verificationCode=<apikey>&characterID=<characterID>

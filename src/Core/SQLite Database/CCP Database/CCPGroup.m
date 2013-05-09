@@ -83,6 +83,7 @@
 	/*this is ugly shit. rewrite this later.*/
 	
 	METSubGroup *sg;
+    
 	/*pirate*/
 	if([pirate count] > 0){
 	sg = [[METSubGroup alloc]
@@ -93,6 +94,9 @@
 	[subGroups addObject:sg];
 	[sg release];
 	}
+    
+    NSLog(@"Pirate: %ld", [pirate count]);
+    
 	//caldari
 	if([caldari count] > 0){
 	sg = [[METSubGroup alloc]
@@ -103,6 +107,9 @@
 	[subGroups addObject:sg];
 	[sg release];
 	}
+    
+    NSLog(@"Caldari: %ld", [caldari count]);
+    
 	//gallente
 	if([gallente count] > 0){
 	sg = [[METSubGroup alloc]
@@ -113,6 +120,8 @@
 	[subGroups addObject:sg];
 	[sg release];
 	}
+    
+    NSLog(@"Gallente: %ld", [gallente count]);
 	
 	//amarr
 	if([amarr count] > 0){
@@ -124,6 +133,8 @@
 	[subGroups addObject:sg];
 	[sg release];
 	}
+    
+    NSLog(@"Amarr: %ld", [amarr count]);
 	
 	//Minmatar
 	if([minmatar count] > 0){
@@ -135,6 +146,8 @@
 	[subGroups addObject:sg];
 	[sg release];
 	}
+    
+    NSLog(@"Minmatar: %ld", [minmatar count]);
 }
 
 -(CCPGroup*) initWithGroup:(NSInteger)gID

@@ -195,14 +195,21 @@
 -(void) switchColumns:(NSMutableArray*)colArray
 {
 	NSArray *tableCols = [[tableView tableColumns]copy];
+    
 	for(NSTableColumn *col in tableCols){
 		[tableView removeTableColumn:col];
 	}
+    
 	[tableCols release];
 	
 	for(NSTableColumn *col in colArray){
 		[tableView addTableColumn:col];
 	}
+        
+    [tableView setColumnAutoresizingStyle: NSTableViewFirstColumnOnlyAutoresizingStyle];
+    
+    //[scrollView reflectScrolledClipView: [scrollView contentView]];
+    //[tableView setFrame: [tableView frame]];
 }
 
 -(void) loadPlan:(SkillPlan*)plan;
@@ -460,6 +467,7 @@
 -(void) awakeFromNib
 {
 	[self switchColumns:overviewColumns];
+    
 	[pvDatasource setMode:SPMode_overview];
 	[tableView setDataSource:pvDatasource];
 	
@@ -468,6 +476,7 @@
 	[tableView setDelegate:self];
 	[tableView setTarget:self];
 	[tableView setDoubleAction:@selector(rowDoubleClick:)];
+    [tableView setColumnAutoresizingStyle: NSTableViewFirstColumnOnlyAutoresizingStyle];
 	
 	[attributeModifierButton setEnabled:NO];
 	
@@ -767,13 +776,19 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 {
 	NSTableColumn *col = [[aNotification userInfo]objectForKey:@"NSTableColumn"];
 	NSLog(@"resized %@ to %.2f",[col identifier],(double)[col width]);
+    
+    // let the framework handle resizing
+    /*
+	NSTableColumn *col = [[aNotification userInfo]objectForKey:@"NSTableColumn"];
+	NSLog(@"resized %@ to %.2f",[col identifier],(double)[col width]);
 	
-	/*write out the new column width.*/
+	//write out the new column width
 	ColumnConfigManager *ccm = [[ColumnConfigManager alloc]init];	
 	
 	[ccm setWidth:[col width] forColumn:[col identifier]];
 	
 	[ccm release];
+    */
 }
 
 - (void)tableViewColumnDidMove:(NSNotification *)aNotification

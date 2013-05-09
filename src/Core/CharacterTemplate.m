@@ -26,13 +26,13 @@
 @synthesize characterName;
 @synthesize characterId;
 @synthesize accountId;
-@synthesize apiKey;
+@synthesize verificationCode;
 @synthesize active;
 @synthesize primary;
 
 -(CharacterTemplate*) initWithDetails:(NSString*)name 
 							accountId:(NSString*)acctId
-							   apiKey:(NSString*)key
+							   verificationCode:(NSString*)key
 							   charId:(NSString*)charId
 							   active:(BOOL)isActive
 							  primary:(BOOL)isPrimary
@@ -40,7 +40,7 @@
 	if((self = [super init])){
 		self.characterId = [charId retain];
 		self.characterName = [name retain];
-		self.apiKey = [key retain];
+		self.verificationCode = [key retain];
 		self.accountId = [acctId retain];
 		self.active = isActive;
 		self.primary = isPrimary;
@@ -52,7 +52,7 @@
 {
 	[self.characterId release];
 	[self.characterName release];
-	[self.apiKey release];
+	[self.verificationCode release];
 	[self.accountId release];
 	[super dealloc];
 }
@@ -65,7 +65,7 @@
 	if (self != nil) {
 		self.accountId = [aDecoder decodeObjectForKey:@"accountId"];
 		self.active = [aDecoder decodeBoolForKey:@"active"];
-		self.apiKey = [aDecoder decodeObjectForKey:@"apiKey"];
+		self.verificationCode = [aDecoder decodeObjectForKey:@"verificationCode"];
 		self.characterId = [aDecoder decodeObjectForKey:@"characterId"];
 		self.characterName = [aDecoder decodeObjectForKey:@"characterName"];
 		self.primary = [aDecoder decodeBoolForKey:@"primary"];
@@ -76,7 +76,7 @@
 - (void) encodeWithCoder:(NSCoder *)aCoder {
 	[aCoder encodeObject:self.accountId forKey:@"accountId"];
 	[aCoder encodeBool:self.active forKey:@"active"];
-	[aCoder encodeObject:self.apiKey forKey:@"apiKey"];
+	[aCoder encodeObject:self.verificationCode forKey:@"verificationCode"];
 	[aCoder encodeObject:self.characterId forKey:@"characterId"];
 	[aCoder encodeObject:self.characterName forKey:@"characterName"];
 	[aCoder encodeBool:self.primary forKey:@"primary"];

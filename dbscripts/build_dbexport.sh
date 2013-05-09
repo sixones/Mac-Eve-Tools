@@ -2,12 +2,10 @@
 
 DBEXPORT=database.sql
 
-DBVERSION=8
-DBEXPANSION="Incursion 1.1.0"
+DBVERSION=9
+DBEXPANSION="Retribution 1.1.0"
 
 VERQUERY="INSERT INTO version VALUES ($DBVERSION,'$DBEXPANSION');"
-
-
 
 rm -f tempdb.db
 rm -f rows.sql
@@ -33,7 +31,7 @@ XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 </EveDatabaseExport>"
 
 
-echo $XML > MacEveApi-database.xml
+echo $XML > database.xml
 
 rm -f $DBEXPORT
 rm -f tempdb.db

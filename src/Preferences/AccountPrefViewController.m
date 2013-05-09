@@ -39,17 +39,17 @@
 - (void) awakeFromNib {
 	
 		// both are needed, otherwise hyperlink won't accept mousedown
-    [apiKeyUrl setAllowsEditingTextAttributes: YES];
-    [apiKeyUrl setSelectable: YES];
+    [apiUrl setAllowsEditingTextAttributes: YES];
+    [apiUrl setSelectable: YES];
 	
-    NSURL* apiServiceUrl = [NSURL URLWithString:@"http://www.eveonline.com/api/default.asp"];
+    NSURL* apiServiceUrl = [NSURL URLWithString:@"http://support.eveonline.com/api/Key/CreatePredefined/268435455"];
 	
     NSMutableAttributedString* string = [[NSMutableAttributedString alloc] init];
-    [string appendAttributedString: [NSAttributedString hyperlinkFromString:NSLocalizedString(@"Need your API Key? Click here", nil) withURL:apiServiceUrl]];
+    [string appendAttributedString: [NSAttributedString hyperlinkFromString:NSLocalizedString(@"Need your API Key?", nil) withURL:apiServiceUrl]];
 	
 		// set the attributed string to the NSTextField
-    [apiKeyUrl setAttributedStringValue: string];
-	[apiKeyUrl sizeToFit];
+    [apiUrl setAttributedStringValue: string];
+	[apiUrl sizeToFit];
 	[string release];
 }
 

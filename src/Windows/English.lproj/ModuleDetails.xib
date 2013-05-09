@@ -51,7 +51,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{386, 120}, {492, 540}}</string>
 				<int key="NSWTFlags">1618477056</int>
-				<string key="NSWindowTitle">Ship Details</string>
+				<string key="NSWindowTitle">Module Details</string>
 				<string key="NSWindowClass">NSPanel</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
@@ -63,7 +63,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSTextField" id="651316652">
 							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">268</int>
+							<int key="NSvFlags">-2147483380</int>
 							<string key="NSFrame">{{46, 450}, {71, 17}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
@@ -118,7 +118,7 @@
 									<string>NeXT TIFF v4.0 pasteboard type</string>
 								</object>
 							</object>
-							<string key="NSFrame">{{17, 395}, {128, 128}}</string>
+							<string key="NSFrame">{{17, 395}, {125, 128}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1133135"/>
@@ -863,9 +863,9 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="1133135"/>
 							<reference ref="299282721"/>
-							<reference ref="686623937"/>
 							<reference ref="651316652"/>
 							<reference ref="904668487"/>
+							<reference ref="686623937"/>
 							<reference ref="979734018"/>
 						</object>
 						<reference key="parent" ref="1005"/>

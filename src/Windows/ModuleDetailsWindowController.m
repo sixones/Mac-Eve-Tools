@@ -18,7 +18,7 @@
  */
 
 #import "SkillPair.h"
-#import "ShipDetailsWindowController.h"
+#import "ModuleDetailsWindowController.h"
 #import "GlobalData.h"
 #import "Config.h"
 #import "CCPDatabase.h"
@@ -33,7 +33,7 @@
 #import "SkillPlan.h"
 #import "Helpers.h"
 
-@implementation ShipDetailsWindowController
+@implementation ModuleDetailsWindowController
 
 -(void)awakeFromNib
 {
@@ -61,9 +61,9 @@
 	[super dealloc];
 }
 
--(ShipDetailsWindowController*)initWithType:(CCPType*)type forCharacter:(Character*)ch
+-(ModuleDetailsWindowController*)initWithType:(CCPType*)type forCharacter:(Character*)ch
 {
-	if((self = [super initWithWindowNibName:@"ShipDetails"])){
+	if((self = [super initWithWindowNibName:@"ModuleDetails"])){
 		ship = [type retain];
 		character = [ch retain];
 		down = nil;
@@ -77,7 +77,7 @@
 
 +(void) displayShip:(CCPType*)type forCharacter:(Character*)ch
 {
-	ShipDetailsWindowController *wc = [[ShipDetailsWindowController alloc]initWithType:type forCharacter:ch];
+	ModuleDetailsWindowController *wc = [[ModuleDetailsWindowController alloc]initWithType:type forCharacter:ch];
 	
 	[[wc window]makeKeyAndOrderFront:nil];
 }
@@ -169,14 +169,14 @@
 		//Can use this ship now.
 		[trainingTime setStringValue:
 		 [NSString stringWithFormat:
-		  NSLocalizedString(@"%@ can fly this ship",@"<@CharacterName>"),
+		  NSLocalizedString(@"%@ can use this module",@"<@CharacterName>"),
 		  [character characterName]]];
 	}else{
 		NSString *timeToTrainString = stringTrainingTime(timeToTrain);
 		
 		[trainingTime setStringValue:
 		 [NSString stringWithFormat:
-		  NSLocalizedString(@"%@ could fly this ship in %@",@"<@CharacterName>"),
+		  NSLocalizedString(@"%@ could use this module in %@",@"<@CharacterName>"),
 		  [character characterName],timeToTrainString]];
 	}
 	

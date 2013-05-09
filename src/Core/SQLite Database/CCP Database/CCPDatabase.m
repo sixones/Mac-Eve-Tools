@@ -318,8 +318,8 @@
 	while(sqlite3_step(read_stmt) == SQLITE_ROW){
 		
 		NSInteger typeID = sqlite3_column_nsint(read_stmt,0);
-		NSString *description = sqlite3_column_nsstr(read_stmt,11);
-		NSString *typeName = sqlite3_column_nsstr(read_stmt,10);
+		NSString *description = sqlite3_column_nsstr(read_stmt,9);
+		NSString *typeName = sqlite3_column_nsstr(read_stmt,8);
 		
 		if(lang != l_EN){
 			description = [self translation:typeID forColumn:TRN_TYPE_DESCRIPTION fallback:description];
@@ -329,17 +329,18 @@
 		CCPType *type = [[CCPType alloc]
 						 initWithType:sqlite3_column_nsint(read_stmt,0)
 						 group:sqlite3_column_nsint(read_stmt,1)
-						 graphic:sqlite3_column_nsint(read_stmt,2)
-						 race:sqlite3_column_nsint(read_stmt,3)
-						 marketGroup:sqlite3_column_nsint(read_stmt,4)
-						 radius:sqlite3_column_double(read_stmt,5)
-						 mass:sqlite3_column_double(read_stmt,6)
-						 volume:sqlite3_column_double(read_stmt,7)
-						 capacity:sqlite3_column_double(read_stmt,8)
-						 basePrice:sqlite3_column_double(read_stmt,9)
+						 race:sqlite3_column_nsint(read_stmt,2)
+						 marketGroup:sqlite3_column_nsint(read_stmt,3)
+						 mass:sqlite3_column_double(read_stmt,4)
+						 volume:sqlite3_column_double(read_stmt,5)
+						 capacity:sqlite3_column_double(read_stmt,6)
+						 basePrice:sqlite3_column_double(read_stmt,7)
 						 typeName:typeName
 						 typeDesc:description
 						 database:self];
+        
+        // graphic:sqlite3_column_nsint(read_stmt,2)
+        // radius:sqlite3_column_double(read_stmt,5)
 		
 		[array addObject:type];
 		[type release];		
@@ -349,7 +350,7 @@
 -(NSArray*) typesInGroup:(NSInteger)groupID
 {
 	const char query[] = 
-		"SELECT typeID, groupID, graphicID, raceID, marketGroupID,radius, mass, "
+		"SELECT typeID, groupID, raceID, marketGroupID, mass, "
 		"volume, capacity,basePrice, typeName, description "
 		"FROM invTypes "
 		"WHERE groupID = ? "

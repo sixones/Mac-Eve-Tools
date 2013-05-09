@@ -21,8 +21,6 @@ CREATE TABLE "invTypes" (
   "groupID" smallint(6) default NULL,
   "typeName" varchar(100) default NULL,
   "description" varchar(3000) default NULL,
-  "graphicID" smallint(6) default NULL,
-  "radius" double default NULL,
   "mass" double default NULL,
   "volume" double default NULL,
   "capacity" double default NULL,
@@ -32,7 +30,6 @@ CREATE TABLE "invTypes" (
   PRIMARY KEY  ("typeID")
 );
 CREATE INDEX "invTypes_IX_Group" ON "invTypes" ("groupID");
-CREATE INDEX "invTypes_IX_graphicID" ON "invTypes" ("graphicID");
 CREATE INDEX "invTypes_IX_marketGroupID" ON "invTypes" ("marketGroupID");
 CREATE INDEX "invTypes_IX_raceID" ON "invTypes" ("raceID");
 

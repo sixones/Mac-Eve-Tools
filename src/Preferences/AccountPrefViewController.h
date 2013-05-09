@@ -12,7 +12,7 @@
 
 
 @interface AccountPrefViewController : NSViewController <MBPreferencesModule> {
-	IBOutlet NSTextField *apiKeyUrl;
+	IBOutlet NSTextField *apiUrl;
 	IBOutlet AccountPrefTableController *accountTableController;
 }
 

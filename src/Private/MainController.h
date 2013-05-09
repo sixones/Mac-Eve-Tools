@@ -15,6 +15,7 @@
  along with Mac Eve Tools.  If not, see <http://www.gnu.org/licenses/>.
  
  Copyright Matt Tyson, 2009.
+ Copyright Adam Livesley, 2013.
  */
 
 #import <Cocoa/Cocoa.h>
@@ -86,6 +87,5 @@
 -(IBAction) noCharsButtonClick:(id)sender;
 -(IBAction) toolbarButtonClick:(id)sender;
 -(IBAction) checkForUpdates:(id)sender;
--(IBAction) checkForDatabase:(id)sender;
 
 @end

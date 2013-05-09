@@ -135,7 +135,7 @@
 -(void) awakeFromNib
 {
 	st = [[[GlobalData sharedInstance]skillTree] retain];
-	
+	    
 	/*Add the subviews. skillSearchView on the left, and the plan view on the right*/
 	[splitView addSubview:skillSearchView];
 	//[splitView addSubview:planTabView];
@@ -148,18 +148,23 @@
 	skillCharDatasource = [[SkillSearchCharacterDatasource alloc]init];
 	[skillCharDatasource setSkillTree:st];
 	if(activeCharacter != nil){
-		[skillCharDatasource setCharacter:activeCharacter];
+		[skillCharDatasource setCharacter: activeCharacter];
 	}
-	[skillSearchView addDatasource:skillCharDatasource];
+	[skillSearchView addDatasource: skillCharDatasource];
 	
 	skillCertDatasource = [[SkillSearchCertDatasource alloc]init];
 	if(skillSearchView != nil){
-		[skillSearchView addDatasource:skillCertDatasource];
+		[skillSearchView addDatasource: skillCertDatasource];
 	}	
 	
-	skillShipDatasource = [[SkillSearchShipDatasource alloc]initWithCategory:DB_CATEGORY_SHIP];
+	skillShipDatasource = [[SkillSearchShipDatasource alloc]initWithCategory: DB_CATEGORY_SHIP];
 	if(skillShipDatasource != nil){
-		[skillSearchView addDatasource:skillShipDatasource];
+		[skillSearchView addDatasource: skillShipDatasource];
+	}
+    
+	skillItemDatasource = [[SkillSearchModuleDatasource alloc]initWithCategory: DB_CATEGORY_MODULE];
+	if (skillItemDatasource != nil){
+		[skillSearchView addDatasource: skillItemDatasource];
 	}
 		
 	[skillView2 setDelegate:self];

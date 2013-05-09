@@ -24,7 +24,7 @@
 	NSString *characterName;
 	NSString *characterId;
 	NSString *accountId;
-	NSString *apiKey;
+	NSString *verificationCode;
 	BOOL active;
 	BOOL primary;
 }
@@ -32,13 +32,13 @@
 @property (retain) NSString* characterName;
 @property (retain) NSString* characterId;
 @property (retain) NSString* accountId;
-@property (retain) NSString* apiKey;
+@property (retain) NSString* verificationCode;
 @property BOOL active;
 @property BOOL primary;
 
 -(CharacterTemplate*) initWithDetails:(NSString*)name 
 							accountId:(NSString*)acctId
-							   apiKey:(NSString*)key
+							   verificationCode:(NSString*)key
 							   charId:(NSString*)charId
 							   active:(BOOL)isActive
 							  primary:(BOOL)isPrimary;

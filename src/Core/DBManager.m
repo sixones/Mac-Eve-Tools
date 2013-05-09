@@ -32,9 +32,9 @@
 #import "CCPDatabase.h"
 
 #define DATABASE_BZ2_FILE @"database.sql.bz2"
-#define UPDATE_FILE @"MacEveApi-database.xml"
+#define UPDATE_FILE @"database.xml"
 
-#define DBUPDATE_DEFN @"MacEveApi-database.xml"
+#define DBUPDATE_DEFN @"database.xml"
 #define DATABASE_SQL_BZ2 @"database.sql.bz2"
 #define DATABASE_SQL @"database.sql"
 #define DATABASE_SQLITE @"database.sqlite"
@@ -239,7 +239,7 @@
 	sqlite3_free_table(results);
 	sqlite3_close(db);
 	
-	return currentVersion;
+	return 8;
 }
 
 -(NSInteger) availableVersion

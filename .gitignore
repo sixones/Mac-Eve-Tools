@@ -1,0 +1,9 @@
+.DS_Store
+
+dbscripts/sha1
+dbscripts/*.sql.bz2
+dbscripts/*.xml
+dbscripts/*.pyc
+
+src/Vitality.xcodeproj/project.xcworkspace
+src/Vitality.xcodeproj/xcuserdata

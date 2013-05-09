@@ -88,8 +88,8 @@
 {
 	
 	NSString *apiUrl = [Config getApiUrl:docPath
-							   accountID:[template accountId] 
-								  apiKey:[template apiKey]
+							   keyID:[template accountId] 
+								  verificationCode:[template verificationCode]
 								  charId:[template characterId]];
 	
 	NSString *characterDir = [Config charDirectoryPath:[template accountId] 
