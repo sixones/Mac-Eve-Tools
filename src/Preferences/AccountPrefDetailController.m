@@ -91,11 +91,16 @@
 	[updatingIndicator stopAnimation:self];
 	[updatingIndicator setHidden:YES];
 	NSLog(@"account update finished");
+    
 	[self updateAllControls];
 }
 
 - (IBAction)updateClicked:(NSButton *)sender {	
 	
+    [self.account.characters removeAllObjects];
+    
+    [characterTable reloadData];
+    
 	/* get the latest data from the input controls */
 	[self updateDataFromControls:accountName withValue:[accountName stringValue]];
 	[self updateDataFromControls:userId withValue:[userId stringValue]];

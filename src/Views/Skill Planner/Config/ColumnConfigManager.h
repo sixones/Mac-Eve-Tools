@@ -23,7 +23,7 @@
 #import "PlannerColumn.h"
 
 @interface ColumnConfigManager : NSObject {
-	NSMutableArray *columnList;
+	NSArray *columnList;
 }
 
 -(void) readConfig;

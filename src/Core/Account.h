@@ -73,7 +73,7 @@
 -(void) fetchCharacters:(id<AccountUpdateDelegate>)del;
 
 -(NSInteger) characterCount;
--(NSArray*) characters;
+-(NSMutableArray*) characters;
 
 
 /*NSTableView datasource methods for displaying characters*/

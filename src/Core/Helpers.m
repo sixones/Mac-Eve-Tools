@@ -186,39 +186,38 @@ NSString* stringTrainingTime2(NSInteger trainingTime , enum TrainingTimeFields t
 	return str;
 }
 
-CGFloat skillPercentCompleted(NSInteger startingPoints, NSInteger finishingPoints, NSInteger currentPoints)
-{
+CGFloat skillPercentCompleted(NSInteger startingPoints, NSInteger finishingPoints, NSInteger currentPoints) {
 	return ((CGFloat)(currentPoints - startingPoints) / (CGFloat)(finishingPoints - startingPoints));
 }
 
-NSString* sqlite3_column_nsstr(void *stmt, int col)
-{
+NSString* sqlite3_column_nsstr(void *stmt, int col) {
 	const unsigned char *str = sqlite3_column_text(stmt,col);
-	if(str == NULL){
-		return [NSString stringWithString:@""];
-	}else{
-		NSString *newString;
-		newString = [NSString stringWithUTF8String:(const char*)str];
-		if(newString != NULL){
+	if(str == NULL) {
+		return @"";
+	} else {
+		NSString *newString = [NSString stringWithUTF8String:(const char*)str];
+		
+        if (newString != NULL) {
 			return newString;
 		}
 		
 		/*for some reason stringWithUTF8String will return null.  attempt ASCII encoding*/
 		newString = [NSString stringWithCString:(const char*)str encoding:NSASCIIStringEncoding];
-		if(newString != NULL){
+		
+        if (newString != NULL) {
 			return newString;
 		}
 		
-		newString = [NSString stringWithString:@"If you can see this, then this is a bug. please report it."];
+		newString = @"If you can see this, then this is a bug. please report it.";
+        
 		return newString;
 	}
 }
 
-NSString* languageForId(enum DatabaseLanguage lang)
-{
+NSString* languageForId(enum DatabaseLanguage lang) {
 	NSString *str;
 	
-	switch(lang){
+	switch (lang) {
 		case l_EN:
 			str = NSLocalizedString(@"English",@"english language");
 			break;
@@ -236,10 +235,9 @@ NSString* languageForId(enum DatabaseLanguage lang)
 	return str;
 }
 
-static const char *langCode[] = {NULL,"DE","RU"};
+static const char *langCode[] = { NULL, "DE", "RU" };
 
-const char* langCodeForId(enum DatabaseLanguage lang)
-{
+const char* langCodeForId(enum DatabaseLanguage lang) {
 	return langCode[lang];
 	/*
 	const char *code;

@@ -96,7 +96,7 @@
 				NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:col];
 				
 
-				menu = [data outlineView:self menuForTableColumnItem:tableColumn byItem:[self itemAtRow:row]];
+				menu = [data outlineView:self menuForTableColumnItem:tableColumn byTable:[self itemAtRow:row]];
 			}
 		}
 	}

@@ -189,23 +189,12 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
 }
 
 /*pop up the skill window*/
--(void) displayItemAtRow:(NSInteger)row
-{
+-(void) displayItemAtRow:(NSInteger)row {
 	id item = [skillList itemAtRow:row];
 	
-	if([item isKindOfClass:[Skill class]]){
-		/*
-		Skill *s = [[((Character*)[delegate character])st]skillForId:[item typeID]]; //ignore this warning
-		
-		SkillDetailsWindowController *wc = [[SkillDetailsWindowController alloc]init];
-		[wc setSkill:s ? s : item forCharacter:[delegate character]];
-		[[wc window]makeKeyAndOrderFront:self];
-		return;
-		 */
-		[SkillDetailsWindowController displayWindowForTypeID:[item typeID] 
-												forCharacter:[delegate character]];
-
-	}else if([item isKindOfClass:[CCPType class]]){
+	if ([item isKindOfClass:[Skill class]]) {
+        [SkillDetailsWindowController displayWindowForTypeID: [(Skill*) item typeID] forCharacter:[delegate character]];
+	} else if([item isKindOfClass:[CCPType class]]) {
         CCPType *type = item;
         
         if ([type groupID] == 27) {
@@ -213,11 +202,9 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
         } else {
             [ModuleDetailsWindowController displayShip:item forCharacter:[delegate character]];
         }
-	}else if([item isKindOfClass:[Cert class]]){
+	} else if([item isKindOfClass:[Cert class]]) {
 		[CertDetailsWindowController displayWindowForCert:item character:[delegate character]];
-
 	}
-
 }
 
 -(void) displaySkillWindow:(id)sender

@@ -58,12 +58,12 @@
 	return [allCerts objectForKey:[NSNumber numberWithInteger:certID]];
 }
 
--(CertTree*) initWithCats:(NSArray*)certCats 
+-(CertTree*) initWithCats:(NSArray*)certCats
 				  andDict:(NSDictionary*)dict
 {
 	if((self = [super init])){
-		certCategories = [certCats retain];
-		allCerts = [dict retain];
+		certCategories = [[NSMutableArray alloc] initWithArray: [certCats retain]];
+		allCerts = [[NSMutableDictionary alloc] initWithDictionary: [dict retain]];
 	}
 	return self;
 }

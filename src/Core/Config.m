@@ -74,7 +74,7 @@ static Config *sharedSingletonCfg = nil;
 }
 
 
--(void)release {
+-(oneway void)release {
     //do nothing    
 }
 
@@ -432,7 +432,7 @@ static Config *sharedSingletonCfg = nil;
 -(enum DatabaseLanguage) dbLanguage
 {
 	/*if no key is set, zero is the default, which is english.*/
-	return [[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_LANG];
+	return (DatabaseLanguage) [[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_LANG];
 
 }
 -(void) setDbLanguage:(enum DatabaseLanguage)lang

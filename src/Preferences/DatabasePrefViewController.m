@@ -67,7 +67,7 @@
 	NSMenu *menu = [[[NSMenu alloc]initWithTitle:@"Menu"]autorelease];
 	NSMenuItem *item;
 	
-	enum DatabaseLanguage lang = [[NSUserDefaults standardUserDefaults]integerForKey:UD_DATABASE_LANG];
+	enum DatabaseLanguage lang = (DatabaseLanguage) [[NSUserDefaults standardUserDefaults]integerForKey:UD_DATABASE_LANG];
 	
 	item = [[NSMenuItem alloc]initWithTitle:languageForId(l_EN) action:NULL keyEquivalent:@""];
 	[item setTag:l_EN];
@@ -96,8 +96,10 @@
 
 -(IBAction) languageSelectionClick:(id)sender
 {
-	enum DatabaseLanguage lang = [[sender selectedItem]tag];
+	enum DatabaseLanguage lang = (DatabaseLanguage) [[sender selectedItem] tag];
+    
 	[[NSUserDefaults standardUserDefaults]setInteger:lang forKey:UD_DATABASE_LANG];
+    
 	[restartWarning setHidden:NO];
 }
 

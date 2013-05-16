@@ -291,7 +291,7 @@
 	if(templateArray != nil){
 		[templateArray release];
 	}
-	templateArray = [tarray retain];
+	templateArray = [[NSMutableArray alloc] initWithArray: [tarray retain]];
 		
 	NSInteger i = 0;
 	BOOL rc = NO;

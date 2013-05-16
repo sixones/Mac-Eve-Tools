@@ -102,7 +102,7 @@ static GlobalData *_privateDataSingleton = nil;
 }
 
 
--(void)release {
+-(oneway void)release {
     //do nothing    
 }
 

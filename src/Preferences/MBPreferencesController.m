@@ -74,67 +74,63 @@ static MBPreferencesController *sharedPreferencesController = nil;
 	return sharedPreferencesController;
 }
 
-+ (id)allocWithZone:(NSZone *)zone
-{
++ (id)allocWithZone:(NSZone *)zone {
 	@synchronized(self) {
 		if (sharedPreferencesController == nil) {
 			sharedPreferencesController = [super allocWithZone:zone];
+            
 			return sharedPreferencesController;
 		}
 	}
+    
 	return nil; // on subsequent allocation attempts return nil
 }
 
-- (id)copyWithZone:(NSZone *)zone
-{
+- (id)copyWithZone:(NSZone *)zone {
 	return self;
 }
 
-- (id)retain
-{
+- (id)retain {
 	return self;
 }
 
-- (NSUInteger)retainCount
-{
+- (NSUInteger)retainCount {
 	return UINT_MAX; // denotes an object that cannot be released
 }
 
-- (void)release
-{
+- (oneway void)release {
 	// do nothing
 }
 
-- (id)autorelease
-{
+- (id)autorelease {
 	return self;
 }
 
 #pragma mark -
 #pragma mark NSWindowController Subclass
 
-- (void)showWindow:(id)sender
-{	
+- (void)showWindow:(id)sender {	
 	[self.window center];
+    
 	[super showWindow:sender];
 }
 
 #pragma mark -
 #pragma mark NSToolbar
 
-- (void)_setupToolbar
-{
+- (void)_setupToolbar {
 	NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier:@"PreferencesToolbar"];
 	[toolbar setDisplayMode:NSToolbarDisplayModeIconAndLabel];
 	[toolbar setAllowsUserCustomization:NO];
 	[toolbar setDelegate:self];
 	[toolbar setAutosavesConfiguration:NO];
+    
 	[self.window setToolbar:toolbar];
 }
 
-- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar
-{
+- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
 	NSMutableArray *identifiers = [NSMutableArray array];
+    
 	for (id<MBPreferencesModule> module in self.modules) {
 		[identifiers addObject:[module identifier]];
 	}
@@ -142,31 +138,30 @@ static MBPreferencesController *sharedPreferencesController = nil;
 	return identifiers;
 }
 
-- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar
-{
+- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
 	// We start off with no items. 
 	// Add them when we set the modules
 	return nil;
 }
 
-- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
-{
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag {
 	id<MBPreferencesModule> module = [self moduleForIdentifier:itemIdentifier];
 	
 	NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
-	if (!module)
-		return [item autorelease];
 	
+    if (!module) {
+		return [item autorelease];
+	}
 	
 	[item setLabel:[module title]];
 	[item setImage:[module image]];
 	[item setTarget:self];
+    
 	[item setAction:@selector(_selectModule:)];
 	return [item autorelease];
 }
 
-- (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar
-{
+- (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar {
 	return [self toolbarAllowedItemIdentifiers:toolbar];
 }
 

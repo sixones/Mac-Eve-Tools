@@ -54,16 +54,22 @@
 	xmlNode *root = xmlDocGetRootElement(doc);
 	if(root == NULL){
 		NSLog(@"error parsing XML document");
+        NSRunAlertPanel(@"Unable to parse XML", @"This does not look like EVE Online's API. Perhaps the API is down or something is getting in the way of the request.", @"Close", nil, nil);
+        
 		return NO;
 	}
 	xmlNode *result = findChildNode(root,(xmlChar*)"result");
 	if(result == NULL){
 		NSLog(@"error parsing XML document");
+        NSRunAlertPanel(@"Unable to parse XML", @"This does not look like EVE Online's API. Perhaps the API is down or something is getting in the way of the request.", @"Close", nil, nil);
+        
 		return NO;
 	}
 	xmlNode *rowset = findChildNode(result,(xmlChar*)"rowset");
 	if(rowset == NULL){
 		NSLog(@"error parsing XML document");
+        NSRunAlertPanel(@"Unable to parse XML", @"This does not look like EVE Online's API. Perhaps the API is down or something is getting in the way of the request.", @"Close", nil, nil);
+        
 		return NO;
 	}
 	
@@ -86,7 +92,7 @@
 					accountId:self.keyID
 					verificationCode:self.verificationCode 
 					charId:characterID 
-					active:NO 
+					active:YES
 					primary:NO];
 		
 		[characters addObject:template];
@@ -127,7 +133,7 @@
 
 -(BOOL)loadXmlDocument
 {
-	xmlDoc *doc = xmlReadFile([[self savePath] fileSystemRepresentation],NULL, 0);	
+	xmlDoc *doc = xmlReadFile([[self savePath] fileSystemRepresentation],NULL, 0);
 	
 	if(doc == NULL){
 		NSLog(@"Failed to read %@",[self savePath]);
@@ -146,6 +152,7 @@
 	if(status == NO){
 		NSLog(@"Failed to download %@ to %@",docName,path);
 		[delegate accountDidUpdate:self didSucceed:NO];
+        
 		return;
 	}
 	
@@ -167,6 +174,8 @@
 	if(result != NULL){
 		NSLog(@"%@",getNodeText(result));
 		rc = NO;
+        
+        NSRunAlertPanel(@"API Error",getNodeText(result),@"Close",nil,nil);
 	}
 	
 	xmlFreeDoc(doc);
@@ -177,7 +186,7 @@
 {
 	NSLog(@"Connection failed! (%@)",[xmlErrorMessage localizedDescription]);
 	
-	NSRunAlertPanel(@"Error Account XML",[xmlErrorMessage localizedDescription],@"Close",nil,nil);
+	NSRunAlertPanel(@"API Connection Error",[xmlErrorMessage localizedDescription],@"Close",nil,nil);
 }
 
 @end
@@ -211,16 +220,17 @@
 -(void) loadAccount:(id<AccountUpdateDelegate>)del runForModalWindow:(BOOL)modal
 {
 	delegate = del;
+    
 	[self downloadXml:modal];
 }
 
 -(void)loadAccount:(id<AccountUpdateDelegate>)del
 {
-#ifdef MACEVEAPI_DEBUG
-	[self loadAccount:del runForModalWindow:NO];
-#else
-	[self loadAccount:del runForModalWindow:YES];	
-#endif
+//#ifdef MACEVEAPI_DEBUG
+//	[self loadAccount:del runForModalWindow:NO];
+//#else
+	[self loadAccount:del runForModalWindow:YES];
+//#endif
 }
 
 -(NSInteger)characterCount
@@ -309,7 +319,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 		self.accountName = [aDecoder decodeObjectForKey:@"accountName"];
 		self.keyID = [aDecoder decodeObjectForKey:@"keyID"];
 		self.verificationCode = [aDecoder decodeObjectForKey:@"verificationCode"];
-		self.characters = [aDecoder decodeObjectForKey:@"characters"];
+		self.characters = [[NSMutableArray alloc] initWithArray: [aDecoder decodeObjectForKey:@"characters"]];
 	}
 	return self;
 }

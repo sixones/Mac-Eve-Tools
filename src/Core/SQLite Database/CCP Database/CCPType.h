@@ -76,10 +76,8 @@
 /*hm, this could use some rethinking.*/
 -(CCPType*) initWithType:(NSInteger)typeID
 				   group:(NSInteger)gID
-				 graphic:(NSInteger)grID
 					race:(NSInteger)rID
 			 marketGroup:(NSInteger)mgID
-				  radius:(double)rad
 					mass:(double)mas
 				  volume:(double)vol
 				capacity:(double)cap

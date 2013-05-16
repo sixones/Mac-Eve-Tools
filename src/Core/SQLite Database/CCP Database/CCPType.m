@@ -45,10 +45,8 @@
 
 -(CCPType*) initWithType:(NSInteger)tID
 				   group:(NSInteger)gID
-				 //graphic:(NSInteger)grID
 					race:(NSInteger)rID
 			 marketGroup:(NSInteger)mgID
-				  //radius:(double)rad
 					mass:(double)mas
 				  volume:(double)vol
 				capacity:(double)cap
@@ -57,13 +55,11 @@
 				typeDesc:(NSString*)tDesc
 				database:(CCPDatabase*)db
 {
-	if(self = [super init]){
+	if (self = [super init]) {
 		typeID = tID;
 		groupID = gID;
-		//graphicID = grID;
 		raceID = rID;
 		marketGroupID = mgID;
-		//radius = rad;
 		mass = mas;
 		volume = vol;
 		capacity = cap;
@@ -78,73 +74,70 @@
 		metaLevel = -1;
 		pirate = -1;
 	}
+    
 	return self;
 }
 
--(NSInteger) metaGroupID
-{
-	if(metaGroupID == -1){
+-(NSInteger) metaGroupID {
+	if (metaGroupID == -1) {
 		[database parentForTypeID:typeID parentTypeID:&parentTypeID metaGroupID:&metaGroupID];
 	}
 	return metaGroupID;
 }
--(NSInteger) parentTypeID
-{
-	if(parentTypeID == -1){
+
+-(NSInteger) parentTypeID {
+	if (parentTypeID == -1) {
 		[database parentForTypeID:typeID parentTypeID:&parentTypeID metaGroupID:&metaGroupID];
 	}
+    
 	return parentTypeID;
 }
 
--(void) dealloc
-{
+-(void) dealloc {
 	[database release];
 	[typeName release];
 	[typeDescription release];
 	[skills release];
+    
 	[super dealloc];
 }
 
--(NSArray*) prereqs
-{
-	if(skills == nil){
-		skills = [[database prereqForType:typeID]retain];
+-(NSArray*) prereqs {
+	if (skills == nil) {
+		skills = [[database prereqForType: typeID] retain];
 	}
 	
 	return skills;
 }
 
--(NSString*) description
-{
-	return [NSString stringWithFormat:@"%ld - %@",typeID,typeName];
+-(NSString*) description {
+	return [NSString stringWithFormat: @"%ld - %@", typeID, typeName];
 }
 
--(NSInteger) metaLevel
-{
+-(NSInteger) metaLevel {
 	if(metaLevel == -1){
 		metaLevel = [database metaLevelForTypeID:typeID];
 	}
 	return metaLevel;
 }
 
--(BOOL) isPirateShip
-{
-	if(pirate == -1){
-		if([database isPirateShip:typeID]){
+-(BOOL) isPirateShip {
+	if (pirate == -1) {
+		if ([database isPirateShip:typeID]) {
 			pirate = 1;
-		}else{
+		} else {
 			pirate = 0;
 		}
 	}
+    
 	return (pirate == 1);
 }
 
--(CCPTypeAttribute*) attributeForID:(NSInteger)attrID
-{
-	if(attributes == nil){
+-(CCPTypeAttribute*) attributeForID:(NSInteger)attrID {
+	if (attributes == nil) {
 		attributes = [[database typeAttributesForTypeID:typeID]retain];
-		
 	}
+    
 	return [attributes objectForKey:[NSNumber numberWithInteger:attrID]];
 }
 
