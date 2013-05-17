@@ -67,7 +67,8 @@
 	CertDetailsWindowController *wc = [(CertDetailsWindowController*)
 									   [CertDetailsWindowController alloc]initWithCert:cer
 																		  forCharacter:ch];
-	[[wc window]makeKeyAndOrderFront:nil];
+    [wc showWindow: [wc window]];
+	[[wc window] makeKeyWindow];
 }
 
 -(void) windowWillClose:(NSNotification*)note

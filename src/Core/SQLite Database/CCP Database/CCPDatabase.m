@@ -642,7 +642,7 @@
 		"SELECT parentTypeID, parentLevel "
 		"FROM crtRelationships "
 		"WHERE childID = ? "
-		"AND parentTypeID IS NOT NULL;";
+		"AND parentTypeID IS NOT NULL AND parentTypeID IS NOT 0;";
 	sqlite3_stmt *read_stmt;
 	NSMutableArray *array = [[[NSMutableArray alloc]init]autorelease];
 	int rc;
@@ -694,8 +694,7 @@
 			"(SELECT grade FROM crtCertificates "
 			"WHERE certificateID = parentID) AS grade "
 		"FROM crtRelationships "
-		"WHERE childID = ? "
-		"AND parentTypeID IS NULL;";
+		"WHERE childID = ? AND grade IS NOT NULL;";
 	
 	sqlite3_stmt *read_stmt;
 	

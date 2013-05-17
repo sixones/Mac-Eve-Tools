@@ -61,7 +61,9 @@
 	SkillDetailsWindowController *wc = [[SkillDetailsWindowController alloc]
 										 initWithSkill:s forCharacter:c];
 	//[wc setSkill:s forCharacter:c];
-	[[wc window]makeKeyAndOrderFront:nil];
+    
+    [wc showWindow: [wc window]];
+	[[wc window] makeKeyWindow];
 }
 
 +(void) displayWindowForTypeID:(NSNumber*)tID forCharacter:(Character*)c

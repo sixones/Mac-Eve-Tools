@@ -68,7 +68,7 @@
 
 -(id) certPairAtIndex:(Cert*)c index:(NSInteger)index
 {
-	NSInteger certCount = [[c certPrereqs]count];
+	NSInteger certCount = [[c certPrereqs] count];
 	if(index < certCount){
 		return [[c certPrereqs]objectAtIndex:index];
 	}else{
