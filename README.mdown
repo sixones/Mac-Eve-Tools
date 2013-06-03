@@ -1,4 +1,5 @@
-(Incomplete) readme for Mac Eve Tools
+Vitality, based on Mac EVE Tools
+================================
 
 This project is licenced under the GNU GPL v3.
 
@@ -42,3 +43,12 @@ build the database that MET uses.  It's a modified and heavily cut down
 version of the CCP database export, and is built by connecting to
 a MySQL server that hosts the CCP DB export and fetching and processing
 the required data.  See the dbscripts/README file for more info.
+
+Signing
+#######
+
+Save the private key to dsa_priv.pem on the Desktop. Signing seems to fail when using different directories.
+
+cd ~/Desktop
+
+ruby sign_update.rb vitality-X.X.X.zip dsa_priv.pem

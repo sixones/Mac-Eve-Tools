@@ -340,9 +340,35 @@
 	}else if([[filePath pathExtension]isEqualToString:@"xml"]){
 		//write to a normal xml file
 		return [xmlPlan writeToFile:filePath atomically:NO];
-	}
+    }
+
 	
 	return NO;
+}
+
+/*
+ Write a skill plan to an NSData buffer as plain text.
+ From: https://raw.github.com/Bleyddyn/Mac-Eve-Tools/0146b9ba5a80d865beb9a8f584031df7b7e94122/src/Core/Skills/EvemonXmlPlanIO.m
+ */
+-(NSData*) writeTextToBuffer:(SkillPlan*)plan
+{
+    NSMutableString *planString = [NSMutableString string];
+    
+    //[planString appendFormat:@"Plan: %@\n", [plan planName]];
+    
+	NSInteger counter = [plan skillCount];
+    
+	for( NSInteger i = 0; i < counter; i++ )
+    {
+		SkillPair *sp = [plan skillAtIndex:i];
+		Skill *s = [st skillForId:[sp typeID]];
+        
+        [planString appendFormat:@"%@\t%ld\n", [s skillName], (long)[sp skillLevel]];
+	}
+    
+	NSData *data = [planString dataUsingEncoding:NSUTF8StringEncoding];
+    
+	return data;
 }
 
 @end

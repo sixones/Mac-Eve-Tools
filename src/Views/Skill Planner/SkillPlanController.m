@@ -239,26 +239,7 @@
 																   action:NULL
 															keyEquivalent:@""];
 	[topLevel autorelease];
-	
-	menu = [[NSMenu allocWithZone:[NSMenu menuZone]]initWithTitle:@"Planner"];
-	[topLevel setSubmenu:menu];
-	[menu release];
-	
-	
-	item = [[NSMenuItem alloc]initWithTitle:@"Import Plan" 
-									 action:@selector(importEvemonPlan:)
-							  keyEquivalent:@""];
-	[item setTarget:self];
-	[menu addItem:item];
-	[item release];
-	
-	item = [[NSMenuItem alloc]initWithTitle:@"Export Plan"
-									 action:@selector(exportEvemonPlan:) 
-							  keyEquivalent:@""];
-	[item setTarget:self];
-	[menu addItem:item];
-	[item release];
-	
+
 	return topLevel;
 }
 
@@ -302,43 +283,6 @@
 -(BOOL) planMovedFromIndex:(NSInteger)from toIndex:(NSInteger)to
 {
 	return NO;
-}
-
-#pragma mark Plan import / export
-
--(void) importEvemonPlan:(id)sender
-{
-	NSOpenPanel *op = [NSOpenPanel openPanel];
-	[op setCanChooseDirectories:NO];
-	[op setCanChooseFiles:YES];
-	[op setAllowsMultipleSelection:NO];
-	[op setAllowedFileTypes:[NSArray arrayWithObjects:@"emp",@"xml",nil]];
-	
-	if([op runModal] == NSFileHandlingPanelCancelButton){
-		return;
-	}
-	
-	if([[op URLs]count] == 0){
-		return;
-	}
-	
-	NSURL *url = [[op URLs]objectAtIndex:0];
-	if(url == nil){
-		return;
-	}
-	
-	/*
-	 now we import the plan.
-	 the evemon format doesn't have the plan name encoded
-	 in the xml (and there could be a clash anyway) so prompt
-	 the user for the plan name.
-	 */
-	[skillView2 performPlanImport:[url path]];
-}
-
--(void) exportEvemonPlan:(id)sender
-{
-	[skillView2 performPlanExport:@""];
 }
 
 -(void) setInstance:(id<METInstance>)instance

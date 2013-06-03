@@ -62,8 +62,7 @@
 										 initWithSkill:s forCharacter:c];
 	//[wc setSkill:s forCharacter:c];
     
-    [wc showWindow: [wc window]];
-	[[wc window] makeKeyWindow];
+    [[wc window]makeKeyAndOrderFront:nil];
 }
 
 +(void) displayWindowForTypeID:(NSNumber*)tID forCharacter:(Character*)c

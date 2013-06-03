@@ -564,8 +564,8 @@
 			isa = PBXGroup;
 			children = (
 				C9661A6D110D12F400FA9B72 /* Cert.h */,
-				C9661A6E110D12F400FA9B72 /* Cert.m */,
 				C9661A70110D16C100FA9B72 /* CertClass.h */,
+				C9661A6E110D12F400FA9B72 /* Cert.m */,
 				C9661A71110D16C100FA9B72 /* CertClass.m */,
 				C9661A73110D183D00FA9B72 /* CertCategory.h */,
 				C9661A74110D183D00FA9B72 /* CertCategory.m */,

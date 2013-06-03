@@ -79,8 +79,7 @@
 {
 	ShipDetailsWindowController *wc = [[ShipDetailsWindowController alloc]initWithType:type forCharacter:ch];
 	
-    [wc showWindow: [wc window]];
-	[[wc window] makeKeyWindow];
+    [[wc window]makeKeyAndOrderFront:nil];
 }
 
 -(void) setLabels

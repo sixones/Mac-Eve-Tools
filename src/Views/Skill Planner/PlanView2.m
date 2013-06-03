@@ -59,6 +59,8 @@
 -(void) cellMinusButtonClick:(id)sender;
 -(void) cellNotesButtonClick:(id)sender;
 
+
+
 @end
 
 @implementation PlanView2 (SkillView2Private)
@@ -283,11 +285,15 @@
 		[pvDatasource setMode:SPMode_overview];
 		[delegate setToolbarMessage:nil];
 		[attributeModifierButton setEnabled:NO];
+        
+        [self buildAdvancedMenuForPlansOverview];
 	}else if(currentTag == -1){ //if we are switching FROM the overview
 		[self switchColumns:skillPlanColumns];
 		[pvDatasource setMode:SPMode_plan];
 		[pvDatasource setPlanId:tag];
 		[attributeModifierButton setEnabled:YES];
+        
+        [self buildAdvancedMenuForPlan];
 	}else{ // we are switching from plan A to plan B
 		[pvDatasource setPlanId:tag];
 		[attributeModifierButton setEnabled:YES];
@@ -344,7 +350,6 @@
 	NSInteger row = [sender clickedRow];
 	NSLog(@"Notes button click row %ld",row);
 }
-
 
 @end
 
@@ -449,10 +454,91 @@
 		[pvDatasource setViewDelegate:self];
 		
 		[self buildTableviewColumns];
-		
+        [self buildAdvancedMenuForPlansOverview];
+        
 		currentTag = -1;
 	}
 	return self;
+}
+
+-(void) buildAdvancedMenuForPlansOverview {
+    while ([advancedButton.itemArray count] > 1) {
+        [advancedButton removeItemAtIndex: 1];
+    }
+    
+    NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:@"Import from EVEMon XML" action:@selector(importEvemonPlan:) keyEquivalent:@""];
+    [item setTarget:self];
+    [[advancedButton menu] addItem:item];
+}
+
+-(void) buildAdvancedMenuForPlan {
+    while ([advancedButton.itemArray count] > 1) {
+        [advancedButton removeItemAtIndex: 1];
+    }
+    
+    
+    NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:@"Setup Attributes" action:@selector(attributeModifierButtonClick:) keyEquivalent:@""];
+    [item setTarget:self];
+    [[advancedButton menu] addItem:item];
+    
+    [[advancedButton menu] addItem: [NSMenuItem separatorItem]];
+    
+    item = [[NSMenuItem alloc]initWithTitle:@"Copy as EVE Text" action:@selector(exportPlanToEVEText:) keyEquivalent:@""];
+    [item setTarget:self];
+    [[advancedButton menu] addItem:item];
+    
+    item = [[NSMenuItem alloc]initWithTitle:@"Copy as Plain Text" action:@selector(exportPlanToText:) keyEquivalent:@""];
+    [item setTarget:self];
+    [[advancedButton menu] addItem:item];
+    
+    [[advancedButton menu] addItem: [NSMenuItem separatorItem]];
+    
+    item = [[NSMenuItem alloc]initWithTitle:@"Export to EVEMon XML" action:@selector(exportEvemonPlan:) keyEquivalent:@""];
+    [item setTarget:self];
+    [[advancedButton menu] addItem:item];
+}
+
+-(void) importEvemonPlan:(id)sender
+{
+	NSOpenPanel *op = [NSOpenPanel openPanel];
+	[op setCanChooseDirectories:NO];
+	[op setCanChooseFiles:YES];
+	[op setAllowsMultipleSelection:NO];
+	[op setAllowedFileTypes:[NSArray arrayWithObjects:@"emp",@"xml",nil]];
+	
+	if([op runModal] == NSFileHandlingPanelCancelButton){
+		return;
+	}
+	
+	if([[op URLs]count] == 0){
+		return;
+	}
+	
+	NSURL *url = [[op URLs]objectAtIndex:0];
+	if(url == nil){
+		return;
+	}
+	
+	/*
+	 now we import the plan.
+	 the evemon format doesn't have the plan name encoded
+	 in the xml (and there could be a clash anyway) so prompt
+	 the user for the plan name.
+	 */
+	[self performPlanImport:[url path]];
+}
+
+-(void) exportEvemonPlan:(id)sender
+{
+	[self performPlanExport:@""];
+}
+
+-(void) exportPlanToText:(id)sender {
+    [self performTextPlanExportToClipboard: false];
+}
+
+-(void) exportPlanToEVEText:(id)sender {
+    [self performTextPlanExportToClipboard: true];
 }
 
 -(void) dealloc
@@ -481,6 +567,8 @@
 	[attributeModifierButton setEnabled:NO];
 	
 	basePanelSize = [skillRemovePanel frame];
+    
+    [self buildAdvancedMenuForPlansOverview];
 }
 
 - (void)drawRect:(NSRect)rect {
@@ -638,6 +726,45 @@
 		[pio write:plan toFile:[[sp URL]path]];
 		[pio release];
 	}
+}
+
+-(void) performTextPlanExportToClipboard:(BOOL) eveStyle {
+	SkillPlan *plan;
+	if([pvDatasource mode] == SPMode_plan){
+		plan = [pvDatasource currentPlan];
+	}else{
+		NSAlert *alert = [[NSAlert alloc]init];
+		[alert addButtonWithTitle:@"Ok"];
+		[alert setMessageText:
+		 NSLocalizedString(@"Please open a skill plan first",
+						   @"Error message for when a user tries to export a skill plan without selecting a plan")];
+		[alert setInformativeText:
+		 NSLocalizedString(@"You must have a skill plan open in order to export it",
+						   @"Error message for when a user tries to export a skill plan without selecting a plan")];
+		[alert runModal];
+		[alert release];
+        
+		return;
+	}
+    
+    SkillTree *st = [[GlobalData sharedInstance]skillTree];
+    
+    NSMutableString *planString = [NSMutableString string];
+	NSInteger counter = [plan skillCount];
+    
+	for(NSInteger i = 0; i < counter; i++) {
+        SkillPair *sp = [plan skillAtIndex:i];
+		Skill *s = [st skillForId:[sp typeID]];
+        
+        if (eveStyle) {
+            [planString appendFormat:@"<a href='showinfo:%d'>%@</a>\t L%d\n", (int) [sp typeID], [s skillName], (int) [sp skillLevel]];
+        } else {
+            [planString appendFormat:@"%@\t L%d\n", [s skillName], (int) [sp skillLevel]];
+        }
+	}
+        
+    [[NSPasteboard generalPasteboard] clearContents];
+    [[NSPasteboard generalPasteboard] setString:planString forType:NSStringPboardType];
 }
 
 -(IBAction) segmentedButtonClick:(id)sender

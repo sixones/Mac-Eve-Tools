@@ -54,6 +54,7 @@
 	IBOutlet NSButton *plusButton;
 	IBOutlet NSButton *minusButton;
 	IBOutlet NSButton *attributeModifierButton;
+    IBOutlet NSPopUpButton *advancedButton;
 	
 	IBOutlet NSSegmentedControl *segmentedButton;
 	IBOutlet NSTableView *tableView;
@@ -90,6 +91,7 @@
 -(IBAction) antiPlanButtonClick:(id)sender;
 
 -(IBAction) attributeModifierButtonClick:(id)sender;
+-(IBAction) advancedButtonClick:(id)sender;
 
 -(void) addSkillArrayToActivePlan:(NSArray*)skillArray;
 
@@ -100,7 +102,11 @@
 -(void) performPlanImport:(NSString*)filePath;
 -(void) performPlanExport:(NSString*)filePath;
 
+-(void) performTextPlanExportToClipboard:(BOOL)eveStyle;
 
 -(void) refreshPlanView;
+
+-(void) buildAdvancedMenuForPlansOverview;
+-(void) buildAdvancedMenuForPlan;
 
 @end
