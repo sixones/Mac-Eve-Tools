@@ -115,7 +115,8 @@
 {
 	skillBook = [[NSImage imageNamed:@"skill.png"]retain];
 	skillBookV = [[NSImage imageNamed:@"skillv.png"]retain];
-	infoIcon = [[NSImage imageNamed:@"info.png"]retain];
+	infoIcon = [[NSImage imageNamed:@"NSInfo"] retain];
+    [infoIcon setSize: NSMakeSize(16, 16)];
 	
 	truncateStyle = [[NSMutableParagraphStyle defaultParagraphStyle]mutableCopy];
 	[truncateStyle setLineBreakMode:NSLineBreakByTruncatingTail];
