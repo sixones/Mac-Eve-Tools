@@ -34,6 +34,7 @@
 -(BOOL) setWidth:(CGFloat)width forColumn:(NSString*)columnId;
 -(BOOL) setOrder:(NSInteger)position forColumn:(NSString*)columnId;
 -(BOOL) moveColumn:(NSInteger)from toPosition:(NSInteger)to;
+-(BOOL) setActive:(BOOL)active forColumn:(NSString *)columnId;
 
 -(NSArray*) columns;
 

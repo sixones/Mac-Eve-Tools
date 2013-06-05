@@ -171,8 +171,10 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 
 - (void) tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
 	if ([[tableColumn identifier] isEqual:@"ACTIVE"] ==  TRUE) {
-		PlannerColumn *column = [self.columnList objectAtIndex:row];
-		column.active = !column.active;
+        PlannerColumn *column = [self.columnList objectAtIndex:row];
+        ColumnConfigManager *manager = [ColumnConfigManager manager];
+        [manager setActive:[object boolValue] forColumn:[column identifier]];
+		column.active = [object boolValue];
 	}
 }
 

@@ -99,6 +99,20 @@
 	[array addObject:col];
 	[col release];
 	
+	col = [[PlannerColumn alloc]initWithName:NSLocalizedString(@"Primary",@"Skill plan column header")
+								  identifier:COL_PLAN_PRIMARY_ATTR
+									  status:NO
+									   width:100.0f];
+	[array addObject:col];
+	[col release];
+    
+    col = [[PlannerColumn alloc]initWithName:NSLocalizedString(@"Secondary",@"Skill plan column header")
+								  identifier:COL_PLAN_SECONDARY_ATTR
+									  status:NO
+									   width:100.0f];
+	[array addObject:col];
+	[col release];
+
 	/*
 	col = [[PlannerColumn alloc]initWithName:@"Buttons"
 								  identifier:COL_PLAN_BUTTONS 
@@ -183,6 +197,18 @@
 -(BOOL) setOrder:(NSInteger)position forColumn:(NSString*)columnId
 {
 	return NO;
+}
+
+-(BOOL) setActive:(BOOL)active forColumn:(NSString *)columnId
+{
+	PlannerColumn *pcol = [self columnForIdentifer:columnId];
+	if(pcol == nil){
+		return NO;
+	}
+	
+	[pcol setActive:active];
+	[self writeConfig];
+	return YES;
 }
 
 -(NSArray*) columns
