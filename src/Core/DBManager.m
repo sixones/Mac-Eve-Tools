@@ -239,7 +239,7 @@
 	sqlite3_free_table(results);
 	sqlite3_close(db);
 	
-	return 8;
+	return currentVersion;
 }
 
 -(NSInteger) availableVersion

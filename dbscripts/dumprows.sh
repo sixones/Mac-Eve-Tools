@@ -73,6 +73,6 @@ AND attributeID IN
 /usr/bin/python $SCRIPT -t crtRelationships -f $1 \
 -q "SELECT relationshipID, parentID, parentTypeID, parentLevel, childID from crtRelationships;";
 
-/opt/local/bin/perl dump_pre.pl >> $1
+/usr/bin/perl dump_pre.pl >> $1
 /usr/bin/python dump_attrs.py -f $1
 
