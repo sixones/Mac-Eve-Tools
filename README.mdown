@@ -8,8 +8,7 @@ Building:
 Requires Snow Leopard and Xcode 3.2
 It can be made to work on Leopard 10.5 with a little effort.
 
-Mac Eve Tools can use Sparkle to manage updates and can be found here:
-http://sparkle.andymatuschak.org/
+Vitality uses Sparkle to manage updates and can be found here: http://sparkle.andymatuschak.org/
 
 Quasi design document:
 
@@ -45,10 +44,9 @@ a MySQL server that hosts the CCP DB export and fetching and processing
 the required data.  See the dbscripts/README file for more info.
 
 Signing
-#######
+-------
 
-Save the private key to dsa_priv.pem on the Desktop. Signing seems to fail when using different directories.
+Save the private key to dsa_priv.pem on the Desktop and export the build there. Signing seems to fail when using different directories.
 
 cd ~/Desktop
-
 ruby sign_update.rb vitality-X.X.X.zip dsa_priv.pem
