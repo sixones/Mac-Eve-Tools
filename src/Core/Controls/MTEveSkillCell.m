@@ -155,6 +155,8 @@
 		cell->skill = nil;
 		cell->group = nil;
 		
+        [cell setSkill:[self skill]];
+        [cell setGroup:[self group]];
 		//leave the other values as junk data, they will be overwritten later
 	}
 	return cell;
@@ -180,7 +182,6 @@
 		[skill release];
 	}
 	skill = [s retain];
-	
 	skillLevel = [skill skillLevel];
 }
 

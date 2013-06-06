@@ -91,7 +91,6 @@
 -(IBAction) antiPlanButtonClick:(id)sender;
 
 -(IBAction) attributeModifierButtonClick:(id)sender;
--(IBAction) advancedButtonClick:(id)sender;
 
 -(void) addSkillArrayToActivePlan:(NSArray*)skillArray;
 
