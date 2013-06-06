@@ -56,6 +56,10 @@
 		9EF3339611E79B1A002A3B7D /* NSTableViewCellExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EF3338911E79B19002A3B7D /* NSTableViewCellExtended.m */; };
 		9EF3339711E79B1A002A3B7D /* SkillPlannerPrefViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EF3338B11E79B19002A3B7D /* SkillPlannerPrefViewController.m */; };
 		9EF335C811E87875002A3B7D /* databaseIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EF335C711E87875002A3B7D /* databaseIcon.png */; };
+		A1C0A7B31761077F00A3A743 /* MarketOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7B01761077F00A3A743 /* MarketOrder.m */; };
+		A1C0A7B41761077F00A3A743 /* MarketOrders.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7B21761077F00A3A743 /* MarketOrders.m */; };
+		A1C0A7C117610CDA00A3A743 /* MarketView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C0A7BE17610CDA00A3A743 /* MarketView.xib */; };
+		A1C0A7C217610CDA00A3A743 /* MarketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7C017610CDA00A3A743 /* MarketViewController.m */; };
 		C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */ = {isa = PBXBuildFile; fileRef = C911FED610782C50000D88E2 /* CharacterParseError.m */; };
 		C92067901161D837001BBE14 /* SkillAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = C920678F1161D837001BBE14 /* SkillAttribute.m */; };
 		C92067B11162C792001BBE14 /* SkillPointAttributeQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = C92067B01162C792001BBE14 /* SkillPointAttributeQueue.m */; };
@@ -228,6 +232,13 @@
 		9EF3338A11E79B19002A3B7D /* SkillPlannerPrefViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkillPlannerPrefViewController.h; sourceTree = "<group>"; };
 		9EF3338B11E79B19002A3B7D /* SkillPlannerPrefViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SkillPlannerPrefViewController.m; sourceTree = "<group>"; };
 		9EF335C711E87875002A3B7D /* databaseIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = databaseIcon.png; sourceTree = "<group>"; };
+		A1C0A7AF1761077F00A3A743 /* MarketOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketOrder.h; path = MarketOrders/MarketOrder.h; sourceTree = "<group>"; };
+		A1C0A7B01761077F00A3A743 /* MarketOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MarketOrder.m; path = MarketOrders/MarketOrder.m; sourceTree = "<group>"; };
+		A1C0A7B11761077F00A3A743 /* MarketOrders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketOrders.h; path = MarketOrders/MarketOrders.h; sourceTree = "<group>"; };
+		A1C0A7B21761077F00A3A743 /* MarketOrders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MarketOrders.m; path = MarketOrders/MarketOrders.m; sourceTree = "<group>"; };
+		A1C0A7BD17610CDA00A3A743 /* MarketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarketViewController.h; sourceTree = "<group>"; };
+		A1C0A7BF17610CDA00A3A743 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MarketView.xib; sourceTree = "<group>"; };
+		A1C0A7C017610CDA00A3A743 /* MarketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarketViewController.m; sourceTree = "<group>"; };
 		C90FB55A10644F8600292067 /* METInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METInstance.h; sourceTree = "<group>"; };
 		C911FED510782C50000D88E2 /* CharacterParseError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharacterParseError.h; sourceTree = "<group>"; };
 		C911FED610782C50000D88E2 /* CharacterParseError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CharacterParseError.m; sourceTree = "<group>"; };
@@ -560,6 +571,27 @@
 			path = Preferences;
 			sourceTree = "<group>";
 		};
+		A1C0A7AA1761071200A3A743 /* MarketOrders */ = {
+			isa = PBXGroup;
+			children = (
+				A1C0A7AF1761077F00A3A743 /* MarketOrder.h */,
+				A1C0A7B01761077F00A3A743 /* MarketOrder.m */,
+				A1C0A7B11761077F00A3A743 /* MarketOrders.h */,
+				A1C0A7B21761077F00A3A743 /* MarketOrders.m */,
+			);
+			name = MarketOrders;
+			sourceTree = "<group>";
+		};
+		A1C0A7BC17610CD900A3A743 /* MarketView */ = {
+			isa = PBXGroup;
+			children = (
+				A1C0A7BD17610CDA00A3A743 /* MarketViewController.h */,
+				A1C0A7C017610CDA00A3A743 /* MarketViewController.m */,
+				A1C0A7BE17610CDA00A3A743 /* MarketView.xib */,
+			);
+			path = MarketView;
+			sourceTree = "<group>";
+		};
 		C9661A6B110D12EB00FA9B72 /* Certs */ = {
 			isa = PBXGroup;
 			children = (
@@ -692,6 +724,7 @@
 				C9FF472210550BA50044BBAC /* Skills */,
 				C9FF473110550BA60044BBAC /* SQLite Database */,
 				C9FF46F110550BA50044BBAC /* Character */,
+				A1C0A7AA1761071200A3A743 /* MarketOrders */,
 				C9FF46ED10550BA50044BBAC /* Account.h */,
 				C9FF46EE10550BA50044BBAC /* Account.m */,
 				C9FF46EF10550BA50044BBAC /* bsd-base64.c */,
@@ -849,6 +882,7 @@
 			children = (
 				C9FF476E10550BA60044BBAC /* Skill Planner */,
 				C9FF476610550BA60044BBAC /* Character Sheet */,
+				A1C0A7BC17610CD900A3A743 /* MarketView */,
 				C9FF476C10550BA60044BBAC /* METPluggableView.h */,
 				C90FB55A10644F8600292067 /* METInstance.h */,
 			);
@@ -1014,6 +1048,7 @@
 				14F8DAF11739BF30001C4178 /* vitality.png in Resources */,
 				14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */,
 				14B827A917459A9C002CB096 /* dsa_pub.pem in Resources */,
+				A1C0A7C117610CDA00A3A743 /* MarketView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1148,6 +1183,9 @@
 				9EF3339711E79B1A002A3B7D /* SkillPlannerPrefViewController.m in Sources */,
 				14B6F626173BD089005E8389 /* SkillSearchModuleDatasource.m in Sources */,
 				14B6F636173BE1FD005E8389 /* ModuleDetailsWindowController.m in Sources */,
+				A1C0A7B31761077F00A3A743 /* MarketOrder.m in Sources */,
+				A1C0A7B41761077F00A3A743 /* MarketOrders.m in Sources */,
+				A1C0A7C217610CDA00A3A743 /* MarketViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1208,6 +1246,14 @@
 				9EF3337F11E79B19002A3B7D /* English */,
 			);
 			name = SkillPlannerPrefView.xib;
+			sourceTree = "<group>";
+		};
+		A1C0A7BE17610CDA00A3A743 /* MarketView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1C0A7BF17610CDA00A3A743 /* English */,
+			);
+			name = MarketView.xib;
 			sourceTree = "<group>";
 		};
 		C9721EE91121291D00035782 /* CharacterSheet.xib */ = {

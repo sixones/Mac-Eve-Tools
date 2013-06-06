@@ -324,8 +324,7 @@
     "SELECT typeID, groupID, raceID, marketGroupID, mass, "
     "volume, capacity,basePrice, typeName, description "
     "FROM invTypes "
-    "WHERE typeID = ? "
-    "AND published = 1 ";
+    "WHERE typeID = ? ";
  	sqlite3_stmt *read_stmt;
  	int rc;
 

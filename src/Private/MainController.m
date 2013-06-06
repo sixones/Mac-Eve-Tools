@@ -33,6 +33,7 @@
 #import "SkillPlan.h"
 #import "METPluggableView.h"
 #import "CharacterManager.h"
+#import "MarketViewController.h"
 
 	//#import "MBPreferencesController.h"
 #import "GeneralPrefViewController.h"
@@ -377,7 +378,12 @@
 	[viewControllers addObject:mvc];
 	[(NSObject*)mvc release];
 	
-	
+    mvc = [[MarketViewController alloc] init];
+    [mvc view];//trigger the awakeFromNib
+    [mvc setInstance:self];
+    [viewControllers addObject:mvc];
+    [(NSObject*)mvc release];
+    
 	[[self window] makeMainWindow];
 	[[self window] setDelegate:self];
 	[NSApp setDelegate:self];
