@@ -33,6 +33,12 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		140AEBD7176109F500308748 /* status.png in Resources */ = {isa = PBXBuildFile; fileRef = 140AEBD6176109F500308748 /* status.png */; };
+		140AEBDA17610E3900308748 /* StatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 140AEBD917610E3900308748 /* StatusItemView.m */; };
+		140AEBDD176393D400308748 /* StatusItemWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 140AEBDC176393D400308748 /* StatusItemWindow.m */; };
+		140AEBE017639D4600308748 /* StatusItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 140AEBDF17639D4600308748 /* StatusItemViewController.m */; };
+		140AEBE21763A04B00308748 /* StatusItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 140AEBE11763A04B00308748 /* StatusItemView.xib */; };
+		140AEBE41763CF3F00308748 /* open.png in Resources */ = {isa = PBXBuildFile; fileRef = 140AEBE31763CF3F00308748 /* open.png */; };
 		14B6F626173BD089005E8389 /* SkillSearchModuleDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B6F625173BD089005E8389 /* SkillSearchModuleDatasource.m */; };
 		14B6F636173BE1FD005E8389 /* ModuleDetailsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B6F631173BE1FD005E8389 /* ModuleDetailsWindowController.m */; };
 		14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14B6F637173BE4C8005E8389 /* ModuleDetails.xib */; };
@@ -193,6 +199,15 @@
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		140AEBD6176109F500308748 /* status.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = status.png; sourceTree = "<group>"; };
+		140AEBD817610E3900308748 /* StatusItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemView.h; sourceTree = "<group>"; };
+		140AEBD917610E3900308748 /* StatusItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemView.m; sourceTree = "<group>"; };
+		140AEBDB176393D400308748 /* StatusItemWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemWindow.h; sourceTree = "<group>"; };
+		140AEBDC176393D400308748 /* StatusItemWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemWindow.m; sourceTree = "<group>"; };
+		140AEBDE17639D4600308748 /* StatusItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemViewController.h; sourceTree = "<group>"; };
+		140AEBDF17639D4600308748 /* StatusItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemViewController.m; sourceTree = "<group>"; };
+		140AEBE11763A04B00308748 /* StatusItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StatusItemView.xib; sourceTree = "<group>"; };
+		140AEBE31763CF3F00308748 /* open.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = open.png; sourceTree = "<group>"; };
 		14B6F624173BD089005E8389 /* SkillSearchModuleDatasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkillSearchModuleDatasource.h; sourceTree = "<group>"; };
 		14B6F625173BD089005E8389 /* SkillSearchModuleDatasource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SkillSearchModuleDatasource.m; sourceTree = "<group>"; };
 		14B6F630173BE1FD005E8389 /* ModuleDetailsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModuleDetailsWindowController.h; sourceTree = "<group>"; };
@@ -661,6 +676,13 @@
 				C993CEC41123FA200084BFFD /* DatabaseUpdate.xib */,
 				C9FF471510550BA50044BBAC /* DBManager.h */,
 				C9FF471610550BA50044BBAC /* DBManager.m */,
+				140AEBD817610E3900308748 /* StatusItemView.h */,
+				140AEBD917610E3900308748 /* StatusItemView.m */,
+				140AEBDB176393D400308748 /* StatusItemWindow.h */,
+				140AEBDC176393D400308748 /* StatusItemWindow.m */,
+				140AEBDE17639D4600308748 /* StatusItemViewController.h */,
+				140AEBDF17639D4600308748 /* StatusItemViewController.m */,
+				140AEBE11763A04B00308748 /* StatusItemView.xib */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -668,6 +690,8 @@
 		C9FF455A105508950044BBAC /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				140AEBE31763CF3F00308748 /* open.png */,
+				140AEBD6176109F500308748 /* status.png */,
 				9EF335C711E87875002A3B7D /* databaseIcon.png */,
 				C9FF455B105508950044BBAC /* charsheet.png */,
 				C9FF455C105508950044BBAC /* darkgray.tiff */,
@@ -1014,6 +1038,9 @@
 				14F8DAF11739BF30001C4178 /* vitality.png in Resources */,
 				14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */,
 				14B827A917459A9C002CB096 /* dsa_pub.pem in Resources */,
+				140AEBD7176109F500308748 /* status.png in Resources */,
+				140AEBE21763A04B00308748 /* StatusItemView.xib in Resources */,
+				140AEBE41763CF3F00308748 /* open.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1148,6 +1175,9 @@
 				9EF3339711E79B1A002A3B7D /* SkillPlannerPrefViewController.m in Sources */,
 				14B6F626173BD089005E8389 /* SkillSearchModuleDatasource.m in Sources */,
 				14B6F636173BE1FD005E8389 /* ModuleDetailsWindowController.m in Sources */,
+				140AEBDA17610E3900308748 /* StatusItemView.m in Sources */,
+				140AEBDD176393D400308748 /* StatusItemWindow.m in Sources */,
+				140AEBE017639D4600308748 /* StatusItemViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

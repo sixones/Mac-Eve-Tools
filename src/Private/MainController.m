@@ -40,12 +40,15 @@
 #import "DatabasePrefViewController.h"
 #import "SkillPlannerPrefViewController.h"
 
+#import "StatusItemViewController.h"
+
 #import "DBManager.h"
 
 #ifdef HAVE_SPARKLE
 #import <Sparkle/Sparkle.h>
 #endif
 
+#import "StatusItemView.h"
 
 #pragma mark MainController
 
@@ -473,7 +476,10 @@
 
 -(void) dealloc
 {
+    [[NSStatusBar systemStatusBar] removeStatusItem: statusItem];
+    
 	[viewControllers release];
+    
 	[super dealloc];
 }
 
@@ -560,8 +566,7 @@
 			//[[NSApp mainMenu]addItem:menuItem];
 		}
 	}*/
-	
-	
+    
 	/* initialization of the new preferences window */
 	
 	AccountPrefViewController *accounts = [[AccountPrefViewController alloc] initWithNibName:@"AccountPrefView" bundle:nil];
@@ -590,6 +595,37 @@
 	statusMessageTimer = nil;
 	[loadingCycle setHidden:YES];
 	[loadingCycle stopAnimation:nil];
+    
+    // status bar item
+    statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength: NSVariableStatusItemLength] retain];
+    StatusItemView *statusView = [[[StatusItemView alloc] initWithFrame: NSMakeRect(0, 0, 30, [[NSStatusBar systemStatusBar] thickness]) controller: self] autorelease];
+    
+    [statusItem setView: statusView];
+}
+
+- (void) openStatusWindowAt: (NSPoint) point {
+    if (statusWindow == nil) {
+        StatusItemViewController *statusController = [[StatusItemViewController alloc] initWithNibName: @"StatusItemView" bundle: nil];
+        [statusController attachMainController: self];
+        [statusController setCharacter: currentCharacter];
+        
+        statusWindow = [[StatusItemWindow alloc] initWithController: statusController attachedToPoint: point andMainController: self];
+    
+        [statusWindow makeKeyAndOrderFront: self];
+    }
+    
+    [(StatusItemView*) [statusItem view] open];
+}
+
+- (void) closeStatusWindow {
+    if (statusWindow != nil) {
+        [statusWindow orderOut: self];
+        [statusWindow close];
+    
+        statusWindow = nil;
+    }
+    
+    [(StatusItemView*) [statusItem view] close];
 }
 
 -(void) setCurrentCharacter:(Character*)character
@@ -615,6 +651,10 @@
 	NSLog(@"Current character is %@",[currentCharacter characterName]);
 	
 	[[self window]setTitle: [currentCharacter characterName]];
+    
+    if (statusWindow) {
+        [statusWindow setCharacter: currentCharacter];
+    }
 }
 
 -(IBAction)charSelectorClick:(id)sender
