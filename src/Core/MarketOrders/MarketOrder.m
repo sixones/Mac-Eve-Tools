@@ -11,6 +11,10 @@
 #import "CCPType.h"
 #import "CCPDatabase.h"
 
+@interface MarketOrder()
+@property (readwrite) NSString *stationName;
+@end
+
 @implementation MarketOrder
 
 @synthesize orderID;
@@ -27,10 +31,13 @@
 @synthesize escrow;
 @synthesize buy;
 @synthesize issued;
+@synthesize stationName = _stationName;
 
 - (NSString *)typeName
 {
     CCPType *type = [[[GlobalData sharedInstance] database] type:self.typeID];
+    if( !type || ![type typeName] )
+        NSLog( @"Missing type name in a market order" );
     return [type typeName];
 }
 
@@ -50,4 +57,25 @@
     }
     return NSLocalizedString( stateStr, @"Order State String" );
 }
+
+- (void)setStationName:(NSString *)newStationName
+{
+    if( newStationName != _stationName )
+    {
+        [_stationName release];
+        _stationName = [newStationName retain];
+    }
+}
+
+- (NSString *)stationName
+{
+    if( nil == _stationName )
+    {
+        CCPDatabase *db = [[GlobalData sharedInstance] database];
+        NSDictionary *station = [db stationForID:stationID];
+        [self setStationName:[station objectForKey:@"name"]];
+    }
+    return _stationName;
+}
+
 @end

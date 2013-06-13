@@ -36,6 +36,7 @@ typedef enum {
 @property (assign) double escrow;
 @property (assign) BOOL buy; // if false = sell order
 @property (retain) NSDate *issued;
+@property (readonly,retain) NSString *stationName;
 
 - (NSString *)typeName;
 - (NSString *)state;

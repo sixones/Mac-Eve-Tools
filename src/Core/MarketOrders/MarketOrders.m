@@ -31,7 +31,7 @@
 
 @implementation MarketOrders
 
-@synthesize character;
+@synthesize character = _character;
 @synthesize orders;
 @synthesize xmlPath;
 @synthesize cachedUntil;
@@ -54,8 +54,27 @@
     [super dealloc];
 }
 
+- (Character *)character
+{
+    return [[_character retain] autorelease];
+}
+
+- (void)setCharacter:(Character *)character
+{
+    if( _character != character )
+    {
+        [_character release];
+        _character = [character retain];
+        [[self orders] removeAllObjects];
+        [self setCachedUntil:[NSDate distantPast]];
+    }
+}
+
 - (IBAction)reload:(id)sender
 {
+    if( ![self character] )
+        return;
+    
     if( [cachedUntil isGreaterThan:[NSDate date]] )
     {
         NSLog( @"Skipping download of Market Orders because of Cached Until date" );

@@ -87,4 +87,7 @@
 // Returns all the invTypes that require the given skillID
 -(NSDictionary*) dependenciesForSkillByCategory:(NSInteger)typeID;
 
+// Returns a dictionry for now, might turn into a class at some point
+// @"name", @"stationID" and @"systemID" are the keys in the dictionary
+- (NSDictionary *) stationForID:(NSInteger)stationID;
 @end

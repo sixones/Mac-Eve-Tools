@@ -1231,7 +1231,7 @@
 
 -(NSDictionary*) attributesForType:(NSInteger)typeID
 {
-	const char query[] = 
+	const char query[] =
 		"SELECT attributeID, attributeName, COALESCE(valueFloat,valueInt) "
 		"FROM dgmTypeAttributes "
 		"JOIN dgmAttributeTypes USING(attributeID) "
@@ -1248,7 +1248,7 @@
 	
 	NSMutableDictionary *attrDict = [[[NSMutableDictionary alloc]init]autorelease];
 	
-	sqlite3_bind_nsint(read_stmt,0,typeID);
+	sqlite3_bind_nsint(read_stmt,1,typeID);
 	
 	while(sqlite3_step(read_stmt) == SQLITE_ROW){
 		
@@ -1517,6 +1517,43 @@
     [self commitTransaction];
     
 	return;
+}
+
+// @"name", @"stationID" and @"systemID" are the keys in the dictionary
+- (NSDictionary *) stationForID:(NSInteger)stationID
+{
+    // first make sure the staStation table exists
+	const char query[] =
+    "SELECT stationName, solarSystemID "
+    "FROM staStations "
+    "WHERE stationID = ?;";
+	sqlite3_stmt *read_stmt;
+	int rc;
+	
+	rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+	if(rc != SQLITE_OK){
+		NSLog(@"%s: Query error",__func__);
+		return nil;
+	}
+	
+	NSMutableDictionary *staDict = [[[NSMutableDictionary alloc]init]autorelease];
+	
+	sqlite3_bind_nsint(read_stmt,1,stationID);
+	
+	while(sqlite3_step(read_stmt) == SQLITE_ROW)
+    {
+		
+		NSInteger systemID = sqlite3_column_nsint(read_stmt,1);
+		NSString *stationName = sqlite3_column_nsstr(read_stmt,0);
+		
+		[staDict setObject:stationName forKey:@"name"];
+		[staDict setObject:[NSNumber numberWithInteger:systemID] forKey:@"systemID"];
+		[staDict setObject:[NSNumber numberWithInteger:stationID] forKey:@"stationID"];
+	}
+	
+	sqlite3_finalize(read_stmt);
+	
+	return staDict;
 }
 
 @end

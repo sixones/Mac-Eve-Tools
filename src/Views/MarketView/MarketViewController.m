@@ -117,7 +117,8 @@
     }
     else if( [colID isEqualToString:@"stationID"] )
     {
-        value = [NSNumber numberWithUnsignedLong:[order stationID]];
+//        value = [NSNumber numberWithUnsignedLong:[order stationID]];
+        value = [order stationName];
     }
     else if( [colID isEqualToString:@"minVolume"] )
     {
