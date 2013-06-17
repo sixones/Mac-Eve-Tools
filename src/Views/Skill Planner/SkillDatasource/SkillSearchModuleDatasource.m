@@ -153,12 +153,10 @@ menuForTableColumnItem:(NSTableColumn*)column
 	
 	NSArray *skills = [item prereqs];
 	
-	
-	
 	NSMenu *menu = [[[NSMenu alloc]initWithTitle:@"Menu"]autorelease];
 	
 	NSMenuItem *menuItem;
-	menuItem = [[NSMenuItem alloc]initWithTitle:[item typeName]
+	menuItem = [[NSMenuItem alloc]initWithTitle: @"View Module Details"
                                          action:@selector(displayShipWindow:)
                                   keyEquivalent:@""];
 	[menuItem setRepresentedObject:item];
