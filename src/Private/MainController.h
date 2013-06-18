@@ -28,6 +28,8 @@
 #import "METPluggableView.h"
 #import "METInstance.h"
 
+#import "StatusItemWindow.h"
+
 @class ServerMonitor;
 @class CharacterOverviewDatasource;
 @class CharacterManager;
@@ -77,16 +79,26 @@
 	
 	ServerMonitor *monitor;
 	CharacterManager *characterManager;
+    
+    IBOutlet NSMenu *statusMenu;
+    NSStatusItem *statusItem;
+    
+    StatusItemWindow *statusWindow;
+    
+    IBOutlet NSView *statusWindowView;
 }
 
--(id)init;
+- (id) init;
 
--(IBAction) fetchCharButtonClick:(id)sender;
--(IBAction) charSelectorClick:(id)sender;
--(IBAction) showPrefPanel:(id)sender;
--(IBAction) viewSelectorClick:(id)sender;
--(IBAction) noCharsButtonClick:(id)sender;
--(IBAction) toolbarButtonClick:(id)sender;
--(IBAction) checkForUpdates:(id)sender;
+- (IBAction) fetchCharButtonClick: (id) sender;
+- (IBAction) charSelectorClick: (id) sender;
+- (IBAction) showPrefPanel: (id) sender;
+- (IBAction) viewSelectorClick: (id) sender;
+- (IBAction) noCharsButtonClick: (id) sender;
+- (IBAction) toolbarButtonClick: (id) sender;
+- (IBAction) checkForUpdates: (id) sender;
+
+- (void) openStatusWindowAt: (NSPoint) point;
+- (void) closeStatusWindow;
 
 @end

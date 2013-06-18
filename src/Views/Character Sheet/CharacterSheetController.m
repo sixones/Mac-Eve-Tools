@@ -83,7 +83,7 @@
 {
 	[queueHeader setSkillPlan:nil];
 	[queueHeader setCharacter:nil];
-	[queueHeader setNeedsDisplay:YES];;
+	[queueHeader setNeedsDisplay:YES];
 }
 
 -(void) showCharTrainingQueue:(Character*)character
@@ -129,7 +129,7 @@
 	
 	NSInteger clonePoints = [character integerForKey:CHAR_CLONE_SP];
 	NSInteger charPoints = [character skillPointTotal];
-	
+    
 	NSInteger threshold = (CGFloat)clonePoints * 0.95;
 	
 	if((clonePoints < charPoints) || (threshold < charPoints)){
@@ -138,8 +138,10 @@
 	}else{
 		[cloneSP setTextColor:[NSColor textColor]];
 	}
+    
+    [cloneSP setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%@ (%@)", nil), [character stringForKey: CHAR_CLONE_NAME], [SPFormatter stringFromNumber:[NSNumber numberWithInteger: clonePoints]] ]];
 	
-	[cloneSP setObjectValue:[NSNumber numberWithInteger:clonePoints]];
+	//[cloneSP setObjectValue: [NSNumber numberWithInteger:clonePoints]];
 	[cloneSP sizeToFit];
 	
 	[charSP setObjectValue:[NSNumber numberWithInteger:charPoints]];

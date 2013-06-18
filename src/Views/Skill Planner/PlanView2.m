@@ -210,6 +210,8 @@
         
     [tableView setColumnAutoresizingStyle: NSTableViewFirstColumnOnlyAutoresizingStyle];
     
+    [tableView deselectAll: self];
+    
     //[scrollView reflectScrolledClipView: [scrollView contentView]];
     //[tableView setFrame: [tableView frame]];
 }

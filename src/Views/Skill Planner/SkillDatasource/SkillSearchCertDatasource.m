@@ -199,7 +199,7 @@ menuForTableColumnItem:(NSTableColumn*)column
 						   [[(Cert*)item parent]certClassName],
 						   [item certGradeText]];
 	
-	NSMenuItem *menuItem = [[NSMenuItem alloc]initWithTitle:certTitle
+	NSMenuItem *menuItem = [[NSMenuItem alloc]initWithTitle: @"View Certificate Details"
 													 action:@selector(displayCertWindow:)
 											  keyEquivalent:@""];
 	[menuItem setRepresentedObject:item];
