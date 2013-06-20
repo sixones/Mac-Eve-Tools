@@ -32,7 +32,8 @@
 @end
 
 
-@interface DBManager : NSWindowController {
+@interface DBManager : NSWindowController <NSURLDownloadDelegate>
+{
 	NSInteger availableVersion;
 	
 	NSString *sha1_bzip;
