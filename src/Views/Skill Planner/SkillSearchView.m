@@ -16,6 +16,7 @@
  
  Copyright Matt Tyson, 2009.
  */
+#import <AppKit/NSOutlineView.h>
 
 #import "SkillSearchView.h"
 #import "Config.h"
@@ -269,11 +270,18 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
 					 item:(id)item 
 			mouseLocation:(NSPoint)mouseLocation
 {
-	return [[skillList dataSource]outlineView:ov
-						toolTipForCell:cell rect:rect 
-						   tableColumn:tc item:item
-						 mouseLocation:mouseLocation];
+    id ds = [skillList dataSource];
+    if( [ds respondsToSelector:@selector(outlineView:toolTipForCell:rect:tableColumn:item:mouseLocation:)] )
+    {
+        return [ds outlineView:ov
+                toolTipForCell:cell
+                          rect:rect
+                   tableColumn:tc
+                          item:item
+                 mouseLocation:mouseLocation];
+    }
+    return nil;
 }
 
-	 
+
 @end

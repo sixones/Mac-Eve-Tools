@@ -195,10 +195,6 @@ menuForTableColumnItem:(NSTableColumn*)column
 	
 	NSMenu *menu = [[[NSMenu alloc]initWithTitle:@"Menu"]autorelease];
 	
-	NSString *certTitle = [NSString stringWithFormat:@"%@ - %@",
-						   [[(Cert*)item parent]certClassName],
-						   [item certGradeText]];
-	
 	NSMenuItem *menuItem = [[NSMenuItem alloc]initWithTitle: @"View Certificate Details"
 													 action:@selector(displayCertWindow:)
 											  keyEquivalent:@""];

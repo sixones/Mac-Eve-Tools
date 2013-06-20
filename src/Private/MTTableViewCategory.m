@@ -19,10 +19,13 @@
 
 #import "MTTableViewCategory.h"
 
+// Declared here to quiet compiler warnings
+@interface NSObject()
+-(NSMenu*) tableView:(NSTableView*)table menuForTableColumn:(NSTableColumn*)col row:(NSInteger)row;
+-(NSMenu*) outlineView:(NSOutlineView*)outlineView menuForTableColumnItem:(NSTableColumn*)column byItem:(id)item;
+@end
 
 @implementation  NSTableView (MTTableView)
-
-/*delegate -(NSMenu*) tableView:(NSTableView*) menuForTableColumn:(NSTableColumn*) row:(NSInteger)row */
 
 -(NSMenu*) menuForEvent:(NSEvent*)event
 {
@@ -39,7 +42,6 @@
 			if((row != -1) && (col != -1)){
 				NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:col];
 				
-				//Maybe redo this to use NSInvocation to get rid of the stupid warning.
 				menu = [data tableView:self menuForTableColumn:tableColumn row:row];
 			}
 		}

@@ -231,16 +231,11 @@
 /*construct the toolbar menu*/
 -(NSMenuItem*) menuItems
 {
-	NSMenu *menu;
-	NSMenuItem *topLevel;
-	NSMenuItem *item;
-	
-	topLevel = [[NSMenuItem allocWithZone:[NSMenu menuZone]]initWithTitle:@"Planner"
+	NSMenuItem *topLevel = [[NSMenuItem allocWithZone:[NSMenu menuZone]]initWithTitle:@"Planner"
 																   action:NULL
 															keyEquivalent:@""];
-	[topLevel autorelease];
 
-	return topLevel;
+	return [topLevel autorelease];
 }
 
 -(NSView*) view

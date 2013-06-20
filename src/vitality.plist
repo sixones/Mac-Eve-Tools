@@ -16,6 +16,8 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.2.7</string>
 	<key>CFBundleVersion</key>
 	<string>0.2.7</string>
 	<key>LSMinimumSystemVersion</key>

@@ -44,7 +44,6 @@
 		14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14B6F637173BE4C8005E8389 /* ModuleDetails.xib */; };
 		14B827A917459A9C002CB096 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 14B827A817459A9C002CB096 /* dsa_pub.pem */; };
 		14F8DAEF1739BF30001C4178 /* vitality.icns in Resources */ = {isa = PBXBuildFile; fileRef = 14F8DAEB1739BF30001C4178 /* vitality.icns */; };
-		14F8DAF01739BF30001C4178 /* vitality.plist in Resources */ = {isa = PBXBuildFile; fileRef = 14F8DAED1739BF30001C4178 /* vitality.plist */; };
 		14F8DAF11739BF30001C4178 /* vitality.png in Resources */ = {isa = PBXBuildFile; fileRef = 14F8DAEE1739BF30001C4178 /* vitality.png */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -1034,7 +1033,6 @@
 				9EF3339311E79B1A002A3B7D /* SkillPlannerPrefView.xib in Resources */,
 				9EF335C811E87875002A3B7D /* databaseIcon.png in Resources */,
 				14F8DAEF1739BF30001C4178 /* vitality.icns in Resources */,
-				14F8DAF01739BF30001C4178 /* vitality.plist in Resources */,
 				14F8DAF11739BF30001C4178 /* vitality.png in Resources */,
 				14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */,
 				14B827A917459A9C002CB096 /* dsa_pub.pem in Resources */,
