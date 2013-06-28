@@ -289,6 +289,7 @@
 		[attributeModifierButton setEnabled:NO];
         
         [self buildAdvancedMenuForPlansOverview];
+        [segmentedButton selectSegmentWithTag:-1]; // reselect the overview segment
 	}else if(currentTag == -1){ //if we are switching FROM the overview
 		[self switchColumns:skillPlanColumns];
 		[pvDatasource setMode:SPMode_plan];
