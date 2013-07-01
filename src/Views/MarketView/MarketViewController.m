@@ -20,6 +20,8 @@
     {
         orders = [[MarketOrders alloc] init];
         [orders setDelegate:self];
+//        NSSortDescriptor *defaultSort = [NSSortDescriptor sortDescriptorWithKey:@"issued" ascending:YES selector:@selector(compare:)];
+//        [orders sortUsingDescriptors:[NSArray arrayWithObject:defaultSort]];
 	}
     
 	return self;
@@ -149,4 +151,10 @@
     return value;
 }
 
+-(void)tableView:(NSTableView *)tableView sortDescriptorsDidChange: (NSArray *)oldDescriptors
+{
+    NSArray *newDescriptors = [tableView sortDescriptors];
+    [orders sortUsingDescriptors:newDescriptors];
+    [tableView reloadData];
+}
 @end

@@ -70,6 +70,11 @@
     }
 }
 
+- (void)sortUsingDescriptors:(NSArray *)descriptors
+{
+    [orders sortUsingDescriptors:descriptors];
+}
+
 - (IBAction)reload:(id)sender
 {
     if( ![self character] )

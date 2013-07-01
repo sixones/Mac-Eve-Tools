@@ -138,6 +138,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">typeName</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="831559169">
 												<string key="NSIdentifier">orderState</string>
@@ -172,6 +177,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">state</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="343532492">
 												<string key="NSIdentifier">bid</string>
@@ -198,6 +208,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">buy</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="510753971">
 												<string key="NSIdentifier">volEntered</string>
@@ -224,6 +239,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">volEntered</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="896570115">
 												<string key="NSIdentifier">volRemaining</string>
@@ -250,6 +270,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">volRemaining</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="402522155">
 												<string key="NSIdentifier">minVolume</string>
@@ -276,6 +301,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">minVolume</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="540012083">
 												<string key="NSIdentifier">price</string>
@@ -347,6 +377,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">price</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="809117091">
 												<string key="NSIdentifier">issued</string>
@@ -382,6 +417,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">issued</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="880251806">
 												<string key="NSIdentifier">stationID</string>
@@ -408,6 +448,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">stationName</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 										</array>
 										<double key="NSIntercellSpacingWidth">3</double>
@@ -423,7 +468,7 @@
 											</object>
 										</object>
 										<double key="NSRowHeight">17</double>
-										<int key="NSTvFlags">-683671552</int>
+										<int key="NSTvFlags">-742391808</int>
 										<reference key="NSDelegate"/>
 										<reference key="NSDataSource"/>
 										<string key="NSAutosaveName">MarketOrderTable</string>

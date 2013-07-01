@@ -19,5 +19,5 @@
 @property (readwrite,assign) id delegate;
 
 - (IBAction)reload:(id)sender;
-
+- (void)sortUsingDescriptors:(NSArray *)descriptors;
 @end
