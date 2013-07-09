@@ -61,6 +61,7 @@
 /*An array of all types in that group*/
 -(NSArray*) typesInGroup:(NSInteger)groupID;
 -(NSInteger) typeCount:(NSInteger)groupID;
+-(NSString *) typeName:(NSInteger)typeID; // pulls from a pre-made table with typeID, typeName and description
 
 -(NSArray*) prereqForType:(NSInteger) typeID;
 

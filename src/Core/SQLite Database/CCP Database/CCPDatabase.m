@@ -348,6 +348,44 @@
     return nil;
 }
 
+/* Instead of adding the entire invTypes table to the Vitality download,
+  I created a new table with typeID, typeName and description, and loaded all published types.
+ */
+-(NSString *) typeName:(NSInteger)typeID
+{
+ 	const char query[] =
+    "SELECT typeName "
+    "FROM invTypeNames "
+    "WHERE typeID = ? ";
+ 	sqlite3_stmt *read_stmt;
+ 	int rc;
+    
+ 	rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+ 	if(rc != SQLITE_OK)
+    {
+        [self logError:(char *)[[NSString stringWithFormat:@"%s: sqlite error: %s", __func__, sqlite3_errmsg(db)] UTF8String]];
+        return nil;
+    }
+    
+ 	sqlite3_bind_nsint(read_stmt,1,typeID);
+    
+    NSString *typeName = NULL;
+    
+	while( !typeName && (sqlite3_step(read_stmt) == SQLITE_ROW) )
+    {
+		typeName = sqlite3_column_nsstr(read_stmt,0);
+		
+		if(lang != l_EN)
+        {
+			typeName = [self translation:typeID forColumn:TRN_TYPE_NAME fallback:typeName];
+		}
+    }
+    
+ 	sqlite3_finalize(read_stmt);
+    
+    return typeName;
+}
+
 -(void) parseTypesResults:(NSMutableArray*)array sqliteReadStmt:(sqlite3_stmt*)read_stmt
 {
 	while(sqlite3_step(read_stmt) == SQLITE_ROW){

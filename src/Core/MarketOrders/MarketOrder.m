@@ -35,9 +35,15 @@
 
 - (NSString *)typeName
 {
-    CCPType *type = [[[GlobalData sharedInstance] database] type:self.typeID];
+    CCPDatabase *db = [[GlobalData sharedInstance] database];
+    CCPType *type = [db type:self.typeID];
     if( !type || ![type typeName] )
+    {
+        NSString *typeName = [db typeName:self.typeID];
+        if( typeName )
+            return typeName;
         NSLog( @"Missing type name in a market order" );
+    }
     return [type typeName];
 }
 

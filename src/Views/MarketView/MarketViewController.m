@@ -101,6 +101,9 @@
  */
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
+    if( 0 == [[orders orders] count] )
+        return nil;
+    
     MarketOrder *order = [[orders orders] objectAtIndex:row];
     NSString *colID = [tableColumn identifier];
     id value = nil;
