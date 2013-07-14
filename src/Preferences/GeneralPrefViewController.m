@@ -12,8 +12,18 @@
 #import <Sparkle/Sparkle.h>
 #endif
 
+#import "MainController.h"
+
 
 @implementation GeneralPrefViewController
+
+- (GeneralPrefViewController *) initWithNibNameAndController: (NSString*) nibName bundle: (NSBundle*) bundle controller: (MainController *) mainController {
+    [self initWithNibName: nibName bundle: bundle];
+    
+    _mainController = mainController;
+    
+    return self;
+}
 
 - (NSString *)title
 {
@@ -34,6 +44,14 @@
 #ifdef HAVE_SPARKLE
 	[[SUUpdater sharedUpdater]setSendsSystemProfile:[sender state] == NSOnState];
 #endif
+}
+
+- (IBAction) sendMenuBarChanged:(NSButton *)sender {
+    if ([sender state] == NSOnState) {
+        [_mainController enableStatusBar];
+    } else {
+        [_mainController disableStatusBar];
+    }
 }
 
 @end

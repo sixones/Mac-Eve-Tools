@@ -220,12 +220,15 @@ enum AttributeType {
 #define UD_ITEM_DB_PATH @"itemDbPath"
 #define UD_SUBMIT_STATS @"submitAnonymousStatistics"
 #define UD_CHECK_FOR_UPDATES @"checkForAutomaticUpdates"
+#define UD_ENABLE_MENUBAR @"enableMenuBar"
+
 #define UD_PICTURE_URL @"picUrl"
 #define UD_UPDATE_FEED_URL @"updateFeedUrl"
 #define UD_DB_UPDATE_URL @"dbUpdateUrl"
 #define UD_DB_SQL_URL @"dbSQLUrl"
 #define UD_IMAGE_URL @"imageUrl"
 #define UD_DATABASE_MIN_VERSION @"databaseMinimumVersion"
+
 
 #define UD_ACCOUNTS @"accounts"
 

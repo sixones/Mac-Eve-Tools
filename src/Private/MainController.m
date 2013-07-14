@@ -525,6 +525,7 @@
 	
 	[prefDefaults setObject:[NSNumber numberWithBool:YES] forKey:UD_SUBMIT_STATS];
 	[prefDefaults setObject:[NSNumber numberWithBool:YES] forKey:UD_CHECK_FOR_UPDATES];
+    [prefDefaults setObject:[NSNumber numberWithBool:NO] forKey:UD_ENABLE_MENUBAR];
 	[prefDefaults setObject:[NSNumber numberWithInt:l_EN] forKey:UD_DATABASE_LANG];
 	
     // FIXME: should all be moved to compile definitions
@@ -570,7 +571,7 @@
 	/* initialization of the new preferences window */
 	
 	AccountPrefViewController *accounts = [[AccountPrefViewController alloc] initWithNibName:@"AccountPrefView" bundle:nil];
-	GeneralPrefViewController *general = [[GeneralPrefViewController alloc] initWithNibName:@"GeneralPrefView" bundle:nil];
+	GeneralPrefViewController *general = [[GeneralPrefViewController alloc] initWithNibNameAndController:@"GeneralPrefView" bundle:nil controller: self];
 	DatabasePrefViewController *database = [[DatabasePrefViewController alloc] initWithNibName:@"DatabasePrefView" bundle:nil];
 	SkillPlannerPrefViewController *skillPlanner = [[SkillPlannerPrefViewController alloc] initWithNibName:@"SkillPlannerPrefView" bundle:nil];
 	
@@ -582,7 +583,6 @@
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prefWindowWillClose:) name:NSWindowWillCloseNotification object:[[MBPreferencesController sharedController] window]];
 
-		
 	/*
 		notify when the selection of the overview tableview has changed.
 	 */
@@ -596,6 +596,12 @@
 	[loadingCycle setHidden:YES];
 	[loadingCycle stopAnimation:nil];
     
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: UD_ENABLE_MENUBAR] == YES) {
+        [self enableStatusBar];
+    }
+}
+
+- (void) enableStatusBar {
     // status bar item
     statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength: NSVariableStatusItemLength] retain];
     StatusItemView *statusView = [[[StatusItemView alloc] initWithFrame: NSMakeRect(0, 0, 30, [[NSStatusBar systemStatusBar] thickness]) controller: self] autorelease];
@@ -603,29 +609,38 @@
     [statusItem setView: statusView];
 }
 
+
+- (void) disableStatusBar {
+    [self closeStatusWindow];
+    
+    [[NSStatusBar systemStatusBar] removeStatusItem: statusItem];
+    
+    statusItem = nil;
+}
+
+
 - (void) openStatusWindowAt: (NSPoint) point {
     if (statusWindow == nil) {
         StatusItemViewController *statusController = [[StatusItemViewController alloc] initWithNibName: @"StatusItemView" bundle: nil];
         [statusController attachMainController: self];
         [statusController setCharacter: currentCharacter];
-        
+                
         statusWindow = [[StatusItemWindow alloc] initWithController: statusController attachedToPoint: point andMainController: self];
-    
-        [statusWindow makeKeyAndOrderFront: self];
     }
-    
+        
+    [statusWindow makeKeyAndOrderFront: self];
+    [statusWindow makeMainWindow];
     [(StatusItemView*) [statusItem view] open];
 }
 
 - (void) closeStatusWindow {
+    [(StatusItemView*) [statusItem view] close];
+    
     if (statusWindow != nil) {
-        [statusWindow orderOut: self];
         [statusWindow close];
     
         statusWindow = nil;
     }
-    
-    [(StatusItemView*) [statusItem view] close];
 }
 
 -(void) setCurrentCharacter:(Character*)character
