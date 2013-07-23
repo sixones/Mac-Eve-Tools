@@ -50,7 +50,7 @@
 				<string key="NSWindowRect">{{375, 138}, {492, 516}}</string>
 				<int key="NSWTFlags">1618477056</int>
 				<string key="NSWindowTitle">Cert Details</string>
-				<string key="NSWindowClass">NSPanel</string>
+				<string key="NSWindowClass">NSWindow</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{492, 516}</string>

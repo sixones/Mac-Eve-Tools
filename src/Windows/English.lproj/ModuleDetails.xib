@@ -52,7 +52,7 @@
 				<string key="NSWindowRect">{{386, 120}, {492, 540}}</string>
 				<int key="NSWTFlags">1618477056</int>
 				<string key="NSWindowTitle">Module Details</string>
-				<string key="NSWindowClass">NSPanel</string>
+				<string key="NSWindowClass">NSWindow</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{492, 540}</string>
@@ -159,7 +159,6 @@
 							<string key="NSFrame">{{13, 10}, {466, 371}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="709894243"/>
 							<object class="NSMutableArray" key="NSTabViewItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSTabViewItem" id="810658682">
@@ -185,7 +184,7 @@
 																<string key="NSFrameSize">{440, 319}</string>
 																<reference key="NSSuperview" ref="65993828"/>
 																<reference key="NSWindow"/>
-																<reference key="NSNextKeyView"/>
+																<reference key="NSNextKeyView" ref="550264950"/>
 																<object class="NSTextContainer" key="NSTextContainer" id="133977596">
 																	<object class="NSLayoutManager" key="NSLayoutManager">
 																		<object class="NSTextStorage" key="NSTextStorage">
@@ -349,7 +348,7 @@
 												<string key="NSFrame">{{3, 3}, {440, 319}}</string>
 												<reference key="NSSuperview" ref="709894243"/>
 												<reference key="NSWindow"/>
-												<reference key="NSNextKeyView" ref="550264950"/>
+												<reference key="NSNextKeyView" ref="65993828"/>
 												<int key="NSsFlags">133648</int>
 												<reference key="NSVScroller" ref="550264950"/>
 												<reference key="NSHScroller" ref="995084077"/>

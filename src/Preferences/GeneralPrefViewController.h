@@ -8,15 +8,20 @@
 
 #import <Cocoa/Cocoa.h>
 #import "MBPreferencesController.h"
+#import "MainController.h"
 
 @interface GeneralPrefViewController : NSViewController <MBPreferencesModule> {
-
+    __weak MainController* _mainController;
 }
 
 - (NSString *)title;
 - (NSString *)identifier;
 - (NSImage *)image;
 
-- (IBAction) sendStatisticsChanged:(NSButton *)sender;
+- (GeneralPrefViewController *) initWithNibNameAndController: (NSString*) nibName bundle: (NSBundle*) bundle controller: (MainController *) mainController;
+
+- (IBAction) sendStatisticsChanged: (NSButton*) sender;
+- (IBAction) sendMenuBarChanged: (NSButton*) sender;
+
 
 @end

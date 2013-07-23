@@ -279,6 +279,12 @@ static Config *sharedSingletonCfg = nil;
 	if(element != NULL){
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:[self readBoolElement:element]] forKey:UD_SUBMIT_STATS];
 	}
+
+    /*enable menu bar*/
+	element = findChildNode(root,(xmlChar*)"enableMenuBar");
+	if(element != NULL){
+		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:[self readBoolElement:element]] forKey:UD_ENABLE_MENUBAR];
+	}
 	
 	xmlFreeDoc(doc);
 	

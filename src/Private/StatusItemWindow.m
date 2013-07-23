@@ -23,15 +23,20 @@
         [self setOpaque: NO];
         [self setHasShadow: YES];
         [self useOptimizedDrawing: YES];
+        [self setLevel: NSPopUpMenuWindowLevel];
+        
+        [NSApp activateIgnoringOtherApps: YES];
         
         _view.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
         
         [[self contentView] addSubview: _view];
-        
+                
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(windowDidResignKey:) name: NSWindowDidResignMainNotification object: self];
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(windowDidResignKey:) name: NSWindowDidResignKeyNotification object: self];
         
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(windowDidResize:) name: NSWindowDidResizeNotification object: self];
+        
+        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(windowDidResignKey:) name: NSApplicationWillResignActiveNotification object: nil];
 
         [self updatePosition];
     }
@@ -54,7 +59,7 @@
     [self setFrame: contentRect display: NO];
 }
 
-- (void) windowDidResignKey: (NSNotification*) notification {   
+- (void) windowDidResignKey: (NSNotification*) notification {    
     [_mainController closeStatusWindow];
 }
 
@@ -67,17 +72,22 @@
 }
 
 - (BOOL) canBecomeMainWindow {
-    return NO;
+    return YES;
 }
 
 - (BOOL) isExcludedFromWindowsMenu {
     return YES;
 }
 
+- (void)windowWillClose:(NSNotification *)notification {    
+    [_mainController closeStatusWindow];
+}
+
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver: self name: NSWindowDidResignMainNotification object: self];
     [[NSNotificationCenter defaultCenter] removeObserver: self name: NSWindowDidResignKeyNotification object: self];
     [[NSNotificationCenter defaultCenter] removeObserver: self name: NSWindowDidResizeNotification object: self];
+    [[NSNotificationCenter defaultCenter] removeObserver: self name: NSApplicationWillResignActiveNotification object: nil];
     
     [super dealloc];
 }

@@ -101,4 +101,7 @@
 - (void) openStatusWindowAt: (NSPoint) point;
 - (void) closeStatusWindow;
 
+- (void) enableStatusBar;
+- (void) disableStatusBar;
+
 @end
