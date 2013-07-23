@@ -356,6 +356,32 @@
 	return [db renameSkillPlan:plan];
 }
 
+-(BOOL) moveSkillPlan:(NSArray*)fromIndexArray to:(NSInteger)toIndex
+{
+    for( NSNumber *fromIndex in fromIndexArray )
+    {
+        NSInteger from = [fromIndex integerValue];
+        if( toIndex != from )
+        {
+            id obj = [skillPlans objectAtIndex:from];
+            [obj retain];
+            [skillPlans removeObjectAtIndex:from];
+            if( toIndex >= [skillPlans count] )
+            {
+                [skillPlans addObject:obj];
+            }
+            else
+            {
+                [skillPlans insertObject:obj atIndex:toIndex];
+            }
+            [obj release];
+        }
+
+	}
+
+    [db writeOverviewPlanOrder:skillPlans];
+    return YES;
+}
 
 -(NSString*) getAttributeString:(NSInteger)attr
 {

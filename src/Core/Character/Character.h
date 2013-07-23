@@ -156,6 +156,8 @@
 //save the name change of the plan.
 -(BOOL) renameSkillPlan:(SkillPlan*)plan; 
 
+-(BOOL) moveSkillPlan:(NSArray*)fromIndexArray to:(NSInteger)toIndex;
+
 /*!NOTE! the skill functions below will be (possibly) be ripped out later.*/
 -(void) updateSkillPlan:(SkillPlan*)plan; /*as above, but supply a skill plan object in the characters internal skill plan queue*/
 
