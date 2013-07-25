@@ -33,7 +33,7 @@
  */
 
 
-@protocol METPluggableView
+@protocol METPluggableView <NSObject>
 
 /*
  This is the character the view is to display.

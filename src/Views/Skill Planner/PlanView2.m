@@ -827,6 +827,40 @@
 	return character;
 }
 
+- (IBAction) nextSkillPlan: (id) sender
+{
+    NSInteger index = [segmentedButton selectedSegment];
+    NSInteger count = [segmentedButton segmentCount];
+    if( index < (count-1) )
+    {
+        ++index;
+    }
+    else
+    {
+        index = 0;
+    }
+    NSInteger tag = [[segmentedButton cell] tagForSegment:index];
+    [segmentedButton selectSegmentWithTag:tag];
+    [self displayPlanByPlanId:tag];
+}
+
+- (IBAction) prevSkillPlan: (id) sender
+{
+    NSInteger index = [segmentedButton selectedSegment];
+    NSInteger count = [segmentedButton segmentCount];
+    if( index > 0 )
+    {
+        --index;
+    }
+    else
+    {
+        index = count - 1;
+    }
+    NSInteger tag = [[segmentedButton cell] tagForSegment:index];
+    [segmentedButton selectSegmentWithTag:tag];
+    [self displayPlanByPlanId:tag];
+}
+
 #pragma mark TableView Delegate methods
 
 -(void) tableView:(NSTableView*)aTableView keyDownEvent:(NSEvent*)theEvent

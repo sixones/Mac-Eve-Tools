@@ -89,6 +89,8 @@
 -(IBAction) segmentedButtonClick:(id)sender;
 -(IBAction) planButtonClick:(id)sender;
 -(IBAction) antiPlanButtonClick:(id)sender;
+-(IBAction) nextSkillPlan:(id)sender;
+-(IBAction) prevSkillPlan:(id)sender;
 
 -(IBAction) attributeModifierButtonClick:(id)sender;
 
