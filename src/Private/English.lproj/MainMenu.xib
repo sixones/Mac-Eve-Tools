@@ -629,6 +629,24 @@
 									<reference key="NSOnImage" ref="35465992"/>
 									<reference key="NSMixedImage" ref="502551668"/>
 								</object>
+								<object class="NSMenuItem" id="783482461">
+									<reference key="NSMenu" ref="466310130"/>
+									<string key="NSTitle">Next Skill Plan</string>
+									<string key="NSKeyEquiv">]</string>
+									<int key="NSKeyEquivModMask">1179648</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
+								<object class="NSMenuItem" id="652197590">
+									<reference key="NSMenu" ref="466310130"/>
+									<string key="NSTitle">Previous Skill Plan</string>
+									<string key="NSKeyEquiv">[</string>
+									<int key="NSKeyEquivModMask">1179648</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
 							</object>
 						</object>
 					</object>
@@ -764,8 +782,6 @@
 									<int key="NSvFlags">268</int>
 									<string key="NSFrame">{{10, 14}, {25, 25}}</string>
 									<reference key="NSSuperview"/>
-									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="162889321">
 										<int key="NSCellFlags">-2080374784</int>
@@ -856,8 +872,6 @@
 									<int key="NSvFlags">268</int>
 									<string key="NSFrame">{{0, 14}, {150, 25}}</string>
 									<reference key="NSSuperview"/>
-									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSPopUpButtonCell" key="NSCell" id="911348147">
 										<int key="NSCellFlags">-2076049856</int>
@@ -1059,7 +1073,7 @@
 							</object>
 						</object>
 					</object>
-					<object class="NSMutableArray" key="NSToolbarIBAllowedItems">
+					<object class="NSArray" key="NSToolbarIBAllowedItems">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<reference ref="732200072"/>
 						<reference ref="421915489"/>
@@ -1073,7 +1087,7 @@
 						<reference ref="715936680"/>
 						<reference ref="377413346"/>
 					</object>
-					<object class="NSMutableArray" key="NSToolbarIBDefaultItems">
+					<object class="NSArray" key="NSToolbarIBDefaultItems">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<reference ref="836748729"/>
 						<reference ref="421915489"/>
@@ -2062,6 +2076,22 @@
 					<int key="connectionID">1041</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">nextSkillPlan:</string>
+						<reference key="source" ref="664569807"/>
+						<reference key="destination" ref="783482461"/>
+					</object>
+					<int key="connectionID">1044</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">prevSkillPlan:</string>
+						<reference key="source" ref="664569807"/>
+						<reference key="destination" ref="652197590"/>
+					</object>
+					<int key="connectionID">1045</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">contentView</string>
 						<reference key="source" ref="1063450362"/>
@@ -2370,6 +2400,8 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="102151532"/>
 							<reference ref="237841660"/>
+							<reference ref="783482461"/>
+							<reference ref="652197590"/>
 						</object>
 						<reference key="parent" ref="586577488"/>
 					</object>
@@ -2977,6 +3009,16 @@
 						<reference key="parent" ref="756288834"/>
 						<string key="objectName">Toolbar Item - Market Orders</string>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1042</int>
+						<reference key="object" ref="783482461"/>
+						<reference key="parent" ref="466310130"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1043</int>
+						<reference key="object" ref="652197590"/>
+						<reference key="parent" ref="466310130"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -2992,6 +3034,8 @@
 					<string>103.IBPluginDependency</string>
 					<string>1039.IBPluginDependency</string>
 					<string>1039.toolbarItem.selectable</string>
+					<string>1042.IBPluginDependency</string>
+					<string>1043.IBPluginDependency</string>
 					<string>106.IBPluginDependency</string>
 					<string>111.IBPluginDependency</string>
 					<string>112.IBPluginDependency</string>
@@ -3156,6 +3200,8 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{348, 72}, {750, 620}}</string>
 					<boolean value="NO"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3276,7 +3322,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1041</int>
+			<int key="maxID">1045</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3299,13 +3345,17 @@
 							<string>charSelectorClick:</string>
 							<string>checkForUpdates:</string>
 							<string>fetchCharButtonClick:</string>
+							<string>nextSkillPlan:</string>
 							<string>noCharsButtonClick:</string>
+							<string>prevSkillPlan:</string>
 							<string>showPrefPanel:</string>
 							<string>toolbarButtonClick:</string>
 							<string>viewSelectorClick:</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -3322,7 +3372,9 @@
 							<string>charSelectorClick:</string>
 							<string>checkForUpdates:</string>
 							<string>fetchCharButtonClick:</string>
+							<string>nextSkillPlan:</string>
 							<string>noCharsButtonClick:</string>
+							<string>prevSkillPlan:</string>
 							<string>showPrefPanel:</string>
 							<string>toolbarButtonClick:</string>
 							<string>viewSelectorClick:</string>
@@ -3342,7 +3394,15 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
+								<string key="name">nextSkillPlan:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">noCharsButtonClick:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">prevSkillPlan:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">

@@ -297,6 +297,15 @@
 	[mainApp setToolbarMessage:message time:seconds];
 }
 
+- (IBAction) nextSkillPlan: (id) sender
+{
+    [skillView2 nextSkillPlan:sender];
+}
+
+- (IBAction) prevSkillPlan: (id) sender
+{
+    [skillView2 prevSkillPlan:sender];
+}
 
 
 @end

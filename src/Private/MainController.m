@@ -873,4 +873,42 @@
 	[self setStatusMessage:message imageState:StatusHidden time:seconds];
 }
 
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
+{
+    SEL theAction = [anItem action];
+    
+    if( theAction == @selector(nextSkillPlan:) )
+    {
+        if( [currentController respondsToSelector:@selector(nextSkillPlan:)] )
+        {
+            return YES;
+        }
+        return NO;
+    }
+    else if( theAction == @selector(prevSkillPlan:) )
+    {
+        if( [currentController respondsToSelector:@selector(prevSkillPlan:)] )
+        {
+            return YES;
+        }
+        return NO;
+    }
+
+    return YES;
+}
+
+- (IBAction) nextSkillPlan: (id) sender
+{
+    if( [currentController respondsToSelector:@selector(nextSkillPlan:)] )
+    {
+        [currentController performSelector:@selector(nextSkillPlan:) withObject:sender];
+    }
+}
+- (IBAction) prevSkillPlan: (id) sender
+{
+    if( [currentController respondsToSelector:@selector(prevSkillPlan:)] )
+    {
+        [currentController performSelector:@selector(prevSkillPlan:) withObject:sender];
+    }
+}
 @end

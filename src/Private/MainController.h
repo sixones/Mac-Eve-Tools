@@ -97,6 +97,8 @@
 - (IBAction) noCharsButtonClick: (id) sender;
 - (IBAction) toolbarButtonClick: (id) sender;
 - (IBAction) checkForUpdates: (id) sender;
+- (IBAction) nextSkillPlan: (id) sender;
+- (IBAction) prevSkillPlan: (id) sender;
 
 - (void) openStatusWindowAt: (NSPoint) point;
 - (void) closeStatusWindow;
