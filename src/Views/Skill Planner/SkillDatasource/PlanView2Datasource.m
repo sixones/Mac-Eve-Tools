@@ -377,7 +377,8 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	   proposedDropOperation:(NSTableViewDropOperation)operation
 {
 	if(mode == SPMode_overview){
-		return NSDragOperationCopy;
+		[aTableView setDropRow:row dropOperation:NSTableViewDropAbove];
+		return NSDragOperationMove;
 	}
 	
 	if([info draggingSource] == aTableView){
@@ -404,16 +405,26 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 		[unarchiver finishDecoding];
 		[unarchiver release];
 		
-		BOOL rc = [plan moveSkill:indexArray to:row];
-		
-		if(rc){
-			[plan savePlan];
-			[viewDelegate refreshPlanView];
-			[aTableView deselectAll:self];
+        if( SPMode_plan == mode )
+        {
+            BOOL rc = [plan moveSkill:indexArray to:row];
+            
+            if(rc){
+                [plan savePlan];
+                [viewDelegate refreshPlanView];
+                [aTableView deselectAll:self];
+            }
+            
+            return rc;
 		}
-		
-		return rc;
-		
+        else if( SPMode_overview == mode )
+        {
+            // What to do if we drop one skill plan on another? Copy all skills from the source plan to the destination?
+            // Still need to write the order to the database
+            BOOL rc = [character moveSkillPlan:indexArray to:row];
+            [viewDelegate refreshPlanView];
+            return rc;
+        }
 	}else{
 		/*
 		 this is a copy array type.  If we are in overview mode, append skills to the existing plan,

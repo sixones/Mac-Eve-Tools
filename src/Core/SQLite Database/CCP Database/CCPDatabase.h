@@ -61,6 +61,7 @@
 /*An array of all types in that group*/
 -(NSArray*) typesInGroup:(NSInteger)groupID;
 -(NSInteger) typeCount:(NSInteger)groupID;
+-(NSString *) typeName:(NSInteger)typeID; // pulls from a pre-made table with typeID, typeName and description
 
 -(NSArray*) prereqForType:(NSInteger) typeID;
 
@@ -87,4 +88,7 @@
 // Returns all the invTypes that require the given skillID
 -(NSDictionary*) dependenciesForSkillByCategory:(NSInteger)typeID;
 
+// Returns a dictionry for now, might turn into a class at some point
+// @"name", @"stationID" and @"systemID" are the keys in the dictionary
+- (NSDictionary *) stationForID:(NSInteger)stationID;
 @end

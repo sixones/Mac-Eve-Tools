@@ -40,7 +40,7 @@
 
 @implementation CharacterDatabase
 
-#define CURRENT_DB_VERSION 2
+#define CURRENT_DB_VERSION 3
 
 -(BOOL) createDatabase
 {
@@ -49,7 +49,7 @@
 	const char createMasterTable[] = "CREATE TABLE master (version INTEGER, character_name VARCHAR(32));";
 	const char populateMasterTable[] = "INSERT INTO master (version,character_name) VALUES (%d,%Q);";
 	const char createSkillPlanOverviewTable[] = 
-			"CREATE TABLE skill_plan_overview (plan_id INTEGER PRIMARY KEY, plan_name VARCHAR(64), UNIQUE(plan_name));";
+			"CREATE TABLE skill_plan_overview (plan_id INTEGER PRIMARY KEY, plan_name VARCHAR(64), plan_order INTEGER, UNIQUE(plan_name));";
 	const char createSkillPlanTable[] =
 			"CREATE TABLE skill_plan (plan_id INTEGER, type_order INTEGER, type_id INTEGER, level INTEGER);";
 	int rc;
@@ -97,10 +97,10 @@
 	if(currentVersion == 1){
 		const char rename[] = "ALTER TABLE skill_plan_overview RENAME TO skill_plan_overview_old;";
 		const char createSkillPlanOverviewTable2[] = 
-			"CREATE TABLE skill_plan_overview (plan_id INTEGER PRIMARY KEY, plan_name VARCHAR(64), UNIQUE(plan_name));";
+			"CREATE TABLE skill_plan_overview (plan_id INTEGER PRIMARY KEY, plan_name VARCHAR(64), plan_order INTEGER, UNIQUE(plan_name));";
 		const char copySkillPlanTable[] = "INSERT INTO skill_plan_overview SELECT plan_id, plan_name FROM skill_plan_overview_old;";
 		const char dropOldPlanOverview[] = "DROP TABLE skill_plan_overview_old;";
-		const char updateVersion[] = "UPDATE master SET version = 2;";
+		const char updateVersion[] = "UPDATE master SET version = 3;";
 		char *error;
 		int rc;
 		[self beginTransaction];
@@ -142,6 +142,33 @@
 		NSLog(@"Succesfully upgraded character database");
 		return YES;
 	}
+    else if(currentVersion == 2)
+    {
+		const char rename[] = "ALTER TABLE skill_plan_overview ADD COLUMN plan_order INTEGER AFTER plan_name;";
+		const char updateVersion[] = "UPDATE master SET version = 3;";
+		char *error = nil;
+		int rc;
+		[self beginTransaction];
+		
+		rc = sqlite3_exec(db,rename,NULL,NULL,&error);
+		if(rc != SQLITE_OK){
+			[self logError:error];
+			[self rollbackTransaction];
+			return NO;
+		}
+        
+        rc = sqlite3_exec(db,updateVersion,NULL,NULL,&error);
+		if(rc != SQLITE_OK){
+			[self logError:error];
+			[self rollbackTransaction];
+			return NO;
+		}
+
+		[self commitTransaction];
+		
+		NSLog(@"Succesfully upgraded character database");
+		return YES;
+    }
 	return NO;
 }
 
@@ -320,7 +347,7 @@
 -(NSMutableArray*) readSkillPlans:(Character*)character;
 {
 	NSMutableArray *skillPlans;
-	const char select_skill_plan_overview[] = "SELECT plan_id, plan_name FROM skill_plan_overview;";
+	const char select_skill_plan_overview[] = "SELECT plan_id, plan_name FROM skill_plan_overview ORDER BY plan_order;";
 	sqlite3_stmt *read_overview_stmt;
 	int rc;
 	
@@ -362,6 +389,52 @@
 	[self closeDatabase];
 	
 	return skillPlans;
+}
+
+- (BOOL) writeOverviewPlanOrder:(NSArray *)plans
+{
+	BOOL rc;
+    sqlite3_stmt *rename_stmt;
+    const char rename_plan[] = "UPDATE skill_plan_overview SET plan_order = ? WHERE plan_id = ?;";
+    NSInteger ord = 1;
+    
+	[self openDatabase];
+	[self beginTransaction];
+	
+    rc = sqlite3_prepare_v2(db,rename_plan,(int)sizeof(rename_plan),&rename_stmt,NULL);
+	if(rc != SQLITE_OK)
+    {
+		NSLog(@"sqlite error\n");
+		if(rename_stmt != NULL){
+			sqlite3_finalize(rename_stmt);
+		}
+		[self closeDatabase];
+		return NO;
+	}
+
+	for(SkillPlan *sp in plans)
+    {
+        rc = sqlite3_bind_nsint(rename_stmt,1,ord++);
+        rc = sqlite3_bind_nsint(rename_stmt,2,[sp planId]);
+        
+        if((rc = sqlite3_step(rename_stmt)) != SQLITE_DONE)
+        {
+            NSLog(@"Error updating overview plan order");
+        }
+        
+        sqlite3_reset(rename_stmt);
+	}
+	
+    sqlite3_finalize(rename_stmt);
+	rc = [self commitTransaction];
+	[self closeDatabase];
+	
+	if(!rc)
+    {
+		NSLog(@"error comming transaction");
+        return NO;
+	}
+	return YES;
 }
 
 -(SkillPlan*) createPlan:(NSString*)planName forCharacter:(Character*)ch

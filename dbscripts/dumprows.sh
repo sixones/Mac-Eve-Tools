@@ -73,6 +73,10 @@ AND attributeID IN
 /usr/bin/python $SCRIPT -t crtRelationships -f $1 \
 -q "SELECT relationshipID, parentID, parentTypeID, parentLevel, childID from crtRelationships;";
 
+# For Market Orders UI
+/usr/bin/python $SCRIPT -t staStations -f $1 \
+-q "SELECT stationID, stationName, solarSystemID from staStations;";
+
 /usr/bin/perl dump_pre.pl >> $1
 /usr/bin/python dump_attrs.py -f $1
 

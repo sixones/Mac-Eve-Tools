@@ -27,6 +27,9 @@ typedef struct sqlite3_stmt sqlite3_stmt;
 /*synchronise all plans in the array with the database. any plans not in the array will be deleted*/
 -(BOOL) writeSkillPlans:(NSArray*)plans;
 
+/* Update the order of all plans in the overview */
+- (BOOL) writeOverviewPlanOrder:(NSArray *)plans;
+
 /*writes a skill plan out to the database*/
 -(BOOL) writeSkillPlan:(SkillPlan*)plan;
 -(BOOL) deleteSkillPlan:(SkillPlan*)plan;
