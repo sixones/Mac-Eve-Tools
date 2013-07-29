@@ -179,7 +179,7 @@
  */
 -(sqlite_int64) createSkillPlan:(NSString*)name
 {
-	const char create_plan[] = "INSERT INTO skill_plan_overview VALUES(NULL,%Q);";
+	const char create_plan[] = "INSERT INTO skill_plan_overview VALUES(NULL,%Q,0);";
 	char buf[128];
 	char *errmsg;
 	int rc;
