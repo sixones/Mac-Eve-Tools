@@ -366,12 +366,14 @@
             id obj = [skillPlans objectAtIndex:from];
             [obj retain];
             [skillPlans removeObjectAtIndex:from];
-            if( toIndex >= [skillPlans count] )
+            if( toIndex > [skillPlans count] )
             {
                 [skillPlans addObject:obj];
             }
             else
             {
+                if( toIndex > [fromIndex integerValue] )
+                    --toIndex;
                 [skillPlans insertObject:obj atIndex:toIndex];
             }
             [obj release];

@@ -1,0 +1,13 @@
+Version 0.2.x
+
+Added Next/Previous Skill Plan menu items and keybindings for navigating between skill plans.
+Added manual ordering of skill plans in the Overview tab.
+
+Version 0.2.8
+July 14, 2013
+
+Skill Planner clears selection when switching between skill plans.
+Fixed the contextual menu not appearing in skill planner options.
+Added a Status Bar menu to display info about the current character.
+Show cargo capacity in ship detail window.
+Updated skill icons to use the higher resolution 32x32 version.
