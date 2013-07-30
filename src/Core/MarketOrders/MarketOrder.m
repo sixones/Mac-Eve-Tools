@@ -49,19 +49,16 @@
 
 - (NSString *)state
 {
-    NSString *stateStr = nil;
-    
     switch( self.orderState )
     {
-        case OrderStateActive: stateStr = @"Open"; break;
-        case OrderStateClosed: stateStr = @"Closed"; break;
-        case OrderStateExpired: stateStr = @"Expired"; break;
-        case OrderStateCancelled: stateStr = @"Cancelled"; break;
-        case OrderStatePending: stateStr = @"Pending"; break;
-        case OrderStateCharacterDeleted: stateStr = @"Char Deleted"; break;
-        case OrderStateUnknown: stateStr = @"Unknown"; break;
+        case OrderStateActive: return NSLocalizedString( @"Open", @"Order State Open String" ); break;
+        case OrderStateClosed: return NSLocalizedString( @"Closed", @"Order State Closed String" ); break;
+        case OrderStateExpired: return NSLocalizedString( @"Expired", @"Order State Expired String" ); break;
+        case OrderStateCancelled: return NSLocalizedString( @"Cancelled", @"Order State Cancelled String" ); break;
+        case OrderStatePending: return NSLocalizedString( @"Pending", @"Order State Pending String" ); break;
+        case OrderStateCharacterDeleted: return NSLocalizedString( @"Char Deleted", @"Order State Char Deleted String" ); break;
+        case OrderStateUnknown: return NSLocalizedString( @"Unknown", @"Order State Unknown String" ); break;
     }
-    return NSLocalizedString( stateStr, @"Order State String" );
 }
 
 - (void)setStationName:(NSString *)newStationName

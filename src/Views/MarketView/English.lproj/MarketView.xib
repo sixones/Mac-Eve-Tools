@@ -57,6 +57,7 @@
 										<int key="NSvFlags">256</int>
 										<string key="NSFrameSize">{924, 531}</string>
 										<reference key="NSSuperview" ref="711452179"/>
+										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="401998339"/>
 										<string key="NSReuseIdentifierKey">_NS:13</string>
 										<bool key="NSEnabled">YES</bool>
@@ -65,6 +66,7 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{924, 17}</string>
 											<reference key="NSSuperview" ref="839250110"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="526789141"/>
 											<string key="NSReuseIdentifierKey">_NS:16</string>
 											<reference key="NSTableView" ref="766321386"/>
@@ -74,6 +76,7 @@
 											<int key="NSvFlags">-2147483392</int>
 											<string key="NSFrame">{{224, 0}, {16, 17}}</string>
 											<reference key="NSSuperview" ref="614300419"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="711452179"/>
 											<string key="NSReuseIdentifierKey">_NS:19</string>
 										</object>
@@ -135,6 +138,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">typeName</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="831559169">
 												<string key="NSIdentifier">orderState</string>
@@ -169,6 +177,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">state</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="343532492">
 												<string key="NSIdentifier">bid</string>
@@ -195,6 +208,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">buy</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="510753971">
 												<string key="NSIdentifier">volEntered</string>
@@ -221,6 +239,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">volEntered</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="896570115">
 												<string key="NSIdentifier">volRemaining</string>
@@ -247,6 +270,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">volRemaining</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="402522155">
 												<string key="NSIdentifier">minVolume</string>
@@ -273,6 +301,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">minVolume</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="540012083">
 												<string key="NSIdentifier">price</string>
@@ -344,6 +377,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">price</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="809117091">
 												<string key="NSIdentifier">issued</string>
@@ -379,6 +417,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">issued</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 											<object class="NSTableColumn" id="880251806">
 												<string key="NSIdentifier">stationID</string>
@@ -405,6 +448,11 @@
 												<int key="NSResizingMask">3</int>
 												<bool key="NSIsResizeable">YES</bool>
 												<reference key="NSTableView" ref="766321386"/>
+												<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
+													<string key="NSKey">stationName</string>
+													<bool key="NSAscending">YES</bool>
+													<string key="NSSelector">compare:</string>
+												</object>
 											</object>
 										</array>
 										<double key="NSIntercellSpacingWidth">3</double>
@@ -420,7 +468,7 @@
 											</object>
 										</object>
 										<double key="NSRowHeight">17</double>
-										<int key="NSTvFlags">-683671552</int>
+										<int key="NSTvFlags">-750780416</int>
 										<reference key="NSDelegate"/>
 										<reference key="NSDataSource"/>
 										<string key="NSAutosaveName">MarketOrderTable</string>
@@ -434,6 +482,7 @@
 								</array>
 								<string key="NSFrame">{{1, 17}, {924, 531}}</string>
 								<reference key="NSSuperview" ref="614300419"/>
+								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="766321386"/>
 								<string key="NSReuseIdentifierKey">_NS:11</string>
 								<reference key="NSDocView" ref="766321386"/>
@@ -445,6 +494,7 @@
 								<int key="NSvFlags">-2147483392</int>
 								<string key="NSFrame">{{224, 17}, {15, 102}}</string>
 								<reference key="NSSuperview" ref="614300419"/>
+								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="15031761"/>
 								<string key="NSReuseIdentifierKey">_NS:58</string>
 								<reference key="NSTarget" ref="614300419"/>
@@ -456,6 +506,8 @@
 								<int key="NSvFlags">-2147483392</int>
 								<string key="NSFrame">{{1, 267}, {488, 15}}</string>
 								<reference key="NSSuperview" ref="614300419"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:60</string>
 								<int key="NSsFlags">1</int>
 								<reference key="NSTarget" ref="614300419"/>
@@ -470,6 +522,7 @@
 								</array>
 								<string key="NSFrame">{{1, 0}, {924, 17}}</string>
 								<reference key="NSSuperview" ref="614300419"/>
+								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="539568035"/>
 								<string key="NSReuseIdentifierKey">_NS:15</string>
 								<reference key="NSDocView" ref="539568035"/>
@@ -480,6 +533,7 @@
 						</array>
 						<string key="NSFrameSize">{926, 549}</string>
 						<reference key="NSSuperview" ref="1005"/>
+						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="839250110"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<int key="NSsFlags">133682</int>
@@ -493,6 +547,7 @@
 				</array>
 				<string key="NSFrameSize">{926, 549}</string>
 				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="614300419"/>
 				<string key="NSClassName">NSView</string>
 			</object>
@@ -570,7 +625,6 @@
 						<int key="objectID">1</int>
 						<reference key="object" ref="1005"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="614300419"/>
 							<object class="IBNSLayoutConstraint" id="212333733">
 								<reference key="firstItem" ref="614300419"/>
 								<int key="firstAttribute">4</int>
@@ -635,6 +689,7 @@
 								<float key="scoringTypeFloat">29</float>
 								<int key="contentType">3</int>
 							</object>
+							<reference ref="614300419"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -886,7 +941,40 @@
 			<nil key="sourceID"/>
 			<int key="maxID">41</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">MarketViewController</string>
+					<string key="superclassName">NSViewController</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="currencyFormatter">NSNumberFormatter</string>
+						<string key="orderTable">NSTableView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="currencyFormatter">
+							<string key="name">currencyFormatter</string>
+							<string key="candidateClassName">NSNumberFormatter</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="orderTable">
+							<string key="name">orderTable</string>
+							<string key="candidateClassName">NSTableView</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/MarketViewController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NSLayoutConstraint</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/NSLayoutConstraint.h</string>
+					</object>
+				</object>
+			</array>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>

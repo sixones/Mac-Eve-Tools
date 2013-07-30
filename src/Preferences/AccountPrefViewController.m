@@ -45,7 +45,7 @@
     NSURL* apiServiceUrl = [NSURL URLWithString:@"http://support.eveonline.com/api/Key/CreatePredefined/268435455"];
 	
     NSMutableAttributedString* string = [[NSMutableAttributedString alloc] init];
-    [string appendAttributedString: [NSAttributedString hyperlinkFromString:NSLocalizedString(@"Need your API Key?", nil) withURL:apiServiceUrl]];
+    [string appendAttributedString: [NSAttributedString hyperlinkFromString:NSLocalizedString(@"Need your API Key?", @"Label for Get API Key link") withURL:apiServiceUrl]];
 	
 		// set the attributed string to the NSTextField
     [apiUrl setAttributedStringValue: string];
