@@ -18,7 +18,6 @@
 
 @synthesize displayName;
 @synthesize unitDisplay;
-@synthesize graphicID;
 
 @synthesize valueInt;
 @synthesize valueFloat;
@@ -42,7 +41,6 @@
 +(CCPTypeAttribute*) createTypeAttribute:(NSInteger)attributeId 
 								dispName:(NSString*)dispName
 							 unitDisplay:(NSString*)unitDisp
-							   graphicId:(NSInteger)gID
 								valueInt:(NSInteger)vInt
 							  valueFloat:(CGFloat)vFloat
 {
@@ -54,7 +52,6 @@
 	ta->attributeID = attributeId;
 	ta->displayName = [dispName retain];
 	ta->unitDisplay = [unitDisp retain];
-	ta->graphicID = gID;
 	ta->valueInt = vInt;
 	ta->valueFloat = vFloat;
 	

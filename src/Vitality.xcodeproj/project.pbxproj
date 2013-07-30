@@ -246,7 +246,7 @@
 		9EF3338A11E79B19002A3B7D /* SkillPlannerPrefViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkillPlannerPrefViewController.h; sourceTree = "<group>"; };
 		9EF3338B11E79B19002A3B7D /* SkillPlannerPrefViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SkillPlannerPrefViewController.m; sourceTree = "<group>"; };
 		9EF335C711E87875002A3B7D /* databaseIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = databaseIcon.png; sourceTree = "<group>"; };
-		A154A64317A83E090076603D /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A154A64317A83E090076603D /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A1C0A7AF1761077F00A3A743 /* MarketOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketOrder.h; path = MarketOrders/MarketOrder.h; sourceTree = "<group>"; };
 		A1C0A7B01761077F00A3A743 /* MarketOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MarketOrder.m; path = MarketOrders/MarketOrder.m; sourceTree = "<group>"; };
 		A1C0A7B11761077F00A3A743 /* MarketOrders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketOrders.h; path = MarketOrders/MarketOrders.h; sourceTree = "<group>"; };

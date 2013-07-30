@@ -26,7 +26,6 @@
 
 @synthesize typeID;
 @synthesize groupID;
-@synthesize graphicID;
 @synthesize raceID;
 @synthesize marketGroupID;
 

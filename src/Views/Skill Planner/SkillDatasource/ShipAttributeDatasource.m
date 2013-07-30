@@ -59,7 +59,6 @@
         CCPTypeAttribute *ta = [CCPTypeAttribute createTypeAttribute:0
 															dispName:@"Capacity"
 														 unitDisplay:@"m3"
-														   graphicId:0
 															valueInt:NSIntegerMax
 														  valueFloat:[ship capacity]];
         [mutAttrType addObject:ta];

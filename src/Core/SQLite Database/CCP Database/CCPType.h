@@ -27,7 +27,6 @@
 	NSInteger parentTypeID;
 	NSInteger groupID;
 	NSInteger metaGroupID;
-	NSInteger graphicID;
 	NSInteger raceID;
 	NSInteger marketGroupID;
 	NSInteger metaLevel;
@@ -49,7 +48,6 @@
 
 @property (readonly,nonatomic) NSInteger typeID;
 @property (readonly,nonatomic) NSInteger groupID;
-@property (readonly,nonatomic) NSInteger graphicID;
 @property (readonly,nonatomic) NSInteger raceID;
 @property (readonly,nonatomic) NSInteger marketGroupID;
 

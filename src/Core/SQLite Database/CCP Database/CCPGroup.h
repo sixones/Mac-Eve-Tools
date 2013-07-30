@@ -26,7 +26,6 @@
 @interface CCPGroup : NSObject {
 	NSInteger groupID;
 	NSInteger categoryID;
-	NSInteger graphicID;
 	NSString *groupName;
 	
 	/*the types that belong to this group*/
@@ -40,7 +39,6 @@
 
 @property (readonly, nonatomic) NSInteger groupID;
 @property (readonly, nonatomic) NSInteger categoryID;
-@property (readonly, nonatomic) NSInteger graphicID;
 @property (readonly, nonatomic) NSString* groupName;
 
 -(NSInteger) subGroupCount;
@@ -53,7 +51,6 @@
 
 -(CCPGroup*) initWithGroup:(NSInteger)gID
 				  category:(NSInteger)cID
-				   graphic:(NSInteger)gaID
 				 groupName:(NSString*)gName
 				  database:(CCPDatabase*)db;
 

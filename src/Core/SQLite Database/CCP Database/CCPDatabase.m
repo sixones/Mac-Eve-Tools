@@ -139,7 +139,7 @@
 -(CCPCategory*) category:(NSInteger)categoryID
 {
 	const char query[] = 
-		"SELECT categoryID, categoryName, graphicID FROM invCategories WHERE categoryID = ? "
+		"SELECT categoryID, categoryName FROM invCategories WHERE categoryID = ? "
 		"ORDER BY categoryName;";
 	sqlite3_stmt *read_stmt;
 	int rc;
@@ -159,10 +159,8 @@
 		NSInteger cID = sqlite3_column_nsint(read_stmt,0);
 		const unsigned char *str = sqlite3_column_text(read_stmt,1);
 		NSString *cName = [NSString stringWithUTF8String:(const char*)str];
-		NSInteger gID = sqlite3_column_nsint(read_stmt,2);
 	
 		cat = [[CCPCategory alloc]initWithCategory:cID
-										   graphic:gID 
 											  name:cName
 										  database:self];
 		[cat autorelease];
@@ -195,7 +193,7 @@
 
 -(CCPGroup*) group:(NSInteger)groupID
 {
-	const char query[] = "SELECT groupID, categoryID, groupName, graphicID FROM invGroups WHERE groupID = ?;";
+	const char query[] = "SELECT groupID, categoryID, groupName FROM invGroups WHERE groupID = ?;";
 	sqlite3_stmt *read_stmt;
 	CCPGroup *group = nil;
 	int rc;
@@ -209,17 +207,15 @@
 	sqlite3_bind_nsint(read_stmt,1,groupID);
 	
 	if(sqlite3_step(read_stmt) == SQLITE_ROW){
-		NSInteger groupID,categoryID,graphicID;
+		NSInteger groupID,categoryID;
 		NSString *groupName;
 		
 		groupID = sqlite3_column_nsint(read_stmt,0);
 		categoryID = sqlite3_column_nsint(read_stmt,1);
 		groupName = sqlite3_column_nsstr(read_stmt,2);
-		graphicID = sqlite3_column_nsint(read_stmt,3);
 		
 		group = [[CCPGroup alloc] initWithGroup:groupID
 									   category:categoryID 
-										graphic:graphicID
 									  groupName:groupName
 									   database:self];
 		[group autorelease];
@@ -264,7 +260,7 @@
 -(NSArray*) groupsInCategory:(NSInteger)categoryID
 {
 	const char query[] = 
-		"SELECT groupID, categoryID, groupName, graphicID " 
+		"SELECT groupID, categoryID, groupName " 
 		"FROM invGroups WHERE categoryID = ? "
 		"ORDER BY groupName;";
 	sqlite3_stmt *read_stmt;
@@ -281,7 +277,7 @@
 	NSMutableArray *array = [[[NSMutableArray alloc]init]autorelease];
 	
 	while(sqlite3_step(read_stmt) == SQLITE_ROW){
-		NSInteger groupID,categoryID,graphicID;
+		NSInteger groupID,categoryID;
 		NSString *groupName = nil;
 		CCPGroup *group;
 		
@@ -292,12 +288,9 @@
 		if(lang != l_EN){
 			groupName = [self translation:groupID forColumn:TRN_GROUP_NAME fallback:groupName];
 		}
-		
-		graphicID = sqlite3_column_nsint(read_stmt,3);
-		
+				
 		group = [[CCPGroup alloc]initWithGroup:groupID
 									  category:categoryID 
-									   graphic:graphicID
 									 groupName:groupName
 									  database:self];
 		[array addObject:group];
@@ -563,7 +556,7 @@
 -(NSDictionary*) typeAttributesForTypeID:(NSInteger)typeID
 {
 	const char query[] =
-		"SELECT at.graphicID, at.attributeID, at.displayName, un.displayName, ta.valueInt, ta.valueFloat "
+		"SELECT at.attributeID, at.displayName, un.displayName, ta.valueInt, ta.valueFloat "
 		"FROM dgmTypeAttributes ta, dgmAttributeTypes at, eveUnits un "
 		"WHERE at.attributeID = ta.attributeID "
 		"AND un.unitID = at.unitID "
@@ -583,25 +576,24 @@
 	NSMutableDictionary *attributes = [[[NSMutableDictionary alloc]init]autorelease];
 	
 	while(sqlite3_step(read_stmt) == SQLITE_ROW){
-		NSInteger graphicID = sqlite3_column_nsint(read_stmt,0);
-		NSInteger attributeID = sqlite3_column_nsint(read_stmt,1);
-		NSString *dispName = sqlite3_column_nsstr(read_stmt, 2);
-		NSString *unitDisp = sqlite3_column_nsstr(read_stmt, 3);
+		NSInteger attributeID = sqlite3_column_nsint(read_stmt,0);
+		NSString *dispName = sqlite3_column_nsstr(read_stmt, 1);
+		NSString *unitDisp = sqlite3_column_nsstr(read_stmt, 2);
 		
 		NSInteger vInt;
 		
-		if(sqlite3_column_type(read_stmt,4) == SQLITE_NULL){
+		if(sqlite3_column_type(read_stmt,3) == SQLITE_NULL){
 			vInt = NSIntegerMax;
 		}else{
-			vInt = sqlite3_column_nsint(read_stmt,4);
+			vInt = sqlite3_column_nsint(read_stmt,3);
 		}
 		
 		CGFloat vFloat;
 		
-		if(sqlite3_column_type(read_stmt, 5) == SQLITE_NULL){
+		if(sqlite3_column_type(read_stmt, 4) == SQLITE_NULL){
 			vFloat = CGFLOAT_MAX;
 		}else{
-			vFloat = (CGFloat) sqlite3_column_double(read_stmt, 5);
+			vFloat = (CGFloat) sqlite3_column_double(read_stmt, 4);
 		}
 		
 		NSNumber *attrNum = [NSNumber numberWithInteger:attributeID];
@@ -609,7 +601,6 @@
 		CCPTypeAttribute *ta = [CCPTypeAttribute createTypeAttribute:attributeID
 															dispName:dispName 
 														 unitDisplay:unitDisp
-														   graphicId:graphicID 
 															valueInt:vInt 
 														  valueFloat:vFloat];
 		
@@ -632,16 +623,7 @@
 -(NSArray*) attributeForType:(NSInteger)typeID groupBy:(enum AttributeTypeGroups)group
 {
 	const char query[] =
-	/*
-		"SELECT at.graphicID, at.displayName, ta.valueInt, "
-			"ta.valueFloat, at.attributeID, un.displayName "
-		"FROM metAttributeTypes at, dgmTypeAttributes ta, eveUnits un "
-		"WHERE at.attributeID = ta.attributeID "
-		"AND at.unitID = un.unitID "
-		"AND typeID = ? "
-		"AND at.displayType = ?;";*/
-	
-	"SELECT at.graphicID, COALESCE(at.displayName,at.attributeName), ta.valueInt, "
+	"SELECT COALESCE(at.displayName,at.attributeName), ta.valueInt, "
 		"ta.valueFloat, at.attributeID, un.displayName "
 	"FROM dgmTypeAttributes ta, metAttributeTypes at LEFT OUTER JOIN eveUnits un ON at.unitID = un.unitID "
 	"WHERE at.attributeID = ta.attributeID "
@@ -663,35 +645,32 @@
 	NSMutableArray *attributes = [[[NSMutableArray alloc]init]autorelease];
 	
 	while(sqlite3_step(read_stmt) == SQLITE_ROW){
-		NSInteger graphicID = sqlite3_column_nsint(read_stmt,0);
-		NSString *displayName = sqlite3_column_nsstr(read_stmt,1);
-		NSInteger attrID = sqlite3_column_nsint(read_stmt,4);
-		NSString *unitDisplay = sqlite3_column_nsstr(read_stmt,5);
+		NSString *displayName = sqlite3_column_nsstr(read_stmt,0);
+		NSInteger attrID = sqlite3_column_nsint(read_stmt,3);
+		NSString *unitDisplay = sqlite3_column_nsstr(read_stmt,4);
 		
 		NSInteger vInt;
 		
-		if(sqlite3_column_type(read_stmt,2) == SQLITE_NULL){
+		if(sqlite3_column_type(read_stmt,1) == SQLITE_NULL){
 			vInt = NSIntegerMax;
 		}else{
-			vInt = sqlite3_column_nsint(read_stmt,2);
+			vInt = sqlite3_column_nsint(read_stmt,1);
 		}
 		
 		CGFloat vFloat;
 		
-		if(sqlite3_column_type(read_stmt, 3) == SQLITE_NULL){
+		if(sqlite3_column_type(read_stmt, 2) == SQLITE_NULL){
 			vFloat = CGFLOAT_MAX;
 		}else{
-			vFloat = (CGFloat) sqlite3_column_double(read_stmt, 3);
+			vFloat = (CGFloat) sqlite3_column_double(read_stmt, 2);
 		}
 		
 		CCPTypeAttribute *ta = [CCPTypeAttribute createTypeAttribute:attrID
 															dispName:displayName 
 														 unitDisplay:unitDisplay
-														   graphicId:graphicID 
 															valueInt:vInt 
 														  valueFloat:vFloat];
 		
-		//[attributes setObject:ta forKey:[NSNumber numberWithInteger:attrID]];
 		[attributes addObject:ta];
 	}
 	

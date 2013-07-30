@@ -109,7 +109,7 @@
 	 
 	 Query:
 	 
-	 SELECT at.graphicID, at.attributeID, at.displayName, ta.valueInt, ta.valueFloat 
+	 SELECT at.attributeID, at.displayName, ta.valueInt, ta.valueFloat 
 	 FROM dgmTypeAttributes ta, dgmAttributeTypes at 
 	 WHERE at.attributeID = ta.attributeID 
 	 AND ta.typeID = 639

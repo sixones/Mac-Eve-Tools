@@ -28,7 +28,6 @@
 
 @interface CCPCategory : NSObject {
 	NSInteger categoryID;
-	NSInteger graphicID;
 	NSString *categoryName;
 	
 	CCPDatabase *database;
@@ -38,7 +37,6 @@
 }
 
 @property (readonly, nonatomic) NSInteger categoryID;
-@property (readonly, nonatomic) NSInteger graphicID;
 @property (readonly, nonatomic) NSString* categoryName;
 
 -(NSInteger) groupCount;
@@ -47,7 +45,6 @@
 
 
 -(CCPCategory*) initWithCategory:(NSInteger)categoryID 
-						 graphic:(NSInteger)graphicID 
 							name:(NSString*)categoryName
 						database:(CCPDatabase*)db;
 

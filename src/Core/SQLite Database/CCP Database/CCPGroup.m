@@ -29,7 +29,6 @@
 
 @synthesize groupID;
 @synthesize categoryID;
-@synthesize graphicID;
 @synthesize groupName;
 
 -(CCPGroup*) init
@@ -152,14 +151,12 @@
 
 -(CCPGroup*) initWithGroup:(NSInteger)gID
 				  category:(NSInteger)cID
-				   graphic:(NSInteger)gaID
 				 groupName:(NSString*)gName
 				  database:(CCPDatabase*)db
 {
 	if(self = [self init]){
 		groupID = gID;
 		categoryID = cID;
-		graphicID = gaID;
 		groupName = [gName retain];
 		database = [db retain];
 		types = [[database typesInGroup:gID]retain];

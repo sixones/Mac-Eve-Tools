@@ -26,7 +26,6 @@
 @implementation CCPCategory
 
 @synthesize categoryID;
-@synthesize graphicID;
 @synthesize categoryName;
 
 -(CCPCategory*) init {
@@ -38,13 +37,11 @@
 }
 
 -(CCPCategory*) initWithCategory:(NSInteger)cID 
-						 graphic:(NSInteger)gID 
 							name:(NSString*)cName
 						database:(CCPDatabase*)db
 {
 	if((self = [self init])){
 		categoryID = cID;
-		graphicID = gID;
 		categoryName = [cName retain];
 		
 		database = [db retain];
