@@ -420,10 +420,10 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
         else if( SPMode_overview == mode )
         {
             // What to do if we drop one skill plan on another? Copy all skills from the source plan to the destination?
-            // Still need to write the order to the database
-            BOOL rc = [character moveSkillPlan:indexArray to:row];
+            NSIndexSet *indexes = [character moveSkillPlan:indexArray to:row];
+            [viewDelegate selectRowIndexes:indexes byExtendingSelection:NO];
             [viewDelegate refreshPlanView];
-            return rc;
+            return [indexes count] > 0;
         }
 	}else{
 		/*

@@ -69,7 +69,6 @@
 						<string key="NSFrame">{{20, 20}, {695, 616}}</string>
 						<reference key="NSSuperview" ref="1005"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="NSIsVertical">YES</bool>
 					</object>
 				</object>
@@ -744,7 +743,7 @@
 										<string key="NSFrameSize">{505, 410}</string>
 										<reference key="NSSuperview" ref="830626745"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="752131004"/>
+										<reference key="NSNextKeyView" ref="652194491"/>
 										<bool key="NSEnabled">YES</bool>
 										<object class="NSTableHeaderView" key="NSHeaderView" id="127201894">
 											<reference key="NSNextResponder" ref="361113660"/>
@@ -771,7 +770,7 @@
 										<reference key="NSBackgroundColor" ref="747348391"/>
 										<reference key="NSGridColor" ref="113938224"/>
 										<double key="NSRowHeight">17</double>
-										<int key="NSTvFlags">-222298112</int>
+										<int key="NSTvFlags">-88080384</int>
 										<reference key="NSDelegate"/>
 										<reference key="NSDataSource"/>
 										<string key="NSAutosaveName">SkillPlanTable</string>
@@ -809,7 +808,6 @@
 								<string key="NSFrame">{{1, 367}, {403, 15}}</string>
 								<reference key="NSSuperview" ref="217111040"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<int key="NSsFlags">1</int>
 								<reference key="NSTarget" ref="217111040"/>
 								<string key="NSAction">_doScroller:</string>
@@ -835,7 +833,7 @@
 						<string key="NSFrameSize">{507, 428}</string>
 						<reference key="NSSuperview" ref="33688415"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="652194491"/>
+						<reference key="NSNextKeyView" ref="830626745"/>
 						<int key="NSsFlags">133682</int>
 						<reference key="NSVScroller" ref="752131004"/>
 						<reference key="NSHScroller" ref="890661086"/>
@@ -2427,8 +2425,8 @@
 							<reference ref="538484421"/>
 							<reference ref="702662056"/>
 							<reference ref="525565371"/>
-							<reference ref="217111040"/>
 							<reference ref="703682490"/>
+							<reference ref="217111040"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -3695,12 +3693,16 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>antiPlanButtonClick:</string>
 							<string>attributeModifierButtonClick:</string>
+							<string>nextSkillPlan:</string>
 							<string>planButtonClick:</string>
 							<string>plusMinusButtonClick:</string>
+							<string>prevSkillPlan:</string>
 							<string>segmentedButtonClick:</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -3714,8 +3716,10 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>antiPlanButtonClick:</string>
 							<string>attributeModifierButtonClick:</string>
+							<string>nextSkillPlan:</string>
 							<string>planButtonClick:</string>
 							<string>plusMinusButtonClick:</string>
+							<string>prevSkillPlan:</string>
 							<string>segmentedButtonClick:</string>
 						</object>
 						<object class="NSArray" key="dict.values">
@@ -3729,11 +3733,19 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
+								<string key="name">nextSkillPlan:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">planButtonClick:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">plusMinusButtonClick:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">prevSkillPlan:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">

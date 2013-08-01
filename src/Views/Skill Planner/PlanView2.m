@@ -67,23 +67,25 @@
 
 -(void) deleteSkillPlan:(NSIndexSet*)planIndexes
 {
-	NSUInteger rowsetCount = [planIndexes count];
-	NSUInteger *ary = malloc(sizeof(NSUInteger) * rowsetCount);
-	NSUInteger actual = [planIndexes getIndexes:ary maxCount:(sizeof(NSUInteger) * rowsetCount) inIndexRange:nil];
-	
-	for(NSUInteger i = 0; i < actual; i++){
-		SkillPlan *plan = [character skillPlanAtIndex:ary[i]];
+	NSMutableArray *indexArray = [NSMutableArray arrayWithCapacity:[planIndexes count]];
+    [planIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [indexArray addObject:[NSNumber numberWithUnsignedLong:idx]];
+    }];
+    
+    for( NSNumber *index in [indexArray reverseObjectEnumerator] )
+    {
+		SkillPlan *plan = [character skillPlanAtIndex:[index integerValue]];
 		
 		if(plan == nil){
 			continue;
 		}
-		[[segmentedButton cell]removeCellWithTag:[plan planId]];
+		[[segmentedButton cell] removeCellWithTag:[plan planId]];
 		[character removeSkillPlan:plan];
-		[segmentedButton setSelectedSegment:0];
-		[self refreshPlanView];
-		[self repositionButton];
-	}
-	free(ary);
+    }
+
+    [segmentedButton setSelectedSegment:0];
+    [self refreshPlanView];
+    [self repositionButton];
 }
 
 // The tag is the plan id.  There's no way to call this from the datasource after the rename
@@ -369,6 +371,11 @@
 	}else{
 		[self repositionButton];
 	}
+}
+
+-(void) selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extend
+{
+    [tableView selectRowIndexes:indexes byExtendingSelection:extend];
 }
 
 -(void) buildSkillPlanColumnArray

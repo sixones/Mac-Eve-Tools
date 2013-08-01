@@ -36,6 +36,8 @@ enum SkillPlanMode{
 /*called when you want to update the plan on screen */
 -(void) refreshPlanView;
 
+/* Called after rows have been moved by drag/drop with an index set of the final location of the moved objects */
+-(void) selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extend;
 @end
 
 

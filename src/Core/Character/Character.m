@@ -356,33 +356,39 @@
 	return [db renameSkillPlan:plan];
 }
 
--(BOOL) moveSkillPlan:(NSArray*)fromIndexArray to:(NSInteger)toIndex
+-(NSIndexSet *) moveSkillPlan:(NSArray*)fromIndexArray to:(NSInteger)toIndex
 {
+    // first build an array of the objects to be moved and adjust the toIndex if necessary
+    NSMutableArray *objects = [NSMutableArray arrayWithCapacity:[fromIndexArray count]];
     for( NSNumber *fromIndex in fromIndexArray )
     {
         NSInteger from = [fromIndex integerValue];
-        if( toIndex != from )
+        [objects addObject:[skillPlans objectAtIndex:from]];
+        if( toIndex > from )
+            --toIndex;
+    }
+    
+    // now remove the moving objects from the array of skill plans
+    for( id plan in objects )
+    {
+        [skillPlans removeObject:plan];
+    }
+    
+    // now add them back at the toIndex and in the correct order.
+    for( id plan in [objects reverseObjectEnumerator] )
+    {
+        if( toIndex > [skillPlans count] )
         {
-            id obj = [skillPlans objectAtIndex:from];
-            [obj retain];
-            [skillPlans removeObjectAtIndex:from];
-            if( toIndex > [skillPlans count] )
-            {
-                [skillPlans addObject:obj];
-            }
-            else
-            {
-                if( toIndex > [fromIndex integerValue] )
-                    --toIndex;
-                [skillPlans insertObject:obj atIndex:toIndex];
-            }
-            [obj release];
+            [skillPlans addObject:plan];
         }
-
-	}
-
+        else
+        {
+            [skillPlans insertObject:plan atIndex:toIndex];
+        }
+    }
+    
     [db writeOverviewPlanOrder:skillPlans];
-    return YES;
+    return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(toIndex, [objects count])];
 }
 
 -(NSString*) getAttributeString:(NSInteger)attr
