@@ -200,7 +200,7 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
         CCPType *type = item;
         
         // need to find the group's category. categoryID == 6 is ships
-        if( [[type group] categoryID] == 6 )
+        if( [[type group] categoryID] == DB_CATEGORY_SHIP )
         {
             [ShipDetailsWindowController displayShip:item forCharacter:[delegate character]];
         } else {
