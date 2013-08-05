@@ -28,6 +28,7 @@
 
 #import "Cert.h"
 #import "CCPType.h"
+#import "CCPGroup.h"
 
 @interface SkillSearchView (SkillSearchViewPrivate)
 
@@ -198,7 +199,9 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
 	} else if([item isKindOfClass:[CCPType class]]) {
         CCPType *type = item;
         
-        if ([type groupID] == 27) {
+        // need to find the group's category. categoryID == 6 is ships
+        if( [[type group] categoryID] == 6 )
+        {
             [ShipDetailsWindowController displayShip:item forCharacter:[delegate character]];
         } else {
             [ModuleDetailsWindowController displayShip:item forCharacter:[delegate character]];

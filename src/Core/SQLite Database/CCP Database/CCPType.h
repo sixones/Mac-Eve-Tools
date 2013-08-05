@@ -21,6 +21,7 @@
 
 @class CCPDatabase;
 @class CCPTypeAttribute;
+@class CCPGroup;
 
 @interface CCPType : NSObject {
 	NSInteger typeID;
@@ -44,6 +45,7 @@
 	CCPDatabase *database;
 	
 	NSDictionary *attributes;
+    CCPGroup *_group;
 }
 
 @property (readonly,nonatomic) NSInteger typeID;
@@ -67,6 +69,7 @@
 -(NSInteger) metaGroupID;
 -(NSInteger) parentTypeID;
 -(NSInteger) metaLevel;
+-(CCPGroup *) group;
 
 //prob shouldn't be here
 -(BOOL) isPirateShip;

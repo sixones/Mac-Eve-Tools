@@ -97,6 +97,7 @@
 	[typeName release];
 	[typeDescription release];
 	[skills release];
+    [_group release];
     
 	[super dealloc];
 }
@@ -138,6 +139,15 @@
 	}
     
 	return [attributes objectForKey:[NSNumber numberWithInteger:attrID]];
+}
+
+-(CCPGroup *) group
+{
+    if( !_group)
+    {
+        _group = [[database group:[self groupID]] retain];
+    }
+    return _group;
 }
 
 @end

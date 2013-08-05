@@ -144,9 +144,9 @@
     else if( [colID isEqualToString:@"bid"] )
     {
         if( [order buy] )
-            NSLocalizedString( @"Buy", @"Order Buy label" );
+            value = NSLocalizedString( @"Buy", @"Order Buy label" );
         else
-            NSLocalizedString( @"Sell", @"Order Sell label" );
+            value = NSLocalizedString( @"Sell", @"Order Sell label" );
     }
     else if( [colID isEqualToString:@"issued"] )
     {
