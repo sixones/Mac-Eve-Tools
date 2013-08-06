@@ -376,9 +376,19 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 				 proposedRow:(NSInteger)row 
 	   proposedDropOperation:(NSTableViewDropOperation)operation
 {
-	if(mode == SPMode_overview){
-		[aTableView setDropRow:row dropOperation:NSTableViewDropAbove];
-		return NSDragOperationMove;
+	if(mode == SPMode_overview)
+    {
+        
+        if( [info draggingSource] == aTableView )
+        {
+            [aTableView setDropRow:row dropOperation:NSTableViewDropAbove];
+            return NSDragOperationMove;
+        }
+        else
+        {
+            [aTableView setDropRow:row dropOperation:NSTableViewDropOn];
+            return NSDragOperationCopy;
+        }
 	}
 	
 	if([info draggingSource] == aTableView){
