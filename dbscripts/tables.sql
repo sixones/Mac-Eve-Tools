@@ -188,3 +188,17 @@ CREATE TABLE "metLanguage"(
 INSERT INTO metLanguage VALUES(0,'EN','English');
 INSERT INTO metLanguage VALUES(1,'DE','German');
 INSERT INTO metLanguage VALUES(2,'RU','Russian');
+
+CREATE TABLE "metStations" (
+  "stationID" integer NOT NULL,
+  "solarSystemID" integer DEFAULT NULL,
+  "stationName" varchar(100) DEFAULT NULL,
+  PRIMARY KEY ("stationID")
+);
+
+CREATE TABLE "metTypeNames" (
+  "typeID" smallint(6) NOT NULL,
+  "typeName" varchar(100) default NULL,
+  "description" varchar(3000) default NULL,
+  PRIMARY KEY  ("typeID")
+  );
