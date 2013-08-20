@@ -89,6 +89,8 @@
 
 - (void)ordersFinishedUpdating
 {
+    NSArray *newDescriptors = [orderTable sortDescriptors];
+    [orders sortUsingDescriptors:newDescriptors];
     [orderTable reloadData];
 }
 

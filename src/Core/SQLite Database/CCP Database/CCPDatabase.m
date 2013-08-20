@@ -348,7 +348,7 @@
 {
  	const char query[] =
     "SELECT typeName "
-    "FROM invTypeNames "
+    "FROM metTypeNames "
     "WHERE typeID = ? ";
  	sqlite3_stmt *read_stmt;
  	int rc;
@@ -1542,7 +1542,7 @@
     // first make sure the staStation table exists
 	const char query[] =
     "SELECT stationName, solarSystemID "
-    "FROM staStations "
+    "FROM metStations "
     "WHERE stationID = ?;";
 	sqlite3_stmt *read_stmt;
 	int rc;
