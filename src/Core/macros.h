@@ -125,6 +125,7 @@ enum AttributeType {
 #define XMLAPI_SERVER_STATUS @"/server/ServerStatus.xml.aspx"
 #define XMLAPI_CERT_TREE @"/eve/CertificateTree.xml.aspx"
 #define XMLAPI_CHAR_ORDERS @"/char/MarketOrders.xml.aspx"
+#define XMLAPI_CHAR_CONTRACTS @"/char/Contracts.xml.aspx"
 
 /*the portrait will be saved to this file in the characters directory*/
 #define PORTRAIT @"portrait.jpg"
