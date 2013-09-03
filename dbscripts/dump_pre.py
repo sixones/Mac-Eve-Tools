@@ -22,7 +22,7 @@ def dumpPrerequisites():
         AND atLevel.attributeName REGEXP \'^requiredSkill[0-9]Level\$\' 
         AND atLevel.attributeName REGEXP atSkill.attributeName;"""
 
-    conn = MySQLdb.connect( host = "localhost", user = "salamon", passwd = "slit725}torn", db = "test1", charset ="utf8", use_unicode = True)
+    conn = MySQLdb.connect( host = "localhost", user = "", passwd = "", db = "eve", charset ="utf8", use_unicode = True)
 
     cursor = conn.cursor()
     skill_cursor = conn.cursor()
