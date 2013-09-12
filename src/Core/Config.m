@@ -129,7 +129,13 @@ static Config *sharedSingletonCfg = nil;
 {
 	NSString *str;
 	va_list argList;
-	NSMutableString *result = [[[NSMutableString alloc]initWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH]]autorelease];
+    NSString *root = [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH];
+    if( !root )
+    {
+        NSLog( @"Missing root path in defaults." );
+        root = [@"~/Library/Application Support/Vitality" stringByExpandingTildeInPath];
+    }
+	NSMutableString *result = [[[NSMutableString alloc] initWithString:root] autorelease];
 	
 	va_start(argList, xmlApiFile);
 	

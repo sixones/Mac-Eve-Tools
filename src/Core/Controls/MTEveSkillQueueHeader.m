@@ -308,7 +308,8 @@
 	}else{
 		str = [dFormat stringFromDate:finishDate];
 	}
-		
+    if( !str )
+        str = NSLocalizedString(@"<Unknown>", @"Missing string value");
 	astr = [[[NSMutableAttributedString alloc]initWithString:str]autorelease];
 	drawRect = [self rectForFinishDate:newRect text:astr];
 	if(NSContainsRect(rect,drawRect)){

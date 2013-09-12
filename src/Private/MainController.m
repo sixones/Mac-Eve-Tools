@@ -474,7 +474,7 @@
 	[self performSelector:@selector(setCurrentCharacter:) 
 			   withObject:[characterManager defaultCharacter]];
 	
-	[self fetchCharButtonClick:nil];
+	//[self fetchCharButtonClick:nil];
 	[self updatePopupButton];
 }
 
@@ -692,8 +692,13 @@
 	//Get the id for the current character, find the new object in the character manager.
 	Character *character = [characterManager characterById:[currentCharacter characterId]];
 	if(character == nil){
-		NSLog(@"ERROR: Couldn't find character %lu.  Can't update.",[currentCharacter characterId]);
-		return;
+        // This can happen when Vitality is first used, so just grab the first character
+        character = [characterManager defaultCharacter];
+        if( nil == character )
+        {
+            NSLog(@"ERROR: Couldn't find character %lu.  Can't update.",[currentCharacter characterId]);
+            return;
+        }
 	}
 	[self setCurrentCharacter:character];
 }

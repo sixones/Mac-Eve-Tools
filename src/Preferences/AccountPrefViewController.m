@@ -15,6 +15,7 @@
 @implementation NSAttributedString (Hyperlink)
 +(id)hyperlinkFromString:(NSString*)inString withURL:(NSURL*)aURL
 {
+    NSAssert(inString, @"Null string in hyperlinkFromString");
     NSMutableAttributedString* attrString = [[NSMutableAttributedString alloc] initWithString: inString];
     NSRange range = NSMakeRange(0, [attrString length]);
 	
