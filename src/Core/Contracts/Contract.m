@@ -17,13 +17,20 @@
 
 @implementation Contract
 
+@synthesize type;
+@synthesize status;
+@synthesize contractID;
+@synthesize startStationID;
+@synthesize endStationID;
+
+@synthesize startStationName = _startStationName;
+@synthesize endStationName = _endStationName;
+
 @synthesize orderID;
 @synthesize charID;
-@synthesize stationID;
 @synthesize volEntered;
 @synthesize volRemaining;
 @synthesize minVolume;
-@synthesize orderState;
 @synthesize typeID;
 @synthesize range;
 @synthesize accountKey;
@@ -31,54 +38,45 @@
 @synthesize escrow;
 @synthesize buy;
 @synthesize issued;
-@synthesize stationName = _stationName;
 
-- (NSString *)typeName
+- (void)setStartStationName:(NSString *)newStationName
 {
-    CCPDatabase *db = [[GlobalData sharedInstance] database];
-    CCPType *type = [db type:self.typeID];
-    if( !type || ![type typeName] )
+    if( newStationName != _startStationName )
     {
-        NSString *typeName = [db typeName:self.typeID];
-        if( typeName )
-            return typeName;
-        NSLog( @"Missing type name in a market order" );
-    }
-    return [type typeName];
-}
-
-- (NSString *)state
-{
-    switch( self.orderState )
-    {
-        case OrderStateActive: return NSLocalizedString( @"Open", @"Order State Open String" ); break;
-        case OrderStateClosed: return NSLocalizedString( @"Closed", @"Order State Closed String" ); break;
-        case OrderStateExpired: return NSLocalizedString( @"Expired", @"Order State Expired String" ); break;
-        case OrderStateCancelled: return NSLocalizedString( @"Cancelled", @"Order State Cancelled String" ); break;
-        case OrderStatePending: return NSLocalizedString( @"Pending", @"Order State Pending String" ); break;
-        case OrderStateCharacterDeleted: return NSLocalizedString( @"Char Deleted", @"Order State Char Deleted String" ); break;
-        case OrderStateUnknown: return NSLocalizedString( @"Unknown", @"Order State Unknown String" ); break;
+        [_startStationName release];
+        _startStationName = [newStationName retain];
     }
 }
 
-- (void)setStationName:(NSString *)newStationName
+- (NSString *)startStationName
 {
-    if( newStationName != _stationName )
-    {
-        [_stationName release];
-        _stationName = [newStationName retain];
-    }
-}
-
-- (NSString *)stationName
-{
-    if( nil == _stationName )
+    if( nil == _startStationName )
     {
         CCPDatabase *db = [[GlobalData sharedInstance] database];
-        NSDictionary *station = [db stationForID:stationID];
-        [self setStationName:[station objectForKey:@"name"]];
+        NSDictionary *station = [db stationForID:startStationID];
+        [self setStartStationName:[station objectForKey:@"name"]];
     }
-    return _stationName;
+    return _startStationName;
+}
+
+- (void)setEndStationName:(NSString *)newStationName
+{
+    if( newStationName != _endStationName )
+    {
+        [_endStationName release];
+        _endStationName = [newStationName retain];
+    }
+}
+
+- (NSString *)endStationName
+{
+    if( nil == _endStationName )
+    {
+        CCPDatabase *db = [[GlobalData sharedInstance] database];
+        NSDictionary *station = [db stationForID:endStationID];
+        [self setEndStationName:[station objectForKey:@"name"]];
+    }
+    return _endStationName;
 }
 
 @end

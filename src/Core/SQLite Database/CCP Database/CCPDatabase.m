@@ -1536,6 +1536,32 @@
 	return;
 }
 
+- (void)insertStationID:(NSUInteger)stationID name:(NSString *)stationName system:(NSUInteger)solarSystemID
+{
+//    insert or replace into Book (Name, TypeID, Level, Seen) values ( ... )
+    
+    const char insert_attr[] = "INSERT OR REPLACE INTO metStations (stationID, solarSystemID, stationName) VALUES (?,?,?)";
+    sqlite3_stmt *insert_attr_stmt;
+    
+    int rc = sqlite3_prepare_v2( db, insert_attr, (int)sizeof(insert_attr), &insert_attr_stmt, NULL);
+    if( rc != SQLITE_OK )
+    {
+		NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+		return;
+	}
+
+	rc = sqlite3_bind_nsint( insert_attr_stmt, 1, stationID );
+    rc = sqlite3_bind_nsint( insert_attr_stmt, 2, solarSystemID );
+    rc = sqlite3_bind_text( insert_attr_stmt, 3, [stationName UTF8String], (int)[stationName length], NULL );
+    
+    if( (rc = sqlite3_step(insert_attr_stmt)) != SQLITE_DONE )
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+    }
+    
+    sqlite3_finalize(insert_attr_stmt);
+}
+
 // @"name", @"stationID" and @"systemID" are the keys in the dictionary
 - (NSDictionary *) stationForID:(NSInteger)stationID
 {
@@ -1549,7 +1575,7 @@
 	
 	rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
 	if(rc != SQLITE_OK){
-		NSLog(@"%s: Query error",__func__);
+		NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
 		return nil;
 	}
 	

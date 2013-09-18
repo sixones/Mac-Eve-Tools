@@ -34,12 +34,15 @@
 #import "METPluggableView.h"
 #import "CharacterManager.h"
 #import "MarketViewController.h"
+#import "ContractsViewController.h"
 
 	//#import "MBPreferencesController.h"
 #import "GeneralPrefViewController.h"
 #import "AccountPrefViewController.h"
 #import "DatabasePrefViewController.h"
 #import "SkillPlannerPrefViewController.h"
+
+#import "METConquerableStations.h"
 
 #import "StatusItemViewController.h"
 
@@ -387,6 +390,12 @@
     [viewControllers addObject:mvc];
     [(NSObject*)mvc release];
     
+    mvc = [[ContractsViewController alloc] init];
+    [mvc view];//trigger the awakeFromNib
+    [mvc setInstance:self];
+    [viewControllers addObject:mvc];
+    [(NSObject*)mvc release];
+
 	[[self window] makeMainWindow];
 	[[self window] setDelegate:self];
 	[NSApp setDelegate:self];
@@ -439,6 +448,9 @@
 	if ([characterManager defaultCharacter] != NULL) {
 		[self fetchCharButtonClick:nil];
 	}
+    
+    METConquerableStations *stat = [[METConquerableStations alloc] init];
+    [stat reload:self];
 }
 
 -(void) setAsActiveView:(id<METPluggableView>)mvc

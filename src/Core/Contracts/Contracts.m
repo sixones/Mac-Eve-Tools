@@ -109,7 +109,7 @@
 											 character:[template characterId]];
     NSString *pendingDir = [characterDir stringByAppendingString:@"/pending"];
     
-    [self setXmlPath:[characterDir stringByAppendingPathComponent:[XMLAPI_CHAR_ORDERS lastPathComponent]]];
+    [self setXmlPath:[characterDir stringByAppendingPathComponent:[XMLAPI_CHAR_CONTRACTS lastPathComponent]]];
     
 	//create the output directory, the XMLParseOperation will clean it up
     // TODO move this to an operations sub-class and have all of the download operations depend on it
@@ -144,7 +144,7 @@
 	[opParse setObject:nil];
     
 	[opParse addDependency:op]; //THIS MUST BE THE FIRST DEPENDENCY.
-	[opParse addCharacterDir:characterDir forSheet:XMLAPI_CHAR_ORDERS];
+	[opParse addCharacterDir:characterDir forSheet:XMLAPI_CHAR_CONTRACTS];
     
 	[queue addOperation:op];
 	[queue addOperation:opParse];
@@ -175,6 +175,9 @@
  <result>
  <rowset name="contractList" key="contractID" columns="contractID,issuerID,issuerCorpID,assigneeID,acceptorID,startStationID,endStationID,
  type,status,title,forCorp,dateIssued,dateExpired,dateAccepted,numDays,dateCompleted,price,reward,collateral,volume" />
+ 
+ <row contractID="72716865" issuerID="91794908" issuerCorpID="1406664155" assigneeID="98159347" acceptorID="0" startStationID="60004588" endStationID="61000617" type="Courier" status="Outstanding" title="" forCorp="0" availability="Private" dateIssued="2013-09-15 14:59:52" dateExpired="2013-09-29 14:59:52" dateAccepted="" numDays="7" dateCompleted="" price="0.00" reward="14905500.00" collateral="0.00" buyout="0.00" volume="59622.4475" />
+
  </result>
  <cachedUntil>2011-07-30 05:44:30</cachedUntil>
  </eveapi>
@@ -231,10 +234,27 @@
             for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )
             {
                 NSString *value = [NSString stringWithUTF8String:(const char*) attr->children->content];
-//                if( xmlStrcmp(attr->name, (xmlChar *)"orderID") == 0 )
-//                {
-//                    [order setOrderID:[value integerValue]];
-//                }
+                if( xmlStrcmp(attr->name, (xmlChar *)"type") == 0 )
+                {
+                    [contract setType:value];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"status") == 0 )
+                {
+                    [contract setStatus:value];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"contractID") == 0 )
+                {
+                    [contract setContractID:[value integerValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"startStationID") == 0 )
+                {
+                    [contract setStartStationID:[value integerValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"endStationID") == 0 )
+                {
+                    [contract setEndStationID:[value integerValue]];
+                }
+                
 //                else if( xmlStrcmp(attr->name, (xmlChar *)"orderState") == 0 )
 //                {
 //                    NSInteger intValue = [value integerValue];
@@ -284,9 +304,9 @@
 
     }
     
-    if( [delegate respondsToSelector:@selector(ordersFinishedUpdating)] )
+    if( [delegate respondsToSelector:@selector(contractsFinishedUpdating)] )
     {
-        [delegate performSelector:@selector(ordersFinishedUpdating)];
+        [delegate performSelector:@selector(contractsFinishedUpdating)];
     }
 	return YES;
 }

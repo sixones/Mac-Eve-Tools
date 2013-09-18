@@ -122,6 +122,7 @@ enum AttributeType {
 #define XMLAPI_CHAR_QUEUE @"/char/SkillQueue.xml.aspx"
 #define XMLAPI_SKILL_TREE @"/eve/SkillTree.xml.aspx"
 #define XMLAPI_WALLET_REF @"/eve/RefTypes.xml.aspx"
+#define XMLAPI_STATIONS @"/eve/ConquerableStationList.xml.aspx"
 #define XMLAPI_SERVER_STATUS @"/server/ServerStatus.xml.aspx"
 #define XMLAPI_CERT_TREE @"/eve/CertificateTree.xml.aspx"
 #define XMLAPI_CHAR_ORDERS @"/char/MarketOrders.xml.aspx"
