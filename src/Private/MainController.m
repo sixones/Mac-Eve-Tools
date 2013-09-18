@@ -404,7 +404,9 @@
 	SUUpdater *updater = [SUUpdater sharedUpdater];
 	[updater setAutomaticallyChecksForUpdates:NO];
 	[updater setFeedURL:[NSURL URLWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_UPDATE_FEED_URL]]];
-	[updater setSendsSystemProfile:[[NSUserDefaults standardUserDefaults] boolForKey:UD_SUBMIT_STATS]];	
+	[updater setSendsSystemProfile:[[NSUserDefaults standardUserDefaults] boolForKey:UD_SUBMIT_STATS]];
+    
+    NSLog(@"Sparkle configured for %@", [[NSUserDefaults standardUserDefaults] stringForKey:UD_UPDATE_FEED_URL]);
 #endif
 	
 	if([[cfg accounts] count] == 0){
@@ -484,7 +486,7 @@
 	[self performSelector:@selector(setCurrentCharacter:) 
 			   withObject:[characterManager defaultCharacter]];
 	
-	[self fetchCharButtonClick:nil];
+	//[self fetchCharButtonClick:nil];
 	[self updatePopupButton];
 }
 
@@ -553,11 +555,11 @@
 	[prefDefaults setObject:@"http://image.eveonline.com/Character/" forKey:UD_PICTURE_URL];
     [prefDefaults setObject:@"http://image.eveonline.com/" forKey:UD_IMAGE_URL];
 	
-	[prefDefaults setObject:@"http://labs.sixones.com/vitality/appcast2.xml" forKey:UD_UPDATE_FEED_URL];
+	[prefDefaults setObject:@"http://labs.sixones.com/vitality/appcast3.xml" forKey:UD_UPDATE_FEED_URL];
 	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.xml" forKey:UD_DB_UPDATE_URL];
 	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.sql.bz2" forKey:UD_DB_SQL_URL];
 	
-	[prefDefaults setObject:[NSNumber numberWithInt:10] forKey:UD_DATABASE_MIN_VERSION];
+	[prefDefaults setObject:[NSNumber numberWithInt:11] forKey:UD_DATABASE_MIN_VERSION];
 	 	
 	[[NSUserDefaults standardUserDefaults] registerDefaults:prefDefaults];
 	[prefDefaults release];
@@ -702,8 +704,13 @@
 	//Get the id for the current character, find the new object in the character manager.
 	Character *character = [characterManager characterById:[currentCharacter characterId]];
 	if(character == nil){
-		NSLog(@"ERROR: Couldn't find character %lu.  Can't update.",[currentCharacter characterId]);
-		return;
+        // This can happen when Vitality is first used, so just grab the first character
+        character = [characterManager defaultCharacter];
+        if( nil == character )
+        {
+            NSLog(@"ERROR: Couldn't find character %lu.  Can't update.",[currentCharacter characterId]);
+            return;
+        }
 	}
 	[self setCurrentCharacter:character];
 }

@@ -156,17 +156,23 @@
 	[xform concat];
 	
 	// Character name
+    if( !charName )
+        charName = NSLocalizedString(@"<Unknown>", @"Missing string value");
 	astr = [[[NSMutableAttributedString alloc]initWithString:charName]autorelease];
 	[astr drawAtPoint:drawPoint];
 	
 	// Skill Points
 	str = [spFormat stringFromNumber:[NSNumber numberWithInteger:skillPoints]];
+    if( !str )
+        str = NSLocalizedString(@"<Unknown>", @"Missing string value");
 	astr = [[[NSMutableAttributedString alloc]initWithString:str]autorelease];
 	drawPoint.y = 16.0;
 	[astr drawAtPoint:drawPoint];
 	
 	// ISK
 	str = [iskFormat stringFromNumber:isk];
+    if( !str )
+        str = NSLocalizedString(@"<Unknown>", @"Missing string value");
 	astr = [[[NSMutableAttributedString alloc]initWithString:str]autorelease];
 	drawPoint.y = 32.0;
 	[astr drawAtPoint:drawPoint];
@@ -194,6 +200,8 @@
 		
 		//Finish dates
 		str = [dateFormat stringFromDate:finishDate];
+        if( !str )
+            str = NSLocalizedString(@"<Unknown>", @"Missing string value");
 		astr = [[[NSMutableAttributedString alloc]initWithString:str]autorelease];
 		drawRect.size = [astr size];
 		drawRect.origin.y = 80.0;

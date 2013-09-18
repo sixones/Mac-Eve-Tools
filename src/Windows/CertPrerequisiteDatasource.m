@@ -106,7 +106,8 @@
 
 -(NSAttributedString*) colouredString:(NSString*)str colour:(NSColor*)colour
 {
-	NSDictionary *dict = [NSDictionary dictionaryWithObject:colour 
+    NSAssert(str, @"Null string in colouredString:colour:");
+	NSDictionary *dict = [NSDictionary dictionaryWithObject:colour
 													 forKey:NSForegroundColorAttributeName];
 	NSAttributedString *astr = [[NSAttributedString alloc]initWithString:str
 															  attributes:dict];

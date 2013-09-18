@@ -71,7 +71,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 		pair = item;
 		textValue = [item roman];
 	}
-	
+    if( !textValue )
+        textValue = NSLocalizedString(@"<Unknown>", @"Missing string value");
+
 	/*if the character has the skill use blue text, otherwise red. green is too hard to read.*/
 	Skill *s = [[character skillTree]skillForId:[pair typeID]];
 	NSMutableAttributedString *str = [[[NSMutableAttributedString alloc]initWithString:textValue]autorelease];
