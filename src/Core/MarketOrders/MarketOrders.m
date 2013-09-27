@@ -163,10 +163,17 @@
 	if( doc == NULL )
     {
 		NSLog(@"Failed to read %@",xmlPath);
-		return;
 	}
-	[self parseXmlMarketOrders:doc];
-	xmlFreeDoc(doc);
+    else
+    {
+        [self parseXmlMarketOrders:doc];
+        xmlFreeDoc(doc);
+    }
+
+    if( [delegate respondsToSelector:@selector(ordersFinishedUpdating)] )
+    {
+        [delegate performSelector:@selector(ordersFinishedUpdating)];
+    }
 }
 
 /* Sample xml for market orders:
@@ -319,10 +326,6 @@
 
     }
     
-    if( [delegate respondsToSelector:@selector(ordersFinishedUpdating)] )
-    {
-        [delegate performSelector:@selector(ordersFinishedUpdating)];
-    }
 	return YES;
 }
 

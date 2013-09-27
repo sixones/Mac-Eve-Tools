@@ -41,12 +41,14 @@
 -(void) startMonitoring
 {
 //#ifndef MACEVEAPI_DEBUG
-	timer = 
+#ifndef SUPPRESS_SERVERCHECK
+	timer =
 	[NSTimer scheduledTimerWithTimeInterval:300.0
 									 target:self
 								   selector:@selector(timerFired:)
 								   userInfo:nil 
 									repeats:YES];
+#endif
 	[self checkServerStatus];
 //#endif
 }

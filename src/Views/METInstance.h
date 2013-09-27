@@ -23,4 +23,10 @@
 /*display a time limited message on the toolbar*/
 -(void) setToolbarMessage:(NSString*)message time:(NSInteger)seconds;
 
+/* Start the progress indicator showing that we're downloading something */
+-(void) startLoadingAnimation;
+
+/* Stope the progress indicator to show that we're done downloading something */
+-(void) stopLoadingAnimation;
+
 @end

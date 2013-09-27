@@ -49,6 +49,8 @@
         // if view is active we need to reload market orders
         [orders setCharacter:character];
         [orders reload:self];
+        [app setToolbarMessage:NSLocalizedString(@"Updating Market Orders…",@"Updating Market Orders")];
+        [app startLoadingAnimation];
     }
 }
 
@@ -71,6 +73,8 @@
 -(void) viewWillBeActivated
 {
     [orders reload:self];
+    [app setToolbarMessage:NSLocalizedString(@"Updating Market Orders…",@"Updating Market Orders status line")];
+    [app startLoadingAnimation];
 }
 
 -(void) setInstance:(id<METInstance>)instance
@@ -92,6 +96,8 @@
     NSArray *newDescriptors = [orderTable sortDescriptors];
     [orders sortUsingDescriptors:newDescriptors];
     [orderTable reloadData];
+    [app setToolbarMessage:NSLocalizedString(@"Finished Updating Market Orders…",@"Finished Updating Market Orders status line") time:5];
+    [app stopLoadingAnimation];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView

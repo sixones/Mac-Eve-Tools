@@ -346,7 +346,7 @@
 {	
 	
 	Config *cfg = [Config sharedInstance];
-	
+    
 	////////////// ---- THIS BLOCK MUST EXECUTE BEFORE ANY OTHER CODE ---- \\\\\\\\\\\\\\\\
 	[[GlobalData sharedInstance]skillTree];
 	[[GlobalData sharedInstance]certTree];
@@ -613,8 +613,7 @@
 	 object:overviewTableView];
 	
 	statusMessageTimer = nil;
-	[loadingCycle setHidden:YES];
-	[loadingCycle stopAnimation:nil];
+    [self stopLoadingAnimation];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey: UD_ENABLE_MENUBAR] == YES) {
         [self enableStatusBar];
@@ -727,8 +726,7 @@
 	[statusString setHidden:YES];
 	[fetchCharButton setEnabled:YES];
 	[charButton setEnabled:YES];
-	[loadingCycle stopAnimation:nil];
-	[loadingCycle setHidden:YES];
+    [self stopLoadingAnimation];
 	
 	/*
 	 replace this with a new message that says update completed
@@ -761,8 +759,7 @@
 	[characterManager updateAllCharacters:self];
 	[fetchCharButton setEnabled:NO];
 	[charButton setEnabled:NO];
-	[loadingCycle setHidden:NO];
-	[loadingCycle startAnimation:nil];
+    [self startLoadingAnimation];
 }
 
 -(IBAction) fetchCharButtonClick:(id)sender
@@ -890,6 +887,18 @@
 -(void) setToolbarMessage:(NSString*)message time:(NSInteger)seconds
 {
 	[self setStatusMessage:message imageState:StatusHidden time:seconds];
+}
+
+-(void) startLoadingAnimation
+{
+	[loadingCycle setHidden:NO];
+	[loadingCycle startAnimation:nil];
+}
+
+-(void) stopLoadingAnimation
+{
+    [loadingCycle setHidden:YES];
+	[loadingCycle stopAnimation:nil];
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem

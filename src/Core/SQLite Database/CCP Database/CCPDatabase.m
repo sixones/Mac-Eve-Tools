@@ -1544,8 +1544,6 @@
 
 - (void)insertStationID:(NSUInteger)stationID name:(NSString *)stationName system:(NSUInteger)solarSystemID
 {
-//    insert or replace into Book (Name, TypeID, Level, Seen) values ( ... )
-    
     const char insert_attr[] = "INSERT OR REPLACE INTO metStations (stationID, solarSystemID, stationName) VALUES (?,?,?)";
     sqlite3_stmt *insert_attr_stmt;
     

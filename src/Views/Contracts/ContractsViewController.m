@@ -49,6 +49,8 @@
         // if view is active we need to reload contracts
         [contracts setCharacter:character];
         [contracts reload:self];
+        [app setToolbarMessage:NSLocalizedString(@"Updating Contracts…",@"Updating Contracts status line")];
+        [app startLoadingAnimation];
     }
 }
 
@@ -71,6 +73,8 @@
 -(void) viewWillBeActivated
 {
     [contracts reload:self];
+    [app setToolbarMessage:NSLocalizedString(@"Updating Contracts…",@"Updating Contracts status line")];
+    [app startLoadingAnimation];
 }
 
 -(void) setInstance:(id<METInstance>)instance
@@ -92,6 +96,8 @@
     NSArray *newDescriptors = [orderTable sortDescriptors];
     [contracts sortUsingDescriptors:newDescriptors];
     [orderTable reloadData];
+    [app setToolbarMessage:NSLocalizedString(@"Finished Updating Contracts…",@"Finished Updating Contracts status line") time:5];
+    [app stopLoadingAnimation];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView

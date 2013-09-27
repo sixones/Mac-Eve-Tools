@@ -297,6 +297,16 @@
 	[mainApp setToolbarMessage:message time:seconds];
 }
 
+-(void) startLoadingAnimation
+{
+    [mainApp startLoadingAnimation];
+}
+
+-(void) stopLoadingAnimation
+{
+    [mainApp stopLoadingAnimation];
+}
+
 - (IBAction) nextSkillPlan: (id) sender
 {
     [skillView2 nextSkillPlan:sender];

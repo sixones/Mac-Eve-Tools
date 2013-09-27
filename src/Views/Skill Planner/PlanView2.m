@@ -945,9 +945,6 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 
 - (void)tableViewColumnDidResize:(NSNotification *)aNotification
 {
-	NSTableColumn *col = [[aNotification userInfo]objectForKey:@"NSTableColumn"];
-	NSLog(@"resized %@ to %.2f",[col identifier],(double)[col width]);
-    
     // let the framework handle resizing
     /*
 	NSTableColumn *col = [[aNotification userInfo]objectForKey:@"NSTableColumn"];
