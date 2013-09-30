@@ -4,6 +4,7 @@ import codecs
 from types import *
 from decimal import *
 from optparse import OptionParser
+import db_config
 
 
 def dumpPrerequisites():
@@ -22,7 +23,9 @@ def dumpPrerequisites():
         AND atLevel.attributeName REGEXP \'^requiredSkill[0-9]Level\$\' 
         AND atLevel.attributeName REGEXP atSkill.attributeName;"""
 
-    conn = MySQLdb.connect( host = "localhost", user = "", passwd = "", db = "eve", charset ="utf8", use_unicode = True)
+#    conn = MySQLdb.connect( host = "localhost", user = "", passwd = "", db = "eve", charset ="utf8", use_unicode = True)
+# Database connection details are stored in db_config.py
+    conn = MySQLdb.connect( **db_config.database )
 
     cursor = conn.cursor()
     skill_cursor = conn.cursor()

@@ -4,6 +4,7 @@ import codecs
 from types import *
 from decimal import *
 from optparse import OptionParser
+import db_config
 
 def writeObject(obj,fileObj):
 	t = type(obj)
@@ -33,14 +34,7 @@ def writeObject(obj,fileObj):
 
 
 def dumpTable(tableName,query,file):
-	conn = MySQLdb.connect(
-			host = "localhost", 
-			user = "", 
-			passwd = "", 
-			db = "eve", 
-			charset ="utf8",
-			use_unicode = True)
-
+	conn = MySQLdb.connect( **db_config.database )
 	cursor = conn.cursor()
 
 	cursor.execute('SET NAMES utf8;')

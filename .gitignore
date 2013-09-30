@@ -5,5 +5,9 @@ dbscripts/*.sql.bz2
 dbscripts/*.xml
 dbscripts/*.pyc
 
+# This file is a copy of dbscripts/db_config_empty.py that contains database login info
+# So it should never be checked in.
+dbscripts/db_config.py
+
 src/Vitality.xcodeproj/project.xcworkspace
 src/Vitality.xcodeproj/xcuserdata

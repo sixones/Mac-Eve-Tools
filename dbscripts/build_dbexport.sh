@@ -7,6 +7,12 @@ DBEXPANSION="Odyssey 1.1.0"
 
 VERQUERY="INSERT INTO version VALUES ($DBVERSION,'$DBEXPANSION');"
 
+if [ ! -r db_config.py ]; then
+    echo "Missing db_config.py"
+    echo "Copy db_config_clean.py to db_config.py and fill in the database connection information"
+    exit
+fi
+
 rm -f tempdb.db
 rm -f rows.sql
 
