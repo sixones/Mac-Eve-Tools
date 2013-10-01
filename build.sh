@@ -33,7 +33,7 @@ if [ ${SUCC} -eq 1 ]; then
     APP=`tail ${BUILD_LOG} | grep "^Touch " | sed -e 's/Touch //'`
     rm -f vitality.zip
 # handle cases where BUILD_DIR is absolute and where it's relative
-    case $1 in
+    case ${APP} in
         /*) ;;
         *) APP="${BUILD_DIR}/vitality/src/${APP}" ;;
     esac
