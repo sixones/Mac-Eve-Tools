@@ -7,6 +7,12 @@ DBEXPANSION="Odyssey 1.1.0"
 
 VERQUERY="INSERT INTO version VALUES ($DBVERSION,'$DBEXPANSION');"
 
+if [ ! -r db_config.py ]; then
+    echo "Missing db_config.py"
+    echo "Copy db_config_clean.py to db_config.py and fill in the database connection information"
+    exit
+fi
+
 rm -f tempdb.db
 rm -f rows.sql
 
@@ -17,10 +23,10 @@ echo "$VERQUERY" >> $DBEXPORT
 /usr/bin/bzip2 < $DBEXPORT > $DBEXPORT.bz2
 /usr/bin/sqlite3 tempdb.db < $DBEXPORT 
 
-
-SHA_SQL=`./sha1 $DBEXPORT`
-SHA_BZ2=`./sha1 $DBEXPORT.bz2`
-SHA_DB=`./sha1 tempdb.db`
+SHA_EXE="python sha1_base64.py" # was "./sha1"
+SHA_SQL=`${SHA_EXE} $DBEXPORT`
+SHA_BZ2=`${SHA_EXE} $DBEXPORT.bz2`
+SHA_DB=`${SHA_EXE} tempdb.db`
 
 XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <EveDatabaseExport version=\"$DBVERSION\">
