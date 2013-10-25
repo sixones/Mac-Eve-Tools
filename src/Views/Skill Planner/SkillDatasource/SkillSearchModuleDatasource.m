@@ -157,7 +157,7 @@ menuForTableColumnItem:(NSTableColumn*)column
 	
 	NSMenuItem *menuItem;
 	menuItem = [[NSMenuItem alloc]initWithTitle: @"View Module Details"
-                                         action:@selector(displayShipWindow:)
+                                         action:@selector(displaySkillWindow:)
                                   keyEquivalent:@""];
 	[menuItem setRepresentedObject:item];
 	[menu addItem:menuItem];
