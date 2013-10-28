@@ -43,19 +43,19 @@ volume">
 @property (assign) NSUInteger contractID;
 @property (assign) NSUInteger startStationID;
 @property (assign) NSUInteger endStationID;
+@property (assign) double volume;
+@property (assign) double price; // I will pay...
+@property (assign) double reward; // I will receive...
+@property (assign) double collateral;
+@property (assign) double buyout;
 
-@property (assign) NSUInteger orderID;
-@property (assign) NSUInteger charID;
-@property (assign) NSUInteger volEntered;
-@property (assign) NSUInteger volRemaining;
-@property (assign) NSUInteger minVolume;
-@property (assign) NSUInteger typeID;
-@property (retain) NSString *range;
-@property (assign) NSUInteger accountKey;
-@property (assign) double price;
-@property (assign) double escrow;
-@property (assign) BOOL buy; // if false = sell order
 @property (retain) NSDate *issued;
+@property (retain) NSDate *expired;
+@property (retain) NSDate *accepted;
+@property (retain) NSDate *completed;
+@property (retain) NSString *availability;
+@property (retain) NSString *title;
+@property (assign) NSUInteger days;
 
 @property (readonly,retain) NSString *startStationName;
 @property (readonly,retain) NSString *endStationName;

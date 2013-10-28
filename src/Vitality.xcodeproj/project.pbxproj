@@ -67,6 +67,9 @@
 		A154A64417A83E090076603D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A154A64217A83E090076603D /* Localizable.strings */; };
 		A154A64B17C576700076603D /* Contract.m in Sources */ = {isa = PBXBuildFile; fileRef = A154A64617C576700076603D /* Contract.m */; };
 		A154A64D17C576700076603D /* Contracts.m in Sources */ = {isa = PBXBuildFile; fileRef = A154A64917C576700076603D /* Contracts.m */; };
+		A1B21DAD181EE7E700F07DBE /* ContractDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B21DAB181EE7E700F07DBE /* ContractDetailsController.m */; };
+		A1B21DB0181EE7F200F07DBE /* ContractDetails.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1B21DAE181EE7F200F07DBE /* ContractDetails.xib */; };
+		A1B21DB3181F102200F07DBE /* MTISKFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B21DB2181F102100F07DBE /* MTISKFormatter.m */; };
 		A1C0A7B31761077F00A3A743 /* MarketOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7B01761077F00A3A743 /* MarketOrder.m */; };
 		A1C0A7B41761077F00A3A743 /* MarketOrders.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7B21761077F00A3A743 /* MarketOrders.m */; };
 		A1C0A7C117610CDA00A3A743 /* MarketView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C0A7BE17610CDA00A3A743 /* MarketView.xib */; };
@@ -261,6 +264,11 @@
 		A154A64817C576700076603D /* Contracts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contracts.h; sourceTree = "<group>"; };
 		A154A64917C576700076603D /* Contracts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contracts.m; sourceTree = "<group>"; };
 		A154A64A17C576700076603D /* Contract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contract.h; sourceTree = "<group>"; };
+		A1B21DAA181EE7E700F07DBE /* ContractDetailsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractDetailsController.h; sourceTree = "<group>"; };
+		A1B21DAB181EE7E700F07DBE /* ContractDetailsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractDetailsController.m; sourceTree = "<group>"; };
+		A1B21DAF181EE7F200F07DBE /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ContractDetails.xib; sourceTree = "<group>"; };
+		A1B21DB1181F102100F07DBE /* MTISKFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTISKFormatter.h; sourceTree = "<group>"; };
+		A1B21DB2181F102100F07DBE /* MTISKFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTISKFormatter.m; sourceTree = "<group>"; };
 		A1C0A7AF1761077F00A3A743 /* MarketOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketOrder.h; path = MarketOrders/MarketOrder.h; sourceTree = "<group>"; };
 		A1C0A7B01761077F00A3A743 /* MarketOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MarketOrder.m; path = MarketOrders/MarketOrder.m; sourceTree = "<group>"; };
 		A1C0A7B11761077F00A3A743 /* MarketOrders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketOrders.h; path = MarketOrders/MarketOrders.h; sourceTree = "<group>"; };
@@ -602,9 +610,14 @@
 		A12FC5FF17EA0C0D0053DC23 /* Contracts */ = {
 			isa = PBXGroup;
 			children = (
-				A12FC60017EA0C0D0053DC23 /* ContractsView.xib */,
 				A12FC60317EA0C0D0053DC23 /* ContractsViewController.h */,
 				A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */,
+				A12FC60017EA0C0D0053DC23 /* ContractsView.xib */,
+				A1B21DAA181EE7E700F07DBE /* ContractDetailsController.h */,
+				A1B21DAB181EE7E700F07DBE /* ContractDetailsController.m */,
+				A1B21DAE181EE7F200F07DBE /* ContractDetails.xib */,
+				A1B21DB1181F102100F07DBE /* MTISKFormatter.h */,
+				A1B21DB2181F102100F07DBE /* MTISKFormatter.m */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -1114,6 +1127,7 @@
 				140AEBE41763CF3F00308748 /* open.png in Resources */,
 				A154A64417A83E090076603D /* Localizable.strings in Resources */,
 				A12FC60417EA0C0D0053DC23 /* ContractsView.xib in Resources */,
+				A1B21DB0181EE7F200F07DBE /* ContractDetails.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1258,6 +1272,8 @@
 				A154A64D17C576700076603D /* Contracts.m in Sources */,
 				A12FC60517EA0C0D0053DC23 /* ContractsViewController.m in Sources */,
 				A12FC60817EA31420053DC23 /* METConquerableStations.m in Sources */,
+				A1B21DAD181EE7E700F07DBE /* ContractDetailsController.m in Sources */,
+				A1B21DB3181F102200F07DBE /* MTISKFormatter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1334,6 +1350,14 @@
 				A154A64317A83E090076603D /* English */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		A1B21DAE181EE7F200F07DBE /* ContractDetails.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1B21DAF181EE7F200F07DBE /* English */,
+			);
+			name = ContractDetails.xib;
 			sourceTree = "<group>";
 		};
 		A1C0A7BE17610CDA00A3A743 /* MarketView.xib */ = {

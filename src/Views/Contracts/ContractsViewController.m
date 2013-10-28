@@ -9,6 +9,7 @@
 #import "ContractsViewController.h"
 #import "Contracts.h"
 #import "Contract.h"
+#import "ContractDetailsController.h"
 
 @implementation ContractsViewController
 
@@ -38,6 +39,8 @@
 - (void)awakeFromNib
 {
     [currencyFormatter setCurrencySymbol:@""];
+    [orderTable setDoubleAction:@selector(contractsDoubleClick:)];
+    [orderTable setTarget:self];
 }
 
 - (void)setCharacter:(Character *)_character
@@ -98,6 +101,13 @@
     [orderTable reloadData];
     [app setToolbarMessage:NSLocalizedString(@"Finished Updating Contracts…",@"Finished Updating Contracts status line") time:5];
     [app stopLoadingAnimation];
+}
+
+- (void)contractsDoubleClick:(id)sender
+{
+    NSInteger rowNumber = [orderTable clickedRow];
+    Contract *contract = [[contracts contracts] objectAtIndex:rowNumber];
+    [ContractDetailsController displayContract:contract forCharacter:character];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView

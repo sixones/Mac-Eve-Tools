@@ -26,18 +26,17 @@
 @synthesize startStationName = _startStationName;
 @synthesize endStationName = _endStationName;
 
-@synthesize orderID;
-@synthesize charID;
-@synthesize volEntered;
-@synthesize volRemaining;
-@synthesize minVolume;
-@synthesize typeID;
-@synthesize range;
-@synthesize accountKey;
+@synthesize volume;
 @synthesize price;
-@synthesize escrow;
-@synthesize buy;
+@synthesize reward;
+@synthesize collateral;
 @synthesize issued;
+@synthesize expired;
+@synthesize accepted;
+@synthesize completed;
+@synthesize availability;
+@synthesize title;
+@synthesize days;
 
 - (void)setStartStationName:(NSString *)newStationName
 {

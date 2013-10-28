@@ -254,40 +254,78 @@
                 {
                     [contract setEndStationID:[value integerValue]];
                 }
-                
-//                else if( xmlStrcmp(attr->name, (xmlChar *)"orderState") == 0 )
-//                {
-//                    NSInteger intValue = [value integerValue];
-//                    OrderStateType stType = OrderStateUnknown;
-//                    switch( intValue )
-//                    {
-//                        case 0: stType = OrderStateActive; break;
-//                        case 1: stType = OrderStateClosed; break;
-//                        case 2: stType = OrderStateExpired; break;
-//                        case 3: stType = OrderStateCancelled; break;
-//                        case 4: stType = OrderStatePending; break;
-//                        case 5: stType = OrderStateCharacterDeleted; break;
-//                        default: stType = OrderStateUnknown; break;
-//
-//                    }
-//                    [order setOrderState:stType];
-//                }
-//                else if( xmlStrcmp(attr->name, (xmlChar *)"price") == 0 )
-//                {
-//                    [order setPrice:[value doubleValue]];
-//                }
-//                else if( xmlStrcmp(attr->name, (xmlChar *)"bid") == 0 )
-//                {
-//                    if( [value isEqualToString:@"0"] )
-//                        [order setBuy:NO];
-//                    else
-//                        [order setBuy:YES];
-//                }
-//                else if( xmlStrcmp(attr->name, (xmlChar *)"issued") == 0 )
-//                {
-//                    NSDate *issuedDate = [NSDate dateWithNaturalLanguageString:value];
-//                    [order setIssued:issuedDate];
-//                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"volume") == 0 )
+                {
+                    [contract setVolume:[value doubleValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"price") == 0 )
+                {
+                    [contract setPrice:[value doubleValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"reward") == 0 )
+                {
+                    [contract setReward:[value doubleValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"collateral") == 0 )
+                {
+                    [contract setCollateral:[value doubleValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"buyout") == 0 )
+                {
+                    [contract setBuyout:[value doubleValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"dateIssued") == 0 )
+                {
+                    NSDate *date = [NSDate dateWithNaturalLanguageString:value];
+                    [contract setIssued:date];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"dateExpired") == 0 )
+                {
+                    NSDate *date = [NSDate dateWithNaturalLanguageString:value];
+                    [contract setExpired:date];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"dateAccepted") == 0 )
+                {
+                    NSDate *date = [NSDate dateWithNaturalLanguageString:value];
+                    [contract setAccepted:date];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"dateCompleted") == 0 )
+                {
+                    NSDate *date = [NSDate dateWithNaturalLanguageString:value];
+                    [contract setCompleted:date];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"availability") == 0 )
+                {
+                    [contract setAvailability:value];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"title") == 0 )
+                {
+                    [contract setTitle:value];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"numDays") == 0 )
+                {
+                    [contract setDays:[value integerValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"forCorp") == 0 )
+                {
+                    //NSLog( @"Contract forCorp: %@", value );
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"issuerID") == 0 )
+                {
+                    //[contract setDays:[value integerValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"issuerCorpID") == 0 )
+                {
+                    //[contract setDays:[value integerValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"assigneeID") == 0 )
+                {
+                    //[contract setDays:[value integerValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"acceptorID") == 0 )
+                {
+                    //[contract setDays:[value integerValue]];
+                }
             }
             [contracts addObject:contract];
         }
