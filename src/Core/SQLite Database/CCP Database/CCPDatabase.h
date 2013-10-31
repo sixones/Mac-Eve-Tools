@@ -62,6 +62,7 @@
 -(NSArray*) typesInGroup:(NSInteger)groupID;
 -(NSInteger) typeCount:(NSInteger)groupID;
 -(NSString *) typeName:(NSInteger)typeID; // pulls from a pre-made table with typeID, typeName and description
+-(NSString *) typeName:(NSInteger)typeID andDescription:(NSString **)desc; // pass in a nil for desc if you don't want it
 
 -(NSArray*) prereqForType:(NSInteger) typeID;
 

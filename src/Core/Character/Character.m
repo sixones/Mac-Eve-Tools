@@ -24,6 +24,7 @@
 #import "XmlHelpers.h"
 #import "Helpers.h"
 #import "SkillPlan.h"
+#import "CharacterTemplate.h"
 
 #import "GlobalData.h"
 
@@ -527,6 +528,23 @@
 -(BOOL) hasCert:(NSInteger)certID
 {
 	return [ownedCerts containsObject:[NSNumber numberWithInteger:certID]];
+}
+
+-(CharacterTemplate *)template
+{
+    CharacterTemplate *template = nil;
+    NSUInteger chID = [self characterId];
+    
+    for( CharacterTemplate *charTemplate in [[Config sharedInstance] activeCharacters] )
+    {
+        NSUInteger tempID = [[charTemplate characterId] integerValue];
+        if( tempID == chID )
+        {
+            template = charTemplate;
+            break;
+        }
+    }
+    return template;
 }
 
 @end

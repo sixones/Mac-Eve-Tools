@@ -230,7 +230,8 @@
 		if( xmlStrcmp(cur_node->name,(xmlChar*)"row") == 0 )
         {
             Contract *contract = [[Contract alloc] init];
-            
+            [contract setCharacter:[self character]];
+             
             for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )
             {
                 NSString *value = [NSString stringWithUTF8String:(const char*) attr->children->content];

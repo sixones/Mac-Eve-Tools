@@ -74,6 +74,7 @@
 		A1C0A7B41761077F00A3A743 /* MarketOrders.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7B21761077F00A3A743 /* MarketOrders.m */; };
 		A1C0A7C117610CDA00A3A743 /* MarketView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C0A7BE17610CDA00A3A743 /* MarketView.xib */; };
 		A1C0A7C217610CDA00A3A743 /* MarketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7C017610CDA00A3A743 /* MarketViewController.m */; };
+		A1FCD0501822DED500A6655A /* ContractItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD04F1822DED500A6655A /* ContractItem.m */; };
 		C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */ = {isa = PBXBuildFile; fileRef = C911FED610782C50000D88E2 /* CharacterParseError.m */; };
 		C92067901161D837001BBE14 /* SkillAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = C920678F1161D837001BBE14 /* SkillAttribute.m */; };
 		C92067B11162C792001BBE14 /* SkillPointAttributeQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = C92067B01162C792001BBE14 /* SkillPointAttributeQueue.m */; };
@@ -276,6 +277,8 @@
 		A1C0A7BD17610CDA00A3A743 /* MarketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarketViewController.h; sourceTree = "<group>"; };
 		A1C0A7BF17610CDA00A3A743 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MarketView.xib; sourceTree = "<group>"; };
 		A1C0A7C017610CDA00A3A743 /* MarketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarketViewController.m; sourceTree = "<group>"; };
+		A1FCD04E1822DED500A6655A /* ContractItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractItem.h; sourceTree = "<group>"; };
+		A1FCD04F1822DED500A6655A /* ContractItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractItem.m; sourceTree = "<group>"; };
 		C90FB55A10644F8600292067 /* METInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METInstance.h; sourceTree = "<group>"; };
 		C911FED510782C50000D88E2 /* CharacterParseError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharacterParseError.h; sourceTree = "<group>"; };
 		C911FED610782C50000D88E2 /* CharacterParseError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CharacterParseError.m; sourceTree = "<group>"; };
@@ -629,6 +632,8 @@
 				A154A64617C576700076603D /* Contract.m */,
 				A154A64817C576700076603D /* Contracts.h */,
 				A154A64917C576700076603D /* Contracts.m */,
+				A1FCD04E1822DED500A6655A /* ContractItem.h */,
+				A1FCD04F1822DED500A6655A /* ContractItem.m */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -1274,6 +1279,7 @@
 				A12FC60817EA31420053DC23 /* METConquerableStations.m in Sources */,
 				A1B21DAD181EE7E700F07DBE /* ContractDetailsController.m in Sources */,
 				A1B21DB3181F102200F07DBE /* MTISKFormatter.m in Sources */,
+				A1FCD0501822DED500A6655A /* ContractItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

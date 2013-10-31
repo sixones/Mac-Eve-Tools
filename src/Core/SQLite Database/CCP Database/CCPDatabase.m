@@ -346,8 +346,13 @@
  */
 -(NSString *) typeName:(NSInteger)typeID
 {
+    return [self typeName:typeID andDescription:nil];
+}
+
+-(NSString *) typeName:(NSInteger)typeID andDescription:(NSString **)desc
+{
  	const char query[] =
-    "SELECT typeName "
+    "SELECT typeName, description "
     "FROM metTypeNames "
     "WHERE typeID = ? ";
  	sqlite3_stmt *read_stmt;
@@ -367,10 +372,14 @@
 	while( !typeName && (sqlite3_step(read_stmt) == SQLITE_ROW) )
     {
 		typeName = sqlite3_column_nsstr(read_stmt,0);
-		
+		if( desc )
+            *desc = sqlite3_column_nsstr(read_stmt, 1);
+        
 		if(lang != l_EN)
         {
 			typeName = [self translation:typeID forColumn:TRN_TYPE_NAME fallback:typeName];
+            if( desc )
+                *desc = [self translation:typeID forColumn:TRN_TYPE_DESCRIPTION fallback:*desc];
 		}
     }
     

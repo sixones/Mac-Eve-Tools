@@ -35,8 +35,13 @@ buyout
 volume">
  <row contractID="72716865" issuerID="91794908" issuerCorpID="1406664155" assigneeID="98159347" acceptorID="0" startStationID="60004588" endStationID="61000617" type="Courier" status="Outstanding" title="" forCorp="0" availability="Private" dateIssued="2013-09-15 14:59:52" dateExpired="2013-09-29 14:59:52" dateAccepted="" numDays="7" dateCompleted="" price="0.00" reward="14905500.00" collateral="0.00" buyout="0.00" volume="59622.4475" />
 */
+@class Character;
 
 @interface Contract : NSObject
+
+@property (retain) Character *character;
+@property (readonly,retain) NSString *xmlPath;
+@property (readwrite,assign) id delegate;
 
 @property (retain) NSString *type;
 @property (retain) NSString *status;
@@ -59,4 +64,10 @@ volume">
 
 @property (readonly,retain) NSString *startStationName;
 @property (readonly,retain) NSString *endStationName;
+
+@property (readonly,retain) NSDate *cachedUntil; // For contained items, not the contract itself
+@property (readonly,retain) NSMutableArray *items;
+
+// If we haven't downloaded any items, or the cachedUntil time has passed, then download and store contract items
+- (void)preloadItems;
 @end

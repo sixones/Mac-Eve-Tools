@@ -21,6 +21,7 @@
 #import "Character.h"
 #import "Contract.h"
 #import "MTISKFormatter.h"
+#import "ContractItem.h"
 
 @implementation ContractDetailsController
 
@@ -48,6 +49,8 @@
     {
 		contract = [_contract retain];
 		character = [ch retain];
+        [_contract setDelegate:self];
+        [_contract preloadItems];
 	}
 	return self;
 }
@@ -115,5 +118,54 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
 			   item:(id)item
 {
 	return NO;
-} 
+}
+
+#pragma mark Table View methods
+- (void)contractItemsFinishedUpdating
+{
+    [itemTable reloadData];
+}
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+{
+    return [[contract items] count];
+}
+
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    if( 0 == [[contract items] count] )
+        return nil;
+    
+    ContractItem *item = [[contract items] objectAtIndex:row];
+    NSString *colID = [tableColumn identifier];
+    id value = nil;
+    
+    if( [colID isEqualToString:@"name"] )
+    {
+        value = [item name];
+    }
+    else if( [colID isEqualToString:@"quantity"] )
+    {
+        value = [NSNumber numberWithInteger:[item quantity]];
+    }
+    
+    return value;
+}
+
+-(void)tableView:(NSTableView *)tableView sortDescriptorsDidChange: (NSArray *)oldDescriptors
+{
+    NSArray *newDescriptors = [tableView sortDescriptors];
+    [[contract items] sortUsingDescriptors:newDescriptors];
+    [tableView reloadData];
+}
+
+- (NSString *)tableView:(NSTableView *)tableView toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation
+{
+    if( 0 == [[contract items] count] )
+        return nil;
+
+    ContractItem *item = [[contract items] objectAtIndex:row];
+    return [item description];
+}
+
 @end

@@ -36,8 +36,8 @@
     IBOutlet NSTextField *collateralField;
     IBOutlet NSTextField *buyoutField;
     
-    IBOutlet NSOutlineView *shipAttributes;
-
+    IBOutlet NSTableView *itemTable;
+    
 	Contract *contract;
 	Character *character;
 	MTISKFormatter *iskFormatter;

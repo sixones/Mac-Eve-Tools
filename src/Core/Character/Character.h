@@ -37,7 +37,7 @@
 @class SkillPlan;
 
 @class Character;
-
+@class CharacterTemplate;
 
 @interface Character : NSObject <NSOutlineViewDataSource> {
 	NSUInteger characterId; /*char id. this + acct ID can be used to determine the URL for the sheet*/
@@ -193,6 +193,8 @@
 
 /*return YES if this Character has been awarded this cert.*/
 -(BOOL) hasCert:(NSInteger)certID;
+
+-(CharacterTemplate *)template;
 
 @property (readonly,nonatomic) NSImage* portrait;
 @property (readonly,nonatomic) NSUInteger characterId;
