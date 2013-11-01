@@ -22,8 +22,17 @@
 #import "Contract.h"
 #import "MTISKFormatter.h"
 #import "ContractItem.h"
+#import "MetLabelValueTableCellView.h"
+
+@interface ContractDetailsController()
+@property (readwrite,retain) NSArray *labels;
+@property (readwrite,retain) NSArray *values;
+@end
 
 @implementation ContractDetailsController
+
+@synthesize labels;
+@synthesize values;
 
 -(void)awakeFromNib
 {
@@ -39,7 +48,9 @@
 	[contract release];
 	[character release];
 	[iskFormatter release];
-    	
+    [labels release];
+    [values release];
+    
 	[super dealloc];
 }
 
@@ -51,6 +62,7 @@
 		character = [ch retain];
         [_contract setDelegate:self];
         [_contract preloadItems];
+        [self buildLabelsAndValues];
 	}
 	return self;
 }
@@ -80,8 +92,41 @@
     [rewardField setDoubleValue:[contract reward]];
     [collateralField setDoubleValue:[contract collateral]];
     [buyoutField setDoubleValue:[contract buyout]];
+    [issuedField setObjectValue:[contract issued]];
+    [expiredField setObjectValue:[contract expired]];
+    [acceptedField setObjectValue:[contract accepted]];
+    [completedField setObjectValue:[contract completed]];
     
     [self setVolumeLabel];
+}
+
+-(void)buildLabelsAndValues
+{
+    NSMutableArray *_labels = [NSMutableArray array];
+    NSMutableArray *_values = [NSMutableArray array];
+    
+    [_labels addObject:@"Type"];
+    [_values addObject:[contract type]];
+
+    [_labels addObject:@"Status"];
+    [_values addObject:[contract status]];
+
+    [_labels addObject:@"Contract ID"];
+    [_values addObject:[NSString stringWithFormat:@"%ld",[contract contractID]]];
+
+    [_labels addObject:@"Start"];
+    [_values addObject:[contract startStationName]];
+    
+    if( [[contract type] isEqualToString:@"Courier"] )
+    {
+        [_labels addObject:@"End"];
+        [_values addObject:[contract endStationName]];
+    }
+
+#pragma mark TODO Finish building the labels and values arrays
+    
+    [self setLabels:_labels];
+    [self setValues:_values];
 }
 
 #pragma mark Delegates
@@ -128,6 +173,8 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
+    if( valuesTable == tableView )
+        return [[self labels] count];
     return [[contract items] count];
 }
 
@@ -150,6 +197,22 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
     }
     
     return value;
+}
+
+- (id)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    if( tableView == itemTable )
+        return nil;
+    
+    if( tableView == valuesTable )
+    {
+        MetLabelValueTableCellView *cellView = [tableView makeViewWithIdentifier:@"LabelValue" owner:self];
+        cellView.labelTextField.stringValue = [[self labels] objectAtIndex:row]; // localize this
+        cellView.valueTextField.stringValue = [[self values] objectAtIndex:row];
+        return cellView;
+    }
+    
+    return nil;
 }
 
 -(void)tableView:(NSTableView *)tableView sortDescriptorsDidChange: (NSArray *)oldDescriptors

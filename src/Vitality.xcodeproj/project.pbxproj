@@ -75,6 +75,7 @@
 		A1C0A7C117610CDA00A3A743 /* MarketView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C0A7BE17610CDA00A3A743 /* MarketView.xib */; };
 		A1C0A7C217610CDA00A3A743 /* MarketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7C017610CDA00A3A743 /* MarketViewController.m */; };
 		A1FCD0501822DED500A6655A /* ContractItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD04F1822DED500A6655A /* ContractItem.m */; };
+		A1FCD05318245DDC00A6655A /* MetLabelValueTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD05218245DDC00A6655A /* MetLabelValueTableCellView.m */; };
 		C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */ = {isa = PBXBuildFile; fileRef = C911FED610782C50000D88E2 /* CharacterParseError.m */; };
 		C92067901161D837001BBE14 /* SkillAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = C920678F1161D837001BBE14 /* SkillAttribute.m */; };
 		C92067B11162C792001BBE14 /* SkillPointAttributeQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = C92067B01162C792001BBE14 /* SkillPointAttributeQueue.m */; };
@@ -279,6 +280,8 @@
 		A1C0A7C017610CDA00A3A743 /* MarketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarketViewController.m; sourceTree = "<group>"; };
 		A1FCD04E1822DED500A6655A /* ContractItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractItem.h; sourceTree = "<group>"; };
 		A1FCD04F1822DED500A6655A /* ContractItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractItem.m; sourceTree = "<group>"; };
+		A1FCD05118245DDC00A6655A /* MetLabelValueTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetLabelValueTableCellView.h; path = Core/MetLabelValueTableCellView.h; sourceTree = SOURCE_ROOT; };
+		A1FCD05218245DDC00A6655A /* MetLabelValueTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MetLabelValueTableCellView.m; path = Core/MetLabelValueTableCellView.m; sourceTree = SOURCE_ROOT; };
 		C90FB55A10644F8600292067 /* METInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METInstance.h; sourceTree = "<group>"; };
 		C911FED510782C50000D88E2 /* CharacterParseError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharacterParseError.h; sourceTree = "<group>"; };
 		C911FED610782C50000D88E2 /* CharacterParseError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CharacterParseError.m; sourceTree = "<group>"; };
@@ -821,6 +824,8 @@
 				C9FF48D81055151F0044BBAC /* GlobalData.m */,
 				C9EB4EC7105A0883009192BC /* CharacterTemplate.h */,
 				C9EB4EC8105A0883009192BC /* CharacterTemplate.m */,
+				A1FCD05118245DDC00A6655A /* MetLabelValueTableCellView.h */,
+				A1FCD05218245DDC00A6655A /* MetLabelValueTableCellView.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1280,6 +1285,7 @@
 				A1B21DAD181EE7E700F07DBE /* ContractDetailsController.m in Sources */,
 				A1B21DB3181F102200F07DBE /* MTISKFormatter.m in Sources */,
 				A1FCD0501822DED500A6655A /* ContractItem.m in Sources */,
+				A1FCD05318245DDC00A6655A /* MetLabelValueTableCellView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

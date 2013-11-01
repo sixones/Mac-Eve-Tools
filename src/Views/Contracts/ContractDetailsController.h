@@ -23,7 +23,7 @@
 @class Contract;
 @class MTISKFormatter;
 
-@interface ContractDetailsController : NSWindowController <NSURLDownloadDelegate>
+@interface ContractDetailsController : NSWindowController <NSURLDownloadDelegate,NSTableViewDataSource,NSTableViewDelegate>
 {
     IBOutlet NSTextField *typeField;
     IBOutlet NSTextField *statusField;
@@ -35,8 +35,13 @@
     IBOutlet NSTextField *rewardField;
     IBOutlet NSTextField *collateralField;
     IBOutlet NSTextField *buyoutField;
+    IBOutlet NSTextField *issuedField;
+    IBOutlet NSTextField *expiredField;
+    IBOutlet NSTextField *acceptedField;
+    IBOutlet NSTextField *completedField;
     
     IBOutlet NSTableView *itemTable;
+    IBOutlet NSTableView *valuesTable;
     
 	Contract *contract;
 	Character *character;
