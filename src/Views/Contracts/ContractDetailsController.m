@@ -36,11 +36,6 @@
 
 -(void)awakeFromNib
 {
-    iskFormatter = [[MTISKFormatter alloc] init];
-    [priceField setFormatter:iskFormatter];
-    [rewardField setFormatter:iskFormatter];
-    [collateralField setFormatter:iskFormatter];
-    [buyoutField setFormatter:iskFormatter];
 }
 
 -(void)dealloc
@@ -62,6 +57,13 @@
 		character = [ch retain];
         [_contract setDelegate:self];
         [_contract preloadItems];
+
+        iskFormatter = [[MTISKFormatter alloc] init];
+        [priceField setFormatter:iskFormatter];
+        [rewardField setFormatter:iskFormatter];
+        [collateralField setFormatter:iskFormatter];
+        [buyoutField setFormatter:iskFormatter];
+
         [self buildLabelsAndValues];
 	}
 	return self;
@@ -104,6 +106,7 @@
 {
     NSMutableArray *_labels = [NSMutableArray array];
     NSMutableArray *_values = [NSMutableArray array];
+    BOOL isCourier = [[contract type] isEqualToString:@"Courier"];
     
     [_labels addObject:@"Type"];
     [_values addObject:[contract type]];
@@ -117,13 +120,53 @@
     [_labels addObject:@"Start"];
     [_values addObject:[contract startStationName]];
     
-    if( [[contract type] isEqualToString:@"Courier"] )
+    if( isCourier )
     {
         [_labels addObject:@"End"];
         [_values addObject:[contract endStationName]];
     }
 
-#pragma mark TODO Finish building the labels and values arrays
+    [_labels addObject:@"Price"];
+    [_values addObject:[iskFormatter stringFromNumber:[NSNumber numberWithDouble:[contract price]]]];
+    
+    if( isCourier )
+    {
+        [_labels addObject:@"Reward"];
+        [_values addObject:[iskFormatter stringFromNumber:[NSNumber numberWithDouble:[contract reward]]]];
+
+        [_labels addObject:@"Collateral"];
+        [_values addObject:[iskFormatter stringFromNumber:[NSNumber numberWithDouble:[contract collateral]]]];
+    }
+    
+    if( [[contract type] isEqualToString:@"Auction"] )
+    {
+        [_labels addObject:@"Buyout"];
+        [_values addObject:[iskFormatter stringFromNumber:[NSNumber numberWithDouble:[contract buyout]]]];
+    }
+    
+    [_labels addObject:@"Issued"];
+    [_values addObject:[contract issued]];
+    
+    // TODO Skip this if the expired date is greater than completed?
+    BOOL future = [[contract expired] isGreaterThan:[NSDate date]];
+    if( future )
+        [_labels addObject:@"Expires"];
+    else
+        [_labels addObject:@"Expired"];
+    [_values addObject:[contract expired]];
+    
+    if( isCourier )
+    {
+        [_labels addObject:@"Accepted"];
+        [_values addObject:[contract accepted]];
+    }
+    
+    NSDate *completed = [contract completed];
+    if( completed )
+    {
+        [_labels addObject:@"Completed"];
+        [_values addObject:[contract completed]];
+    }
     
     [self setLabels:_labels];
     [self setValues:_values];
@@ -208,7 +251,11 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
     {
         MetLabelValueTableCellView *cellView = [tableView makeViewWithIdentifier:@"LabelValue" owner:self];
         cellView.labelTextField.stringValue = [[self labels] objectAtIndex:row]; // localize this
-        cellView.valueTextField.stringValue = [[self values] objectAtIndex:row];
+        id value = [[self values] objectAtIndex:row];
+        if( [value isKindOfClass:[NSDate class]] )
+            cellView.valueTextField.stringValue = [NSDateFormatter localizedStringFromDate:value dateStyle:NSDateFormatterLongStyle timeStyle:NSDateFormatterShortStyle];
+        else
+            cellView.valueTextField.stringValue = value;
         return cellView;
     }
     
