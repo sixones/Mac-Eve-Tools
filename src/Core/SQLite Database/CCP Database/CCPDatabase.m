@@ -1332,6 +1332,8 @@
         if( (rc = sqlite3_step(insert_attr_stmt)) != SQLITE_DONE )
         {
             NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+            sqlite3_finalize(insert_attr_stmt);
+            sqlite3_finalize(read_stmt);
             return NO;
         }
         sqlite3_reset(insert_attr_stmt);
@@ -1422,12 +1424,16 @@
     if( sqlite3_step(countStatement) == SQLITE_ERROR )
     {
         NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        sqlite3_finalize(countStatement);
 		return 0;
     }
     else
     {
         rows = sqlite3_column_nsint(countStatement, 0);
     }
+
+    sqlite3_finalize(countStatement);
+    
     return rows;
 }
 
@@ -1610,6 +1616,90 @@
 	sqlite3_finalize(read_stmt);
 	
 	return staDict;
+}
+
+- (void)createCharacterNameTable
+{
+    char *errmsg = nil;
+    const char query[] =
+    "CREATE TABLE metCharacterNames ("
+    "characterID integer NOT NULL,"
+    "name varchar(100) default NULL,"
+    "updated TIMESTAMP default CURRENT_TIMESTAMP NOT NULL,"
+    "PRIMARY KEY  (characterID)"
+    ");";
+
+    
+    [self beginTransaction];
+
+    int rc = sqlite3_exec(db, query, NULL, NULL, &errmsg);
+    if(rc != SQLITE_OK)
+    {
+        [self logError:errmsg];
+        [self rollbackTransaction];
+        return;
+    }
+    [self commitTransaction];
+}
+
+- (void)insertCharacterID:(NSUInteger)characterID name:(NSString *)name
+{
+    const char insert_attr[] = "insert into metCharacterNames (characterID,name) values(?,?)";
+    sqlite3_stmt *insert_attr_stmt;
+    
+    int rc = sqlite3_prepare_v2( db, insert_attr, (int)sizeof(insert_attr), &insert_attr_stmt, NULL);
+    if( rc != SQLITE_OK )
+    {
+        // first try to create the table, then try to prepare the insert again
+        [self createCharacterNameTable];
+        rc = sqlite3_prepare_v2( db, insert_attr, (int)sizeof(insert_attr), &insert_attr_stmt, NULL);
+        if( rc != SQLITE_OK )
+        {
+            NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+            return;
+        }
+	}
+    
+	rc = sqlite3_bind_nsint( insert_attr_stmt, 1, characterID );
+    rc = sqlite3_bind_text( insert_attr_stmt, 2, [name UTF8String], (int)[name length], NULL );
+    
+    if( (rc = sqlite3_step(insert_attr_stmt)) != SQLITE_DONE )
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+    }
+    
+    sqlite3_finalize(insert_attr_stmt);
+}
+
+- (NSString *)characterNameForID:(NSInteger)characterID
+{
+    // first make sure the staStation table exists
+	const char query[] =
+    "SELECT name "
+    "FROM metCharacterNames "
+    "WHERE characterID = ?;";
+	sqlite3_stmt *read_stmt;
+	int rc;
+	
+	rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+	if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+		return nil;
+	}
+		
+	sqlite3_bind_nsint(read_stmt,1,characterID);
+	
+    NSString *characterName = nil;
+    
+    if( (rc = sqlite3_step(read_stmt)) != SQLITE_DONE )
+    {
+		
+		characterName = sqlite3_column_nsstr(read_stmt,0);
+	}
+	
+	sqlite3_finalize(read_stmt);
+	
+	return characterName;
 }
 
 @end

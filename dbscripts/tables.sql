@@ -202,3 +202,11 @@ CREATE TABLE "metTypeNames" (
   "description" varchar(3000) default NULL,
   PRIMARY KEY  ("typeID")
   );
+
+-- Also see the createCharacterNameTable method in CCPDatabase.m
+CREATE TABLE "metCharacterNames" (
+  "characterID" integer NOT NULL,
+  "name" varchar(100) default NULL,
+  "updated" TIMESTAMP default CURRENT_TIMESTAMP NOT NULL,
+  PRIMARY KEY  ("characterID")
+  );

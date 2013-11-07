@@ -8,40 +8,25 @@
 
 #import <Foundation/Foundation.h>
 
+#import "METIDtoName.h"
 
-/*
- <rowset name="contractList" key="contractID" 
-columns="contractID
-issuerID
-issuerCorpID
-assigneeID
-acceptorID
-startStationID
-endStationID
-type
-status
-title
-forCorp
-availability
-dateIssued
-dateExpired
-dateAccepted
-numDays
-dateCompleted
-price
-reward
-collateral
-buyout
-volume">
- <row contractID="72716865" issuerID="91794908" issuerCorpID="1406664155" assigneeID="98159347" acceptorID="0" startStationID="60004588" endStationID="61000617" type="Courier" status="Outstanding" title="" forCorp="0" availability="Private" dateIssued="2013-09-15 14:59:52" dateExpired="2013-09-29 14:59:52" dateAccepted="" numDays="7" dateCompleted="" price="0.00" reward="14905500.00" collateral="0.00" buyout="0.00" volume="59622.4475" />
-*/
+@protocol ContractDelegate<NSObject>
+- (void)contractItemsFinishedUpdating;
+- (void)contractNamesFinishedUpdating;
+@end
+
 @class Character;
+@class METIDtoName;
 
-@interface Contract : NSObject
+@interface Contract : NSObject<METIDtoNameDelegate>
+{
+@private
+    METIDtoName *nameFetcher;
+}
 
 @property (retain) Character *character;
 @property (readonly,retain) NSString *xmlPath;
-@property (readwrite,assign) id delegate;
+@property (readwrite,assign) id<ContractDelegate> delegate;
 
 @property (retain) NSString *type;
 @property (retain) NSString *status;
@@ -54,6 +39,15 @@ volume">
 @property (assign) double collateral;
 @property (assign) double buyout;
 
+@property (assign) NSUInteger issuerID;
+@property (assign) NSUInteger issuerCorpID;
+@property (assign) NSUInteger assigneeID;
+@property (assign) NSUInteger acceptorID;
+@property (readonly,retain) NSString *issuerName;
+@property (readonly,retain) NSString *issuerCorpName;
+@property (readonly,retain) NSString *assigneeName;
+@property (readonly,retain) NSString *acceptorName;
+
 @property (retain) NSDate *issued;
 @property (retain) NSDate *expired;
 @property (retain) NSDate *accepted;
@@ -61,6 +55,7 @@ volume">
 @property (retain) NSString *availability;
 @property (retain) NSString *title;
 @property (assign) NSUInteger days;
+@property (assign) BOOL forCorp;
 
 @property (readonly,retain) NSString *startStationName;
 @property (readonly,retain) NSString *endStationName;
@@ -70,4 +65,7 @@ volume">
 
 // If we haven't downloaded any items, or the cachedUntil time has passed, then download and store contract items
 - (void)preloadItems;
+
+// Get names associated with IDs in this contract
+- (void)preloadNames;
 @end

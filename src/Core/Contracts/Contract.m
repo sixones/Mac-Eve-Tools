@@ -13,6 +13,7 @@
 #import "CCPType.h"
 #import "CCPDatabase.h"
 #import "Config.h"
+#import "METIDtoName.h"
 
 #import "Character.h"
 #import "CharacterTemplate.h"
@@ -22,11 +23,44 @@
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
+/* Sample xml of a contract
+ <rowset name="contractList" key="contractID"
+ columns="contractID
+ issuerID
+ issuerCorpID
+ assigneeID
+ acceptorID
+ startStationID
+ endStationID
+ type
+ status
+ title
+ forCorp
+ availability
+ dateIssued
+ dateExpired
+ dateAccepted
+ numDays
+ dateCompleted
+ price
+ reward
+ collateral
+ buyout
+ volume">
+ <row contractID="72716865" issuerID="91794908" issuerCorpID="1406664155" assigneeID="98159347" acceptorID="0" startStationID="60004588" endStationID="61000617" type="Courier" status="Outstanding" title="" forCorp="0" availability="Private" dateIssued="2013-09-15 14:59:52" dateExpired="2013-09-29 14:59:52" dateAccepted="" numDays="7" dateCompleted="" price="0.00" reward="14905500.00" collateral="0.00" buyout="0.00" volume="59622.4475" />
+ */
+
 @interface Contract()
 @property (readwrite) NSString *stationName;
 @property (readwrite,retain) NSDate *cachedUntil; // For contained items, not the contract itself
 @property (readwrite,retain) NSString *xmlPath;
 @property (readwrite,assign) BOOL loading;
+@property (readwrite,retain) NSString *issuerName;
+@property (readwrite,retain) NSString *issuerCorpName;
+@property (readwrite,retain) NSString *assigneeName;
+@property (readwrite,retain) NSString *acceptorName;
+@property (readwrite,retain) NSString *startStationName;
+@property (readwrite,retain) NSString *endStationName;
 @end
 
 @implementation Contract
@@ -40,6 +74,15 @@
 @synthesize contractID;
 @synthesize startStationID;
 @synthesize endStationID;
+
+@synthesize issuerID;
+@synthesize issuerCorpID;
+@synthesize acceptorID;
+@synthesize assigneeID;
+@synthesize issuerName = _issuerName;
+@synthesize issuerCorpName = _issuerCorpName;
+@synthesize assigneeName = _assigneeName;
+@synthesize acceptorName = _acceptorName;
 
 @synthesize startStationName = _startStationName;
 @synthesize endStationName = _endStationName;
@@ -55,6 +98,7 @@
 @synthesize availability;
 @synthesize title;
 @synthesize days;
+@synthesize forCorp;
 @synthesize cachedUntil;
 @synthesize items = _items;
 @synthesize loading;
@@ -64,6 +108,8 @@
     if( self = [super init] )
     {
         _items = [[NSMutableArray alloc] init];
+        nameFetcher = [[METIDtoName alloc] init];
+        [nameFetcher setDelegate:self];
         [self setLoading:NO];
     }
     return self;
@@ -86,6 +132,7 @@
     [cachedUntil release];
     [_startStationName release];
     [_endStationName release];
+    [nameFetcher release];
 }
 
 - (void)setStartStationName:(NSString *)newStationName
@@ -154,6 +201,8 @@
         [self setLoading:NO];
         return;
     }
+    
+    [self setLoading:YES];
     
     CharacterTemplate *template = [[self character] template];
     
@@ -335,13 +384,68 @@
         
     }
     
-    if( [delegate respondsToSelector:@selector(contractItemsFinishedUpdating)] )
+    if( [delegate conformsToProtocol:@protocol(ContractDelegate)] )
     {
-        [delegate performSelector:@selector(contractItemsFinishedUpdating)];
+        [delegate contractItemsFinishedUpdating];
     }
     
     [self setLoading:NO];
 	return YES;
+}
+
+- (void)preloadNames
+{
+    NSMutableSet *ids = [NSMutableSet set];
+    
+    if( nil == [self issuerName] )
+        [ids addObject:[NSNumber numberWithInteger:[self issuerID]]];
+    if( nil == [self issuerCorpName] )
+        [ids addObject:[NSNumber numberWithInteger:[self issuerCorpID]]];
+    if( nil == [self assigneeName] )
+        [ids addObject:[NSNumber numberWithInteger:[self assigneeID]]];
+    if( nil == [self acceptorName] )
+        [ids addObject:[NSNumber numberWithInteger:[self acceptorID]]];
+    
+    if( [ids count] )
+    {
+        [nameFetcher namesForIDs:ids];
+    }
+}
+
+- (void)namesFromIDs:(NSDictionary *)names
+{
+    NSString *name = nil;
+    BOOL changed = NO;
+    
+    name = [names objectForKey:[NSNumber numberWithInteger:[self issuerID]]];
+    if( name )
+    {
+        [self setIssuerName:name];
+        changed = YES;
+    }
+    name = [names objectForKey:[NSNumber numberWithInteger:[self issuerCorpID]]];
+    if( name )
+    {
+        [self setIssuerCorpName:name];
+        changed = YES;
+    }
+    name = [names objectForKey:[NSNumber numberWithInteger:[self assigneeID]]];
+    if( name )
+    {
+        [self setAssigneeName:name];
+        changed = YES;
+    }
+    name = [names objectForKey:[NSNumber numberWithInteger:[self acceptorID]]];
+    if( name )
+    {
+        [self setAcceptorName:name];
+        changed = YES;
+    }
+    
+    if( changed && [delegate conformsToProtocol:@protocol(ContractDelegate)] )
+    {
+        [delegate contractNamesFinishedUpdating];
+    }
 }
 
 @end

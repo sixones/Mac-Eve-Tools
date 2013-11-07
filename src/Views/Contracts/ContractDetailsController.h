@@ -19,27 +19,13 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "Contract.h"
+
 @class Character;
-@class Contract;
 @class MTISKFormatter;
 
-@interface ContractDetailsController : NSWindowController <NSURLDownloadDelegate,NSTableViewDataSource,NSTableViewDelegate>
-{
-    IBOutlet NSTextField *typeField;
-    IBOutlet NSTextField *statusField;
-    IBOutlet NSTextField *contractIDField;
-    IBOutlet NSTextField *startStationField;
-    IBOutlet NSTextField *endStationField;
-    IBOutlet NSTextField *volumeField;
-    IBOutlet NSTextField *priceField;
-    IBOutlet NSTextField *rewardField;
-    IBOutlet NSTextField *collateralField;
-    IBOutlet NSTextField *buyoutField;
-    IBOutlet NSTextField *issuedField;
-    IBOutlet NSTextField *expiredField;
-    IBOutlet NSTextField *acceptedField;
-    IBOutlet NSTextField *completedField;
-    
+@interface ContractDetailsController : NSWindowController <NSURLDownloadDelegate,NSTableViewDataSource,NSTableViewDelegate,ContractDelegate>
+{    
     IBOutlet NSTableView *itemTable;
     IBOutlet NSTableView *valuesTable;
     

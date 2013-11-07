@@ -309,23 +309,23 @@
                 }
                 else if( xmlStrcmp(attr->name, (xmlChar *)"forCorp") == 0 )
                 {
-                    //NSLog( @"Contract forCorp: %@", value );
+                    [contract setDays:[value integerValue]];
                 }
                 else if( xmlStrcmp(attr->name, (xmlChar *)"issuerID") == 0 )
                 {
-                    //[contract setDays:[value integerValue]];
+                    [contract setIssuerID:[value integerValue]];
                 }
                 else if( xmlStrcmp(attr->name, (xmlChar *)"issuerCorpID") == 0 )
                 {
-                    //[contract setDays:[value integerValue]];
+                    [contract setIssuerCorpID:[value integerValue]];
                 }
                 else if( xmlStrcmp(attr->name, (xmlChar *)"assigneeID") == 0 )
                 {
-                    //[contract setDays:[value integerValue]];
+                    [contract setAssigneeID:[value integerValue]];
                 }
                 else if( xmlStrcmp(attr->name, (xmlChar *)"acceptorID") == 0 )
                 {
-                    //[contract setDays:[value integerValue]];
+                    [contract setAcceptorID:[value integerValue]];
                 }
             }
             [contracts addObject:contract];
