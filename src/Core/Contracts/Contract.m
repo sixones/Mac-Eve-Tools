@@ -401,9 +401,9 @@
         [ids addObject:[NSNumber numberWithInteger:[self issuerID]]];
     if( nil == [self issuerCorpName] )
         [ids addObject:[NSNumber numberWithInteger:[self issuerCorpID]]];
-    if( nil == [self assigneeName] )
+    if( nil == [self assigneeName] && (0 != [self assigneeID]) )
         [ids addObject:[NSNumber numberWithInteger:[self assigneeID]]];
-    if( nil == [self acceptorName] )
+    if( nil == [self acceptorName] && (0 != [self acceptorID]) )
         [ids addObject:[NSNumber numberWithInteger:[self acceptorID]]];
     
     if( [ids count] )

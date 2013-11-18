@@ -109,14 +109,19 @@
     [_values addObject:(value?value:[NSNumber numberWithInteger:[contract issuerCorpID]])];
     
     // skip this for non-courier contracts?
-    value = [contract assigneeName];
-    [_labels addObject:@"Assignee"];
-    [_values addObject:(value?value:[NSNumber numberWithInteger:[contract assigneeID]])];
+    if( [contract assigneeID] != 0 )
+    {
+        value = [contract assigneeName];
+        [_labels addObject:@"Assignee"];
+        [_values addObject:(value?value:[NSNumber numberWithInteger:[contract assigneeID]])];
+    }
     
-    value = [contract acceptorName];
-    [_labels addObject:@"Acceptor"];
-    [_values addObject:(value?value:[NSNumber numberWithInteger:[contract acceptorID]])];
-    
+    if( [contract acceptorID] != 0 )
+    {
+        value = [contract acceptorName];
+        [_labels addObject:@"Acceptor"];
+        [_values addObject:(value?value:[NSNumber numberWithInteger:[contract acceptorID]])];
+    }
     
     [_labels addObject:@"Volume"];
     NSString *withSeparators = [NSNumberFormatter localizedStringFromNumber:[NSNumber numberWithDouble:[contract volume]] numberStyle:NSNumberFormatterDecimalStyle];

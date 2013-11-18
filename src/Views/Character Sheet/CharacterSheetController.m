@@ -140,7 +140,7 @@
 	}
     
     [cloneSP setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%@ (%@)", nil), [character stringForKey: CHAR_CLONE_NAME], [SPFormatter stringFromNumber:[NSNumber numberWithInteger: clonePoints]] ]];
-	
+    
 	//[cloneSP setObjectValue: [NSNumber numberWithInteger:clonePoints]];
 	[cloneSP sizeToFit];
 	
@@ -198,6 +198,11 @@
 		[charTraining setStringValue:training];
 		[charTraining sizeToFit];
 	}
+    else if( trainingTimeOfCurrentSkill < 0 )
+    {
+        // We're supposedly training something, but the time left is negative. Something is wrong.
+        NSLog( @"Time remaining for current skill is invalid" );
+    }
 	
 	if([[character trainingQueue]skillCount] > 0){
 		
