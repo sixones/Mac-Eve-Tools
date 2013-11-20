@@ -64,14 +64,15 @@ AND attributeID IN
 /usr/bin/python $SCRIPT -t crtCategories -f $1 \
 -q "SELECT categoryID, categoryName FROM crtCategories WHERE categoryID <> 17;"
 
-/usr/bin/python $SCRIPT -t crtCertificates -f $1 \
--q "SELECT certificateID, categoryID, classID, grade, description FROM crtCertificates;";
-
-/usr/bin/python $SCRIPT -t crtClasses -f $1 \
--q "SELECT classID, className FROM crtClasses;";
-
-/usr/bin/python $SCRIPT -t crtRelationships -f $1 \
--q "SELECT relationshipID, parentID, parentTypeID, parentLevel, childID from crtRelationships;";
+# Pre-Rubicon certificate tables
+#/usr/bin/python $SCRIPT -t crtCertificates -f $1 \
+#-q "SELECT certificateID, categoryID, classID, grade, description FROM crtCertificates;";
+#
+#/usr/bin/python $SCRIPT -t crtClasses -f $1 \
+#-q "SELECT classID, className FROM crtClasses;";
+#
+#/usr/bin/python $SCRIPT -t crtRelationships -f $1 \
+#-q "SELECT relationshipID, parentID, parentTypeID, parentLevel, childID from crtRelationships;";
 
 # For Market Orders UI
 /usr/bin/python $SCRIPT -t metStations -f $1 \
@@ -81,6 +82,7 @@ AND attributeID IN
 -q "SELECT typeID, typeName, description FROM invTypes WHERE published = 1;";
 
 
+/usr/bin/python dump_certificates.py certificates.yaml >> $1
 /usr/bin/python dump_pre.py >> $1
 /usr/bin/python dump_attrs.py -f $1
 

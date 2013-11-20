@@ -147,6 +147,8 @@ CREATE TABLE "crtCategories" (
 	PRIMARY KEY("categoryID")
 );
 
+/*
+-- Pre-Rubicon certificate tables
 CREATE TABLE "crtCertificates" (
 	"certificateID" int(11),
 	"categoryID" smallint(6),
@@ -170,7 +172,33 @@ CREATE TABLE "crtRelationships" (
 	"childID" int(11),
 	PRIMARY KEY("relationshipID")
 );
+*/
 
+-- Rubicon certificate tables
+CREATE TABLE "crtCertificates" (
+    "certificateID" int(11) NOT NULL,
+    "groupID" smallint(6),
+    "name" varchar(100),
+    "description" varchar(500),
+    PRIMARY KEY("certificateID")
+    );
+
+CREATE TABLE "crtRecommendations" (
+    "certificateID" int(11) NOT NULL,
+    "typeID" int(11) NOT NULL,
+    PRIMARY KEY("certificateID","typeID")
+    );
+
+CREATE TABLE "crtCertSkills" (
+    "certificateID" int(11) NOT NULL,
+    "typeID" smallint(6) NOT NULL,
+    "basic" smallint(6),
+    "standard" smallint(6),
+    "improved" smallint(6),
+    "advanced" smallint(6),
+    "elite" smallint(6),
+    PRIMARY KEY("certificateID","typeID")
+    );
 
 
 CREATE TABLE "version"(

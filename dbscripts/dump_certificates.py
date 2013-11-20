@@ -22,13 +22,13 @@ def dumpCertificates(certFile):
             groupID = item["groupID"]
             name = item["name"]
             # insert this certificate into the database
-            print u"INSERT INTO certCertificates VALUES(%s,%s,'%s','%s');" %(certificateID,groupID,name,description)
+            print u"INSERT INTO crtCertificates VALUES(%s,%s,'%s','%s');" %(certificateID,groupID,name,description)
 
             if "recommendedFor" in item:
                 recommendedFor = item["recommendedFor"] # This will be a list
                 for recommend in recommendedFor:
                     # Insert this recommendation into the database
-                    print u"INSERT INTO certRecommendations VALUES(%s,%s);" %(certificateID,recommend)
+                    print u"INSERT INTO crtRecommendations VALUES(%s,%s);" %(certificateID,recommend)
 
             skills = item["skillTypes"] # This will be another dictionary, I think
             for skillID, levels in skills.items():
@@ -48,7 +48,7 @@ def dumpCertificates(certFile):
                 if "elite" in levels:
                     elite = levels["elite"]
                 # insert this skill into the cert skill table
-                print u"INSERT INTO certCertSkills VALUES(%s,%s,%s,%s,%s,%s,%s);" %(certificateID,skillID,basic,standard,improved,advanced,elite)
+                print u"INSERT INTO crtCertSkills VALUES(%s,%s,%s,%s,%s,%s,%s);" %(certificateID,skillID,basic,standard,improved,advanced,elite)
             break
 
         print u'COMMIT TRANSACTION;'
