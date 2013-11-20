@@ -14,6 +14,7 @@
 #import "CertCategory.h"
 #import "CertClass.h"
 #import "CertPair.h"
+#import "CertGroup.h"
 
 #import "GlobalData.h"
 
@@ -47,7 +48,7 @@
 		certs = [[GlobalData sharedInstance]certTree];
 		foundSearchObjects = [[NSMutableArray alloc]init];
 		certClasses = [[NSMutableArray alloc]init];
-		[self buildCertClassArray];
+		//[self buildCertClassArray];
 	}
 	return self;
 }
@@ -115,6 +116,10 @@
 	if([item isKindOfClass:[CertClass class]]){
 		return [item certCount];
 	}
+    
+	if([item isKindOfClass:[CertGroup class]]){
+		return [item count];
+	}
 	
 	assert(0);
 	return 0;
@@ -140,6 +145,10 @@
 		return [item certAtIndex:index];
 	}
 	
+    if([item isKindOfClass:[CertGroup class]]){
+        return [item certAtIndex:index];
+    }
+    
 	assert(0);
 	return nil;
 }
@@ -169,7 +178,9 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 	if([item isKindOfClass:[Cert class]]){
 		return [item certGradeText];
 	}
-	
+    if([item isKindOfClass:[CertGroup class]]){
+        return [item name];
+    }
 	assert(0);
 	
 	return nil;

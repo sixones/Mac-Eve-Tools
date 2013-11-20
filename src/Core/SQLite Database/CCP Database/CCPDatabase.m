@@ -836,7 +836,8 @@
 		certArray = [self privateCertCertPrereqs:certID];
 		
 		Cert *c = [Cert createCert:certID
-							 grade:certGrade
+							 group:certGrade
+                              name:nil
 							  text:certDesc 
 						  skillPre:skillArray 
 						   certPre:certArray 
@@ -951,12 +952,102 @@
 	return array;
 }
 
+-(NSArray *)skillRequirementsForCertificate:(NSInteger)certID
+{
+   	const char query[] =
+    "SELECT typeID,basic,standard,improved,advanced,elite "
+    "FROM crtCertSkills";
+	sqlite3_stmt *read_stmt;
+	NSMutableArray *array = [[[NSMutableArray alloc] init] autorelease];
+	int rc;
+	
+	rc = sqlite3_prepare_v2(db, query,(int)sizeof(query),&read_stmt,NULL);
+	if(rc != SQLITE_OK)
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+		return nil;
+	}
+	
+	while(sqlite3_step(read_stmt) == SQLITE_ROW)
+    {
+		NSInteger skillID;
+        NSInteger basic;
+        NSInteger standard;
+        NSInteger improved;
+        NSInteger advanced;
+        NSInteger elite;
+		
+		skillID = sqlite3_column_nsint(read_stmt,0);
+        basic = sqlite3_column_nsint(read_stmt,1);
+        standard = sqlite3_column_nsint(read_stmt,1);
+        improved = sqlite3_column_nsint(read_stmt,1);
+        advanced = sqlite3_column_nsint(read_stmt,1);
+        elite = sqlite3_column_nsint(read_stmt,1);
+        [array addObject:[NSArray arrayWithObjects:[NSNumber numberWithInteger:skillID],
+                          [NSNumber numberWithInteger:basic],
+                          [NSNumber numberWithInteger:standard],
+                          [NSNumber numberWithInteger:improved],
+                          [NSNumber numberWithInteger:advanced],
+                          [NSNumber numberWithInteger:elite],
+                          nil]];
+    }
+    
+    return array;
+}
+
+-(NSArray *)parseCertificates
+{
+	const char query[] =
+    "SELECT certificateID,groupID,name,description "
+    "FROM crtCertificates";
+	sqlite3_stmt *read_stmt;
+	NSMutableArray *array = [[[NSMutableArray alloc]init]autorelease];
+	int rc;
+	
+	rc = sqlite3_prepare_v2(db, query,(int)sizeof(query),&read_stmt,NULL);
+	if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+		return nil;
+	}
+	
+	while( sqlite3_step(read_stmt) == SQLITE_ROW )
+    {
+		NSInteger cID = sqlite3_column_nsint(read_stmt,0);
+        NSInteger gID = sqlite3_column_nsint(read_stmt,1);
+		NSString *cName = sqlite3_column_nsstr(read_stmt,2);
+        NSString *cDesc = sqlite3_column_nsstr(read_stmt,3);
+		
+		if(lang != l_EN){
+            // TODO: This will need to be updated for Rubicon
+			cName = [self translation:cID
+                            forColumn:TRN_CRTCAT_NAME
+                             fallback:cName];
+		}
+		
+        NSArray *skillArray = [self skillRequirementsForCertificate:cID];
+		Cert *c = [Cert createCert:cID
+                             group:gID
+                              name:cName
+                              text:cDesc
+                          skillPre:skillArray
+                           certPre:nil
+                         certClass:nil];
+		[array addObject:c];
+	}
+	
+	sqlite3_finalize(read_stmt);
+	
+	return array;
+}
+
 -(CertTree*) buildCertTree
 {
-	NSMutableDictionary *dict = [[[NSMutableDictionary alloc]init]autorelease];
-	NSArray *catArray = [self privateParseCertCategories:dict];
+    NSArray *newCerts = [self parseCertificates];
+    CertTree *tree = [CertTree createCertTree:newCerts];
+//	NSMutableDictionary *dict = [[[NSMutableDictionary alloc]init]autorelease];
+//	NSArray *catArray = [self privateParseCertCategories:dict];
 	
-	return [CertTree createCertTree:catArray certDict:dict];
+	return tree;
 }
 
 // Not sure how, but my copy of the database had zeroes in the parentTypeID column instead of NULLS

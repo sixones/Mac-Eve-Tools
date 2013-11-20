@@ -23,27 +23,43 @@
 @interface Cert : NSObject {
 	NSInteger certID;	
 	NSInteger certGrade;
-	
+	NSInteger groupID;
+    
+    NSString *name;
 	NSString *certDescription;
 	
 	NSArray *certPrereqs; //Certs requried as prereqs. (NSInteger certID)
 	NSArray *skillPrereqs; //Skills required for this cert. (SkillPair)
 	
-	
-	CertClass *parent; // NOT RETAINED.
+    // Skill pairs required for each level of this certificate
+    NSArray *basicSkills;
+    NSArray *standardSkills;
+    NSArray *improvedSkills;
+    NSArray *advancedSkills;
+    NSArray *eliteSkills;
+    
+    CertClass *parent; // NOT RETAINED.
 }
 
 @property (readonly,nonatomic) NSInteger certID;
 @property (readonly,nonatomic) NSInteger certGrade;
-@property (readonly,nonatomic) NSString* certDescription;
+@property (readonly,nonatomic) NSInteger groupID;
+@property (readonly,nonatomic,retain) NSString *name;
+@property (readonly,nonatomic,retain) NSString* certDescription;
 
 @property (readonly,nonatomic) NSArray* certPrereqs;
-@property (readonly,nonatomic) NSArray* skillPrereqs;
+@property (readonly,nonatomic,retain) NSArray* skillPrereqs;
+@property (readonly,nonatomic,retain) NSArray* basicSkills;
+@property (readonly,nonatomic,retain) NSArray* standardSkills;
+@property (readonly,nonatomic,retain) NSArray* improvedSkills;
+@property (readonly,nonatomic,retain) NSArray* advancedSkills;
+@property (readonly,nonatomic,retain) NSArray* eliteSkills;
 
 @property (readonly,nonatomic) CertClass* parent;
 
 +(Cert*) createCert:(NSInteger)cID 
-			  grade:(NSInteger)cGrade 
+			  group:(NSInteger)gID
+               name:(NSString *)cName
 			   text:(NSString*)cDesc
 		   skillPre:(NSArray*)sPre
 			certPre:(NSArray*)cPre

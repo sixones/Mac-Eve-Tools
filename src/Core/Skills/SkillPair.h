@@ -28,6 +28,8 @@
 @property (readonly,nonatomic) NSNumber* typeID;
 @property (readonly,nonatomic) NSInteger skillLevel;
 
++(SkillPair *) withSkill:(NSNumber *)skill level:(NSInteger)level;
+
 -(SkillPair*) initWithSkill:(NSNumber*)skill level:(NSInteger)level;
 
 -(NSComparisonResult) compare:(SkillPair*)rhs;

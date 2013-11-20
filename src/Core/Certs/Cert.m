@@ -11,20 +11,37 @@
 #import "CertPair.h"
 #import "CertTree.h"
 #import "CertClass.h"
+#import "SkillPair.h"
+
+@interface Cert()
+@property (readwrite,nonatomic,retain) NSArray* basicSkills;
+@property (readwrite,nonatomic,retain) NSArray* standardSkills;
+@property (readwrite,nonatomic,retain) NSArray* improvedSkills;
+@property (readwrite,nonatomic,retain) NSArray* advancedSkills;
+@property (readwrite,nonatomic,retain) NSArray* eliteSkills;
+@end
 
 @implementation Cert
 
 @synthesize certID;
 @synthesize certGrade;
+@synthesize groupID;
+@synthesize name;
 @synthesize certDescription;
 
 @synthesize skillPrereqs;
 @synthesize certPrereqs;
+@synthesize basicSkills;
+@synthesize standardSkills;
+@synthesize improvedSkills;
+@synthesize advancedSkills;
+@synthesize eliteSkills;
 
 @synthesize parent;
 
 -(void) dealloc
 {
+    [name release];
 	[certDescription release];
 	[skillPrereqs release];
 	[certPrereqs release];
@@ -63,9 +80,42 @@
 	return [NSString stringWithFormat:@"%@ - %@",[parent certClassName],[self certGradeText]];
 }
 
+-(void)addOneSkill:(int)index fromArray:(NSArray *)aSkill toArray:(NSMutableArray *)array
+{
+    NSInteger level = [[aSkill objectAtIndex:index] integerValue];
+    if( level > 0 )
+    {
+        [array addObject:[SkillPair withSkill:[aSkill objectAtIndex:0] level:level]];
+    }
+}
+
+-(void)parseDatabaseSkills:(NSArray *)skills
+{
+    NSMutableArray *basic = [NSMutableArray array];
+    NSMutableArray *standard = [NSMutableArray array];
+    NSMutableArray *improved = [NSMutableArray array];
+    NSMutableArray *advanced = [NSMutableArray array];
+    NSMutableArray *elite = [NSMutableArray array];
+    
+    for( NSArray *aSkill in skills )
+    {
+        [self addOneSkill:1 fromArray:aSkill toArray:basic];
+        [self addOneSkill:2 fromArray:aSkill toArray:standard];
+        [self addOneSkill:3 fromArray:aSkill toArray:improved];
+        [self addOneSkill:4 fromArray:aSkill toArray:advanced];
+        [self addOneSkill:5 fromArray:aSkill toArray:elite];
+    }
+    
+    [self setBasicSkills:basic];
+    [self setStandardSkills:standard];
+    [self setImprovedSkills:improved];
+    [self setAdvancedSkills:advanced];
+    [self setEliteSkills:elite];
+}
 
 -(Cert*) initWithDetails:(NSInteger)cID 
-				   grade:(NSInteger)cGrade 
+				   group:(NSInteger)gID
+                    name:(NSString *)cName
 					text:(NSString*)cDesc
 				skillPre:(NSArray*)sPre
 				 certPre:(NSArray*)cPre
@@ -73,24 +123,29 @@
 {
 	if((self = [super init])){
 		certID = cID;
-		certGrade = cGrade;
+		certGrade = 0;
+        groupID = gID;
+        name = [cName retain];
 		certDescription = [cDesc retain];
-		skillPrereqs = [sPre retain];
+		skillPrereqs = nil; //[sPre retain];
 		certPrereqs = [cPre retain];
 		parent = cC; //NOT RETAINED
+        [self parseDatabaseSkills:sPre];
 	}
 	return self;
 }
 
 +(Cert*) createCert:(NSInteger)cID 
-			  grade:(NSInteger)cGrade 
+			  group:(NSInteger)gID
+               name:(NSString *)cName
 			   text:(NSString*)cDesc
 		   skillPre:(NSArray*)sPre
 			certPre:(NSArray*)cPre
 		  certClass:(CertClass*)cC
 {
 	Cert *c = [[Cert alloc]initWithDetails:cID 
-									 grade:cGrade 
+									 group:gID
+                                      name:cName
 									  text:cDesc
 								  skillPre:sPre
 								   certPre:cPre

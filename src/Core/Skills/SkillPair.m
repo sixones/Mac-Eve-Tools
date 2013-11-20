@@ -26,6 +26,12 @@
 @synthesize typeID;
 @synthesize skillLevel;
 
++(SkillPair *) withSkill:(NSNumber *)skill level:(NSInteger)level
+{
+    SkillPair *pair = [[SkillPair alloc] initWithSkill:skill level:level];
+    return [pair autorelease];
+}
+
 -(SkillPair*) initWithSkill:(NSNumber*)skill level:(NSInteger)level
 {
 	if(self = [super init]){

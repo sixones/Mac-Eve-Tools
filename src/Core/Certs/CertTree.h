@@ -12,17 +12,19 @@
 @class Cert;
 
 @interface CertTree : NSObject {
-	NSMutableArray *certCategories;
+	NSMutableArray *certGroups;
 	
 	NSMutableDictionary *allCerts;
+    NSMutableDictionary *certsByGroupID;
+    NSArray *certificates;
 }
+
+@property (readonly,retain) NSArray *certificates;
 
 -(NSInteger) catCount;
 -(CertCategory*) catAtIndex:(NSInteger)index;
 
 -(Cert*) certForID:(NSInteger)certID;
--(NSDictionary*) allCerts;
 
-+(CertTree*) createCertTree:(NSArray*)certCats certDict:(NSDictionary*)certs;
-
++(CertTree *) createCertTree:(NSArray *)certs; // rubicon version
 @end

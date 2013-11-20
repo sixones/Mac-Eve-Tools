@@ -1,5 +1,6 @@
 #! /usr/bin/python
 
+import re
 from optparse import OptionParser
 from yaml import load, dump
 try:
@@ -21,6 +22,10 @@ def dumpCertificates(certFile):
             description = item["description"]
             groupID = item["groupID"]
             name = item["name"]
+
+            name = re.sub("'","''",name)
+            description = re.sub("'","''",description)
+
             # insert this certificate into the database
             print u"INSERT INTO crtCertificates VALUES(%s,%s,'%s','%s');" %(certificateID,groupID,name,description)
 
@@ -49,7 +54,6 @@ def dumpCertificates(certFile):
                     elite = levels["elite"]
                 # insert this skill into the cert skill table
                 print u"INSERT INTO crtCertSkills VALUES(%s,%s,%s,%s,%s,%s,%s);" %(certificateID,skillID,basic,standard,improved,advanced,elite)
-            break
 
         print u'COMMIT TRANSACTION;'
 

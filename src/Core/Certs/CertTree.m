@@ -11,46 +11,39 @@
 #import "Cert.h"
 #import "CertClass.h"
 #import "CertCategory.h"
+#import "CertGroup.h"
 
 #import "SkillPair.h"
 #import "CertPair.h"
 
-#import <libxml/tree.h>
-#import <libxml/parser.h>
-
-#import "Helpers.h"
-#import "XmlHelpers.h"
-
+@interface CertTree()
+@property (readwrite,retain) NSArray *certificates;
+@end
 
 @implementation CertTree
-
--(NSDictionary*) allCerts
-{
-	return allCerts;
-}
-
-/*
--(CertTree*) initWithXml:(NSString*)xmlPath
-{
-	NSLog(@"Certs from XML has been removed. use the database");
-	[self doesNotRecognizeSelector:_cmd];
-}
- */
+@synthesize certificates;
 
 -(void)dealloc
 {
 	[allCerts release];
-	[certCategories release];
+	[certGroups release];
 	[super dealloc];
 }
 
 -(NSInteger) catCount
 {
-	return [certCategories count];
+	return [certGroups count];
 }
--(CertCategory*) catAtIndex:(NSInteger)index
+-(CertGroup *) catAtIndex:(NSInteger)index
 {
-	return [certCategories objectAtIndex:index];
+	return [certGroups objectAtIndex:index];
+}
+-(CertGroup *) groupForID:(NSInteger)gID
+{
+    for( CertGroup *aGroup in certGroups )
+        if( gID == [aGroup groupID] )
+            return aGroup;
+    return nil;
 }
 
 -(Cert*) certForID:(NSInteger)certID
@@ -58,22 +51,34 @@
 	return [allCerts objectForKey:[NSNumber numberWithInteger:certID]];
 }
 
--(CertTree*) initWithCats:(NSArray*)certCats
-				  andDict:(NSDictionary*)dict
+-(CertTree *) initWithCertificates:(NSArray *)_certificates
 {
-	if((self = [super init])){
-		certCategories = [[NSMutableArray alloc] initWithArray: [certCats retain]];
-		allCerts = [[NSMutableDictionary alloc] initWithDictionary: [dict retain]];
-	}
-	return self;
+    if( self = [super init] )
+    {
+        certificates = [_certificates retain];
+        allCerts = [[NSMutableDictionary alloc] init];
+        certGroups = [[NSMutableArray alloc] init];
+
+        for( Cert *aCert in _certificates )
+        {
+            [allCerts setObject:aCert forKey:[NSNumber numberWithInteger:[aCert certID]]];
+            
+            CertGroup *group = [self groupForID:[aCert groupID]];
+            if( nil == group )
+            {
+                group = [CertGroup createCertGroup:[aCert groupID] name:nil];
+                [certGroups addObject:group];
+            }
+            [group addCertificate:aCert];
+        }
+    }
+    return self;
 }
 
-+(CertTree*) createCertTree:(NSArray*)certCats 
-				   certDict:(NSDictionary*)certs
++(CertTree *) createCertTree:(NSArray *)certificates
 {
-	CertTree *tree = [[CertTree alloc]initWithCats:certCats andDict:certs];
-	[tree autorelease];
-	return tree;
+    CertTree *tree = [[CertTree alloc] initWithCertificates:certificates];
+    return [tree autorelease];
 }
 
 @end
