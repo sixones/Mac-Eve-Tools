@@ -956,7 +956,8 @@
 {
    	const char query[] =
     "SELECT typeID,basic,standard,improved,advanced,elite "
-    "FROM crtCertSkills";
+    "FROM crtCertSkills "
+    "WHERE certificateID = ?";
 	sqlite3_stmt *read_stmt;
 	NSMutableArray *array = [[[NSMutableArray alloc] init] autorelease];
 	int rc;
@@ -968,21 +969,17 @@
 		return nil;
 	}
 	
+    sqlite3_bind_nsint(read_stmt,1,certID);
+
 	while(sqlite3_step(read_stmt) == SQLITE_ROW)
     {
-		NSInteger skillID;
-        NSInteger basic;
-        NSInteger standard;
-        NSInteger improved;
-        NSInteger advanced;
-        NSInteger elite;
-		
-		skillID = sqlite3_column_nsint(read_stmt,0);
-        basic = sqlite3_column_nsint(read_stmt,1);
-        standard = sqlite3_column_nsint(read_stmt,1);
-        improved = sqlite3_column_nsint(read_stmt,1);
-        advanced = sqlite3_column_nsint(read_stmt,1);
-        elite = sqlite3_column_nsint(read_stmt,1);
+		NSInteger skillID = sqlite3_column_nsint(read_stmt,0);
+        NSInteger basic = sqlite3_column_nsint(read_stmt,1);
+        NSInteger standard = sqlite3_column_nsint(read_stmt,2);
+        NSInteger improved = sqlite3_column_nsint(read_stmt,3);
+        NSInteger advanced = sqlite3_column_nsint(read_stmt,4);
+        NSInteger elite = sqlite3_column_nsint(read_stmt,5);
+        
         [array addObject:[NSArray arrayWithObjects:[NSNumber numberWithInteger:skillID],
                           [NSNumber numberWithInteger:basic],
                           [NSNumber numberWithInteger:standard],

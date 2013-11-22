@@ -176,7 +176,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 	}
 	
 	if([item isKindOfClass:[Cert class]]){
-		return [item certGradeText];
+		return [item fullCertName];
 	}
     if([item isKindOfClass:[CertGroup class]]){
         return [item name];

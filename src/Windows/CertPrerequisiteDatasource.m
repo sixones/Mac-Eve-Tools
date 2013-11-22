@@ -15,9 +15,18 @@
 #import "Skill.h"
 #import "Character.h"
 #import "GlobalData.h"
+#import "SkillPair.h"
+#import "Helpers.h"
+
+@interface CertPrerequisiteDatasource()
+@property (readwrite,retain,nonatomic) NSArray *levelSkills; // skills required for this level
+
+@end
 
 @implementation CertPrerequisiteDatasource
 
+@synthesize certLevel;
+@synthesize levelSkills;
 
 -(CertPrerequisiteDatasource*) initWithCert:(Cert*)c
 							   forCharacter:(Character*)ch;
@@ -35,6 +44,64 @@
 	[character release];
 	[cert release];
 	[super dealloc];
+}
+
+- (void)setCertLevel:(NSInteger)_certLevel
+{
+    if( certLevel != _certLevel )
+    {
+        certLevel = _certLevel;
+        
+        switch(certLevel)
+        {
+            case 1: [self setLevelSkills:[cert basicSkills]]; break;
+            case 2: [self setLevelSkills:[cert standardSkills]]; break;
+            case 3: [self setLevelSkills:[cert improvedSkills]]; break;
+            case 4: [self setLevelSkills:[cert advancedSkills]]; break;
+            case 5: [self setLevelSkills:[cert eliteSkills]]; break;
+            default:
+                NSAssert(YES,@"Invalid cert level in [CertPrerequisiteDatasource setCertLevel" );
+        }
+    }
+}
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+{
+    return [[self levelSkills] count];
+}
+
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    NSString *baseString = nil;
+    SkillPair *sp = [[self levelSkills] objectAtIndex:row];
+    NSInteger requiredLevel = [sp skillLevel];
+    
+    if( [[tableColumn identifier] isEqualToString:@"skill"] )
+    {
+        baseString = [sp name];
+    }
+    else if( [[tableColumn identifier] isEqualToString:@"level"] )
+    {
+        baseString = romanForInteger(requiredLevel);
+    }
+    
+    Skill *s = [[character skillTree] skillForId:[sp typeID]];
+    
+    NSColor *colour;
+    if( s == nil )
+    {
+        colour = [NSColor redColor];
+    }
+    else if( [s skillLevel] < requiredLevel )
+    {
+        colour = [NSColor orangeColor];
+    }
+    else
+    {
+        colour = [NSColor blueColor];
+    }
+    
+    return [self colouredString:baseString colour:colour];
 }
 
 /*

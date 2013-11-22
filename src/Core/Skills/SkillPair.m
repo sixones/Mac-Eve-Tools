@@ -48,6 +48,12 @@
 	[super dealloc];
 }
 
+-(NSString *)name
+{
+    SkillTree *st = [[GlobalData sharedInstance]skillTree];
+    return [[st skillForId:typeID]skillName];
+}
+
 -(NSString*) roman
 {
 	SkillTree *st = [[GlobalData sharedInstance]skillTree];

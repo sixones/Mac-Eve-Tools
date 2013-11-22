@@ -12,10 +12,14 @@
 @class Character;
 
 
-@interface CertPrerequisiteDatasource : NSObject <NSOutlineViewDataSource> {
+@interface CertPrerequisiteDatasource : NSObject <NSTableViewDataSource> {
 	Cert *cert;
 	Character *character;
+    NSInteger certLevel; // what level to use for displaying skills
 }
+
+@property (readwrite,nonatomic,assign) NSInteger certLevel;
+@property (readonly,retain,nonatomic) NSArray *levelSkills; // skills required for the currently selected cert level
 
 -(CertPrerequisiteDatasource*) initWithCert:(Cert*)c
 							   forCharacter:(Character*)ch;

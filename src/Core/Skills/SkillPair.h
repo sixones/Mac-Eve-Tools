@@ -37,6 +37,9 @@
 /*return a SkillName IV type description of this skill*/
 -(NSString*) roman;
 
+// Return just the skill name
+-(NSString *)name;
+
 - (void)encodeWithCoder:(NSCoder *)encoder;
 - (id)initWithCoder:(NSCoder *)decoder;
 

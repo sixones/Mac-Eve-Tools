@@ -27,7 +27,7 @@
 
 -(void) awakeFromNib
 {
-	[certPrerequisites setIndentationMarkerFollowsCell:YES];
+    [self setCertLevel:certLevel1];
 }
 
 -(id) initWithCert:(Cert*)cer forCharacter:(Character*)ch
@@ -53,7 +53,6 @@
 -(void) setLabels
 {
 	[certDescription setStringValue:[cert certDescription]];
-	//[certDescription sizeToFit];
 }
 
 -(void) setDatasource
@@ -63,11 +62,28 @@
 
 +(void) displayWindowForCert:(Cert*)cer character:(Character*)ch
 {
-	//Shut up you stupid compiler.
 	CertDetailsWindowController *wc = [(CertDetailsWindowController*)
 									   [CertDetailsWindowController alloc]initWithCert:cer
 																		  forCharacter:ch];
     [[wc window]makeKeyAndOrderFront:nil];
+}
+
+// TODO Change the background colors of the buttons to show how far the character is toward achieving that level in this certificate
+// Green means all skills/levels attained
+// Yellow means all skills trained, but some not high enough level
+// Red means one or more skills are not trained at all
+- (IBAction)setCertLevel:(id)sender
+{
+    NSInteger level = [sender tag];
+    [certDS setCertLevel:level];
+    [certLevel1 setState:(1 == level)];
+    [certLevel2 setState:(2 == level)];
+    [certLevel3 setState:(3 == level)];
+    [certLevel4 setState:(4 == level)];
+    [certLevel5 setState:(5 == level)];
+    [certPrerequisites reloadData];
+    [self calculateTimeToTrain];
+    [[certLevel5 cell] setBackgroundColor:[NSColor redColor]];
 }
 
 -(void) windowWillClose:(NSNotification*)note
@@ -78,36 +94,28 @@
 
 -(void) calculateTimeToTrain
 {
-	//Normally skill plans should be created using the character object, but we don't
-	//want to save this plan
+	//Normally skill plans should be created using the character object, but we don't want to save this plan
 	
-	NSString *text;
+	NSString *text = @"";
 	
 	[miniPortrait setImage:[character portrait]];
 	
-	if([character hasCert:[cert certID]]){
-		text = [NSString stringWithFormat:
-				NSLocalizedString(@"%@ has this certificate",@"<@CharacterName> has this cert"),
-				[character characterName]];
-	}else {
-		SkillPlan *plan = [[SkillPlan alloc]initWithName:@"--TEST--" character:character];
-		[plan addSkillArrayToPlan:[cert certChainPrereqs]];
-		
-		NSInteger timeToTrain = [plan trainingTime];
-		
-		[plan release];
-		
-		if(timeToTrain == 0){
-			text = [NSString stringWithFormat:
-					NSLocalizedString(@"%@ has not claimed this certificate",@"<@CharacterName> has not claimed this cert"),
-					[character characterName]];
-		}else{
-			NSString *timeToTrainString = stringTrainingTime(timeToTrain);
-			text = [NSString stringWithFormat:
-					NSLocalizedString(@"%@ could have this certificate in %@",@"<@CharacterName> could have this cert"),
-					[character characterName],timeToTrainString];
-		}
-	}
+    SkillPlan *plan = [[SkillPlan alloc]initWithName:@"--TEST--" character:character];
+    [plan addSkillArrayToPlan:[certDS levelSkills]];
+    [plan purgeCompletedSkills];
+    
+    NSInteger timeToTrain = [plan trainingTime];
+    
+    [plan release];
+    
+    if(timeToTrain > 0)
+    {
+        NSString *timeToTrainString = stringTrainingTime(timeToTrain);
+        
+        text = [NSString stringWithFormat:
+                NSLocalizedString(@"%@ could have this certificate level in %@",@"<@CharacterName> could have this cert"),
+                [character characterName], timeToTrainString];
+    }
 	
 	[trainingTime setStringValue:text];
 }

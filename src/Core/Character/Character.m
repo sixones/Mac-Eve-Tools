@@ -471,9 +471,16 @@
 	
 	NSInteger charSheetSP = [s skillPoints]; // The amount of skill points the character sheet says we have.
 	NSInteger trainingSheetXP = [self integerForKey:CHAR_TRAINING_STARTSP];// the amount of skill points the SkillInTraining sheet says we have
-	
+	NSInteger trainingSheetEndXP = [self integerForKey:CHAR_TRAINING_ENDSP];
+    
 	NSInteger startSP = MAX(charSheetSP, trainingSheetXP); //go with the largest
-	
+    
+    // I put this in to fix what may be a bug in CCP's API.
+    // I was seeing a SkillQueue xml file where the startSP and endSP were identical (the endSP looked correct),
+    //    even though the character sheet showed what looked like the correct starting sp value.
+	if( trainingSheetXP == trainingSheetEndXP )
+        startSP = charSheetSP;
+    
 	NSString *startTime = [NSString stringWithFormat:@"%@ +0000",[self stringForKey:CHAR_TRAINING_START]];
 	NSDate *startDate = [NSDate dateWithString:startTime];
 	

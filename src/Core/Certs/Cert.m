@@ -77,7 +77,7 @@
 
 -(NSString*) fullCertName
 {
-	return [NSString stringWithFormat:@"%@ - %@",[parent certClassName],[self certGradeText]];
+	return [self name]; // [NSString stringWithFormat:@"%@ - %@",[parent certClassName],[self certGradeText]];
 }
 
 -(void)addOneSkill:(int)index fromArray:(NSArray *)aSkill toArray:(NSMutableArray *)array

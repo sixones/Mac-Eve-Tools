@@ -16,12 +16,19 @@
 
 @interface CertDetailsWindowController : NSWindowController {
 
-	IBOutlet NSOutlineView *certPrerequisites;
+	IBOutlet NSTableView *certPrerequisites;
 	IBOutlet NSTextField *certDescription;
 	
 	IBOutlet NSImageView *miniPortrait;
 	IBOutlet NSTextField *trainingTime;
 	
+    
+    IBOutlet NSButton *certLevel1;
+    IBOutlet NSButton *certLevel2;
+    IBOutlet NSButton *certLevel3;
+    IBOutlet NSButton *certLevel4;
+    IBOutlet NSButton *certLevel5;
+    
 	Cert *cert;
 	Character *character;
 	
@@ -29,5 +36,7 @@
 }
 
 +(void) displayWindowForCert:(Cert*)cer character:(Character*)ch;
+
+- (IBAction)setCertLevel:(id)sender;
 
 @end
