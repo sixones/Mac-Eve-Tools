@@ -50,7 +50,6 @@
 @interface CCPDatabase()
 -(BOOL)insertAttributeTypes:(NSString *)queryString number:(int)attrNum;
 -(void)buildAttributeTypes;
--(BOOL)updateCertRelationships;
 @end
 
 @implementation CCPDatabase
@@ -67,7 +66,6 @@
         {
             [self buildAttributeTypes];
             [self buildTypePrerequisites];
-            [self updateCertRelationships];
         }
 	}
 	return self;
@@ -696,262 +694,6 @@
 
 #pragma mark Certs
 
-/*return an array of skill prerequisites*/
--(NSArray*) privateCertSkillPrereqs:(NSInteger)certID
-{
-	const char query[] =
-		"SELECT parentTypeID, parentLevel "
-		"FROM crtRelationships "
-		"WHERE childID = ? "
-		"AND parentTypeID IS NOT NULL AND parentTypeID IS NOT 0;";
-	sqlite3_stmt *read_stmt;
-	NSMutableArray *array = [[[NSMutableArray alloc]init]autorelease];
-	int rc;
-	
-	
-	rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
-	if(rc != SQLITE_OK){
-		NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
-		return nil;
-	}
-	
-	sqlite3_bind_nsint(read_stmt,1,certID);
-	
-	while(sqlite3_step(read_stmt) == SQLITE_ROW){
-		NSInteger skillID;
-		NSInteger skillLevel;
-		
-		skillID = sqlite3_column_nsint(read_stmt,0);
-		skillLevel = sqlite3_column_nsint(read_stmt,1);
-		
-		SkillPair *pair = [[SkillPair alloc]initWithSkill:[NSNumber numberWithInteger:skillID]
-													level:skillLevel];
-		
-		[array addObject:pair];
-		
-		[pair release];
-	}
-	
-	sqlite3_finalize(read_stmt);
-	
-	if([array count] == 0){
-		return nil;
-	}
-	
-	return array;
-}
-
-/*return an array of certificate prerequistes*/
--(NSArray*) privateCertCertPrereqs:(NSInteger)certID
-{
-	const char query[] =
-	/*
-		"SELECT parentID "
-		"FROM crtRelationships "
-		"WHERE childID = ? "
-		"AND parentTypeID IS NULL;";
-	*/
-		"SELECT parentID, "
-			"(SELECT grade FROM crtCertificates "
-			"WHERE certificateID = parentID) AS grade "
-		"FROM crtRelationships "
-		"WHERE childID = ? AND grade IS NOT NULL;";
-	
-	sqlite3_stmt *read_stmt;
-	
-	NSMutableArray *array = [[[NSMutableArray alloc]init]autorelease];
-	int rc;
-	
-	rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
-	if(rc != SQLITE_OK){
-        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
-		return nil;
-	}
-	
-	sqlite3_bind_nsint(read_stmt,1,certID);
-	
-	while(sqlite3_step(read_stmt) == SQLITE_ROW){
-		NSInteger pCertID;
-		NSInteger certGrade;
-		
-		pCertID = sqlite3_column_nsint(read_stmt,0);
-		certGrade = sqlite3_column_nsint(read_stmt,1);
-		
-		CertPair *cp = [CertPair createCertPair:pCertID certGrade:certGrade];
-		
-		[array addObject:cp];
-	}
-	
-	sqlite3_finalize(read_stmt);
-	
-	if([array count] == 0){
-		return nil;
-	}
-	
-	return array;
-}
-
-/*return an array of certs beloning to the classID*/
--(NSArray*) privateParseCert:(NSInteger)certClassID 
-				   certClass:(CertClass*)parent
-					certDict:(NSMutableDictionary*)allCerts
-{
-	const char query[] = 
-		"SELECT certificateID,grade,description "
-		"FROM crtCertificates "
-		"WHERE classID = ? "
-		"ORDER BY grade;";
-	
-	sqlite3_stmt *read_stmt;
-	NSMutableArray *array = [[[NSMutableArray alloc]init]autorelease];
-	int rc;
-	
-	rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
-	if(rc != SQLITE_OK){
-        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
-		return nil;
-	}
-	
-	sqlite3_bind_nsint(read_stmt,1,certClassID);
-	
-	while(sqlite3_step(read_stmt) == SQLITE_ROW){
-		NSInteger certID;
-		NSInteger certGrade;
-		NSString  *certDesc;
-		NSArray *skillArray;
-		NSArray *certArray;
-		
-		certID = sqlite3_column_nsint(read_stmt,0);
-		certGrade = sqlite3_column_nsint(read_stmt,1);
-
-		certDesc = sqlite3_column_nsstr(read_stmt,2);
-		
-		if(lang != l_EN){
-			certDesc = [self translation:certID 
-							   forColumn:TRN_CRTCRT_DESCRIPTION 
-								fallback:certDesc];
-		}
-		
-		skillArray = [self privateCertSkillPrereqs:certID];
-		certArray = [self privateCertCertPrereqs:certID];
-		
-		Cert *c = [Cert createCert:certID
-							 group:certGrade
-                              name:nil
-							  text:certDesc 
-						  skillPre:skillArray 
-						   certPre:certArray 
-						 certClass:parent];
-		
-		[array addObject:c];
-		
-		[allCerts setObject:c forKey:[NSNumber numberWithInteger:certID]];
-	}
-	
-	sqlite3_finalize(read_stmt);
-	
-	return array;	
-}
-
-/*return an array of CertClass objects for a given category*/
--(NSArray*) privateParseCertClass:(NSInteger)catID 
-						 certDict:(NSMutableDictionary*)allCerts
-{
-	const char query[] = 
-		"SELECT cla.classID,cla.className "
-		"FROM crtClasses cla, crtCertificates crt, crtCategories cat "
-		"WHERE cla.classID = crt.classID "
-		"AND cat.categoryID = crt.categoryID "
-		"AND cat.categoryID = ? "
-		"GROUP BY cla.classID;";
-	
-	
-	sqlite3_stmt *read_stmt;
-	NSMutableArray *array = [[[NSMutableArray alloc]init]autorelease];
-	int rc;
-	
-	rc = sqlite3_prepare_v2(db, query,(int)sizeof(query),&read_stmt,NULL);
-	if(rc != SQLITE_OK){
-        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
-		return nil;
-	}
-	
-	sqlite3_bind_nsint(read_stmt,1,catID);
-	
-	while( (rc = sqlite3_step(read_stmt)) == SQLITE_ROW){
-		NSString *className;
-		NSInteger classID;
-		
-		classID = sqlite3_column_nsint(read_stmt,0);
-		className = sqlite3_column_nsstr(read_stmt,1);
-		
-		if(lang != l_EN){
-			className = [self translation:classID
-								forColumn:TRN_CRTCLS_NAME 
-								 fallback:className];
-		}
-		
-		CertClass *cc = [CertClass createCertClass:classID
-											  desc:className];
-		
-		NSArray *certArray = [self privateParseCert:classID certClass:cc certDict:allCerts];
-		
-		[cc setCertArray:certArray];
-		
-		[array addObject:cc];
-	}
-	
-	sqlite3_finalize(read_stmt);
-	
-	return array;
-}
-
-/*
-	return an array of certificate categories.
-	this will be filled out completly;
- */
--(NSArray*) privateParseCertCategories:(NSMutableDictionary*)dict;
-{
-	const char query[] = 
-		"SELECT categoryID,categoryName "
-		"FROM crtCategories";
-	sqlite3_stmt *read_stmt;
-	NSMutableArray *array = [[[NSMutableArray alloc]init]autorelease];
-	int rc;
-	
-	rc = sqlite3_prepare_v2(db, query,(int)sizeof(query),&read_stmt,NULL);
-	if(rc != SQLITE_OK){
-        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
-		return nil;
-	}
-	
-	while(sqlite3_step(read_stmt) == SQLITE_ROW){
-		NSInteger catID;
-		NSString *catName;
-		
-		catID = sqlite3_column_nsint(read_stmt,0);
-		catName = sqlite3_column_nsstr(read_stmt,1);
-		
-		if(lang != l_EN){
-			catName = [self translation:catID
-							  forColumn:TRN_CRTCAT_NAME
-							   fallback:catName];
-		}
-		
-		NSArray *certClassArray = [self privateParseCertClass:catID certDict:dict];
-		
-		CertCategory *ccat = [CertCategory createCertCategory:catID
-														 name:catName 
-													   cClass:certClassArray];
-		
-		[array addObject:ccat];
-	}
-	
-	sqlite3_finalize(read_stmt);
-	
-	return array;
-}
-
 -(NSArray *)skillRequirementsForCertificate:(NSInteger)certID
 {
    	const char query[] =
@@ -1026,9 +768,7 @@
                              group:gID
                               name:cName
                               text:cDesc
-                          skillPre:skillArray
-                           certPre:nil
-                         certClass:nil];
+                          skillPre:skillArray];
 		[array addObject:c];
 	}
 	
@@ -1040,43 +780,8 @@
 -(CertTree*) buildCertTree
 {
     NSArray *newCerts = [self parseCertificates];
-    CertTree *tree = [CertTree createCertTree:newCerts];
-//	NSMutableDictionary *dict = [[[NSMutableDictionary alloc]init]autorelease];
-//	NSArray *catArray = [self privateParseCertCategories:dict];
-	
+    CertTree *tree = [CertTree createCertTree:newCerts];	
 	return tree;
-}
-
-// Not sure how, but my copy of the database had zeroes in the parentTypeID column instead of NULLS
-// So update them all.
-- (BOOL)updateCertRelationships
-{
-    return YES;
-    NSInteger cnt = [self performCount:"SELECT COUNT(*) FROM crtRelationships WHERE parentTypeID = 0;"];
-    if( 0 == cnt )
-        return YES;
-    
-    const char update[] = "UPDATE crtRelationships SET parentTypeID = NULL WHERE parentTypeID = 0;";
-	sqlite3_stmt *update_stmt;
-	int rc = sqlite3_prepare_v2( db, update,(int)sizeof(update),&update_stmt,NULL);
-    if( rc != SQLITE_OK )
-    {
-        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
-        sqlite3_finalize(update_stmt);
-		return NO;
-	}
-    
-    rc = sqlite3_step(update_stmt);
-    if( rc != SQLITE_OK )
-    {
-        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
-        sqlite3_finalize(update_stmt);
-		return NO;
-	}
-    
-    sqlite3_finalize(update_stmt);
-    
-    return YES;
 }
 
 #pragma mark Skills

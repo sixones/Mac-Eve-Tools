@@ -20,6 +20,8 @@
 #import "SkillPlan.h"
 #import "Helpers.h"
 
+#import "SkillDetailsWindowController.h"
+
 #import "assert.h"
 
 
@@ -28,6 +30,7 @@
 -(void) awakeFromNib
 {
     [self setCertLevel:certLevel1];
+    [certPrerequisites setDoubleAction:@selector(rowDoubleClick:)];
 }
 
 -(id) initWithCert:(Cert*)cer forCharacter:(Character*)ch
@@ -132,6 +135,20 @@
 	[self setLabels];
 	[self setDatasource];
 	[[self window]setTitle:[cert fullCertName]];
+}
+
+-(IBAction) rowDoubleClick:(id)sender
+{
+    NSInteger selectedRow = [sender selectedRow];
+	
+	if( selectedRow == -1 )
+    {
+		return;
+	}
+	
+    NSNumber *typeID = [[[certDS levelSkills] objectAtIndex:selectedRow] typeID];
+    // It would be nice if we could display this stacked just below this certificate details window
+    [SkillDetailsWindowController displayWindowForTypeID:typeID forCharacter:character];
 }
 
 @end

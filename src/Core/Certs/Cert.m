@@ -12,6 +12,7 @@
 #import "CertTree.h"
 #import "CertClass.h"
 #import "SkillPair.h"
+#import "Character.h"
 
 @interface Cert()
 @property (readwrite,nonatomic,retain) NSArray* basicSkills;
@@ -24,34 +25,27 @@
 @implementation Cert
 
 @synthesize certID;
-@synthesize certGrade;
 @synthesize groupID;
 @synthesize name;
 @synthesize certDescription;
 
-@synthesize skillPrereqs;
-@synthesize certPrereqs;
 @synthesize basicSkills;
 @synthesize standardSkills;
 @synthesize improvedSkills;
 @synthesize advancedSkills;
 @synthesize eliteSkills;
 
-@synthesize parent;
-
 -(void) dealloc
 {
     [name release];
 	[certDescription release];
-	[skillPrereqs release];
-	[certPrereqs release];
 	[super dealloc];
 }
 
--(NSString*)certGradeText
+-(NSString*) nameForCertLevel:(NSInteger)level
 {
 	NSString *grade;
-	switch (certGrade) {
+	switch (level) {
 		case 1:
 			grade = @"Basic";
 			break;
@@ -77,7 +71,7 @@
 
 -(NSString*) fullCertName
 {
-	return [self name]; // [NSString stringWithFormat:@"%@ - %@",[parent certClassName],[self certGradeText]];
+	return [self name];
 }
 
 -(void)addOneSkill:(int)index fromArray:(NSArray *)aSkill toArray:(NSMutableArray *)array
@@ -118,18 +112,12 @@
                     name:(NSString *)cName
 					text:(NSString*)cDesc
 				skillPre:(NSArray*)sPre
-				 certPre:(NSArray*)cPre
-			   certClass:(CertClass*)cC
 {
 	if((self = [super init])){
 		certID = cID;
-		certGrade = 0;
         groupID = gID;
         name = [cName retain];
 		certDescription = [cDesc retain];
-		skillPrereqs = nil; //[sPre retain];
-		certPrereqs = [cPre retain];
-		parent = cC; //NOT RETAINED
         [self parseDatabaseSkills:sPre];
 	}
 	return self;
@@ -140,49 +128,52 @@
                name:(NSString *)cName
 			   text:(NSString*)cDesc
 		   skillPre:(NSArray*)sPre
-			certPre:(NSArray*)cPre
-		  certClass:(CertClass*)cC
 {
 	Cert *c = [[Cert alloc]initWithDetails:cID 
 									 group:gID
                                       name:cName
 									  text:cDesc
-								  skillPre:sPre
-								   certPre:cPre
-								 certClass:cC];
+								  skillPre:sPre];
 	return [c autorelease];
 }
 
-/*
- recursivley add all the prerequisites for this cert and all the subcerts.
- */
--(void) certSkillPrereqs:(NSMutableArray*)skillArray  forCert:(Cert*)c
-{	
-	//Do it in order of the most advanced cert first.
-	[skillArray addObjectsFromArray:[c skillPrereqs]];
-	
-	for(CertPair *pair in [c certPrereqs]){
-		Cert *preCert = [[[GlobalData sharedInstance]certTree]certForID:[pair certID]];
-		[self certSkillPrereqs:skillArray forCert:preCert];
-	}
-}
-
--(NSArray*)certChainPrereqs
+-(NSArray *) skillsForLevel:(NSInteger)level
 {
-	NSMutableArray *ary = [[[NSMutableArray alloc]init]autorelease];
-	
-	[self certSkillPrereqs:ary forCert:self];
-	
-	return ary;
-}
-
--(NSComparisonResult) gradeComparitor:(Cert*)rhs
-{
-	if(rhs->certGrade < self->certGrade){
-		return NSOrderedAscending;
+    NSArray *skills = nil;
+	switch (level) {
+		case 1:
+			skills = [self basicSkills];
+			break;
+		case 2:
+			skills = [self standardSkills];
+			break;
+		case 3:
+			skills = [self improvedSkills];
+			break;
+		case 4:
+			skills = [self advancedSkills];
+			break;
+		case 5:
+			skills = [self eliteSkills];
+			break;
 	}
-	return NSOrderedDescending;
+    return [[skills retain] autorelease];
 }
 
+-(BOOL) character:(Character *)_character hasLevel:(NSInteger)level
+{
+    NSArray *skillPairs = [self skillsForLevel:level];
+    SkillTree *charSkills = [_character skillTree];
+    
+    for( SkillPair *skillPair in skillPairs )
+    {
+        // if the character doesn't have this skill to this level, return NO
+        Skill *sk = [charSkills skillForId:[skillPair typeID]];
+        if( [sk skillLevel] < [skillPair skillLevel] )
+            return NO;
+    }
+    
+    return YES;
+}
 
 @end

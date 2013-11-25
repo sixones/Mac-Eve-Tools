@@ -195,6 +195,8 @@
 	
 	[skillCharDatasource setCharacter:c];
 	[skillSearchView reloadDatasource:skillCharDatasource]; /*datasouce has changed.*/
+    
+    [skillCertDatasource setCharacter:c];
 }
 
 -(Character*) character;

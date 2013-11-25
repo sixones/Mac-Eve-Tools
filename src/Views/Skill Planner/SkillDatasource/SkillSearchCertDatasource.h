@@ -21,7 +21,8 @@
 	
 	NSString *searchString;
 	NSMutableArray *foundSearchObjects;
-	NSMutableArray *certClasses;
 }
+
+-(void) setCharacter:(Character*)_character;
 
 @end

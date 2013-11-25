@@ -37,6 +37,7 @@
 
 +(void) displayWindowForCert:(Cert*)cer character:(Character*)ch;
 
-- (IBAction)setCertLevel:(id)sender;
+-(IBAction) setCertLevel:(id)sender;
+-(IBAction) rowDoubleClick:(id)sender;
 
 @end

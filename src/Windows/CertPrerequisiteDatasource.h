@@ -19,7 +19,7 @@
 }
 
 @property (readwrite,nonatomic,assign) NSInteger certLevel;
-@property (readonly,retain,nonatomic) NSArray *levelSkills; // skills required for the currently selected cert level
+@property (readonly,retain,nonatomic) NSArray *levelSkills; // skills required for the currently selected cert level, objects are SkillPair's
 
 -(CertPrerequisiteDatasource*) initWithCert:(Cert*)c
 							   forCharacter:(Character*)ch;

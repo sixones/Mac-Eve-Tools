@@ -28,18 +28,8 @@
 -(void)dealloc
 {
 	[foundSearchObjects release];
-	[certClasses release];
 	[searchString release];
 	[super dealloc];
-}
-
--(void) buildCertClassArray
-{
-	NSInteger catCount = [certs catCount];
-	
-	for(NSInteger i = 0; i < catCount; i++){
-		[certClasses addObjectsFromArray:[[certs catAtIndex:i]classArray]];
-	}
 }
 
 -(SkillSearchCertDatasource*) init
@@ -47,8 +37,6 @@
 	if((self = [super init])){
 		certs = [[GlobalData sharedInstance]certTree];
 		foundSearchObjects = [[NSMutableArray alloc]init];
-		certClasses = [[NSMutableArray alloc]init];
-		//[self buildCertClassArray];
 	}
 	return self;
 }
@@ -58,26 +46,26 @@
 	return NSLocalizedString(@"Certs",@"Certifacte picker for skill planner.  Keep the translation short.");
 }
 
--(void) setCharacter:(Character*)skills
+-(void) setCharacter:(Character*)_character
 {
 	if(character != nil){
 		[character release];
 	}
 	
-	character = [skills retain];
+	character = [_character retain];
 	if(characterSkills != nil){
 		[characterSkills release];
 	}
 	
-	characterSkills = [[skills skillSet]retain];
+	characterSkills = [[_character skillSet]retain];
 }
 
 -(void) skillSearchFilter:(id)sender
 {
+	NSString *searchValue = [[sender cell] stringValue];
 	
-	NSString *searchValue = [[sender cell]stringValue];
-	
-	if([searchValue length] == 0){
+	if( [searchValue length] == 0 )
+    {
 		[searchString release];
 		searchString = nil;
 		[foundSearchObjects removeAllObjects];
@@ -88,8 +76,10 @@
 	[searchString release];
 	searchString = [searchValue retain];
 	
-	for(CertClass *c in certClasses){
-		NSRange r = [[c certClassName]rangeOfString:searchValue options:NSCaseInsensitiveSearch];
+	for( Cert *c in [certs certificates] )
+    {
+        // TODO We might also want to search in certificate descriptions
+		NSRange r = [[c name] rangeOfString:searchValue options:NSCaseInsensitiveSearch];
 		if(r.location != NSNotFound){
 			[foundSearchObjects addObject:c];
 		}
@@ -109,14 +99,6 @@
 		return [certs catCount];
 	}
 	
-	if([item isKindOfClass:[CertCategory class]]){
-		return [item classCount];
-	}
-	
-	if([item isKindOfClass:[CertClass class]]){
-		return [item certCount];
-	}
-    
 	if([item isKindOfClass:[CertGroup class]]){
 		return [item count];
 	}
@@ -135,14 +117,6 @@
 			return [foundSearchObjects objectAtIndex:index];
 		}
 		return [certs catAtIndex:index];
-	}
-	
-	if([item isKindOfClass:[CertCategory class]]){
-		return [item classAtIndex:index];
-	}
-	
-	if([item isKindOfClass:[CertClass class]]){
-		return [item certAtIndex:index];
 	}
 	
     if([item isKindOfClass:[CertGroup class]]){
@@ -167,14 +141,6 @@
 objectValueForTableColumn:(NSTableColumn *)tableColumn 
 		   byItem:(id)item
 {
-	if([item isKindOfClass:[CertCategory class]]){
-		return [item catName];
-	}
-	
-	if([item isKindOfClass:[CertClass class]]){
-		return [item certClassName];
-	}
-	
 	if([item isKindOfClass:[Cert class]]){
 		return [item fullCertName];
 	}
@@ -217,15 +183,21 @@ menuForTableColumnItem:(NSTableColumn*)column
 	[menu addItem:[NSMenuItem separatorItem]];
 	
 	
-	NSArray *pre = [item certChainPrereqs];
-	
-	menuItem = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"Add to plan",@"add a certificate to the skill plan")
-										 action:@selector(menuAddSkillClick:)
-								  keyEquivalent:@""];
-	[menuItem setRepresentedObject:pre];
-	[menu addItem:menuItem];
-	[menuItem release];
-	
+    for( NSInteger lvl = 1; lvl <= 5; ++lvl )
+    {
+        if( ![item character:character hasLevel:lvl] )
+        {
+            NSArray *pre = [item skillsForLevel:lvl];
+            
+            menuItem = [[NSMenuItem alloc]initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Train to level %@",@"Train certificate to level"), romanForInteger(lvl)]
+                                                 action:@selector(menuAddSkillClick:)
+                                          keyEquivalent:@""];
+            [menuItem setRepresentedObject:pre];
+            [menu addItem:menuItem];
+            [menuItem release];
+        }
+	}
+    
 	return menu;
 }
 
@@ -242,7 +214,7 @@ menuForTableColumnItem:(NSTableColumn*)column
 		return NO;
 	}
 	
-	NSArray *prereqs = [c certChainPrereqs];
+	NSArray *prereqs = [c skillsForLevel:5];
 	
 	[pboard declareTypes:[NSArray arrayWithObject:MTSkillArrayPBoardType] owner:self];
 	
