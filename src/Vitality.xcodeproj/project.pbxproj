@@ -65,6 +65,7 @@
 		A12FC60417EA0C0D0053DC23 /* ContractsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A12FC60017EA0C0D0053DC23 /* ContractsView.xib */; };
 		A12FC60517EA0C0D0053DC23 /* ContractsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */; };
 		A12FC60817EA31420053DC23 /* METConquerableStations.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60717EA31420053DC23 /* METConquerableStations.m */; };
+		A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */ = {isa = PBXBuildFile; fileRef = A147AB39184D4C6B009D2A08 /* MTAPIKey.m */; };
 		A154A64417A83E090076603D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A154A64217A83E090076603D /* Localizable.strings */; };
 		A154A64B17C576700076603D /* Contract.m in Sources */ = {isa = PBXBuildFile; fileRef = A154A64617C576700076603D /* Contract.m */; };
 		A154A64D17C576700076603D /* Contracts.m in Sources */ = {isa = PBXBuildFile; fileRef = A154A64917C576700076603D /* Contracts.m */; };
@@ -265,6 +266,8 @@
 		A12FC60317EA0C0D0053DC23 /* ContractsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractsViewController.h; sourceTree = "<group>"; };
 		A12FC60617EA31420053DC23 /* METConquerableStations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METConquerableStations.h; sourceTree = "<group>"; };
 		A12FC60717EA31420053DC23 /* METConquerableStations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METConquerableStations.m; sourceTree = "<group>"; };
+		A147AB38184D4C6A009D2A08 /* MTAPIKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTAPIKey.h; sourceTree = "<group>"; };
+		A147AB39184D4C6B009D2A08 /* MTAPIKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTAPIKey.m; sourceTree = "<group>"; };
 		A154A64317A83E090076603D /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A154A64617C576700076603D /* Contract.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contract.m; sourceTree = "<group>"; };
 		A154A64817C576700076603D /* Contracts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contracts.h; sourceTree = "<group>"; };
@@ -834,6 +837,8 @@
 				C9EB4EC8105A0883009192BC /* CharacterTemplate.m */,
 				A1FCD05118245DDC00A6655A /* MetLabelValueTableCellView.h */,
 				A1FCD05218245DDC00A6655A /* MetLabelValueTableCellView.m */,
+				A147AB38184D4C6A009D2A08 /* MTAPIKey.h */,
+				A147AB39184D4C6B009D2A08 /* MTAPIKey.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1298,6 +1303,7 @@
 				A1FCD05318245DDC00A6655A /* MetLabelValueTableCellView.m in Sources */,
 				A1FCD0561829881600A6655A /* METIDtoName.m in Sources */,
 				A1093C97183D7546000D4063 /* CertGroup.m in Sources */,
+				A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

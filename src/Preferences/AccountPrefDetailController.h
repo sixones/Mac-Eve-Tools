@@ -8,9 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import "Account.h"
+#import "MTAPIKey.h"
 
 @class AccountPrefTableController;
-@interface AccountPrefDetailController : NSObject <NSTableViewDataSource, NSTableViewDelegate, AccountUpdateDelegate> {
+@interface AccountPrefDetailController : NSObject <NSTableViewDataSource, NSTableViewDelegate, AccountUpdateDelegate, APIKeyValidationDelegate> {
 	IBOutlet NSButton *updateCharacters;
 	IBOutlet NSProgressIndicator *updatingIndicator;
 	IBOutlet NSTextField *accountName;

@@ -229,7 +229,7 @@
 //#ifdef MACEVEAPI_DEBUG
 //	[self loadAccount:del runForModalWindow:NO];
 //#else
-	[self loadAccount:del runForModalWindow:YES];
+	[self loadAccount:del runForModalWindow:NO];
 //#endif
 }
 

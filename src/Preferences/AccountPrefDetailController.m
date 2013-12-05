@@ -8,6 +8,7 @@
 
 #import "AccountPrefDetailController.h"
 #import "CharacterTemplate.h"
+#import "MTAPIKey.h"
 
 
 @implementation AccountPrefDetailController
@@ -108,6 +109,9 @@
 	
 	[self.account loadAccount:self];
 	
+    MTAPIKey *keys = [[MTAPIKey alloc] initWithID:[userId stringValue] code:[verificationCode stringValue] delegate:self];
+    [keys validate];
+
 	[updatingIndicator setHidden:NO];
 	[updatingIndicator startAnimation:self];
 }
@@ -124,6 +128,16 @@
 - (void) controlTextDidEndEditing:(NSNotification *)obj {
 	NSLog(@"Editing end");
 	[self updateDataFromControls:[obj object] withValue:[[obj object] stringValue]];
+}
+
+-(void) key:(MTAPIKey *)key didValidate:(BOOL)success withError:(NSError *)error;
+{
+    if( !success )
+    {
+        NSAlert *alert = [NSAlert alertWithError:error];
+        [alert runModal];
+    }
+    [key release];
 }
 
 #pragma mark -

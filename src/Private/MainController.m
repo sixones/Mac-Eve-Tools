@@ -476,8 +476,8 @@
 
 -(void) prefWindowWillClose:(NSNotification *)notification
 {
-	[NSApp stopModal];
-
+    [[[MBPreferencesController sharedController] window] orderOut:self];
+    
 	[[[MBPreferencesController sharedController] moduleForIdentifier:@"AccountPrefView"] willBeClosed];
 	//[[Config sharedInstance] clearAccounts];
 	[self reloadAllCharacters];
@@ -773,7 +773,7 @@
 
 -(IBAction) showPrefPanel:(id)sender;
 {
-    [NSApp runModalForWindow:[[MBPreferencesController sharedController] window]];
+    [[MBPreferencesController sharedController] showWindow:sender];
 }
 
 -(IBAction) toolbarButtonClick:(id)sender

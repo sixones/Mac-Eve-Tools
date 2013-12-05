@@ -24,6 +24,9 @@
 
 #import "assert.h"
 
+@interface CertDetailsWindowController()
+- (NSImage *)generateButtonImage:(NSInteger)certLevel withState:(NSInteger)state;
+@end
 
 @implementation CertDetailsWindowController
 
@@ -86,7 +89,10 @@
     [certLevel5 setState:(5 == level)];
     [certPrerequisites reloadData];
     [self calculateTimeToTrain];
-    [[certLevel5 cell] setBackgroundColor:[NSColor redColor]];
+    
+    // trying to figure out how to change the look of the cert level buttons based on current skills
+//    NSImage *image = [self generateButtonImage:1 withState:1];
+//    [certLevel1 setImage:image];
 }
 
 -(void) windowWillClose:(NSNotification*)note
@@ -149,6 +155,34 @@
     NSNumber *typeID = [[[certDS levelSkills] objectAtIndex:selectedRow] typeID];
     // It would be nice if we could display this stacked just below this certificate details window
     [SkillDetailsWindowController displayWindowForTypeID:typeID forCharacter:character];
+}
+
+- (NSImage *)generateButtonImage:(NSInteger)certLevel withState:(NSInteger)state
+{
+    NSRect rect = NSMakeRect(0.0,0.0,64.0,64.0);
+    NSImage* anImage = [[NSImage alloc] initWithSize:rect.size];
+    [anImage lockFocus];
+    
+    // state would be all skills, missing some skill levels or missing at least one skill.
+    // Color should match what we show in the skill list
+    NSColor *color = [NSColor colorWithDeviceRed:1.0 green:0.0 blue:0.0 alpha:0.5];
+    color = [NSColor colorWithDeviceRed:1.0 green:0.5 blue:0.0 alpha:0.5];
+    [color set];
+    
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:5.0 yRadius:5.0];
+    [path fill];
+    
+    [[NSColor blackColor] set];
+    NSString *level = romanForInteger(certLevel);
+    NSFont* font= [NSFont fontWithName:@"Lucida Grande" size:24.0];
+    NSDictionary *attrs = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
+    NSSize size = [level sizeWithAttributes:attrs];
+    rect.origin.x = (rect.size.width - size.width) / 2.0;
+    rect.origin.y = -((rect.size.height - size.height) / 2.0);
+    [level drawInRect:rect withAttributes:attrs];
+    
+    [anImage unlockFocus];
+    return anImage;
 }
 
 @end
