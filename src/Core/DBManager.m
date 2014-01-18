@@ -61,6 +61,7 @@
 -(void) closeWindow:(id)object;
 -(void) showCloseButton:(id)object;
 
+- (BOOL)checkIncludedDB;
 @end
 
 @implementation DBManager (DBManagerPrivate)
@@ -113,6 +114,12 @@
 		/*parse the file, determine if there is a new version available*/
 		[self parseDBXmlVersion:path];
 		BOOL update = (availableVersion > [self currentVersion]);
+        if( !update )
+        {
+            // check to see if there is a new version included in the app bundle
+            if( [self checkIncludedDB] )
+                update = YES;
+        }
 		if(delegate != nil){
 			[delegate newDatabaseAvailable:self status:update];
 		}
@@ -176,6 +183,35 @@
 	xmlFreeDoc(doc);
 }
 
+/* If a newer version of the Database is included in the app bundle, then
+ copy it into the correct location and proceed as if we had downloaded it.
+ */
+- (BOOL)checkIncludedDB
+{
+    NSString *includedDBXML = [[NSBundle mainBundle] pathForResource:@"database" ofType:@"xml" inDirectory:@"Database"];
+    
+    if( [[NSFileManager defaultManager] fileExistsAtPath:includedDBXML] )
+    {
+        [self parseDBXmlVersion:includedDBXML];
+		BOOL update = (availableVersion > [self currentVersion]);
+        if( update )
+        {
+            NSError *error = nil;
+            NSString *dbXml = [Config buildPathSingle:DBUPDATE_DEFN];
+            NSString *includedDB = [[NSBundle mainBundle] pathForResource:@"database.sql" ofType:@"bz2" inDirectory:@"Database"];
+            NSString *dbTarball = [Config buildPathSingle:DATABASE_SQL_BZ2];
+            
+            if( ![[NSFileManager defaultManager] copyItemAtPath:includedDBXML toPath:dbXml error:&error] )
+                return NO;
+            if( ![[NSFileManager defaultManager] copyItemAtPath:includedDB toPath:dbTarball error:&error] )
+                return NO; // should delete the copied over xml file at this point
+            
+            return YES;
+        }
+    }
+    
+    return NO;
+}
 @end
 
 
@@ -626,6 +662,7 @@ _finish_cleanup:
 
 -(void) downloadDatabase
 {
+    // TODO
 	NSString *savePath = [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH];
 	if(![[NSFileManager defaultManager] fileExistsAtPath:savePath]){
 		
@@ -687,6 +724,5 @@ _finish_cleanup:
 	
 	return status;
 }
-
 
 @end
