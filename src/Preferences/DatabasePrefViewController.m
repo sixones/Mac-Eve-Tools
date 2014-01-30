@@ -103,4 +103,10 @@
 	[restartWarning setHidden:NO];
 }
 
+- (void) willBeClosed
+{
+    // make sure all fields are de-selected so any changes will be saved.
+	[[[self view] window] makeFirstResponder:[self view]];
+}
+
 @end

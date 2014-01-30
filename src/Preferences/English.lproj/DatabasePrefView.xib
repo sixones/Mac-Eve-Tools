@@ -51,7 +51,6 @@
 						<string key="NSFrame">{{113, 39}, {459, 22}}</string>
 						<reference key="NSSuperview" ref="19146904"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="1042909078">
@@ -372,6 +371,22 @@
 						<reference key="destination" ref="588416349"/>
 					</object>
 					<int key="connectionID">25</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">dbURL</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="502411465"/>
+					</object>
+					<int key="connectionID">40</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">xmlURL</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="270599058"/>
+					</object>
+					<int key="connectionID">41</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -701,7 +716,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">39</int>
+			<int key="maxID">41</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -725,15 +740,19 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>dbSize</string>
+							<string>dbURL</string>
 							<string>dbVersionLabel</string>
 							<string>langSelector</string>
 							<string>restartWarning</string>
+							<string>xmlURL</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSTextField</string>
 							<string>NSTextField</string>
+							<string>NSTextField</string>
 							<string>NSPopUpButton</string>
+							<string>NSTextField</string>
 							<string>NSTextField</string>
 						</object>
 					</object>
@@ -742,14 +761,20 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>dbSize</string>
+							<string>dbURL</string>
 							<string>dbVersionLabel</string>
 							<string>langSelector</string>
 							<string>restartWarning</string>
+							<string>xmlURL</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
 								<string key="name">dbSize</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">dbURL</string>
 								<string key="candidateClassName">NSTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -762,6 +787,10 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">restartWarning</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">xmlURL</string>
 								<string key="candidateClassName">NSTextField</string>
 							</object>
 						</object>

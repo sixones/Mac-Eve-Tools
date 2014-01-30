@@ -284,7 +284,7 @@
 -(void) databaseReadyToCheck:(NSNotification *)notification
 {
 	DBManager *manager = [[[DBManager alloc]init]autorelease];
-	
+    
 	if(![manager dbVersionCheck:[[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_MIN_VERSION]]){
 		[manager checkForUpdate2];
 		[[NSNotificationCenter defaultCenter]addObserver:self 
@@ -308,7 +308,7 @@
 												 object:nil];
 	
 	DBManager *manager = [[[DBManager alloc]init]autorelease];
-	
+
 	//check to see if there is a new database ready to be built
 	if([manager databaseReadyToBuild]){
 		//Yes there is.  Build it.
@@ -479,6 +479,8 @@
     [[[MBPreferencesController sharedController] window] orderOut:self];
     
 	[[[MBPreferencesController sharedController] moduleForIdentifier:@"AccountPrefView"] willBeClosed];
+	[[[MBPreferencesController sharedController] moduleForIdentifier:@"DatabasePrefView"] willBeClosed];
+
 	//[[Config sharedInstance] clearAccounts];
 	[self reloadAllCharacters];
 	[overviewTableView reloadData];

@@ -118,7 +118,9 @@
         {
             // check to see if there is a new version included in the app bundle
             if( [self checkIncludedDB] )
+            {
                 update = YES;
+            }
         }
 		if(delegate != nil){
 			[delegate newDatabaseAvailable:self status:update];
@@ -201,6 +203,14 @@
             NSString *includedDB = [[NSBundle mainBundle] pathForResource:@"database.sql" ofType:@"bz2" inDirectory:@"Database"];
             NSString *dbTarball = [Config buildPathSingle:DATABASE_SQL_BZ2];
             
+            // can't copy over existing file, so remove any older version first
+            if( [[NSFileManager defaultManager] fileExistsAtPath:dbXml]
+               && ![[NSFileManager defaultManager] removeItemAtPath:dbXml error:&error] )
+                return NO;
+            if( [[NSFileManager defaultManager] fileExistsAtPath:dbTarball]
+               && ![[NSFileManager defaultManager] removeItemAtPath:dbTarball error:&error] )
+                return NO;
+
             if( ![[NSFileManager defaultManager] copyItemAtPath:includedDBXML toPath:dbXml error:&error] )
                 return NO;
             if( ![[NSFileManager defaultManager] copyItemAtPath:includedDB toPath:dbTarball error:&error] )

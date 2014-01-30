@@ -15,6 +15,8 @@
 	IBOutlet NSPopUpButton *langSelector;
 	IBOutlet NSTextField *restartWarning;
 	IBOutlet NSTextField *dbSize;
+    IBOutlet NSTextField *dbURL;
+    IBOutlet NSTextField *xmlURL;
 }
 
 - (NSString *)title;
