@@ -22,7 +22,6 @@
 #import "Contract.h"
 #import "MTISKFormatter.h"
 #import "ContractItem.h"
-#import "MetLabelValueTableCellView.h"
 
 @interface ContractDetailsController()
 @property (readwrite,retain) NSArray *labels;

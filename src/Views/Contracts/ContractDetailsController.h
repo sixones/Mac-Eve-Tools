@@ -35,7 +35,7 @@
 }
 
 
-/*Display a ship, given the typeID of the ship*/
+/* Display details of a contract */
 +(void) displayContract:(Contract *)_contract forCharacter:(Character*)ch;
 
 @end

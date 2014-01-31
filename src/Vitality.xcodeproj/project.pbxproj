@@ -77,7 +77,6 @@
 		A1C0A7C117610CDA00A3A743 /* MarketView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C0A7BE17610CDA00A3A743 /* MarketView.xib */; };
 		A1C0A7C217610CDA00A3A743 /* MarketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7C017610CDA00A3A743 /* MarketViewController.m */; };
 		A1FCD0501822DED500A6655A /* ContractItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD04F1822DED500A6655A /* ContractItem.m */; };
-		A1FCD05318245DDC00A6655A /* MetLabelValueTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD05218245DDC00A6655A /* MetLabelValueTableCellView.m */; };
 		A1FCD0561829881600A6655A /* METIDtoName.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD0551829881600A6655A /* METIDtoName.m */; };
 		C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */ = {isa = PBXBuildFile; fileRef = C911FED610782C50000D88E2 /* CharacterParseError.m */; };
 		C92067901161D837001BBE14 /* SkillAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = C920678F1161D837001BBE14 /* SkillAttribute.m */; };
@@ -1300,7 +1299,6 @@
 				A1B21DAD181EE7E700F07DBE /* ContractDetailsController.m in Sources */,
 				A1B21DB3181F102200F07DBE /* MTISKFormatter.m in Sources */,
 				A1FCD0501822DED500A6655A /* ContractItem.m in Sources */,
-				A1FCD05318245DDC00A6655A /* MetLabelValueTableCellView.m in Sources */,
 				A1FCD0561829881600A6655A /* METIDtoName.m in Sources */,
 				A1093C97183D7546000D4063 /* CertGroup.m in Sources */,
 				A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */,
