@@ -88,17 +88,20 @@
 	[shipName sizeToFit];
     
     NSMutableString *description = [NSMutableString string];
+    NSString *shipDesc = [[ship typeDescription] stringByReplacingOccurrencesOfString:@"\n" withString:@"<br />\n"];
+    
     // what a pain
     [description appendString: @"<style>body { font-family: "];
     [description appendString: [[NSFont systemFontOfSize: 12] fontName] ];
     [description appendString: @"; }</style>"];
     [description appendString: @"<style>font b { font-size: 14px; display: block; } b { display: inline; font-weight: bold; } br { display: block; } a { color: black; }</style>"];
-    [description appendString: [ship typeDescription]];
+    [description appendString: shipDesc];
     
     NSData *htmlDescriptionData = [description dataUsingEncoding:NSUTF8StringEncoding];
     NSAttributedString *htmlDescription = [[NSAttributedString alloc] initWithHTML: htmlDescriptionData baseURL: NULL documentAttributes: NULL];
 	
 	[[shipDescription textStorage] setAttributedString: htmlDescription];
+    [shipDescription setNeedsDisplay:YES];
 }
 
 -(BOOL) displayImage
@@ -206,6 +209,15 @@
 	
 	[shipAttributes setDataSource:shipAttrDS];
 	[shipAttributes expandItem:nil expandChildren:YES];
+    
+    // This will force the ship description to properly layout its text, but it looks wrong
+    // and should be replaced with something better.
+    [self performSelector:@selector(redraw) withObject:nil afterDelay:0.0];
+}
+
+- (void)redraw
+{
+    [shipDescription setNeedsDisplay:YES];
 }
 
 -(void) windowWillClose:(NSNotification*)sender
