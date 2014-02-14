@@ -72,9 +72,9 @@
 
 -(void) viewWillBeActivated
 {
-    [orders reload:self];
     [app setToolbarMessage:NSLocalizedString(@"Updating Market Orders…",@"Updating Market Orders status line")];
     [app startLoadingAnimation];
+    [orders reload:self];
 }
 
 -(void) setInstance:(id<METInstance>)instance
@@ -97,6 +97,12 @@
     [orders sortUsingDescriptors:newDescriptors];
     [orderTable reloadData];
     [app setToolbarMessage:NSLocalizedString(@"Finished Updating Market Orders…",@"Finished Updating Market Orders status line") time:5];
+    [app stopLoadingAnimation];
+}
+
+- (void)ordersSkippedUpdating
+{
+    [app setToolbarMessage:NSLocalizedString(@"Using Cached Market Orders…",@"Using Cached Market Orders status line") time:5];
     [app stopLoadingAnimation];
 }
 

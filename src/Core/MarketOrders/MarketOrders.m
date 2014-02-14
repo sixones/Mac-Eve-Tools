@@ -82,7 +82,12 @@
     
     if( [cachedUntil isGreaterThan:[NSDate date]] )
     {
-        NSLog( @"Skipping download of Market Orders because of Cached Until date" );
+        NSLog( @"Skipping download of Market Orders because of Cached Until date: %@", cachedUntil );
+        // Turn off the spinning download indicator
+        if( [delegate respondsToSelector:@selector(ordersSkippedUpdating)] )
+        {
+            [delegate performSelector:@selector(ordersSkippedUpdating)];
+        }
         return;
     }
     
@@ -113,7 +118,7 @@
     [self setXmlPath:[characterDir stringByAppendingPathComponent:[XMLAPI_CHAR_ORDERS lastPathComponent]]];
     
 	//create the output directory, the XMLParseOperation will clean it up
-    // TODO move this to an operations sub-class and have all of the download operations depend on it
+    // TODO: move this to an operations sub-class and have all of the download operations depend on it
 	NSFileManager *fm = [NSFileManager defaultManager];
 	if( ![fm fileExistsAtPath:pendingDir isDirectory:nil] )
     {

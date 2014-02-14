@@ -75,9 +75,9 @@
 
 -(void) viewWillBeActivated
 {
-    [contracts reload:self];
     [app setToolbarMessage:NSLocalizedString(@"Updating Contracts…",@"Updating Contracts status line")];
     [app startLoadingAnimation];
+    [contracts reload:self];
 }
 
 -(void) setInstance:(id<METInstance>)instance
@@ -100,6 +100,12 @@
     [contracts sortUsingDescriptors:newDescriptors];
     [orderTable reloadData];
     [app setToolbarMessage:NSLocalizedString(@"Finished Updating Contracts…",@"Finished Updating Contracts status line") time:5];
+    [app stopLoadingAnimation];
+}
+
+- (void)contractsSkippedUpdating
+{
+    [app setToolbarMessage:NSLocalizedString(@"Using Cached Contracts…",@"Using Cached Contracts status line") time:5];
     [app stopLoadingAnimation];
 }
 

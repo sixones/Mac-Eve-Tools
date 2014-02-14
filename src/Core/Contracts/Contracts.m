@@ -81,7 +81,12 @@
     
     if( [cachedUntil isGreaterThan:[NSDate date]] )
     {
-        NSLog( @"Skipping download of Contracts because of Cached Until date" );
+        NSLog( @"Skipping download of Contracts because of Cached Until date: %@", cachedUntil );
+        // Turn off the spinning download indicator
+        if( [delegate respondsToSelector:@selector(contractsSkippedUpdating)] )
+        {
+            [delegate performSelector:@selector(contractsSkippedUpdating)];
+        }
         return;
     }
     
