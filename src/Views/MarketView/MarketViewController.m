@@ -38,6 +38,7 @@
 - (void)awakeFromNib
 {
     [currencyFormatter setCurrencySymbol:@""];
+    [self setupMenu:nil forTable:orderTable];
 }
 
 - (void)setCharacter:(Character *)_character
@@ -176,4 +177,44 @@
     [orders sortUsingDescriptors:newDescriptors];
     [tableView reloadData];
 }
+
+
+- (IBAction)toggleColumn:(id)sender
+{
+    NSTableColumn *col = [sender representedObject];
+    [col setHidden:![col isHidden]];
+}
+
+// Setup a contextual menu for showing/hiding table columns
+- (void)setupMenu:(NSMenu *)menu forTable:(NSTableView *)table
+{
+    if( nil == menu )
+    {
+        menu = [[NSMenu alloc] init];
+        [[table headerView] setMenu:menu];
+    }
+    
+    //loop through columns, creating a menu item for each
+    for (NSTableColumn *col in [table tableColumns])
+    {
+        // Use something like this if we want some columns to be un-hideable
+//        if ([[col identifier] isEqualToString:COLUMNID_NAME])
+//            continue;   // Cannot hide name column
+        NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:[col.headerCell stringValue] action:@selector(toggleColumn:)  keyEquivalent:@""];
+        mi.target = self;
+        mi.representedObject = col;
+        [menu addItem:mi];
+    }
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
+{
+    if( [menuItem action] == @selector(toggleColumn:) )
+    {
+        NSTableColumn *col = [menuItem representedObject];
+        [menuItem setState:col.isHidden ? NSOffState : NSOnState];
+    }
+    return YES;
+}
+        
 @end

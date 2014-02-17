@@ -21,4 +21,7 @@
     MarketOrders *orders;
 }
 @property (readwrite,retain,nonatomic) Character *character;
+
+
+- (IBAction)toggleColumn:(id)sender; // show or hide a column ([sender representedObject])
 @end

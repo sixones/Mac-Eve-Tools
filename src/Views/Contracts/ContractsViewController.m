@@ -39,8 +39,9 @@
 - (void)awakeFromNib
 {
     [currencyFormatter setCurrencySymbol:@""];
-    [orderTable setDoubleAction:@selector(contractsDoubleClick:)];
-    [orderTable setTarget:self];
+    [contractsTable setDoubleAction:@selector(contractsDoubleClick:)];
+    [contractsTable setTarget:self];
+    [self setupMenu:nil forTable:contractsTable];
 }
 
 - (void)setCharacter:(Character *)_character
@@ -96,9 +97,9 @@
 
 - (void)contractsFinishedUpdating
 {
-    NSArray *newDescriptors = [orderTable sortDescriptors];
+    NSArray *newDescriptors = [contractsTable sortDescriptors];
     [contracts sortUsingDescriptors:newDescriptors];
-    [orderTable reloadData];
+    [contractsTable reloadData];
     [app setToolbarMessage:NSLocalizedString(@"Finished Updating Contracts…",@"Finished Updating Contracts status line") time:5];
     [app stopLoadingAnimation];
 }
@@ -111,7 +112,7 @@
 
 - (void)contractsDoubleClick:(id)sender
 {
-    NSInteger rowNumber = [orderTable clickedRow];
+    NSInteger rowNumber = [contractsTable clickedRow];
     Contract *contract = [[contracts contracts] objectAtIndex:rowNumber];
     [ContractDetailsController displayContract:contract forCharacter:character];
 }
@@ -158,4 +159,43 @@
     [contracts sortUsingDescriptors:newDescriptors];
     [tableView reloadData];
 }
+
+- (IBAction)toggleColumn:(id)sender
+{
+    NSTableColumn *col = [sender representedObject];
+    [col setHidden:![col isHidden]];
+}
+
+// Setup a contextual menu for showing/hiding table columns
+- (void)setupMenu:(NSMenu *)menu forTable:(NSTableView *)table
+{
+    if( nil == menu )
+    {
+        menu = [[NSMenu alloc] init];
+        [[table headerView] setMenu:menu];
+    }
+    
+    //loop through columns, creating a menu item for each
+    for (NSTableColumn *col in [table tableColumns])
+    {
+        // Use something like this if we want some columns to be un-hideable
+        //        if ([[col identifier] isEqualToString:COLUMNID_NAME])
+        //            continue;   // Cannot hide name column
+        NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:[col.headerCell stringValue] action:@selector(toggleColumn:)  keyEquivalent:@""];
+        mi.target = self;
+        mi.representedObject = col;
+        [menu addItem:mi];
+    }
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
+{
+    if( [menuItem action] == @selector(toggleColumn:) )
+    {
+        NSTableColumn *col = [menuItem representedObject];
+        [menuItem setState:col.isHidden ? NSOffState : NSOnState];
+    }
+    return YES;
+}
+
 @end

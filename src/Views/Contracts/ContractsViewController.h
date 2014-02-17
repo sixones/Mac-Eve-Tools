@@ -13,7 +13,7 @@
 
 @interface ContractsViewController : NSViewController <METPluggableView,NSTableViewDataSource>
 {
-    IBOutlet NSTableView *orderTable;
+    IBOutlet NSTableView *contractsTable;
     IBOutlet NSNumberFormatter *currencyFormatter;
     
     Character *character;
