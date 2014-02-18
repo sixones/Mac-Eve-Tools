@@ -21,6 +21,14 @@
 
 #import "macros.h"
 
+/**
+ `ServerMonitor` is used to query the operating status and number of players logged in
+ to the EVE Online server.
+ 
+ When monitoring is started, `ServerMonitor` periodically polls the server and posts a
+ notification to the default `NSNotificationCenter` after each poll.
+ */
+
 @interface ServerMonitor : NSObject {
 	enum ServerStatus status;
 	NSInteger numPlayers;
@@ -32,9 +40,26 @@
 @property (nonatomic,readonly) enum ServerStatus status;
 @property (nonatomic,readonly) NSInteger numPlayers;
 
+/**
+ Poll the server. The results will become available in this object's properties once the
+ poll returns; callers must subscribe to SERVER_STATUS_NOTIFICATION notifications to
+ be informed of this function's completion.
+ */
 -(void) checkServerStatus;
 
+/**
+ Start monitoring the server's status. When monitoring, the server will be polled
+ every 300 seconds.
+ 
+ To retrieve the results of the poll, callers should subscribe to
+ SERVER_STATUS_NOTIFICATION notifications and check this object's properties
+ once that notification is received.
+ */
 -(void) startMonitoring;
+
+/**
+ Stop monitoring the server's status.
+ */
 -(void) stopMonitoring;
 
 @end

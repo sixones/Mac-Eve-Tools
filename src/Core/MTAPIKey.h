@@ -21,24 +21,28 @@
 
 @class MTAPIKey;
 
+/**
+ The method specified by `APIKeyValidationDelegate` can be used to receive the results
+ of API-key validation.
+ */
 @protocol APIKeyValidationDelegate
 
-/*
-	Returns results of checking the given API key for validity.
-    Mosly checking for the right permissions.
- */
 
+/**
+ Report the results of API-key validation.
+ 
+ @param key     The API key that was checked for validity.
+ @param success `YES` if the key is valid; `NO` otherwise.
+ @param error   If unsuccessful, may provide additional information about the failure.
+ */
 -(void) key:(MTAPIKey *)key didValidate:(BOOL)success withError:(NSError *)error;
 
 @end
 
 
-/*
-	An Account object contains all the characters for a given account
-	Create this object to fetch all the characters for that account.
-	then, you can pick and choose what characters you care about for that account
-*/
-
+/**
+ The `MTAPIKey` object is used by the `AccountPrefDetailController` to store an API key.
+ */
 @interface MTAPIKey : NSObject
 {
 	NSString *keyID;
@@ -51,15 +55,63 @@
 	id <APIKeyValidationDelegate> delegate;
 }
 
+/**
+ @name Properties
+ */
+
+/**
+ The API key ID.
+ */
 @property (retain) NSString* keyID;
+
+/**
+ The API key verification code.
+ */
 @property (retain) NSString* verificationCode;
+
+/**
+ The API key access mask.
+ */
 @property (retain,readonly) NSString *mask;
+
+/**
+ The API key's type.
+ 
+ Valid types:
+ 
+ - `@"Character"`
+ - `@"Corporation"`
+ 
+ */
 @property (retain,readonly) NSString *type;
+
+/**
+ The API key's expiration date.
+ */
 @property (retain,readonly) NSDate *expires;
 
-/*This sets up the internal variables, it does not populate the characters*/
+/**
+ @name Initialization
+ */
+
+/**
+ Initialize the `MTAPIKey` object; does not call the API.
+ 
+ @param _keyID    The API key ID.
+ @param code      The API validation code.
+ @param _delegate The delegate to be called when the `validate` method completes.
+ 
+ @return Self.
+ */
 -(MTAPIKey *) initWithID:(NSString*)_keyID code:(NSString*)code delegate:(id<APIKeyValidationDelegate>)_delegate;
 
+/**
+ @name Validate Key
+ */
+
+/**
+ Validate the provided key against the EVE Online server.
+ */
 -(void) validate;
 
 

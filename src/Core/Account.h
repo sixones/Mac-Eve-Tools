@@ -22,23 +22,28 @@
 @class Character;
 @class CharacterTemplate;
 
+/**
+ *  The `AccountUpdateDelegate` protocol defines messages used to notify receivers
+ *  of completed API operations.
+ */
+
 @protocol AccountUpdateDelegate
 
-/*
-	passes in the Account* object when the account finishes updating
-	didSucceed: YES on successful download, NO on error
- */
+/**
+*  Tells the delegate when the account has finished updating.
+*
+*  @param acct    The `Account` object that was updated
+*  @param success `YES` on successful download, `NO` on error
+*/
 
 -(void) accountDidUpdate:(id)acct didSucceed:(BOOL)success;
 
 @end
 
-
-/*
-	An Account object contains all the characters for a given account
-	Create this object to fetch all the characters for that account.
-	then, you can pick and choose what characters you care about for that account
-*/
+/**
+ *  The `Account` object is used to retrieve the user's character information
+ *  from the EVE Online API.
+ */
 
 @interface Account : NSObject <NSCoding> { //<NSTableViewDataSource, NSCoding> {
 	NSString *keyID;
@@ -51,28 +56,94 @@
 	id <AccountUpdateDelegate> delegate;
 }
 
+/**
+ *  The key ID for this account's API key, as provided by the EVE Online
+ *  API key manangement interface.
+ */
 @property (retain) NSString* keyID;
+
+/**
+ *  The verification code for this account's API key, as provided by the EVE Online
+ *  API key manangement interface.
+ */
 @property (retain) NSString* verificationCode;
+
+/**
+ *  A user-supplied label used to identify this account; not passed to the server.
+ */
 @property (retain) NSString* accountName;
+
+/**
+ *  The characters assigned to this account.
+ */
 @property (retain) NSMutableArray *characters;
 
-/*This sets up the internal variables, it does not populate the characters*/
+/**
+ *  @name Initialization
+ */
+
+/**
+ *  Initializes the `Account` object; does not populate the character information.
+ *
+ *  @param acctID The account's key ID.
+ *  @param key    The account's verification code.
+ *
+ *  @return A new `Account` corresponding to the provided API key.
+ */
 -(Account*) initWithDetails:(NSString*)acctID acctKey:(NSString*)key;
+
+/**
+ *  Initializes the `Account` object; does not populate the character information.
+ *
+ *  @param name The account's user-provided name.
+ *
+ *  @return A new `Account` with the provided account name.
+ */
 -(Account*) initWithName:(NSString*)name;
 
-/*
-	Refresh from disk (if the file exists). if not, download from the web
-	returns
-		YES if loaded from disk. deleagte will not be called.
-		NO if downloading from API site. delegate will be called
+/**
+ *  @name Load Account Details
  */
--(void) loadAccount:(id<AccountUpdateDelegate>)del; /*read xml file off disk*/
+
+/**
+ *  Loads the account's information from the API.
+ *
+ *  @param del An `AccountUpdateDelegate` to be notified when the update is complete.
+ */
+-(void) loadAccount:(id<AccountUpdateDelegate>)del;
+
+/**
+ *  Loads the account's information from the API.
+ *
+ *  @param del   An `AccountUpdateDelegate` to be notified when the update is complete.
+ *  @param modal `YES` if the API is being called from a modal window; `NO` otherwise.
+ */
 -(void) loadAccount:(id<AccountUpdateDelegate>)del runForModalWindow:(BOOL)modal;
 
-/*Force redownload from web*/
+/**
+ *  Loads the account's information from the API.
+ *
+ *  @param del An `AccountUpdateDelegate` to be notified when the update is complete.
+ */
 -(void) fetchCharacters:(id<AccountUpdateDelegate>)del;
 
+/**
+ *  @name Get Character Information
+ */
+
+/**
+ *  Returns the number of characters on this account.
+ *
+ *  @return The number of characters.
+ */
 -(NSInteger) characterCount;
+
+/**
+ *  Returns the characters on this account.
+ *
+ *  @return An `NSMutableArray` containing a `CharacterTemplate` for each character
+ *  on this account.
+ */
 -(NSMutableArray*) characters;
 
 
@@ -80,7 +151,13 @@
 	//- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;
 	//- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex;
 
-/*find a character in this account with the given name*/
+/**
+ *  Find a character on this account.
+ *
+ *  @param charName The name of the desired character.
+ *
+ *  @return A `CharacterTemplate` corresponding to the requested character, or `nil` if not found.
+ */
 -(CharacterTemplate*) findCharacter:(NSString*)charName;
 
 

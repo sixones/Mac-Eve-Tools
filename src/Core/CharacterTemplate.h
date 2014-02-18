@@ -19,6 +19,9 @@
 
 #import <Cocoa/Cocoa.h>
 
+/**
+ The `CharacterTemplate` class associates a monitored character with its API key.
+ */
 
 @interface CharacterTemplate : NSObject<NSCoding> {
 	NSString *characterName;
@@ -29,11 +32,34 @@
 	BOOL primary;
 }
 
+/**
+ The character's name.
+ */
 @property (retain) NSString* characterName;
+
+/**
+ The character's database ID.
+ */
 @property (retain) NSString* characterId;
+
+/**
+ The API key's key ID.
+ */
 @property (retain) NSString* accountId;
+
+/**
+ The API key's verification code.
+ */
 @property (retain) NSString* verificationCode;
+
+/**
+ Whether the character is currently being monitored by Vitality.
+ */
 @property BOOL active;
+
+/**
+ This field is currently unused.
+ */
 @property BOOL primary;
 
 -(CharacterTemplate*) initWithDetails:(NSString*)name 

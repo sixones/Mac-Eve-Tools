@@ -22,14 +22,9 @@
 
 #import "SkillTree.h"
 
-/*
- This singleton class is designed to hold global lookup data.
- Things such as the:
- 
-	SkillTree.
-	Certeficates.
-	CCP Database.
-	Date Formatting.
+/**
+ The `GlobalData` singleton object holds global lookup data, such as the
+ skill tree and certificates information.
  */
 
 @class SkillTree;
@@ -50,10 +45,35 @@
 @property (nonatomic, retain) CCPDatabase* database;
 @property (nonatomic, retain) NSDateFormatter* dateFormatter;
 
+/**
+ @name Access the GlobalData Object
+ */
+
+/**
+ Get the data object.
+ 
+ @return A pointer to the singleton `GlobalData` object.
+ */
 +(GlobalData*) sharedInstance;
 
 -(NSString*) formatDate:(NSDate*)date;
+
+/**
+ @name Check Database Version
+ */
+
+/**
+ Return the local database copy's version number.
+ 
+ @return The database version.
+ */
 -(NSInteger) databaseVersion;
+
+/**
+ Check whether the database is sufficiently current.
+ 
+ @return `YES` if the local database copy meets this program's minimum version requirement; `NO` otherwise.
+ */
 -(BOOL) databaseUpToDate;
 
 @end
