@@ -59,7 +59,7 @@
 	CGFloat descender = [self descenderOffsetForText:text];
 	NSRect result = NSMakeRect(bounds.origin.x - 0.5,
 							   bounds.origin.y + VIEW_PADDING + descender, 
-							   textSize.width, textSize.height);
+							   textSize.width - 30, textSize.height);
 	
 	
 	return result;
