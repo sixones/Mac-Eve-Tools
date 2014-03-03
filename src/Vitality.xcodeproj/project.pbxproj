@@ -30,6 +30,17 @@
 			name = Package;
 			productName = Package;
 		};
+		CD8ECF3818B98D2D006AA8EE /* Documentation */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = CD8ECF3C18B98D2D006AA8EE /* Build configuration list for PBXAggregateTarget "Documentation" */;
+			buildPhases = (
+				CD8ECF3D18B98DA2006AA8EE /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Documentation;
+			productName = Documentation;
+		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -1107,6 +1118,7 @@
 				8D1107260486CEB800E47090 /* Vitality */,
 				C9F51595105682AB00654F6D /* Package */,
 				C9AB3DEC1120E9840057523C /* Languages */,
+				CD8ECF3818B98D2D006AA8EE /* Documentation */,
 			);
 		};
 /* End PBXProject section */
@@ -1183,6 +1195,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# shell script goes here\n\nDEPLOYDIR=/Users/matt/programming/deployment\n\nFILELEN=`$DEPLOYDIR/length \"$DEPLOYDIR/MacEveApi.zip\"`\nCURDATE=`date +\"%Y-%m-%d %H:%M:%S +1000\"`\n\nrm -f \"$DEPLOYDIR/MacEveApi.zip\"\nrm -f \"$DEPLOYDIR/Mac Eve Tools.dmg\"\nrm -f \"$DEPLOYDIR/Mac Eve Tools.zip\"\nrm -rf /tmp/MacEveApi\nmkdir /tmp/MacEveApi\n\n#cp '/Users/matt/Downloads/Sparkle 1/License.txt' '/tmp/MacEveApi/Sparkle License.txt'\ncp ReleaseNotes.txt /tmp/MacEveApi\ncp ReleaseNotes.txt $DEPLOYDIR\ncp Readme.rtf /tmp/MacEveApi\ncp -R \"$TARGET_BUILD_DIR/Mac Eve Tools.app\" '/tmp/MacEveApi'\n\nhdiutil create -fs HFS+ -volname \"Mac Eve Tools\" -srcfolder /tmp/MacEveApi/  -format UDBZ \"$DEPLOYDIR/Mac Eve Tools.dmg\"\n\n#generate upgrade zipfile\nOLDDIR=`pwd`\ncd '/tmp/MacEveApi'\nzip -r -9 -y -T  \"$DEPLOYDIR/MacEveApi.zip\" 'Mac Eve Tools.app'\ncd $OLDDIR\nDSASIG=`ruby $DEPLOYDIR/sign_update.rb \"$DEPLOYDIR/MacEveApi.zip\" $DEPLOYDIR/dsa_priv.pem`\n\n#generate appcast xml\npython $DEPLOYDIR/appcast.py -v $CURRENT_PROJECT_VERSION -t \"MacEveApi Release:$CURRENT_PROJECT_VERSION\" -l $FILELEN -s $DSASIG -d \"$CURDATE\" > $DEPLOYDIR/APPCAST.XML\n\nexit 0";
+		};
+		CD8ECF3D18B98DA2006AA8EE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Start constants\ncompany=\"Vitality\";\ncompanyID=\"org.Vitality\";\ncompanyURL=\"https://github.com/sixones/vitality\";\n#target=\"iphoneos\";\ntarget=\"macosx\";\noutputPath=\"~/help\";\n# End constants\n/usr/local/bin/appledoc \\\n--project-name \"${PROJECT_NAME}\" \\\n--project-company \"${company}\" \\\n--company-id \"${companyID}\" \\\n--docset-atom-filename \"${company}.atom\" \\\n--docset-feed-url \"${companyURL}/${company}/%DOCSETATOMFILENAME\" \\\n--docset-package-url \"${companyURL}/${company}/%DOCSETPACKAGEFILENAME\" \\\n--docset-fallback-url \"${companyURL}/${company}\" \\\n--output \"${outputPath}\" \\\n--publish-docset \\\n--docset-platform-family \"${target}\" \\\n--logformat xcode \\\n--keep-intermediate-files \\\n--no-repeat-first-par \\\n--no-warn-invalid-crossref \\\n--exit-threshold 2 \\\n\"${PROJECT_DIR}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1677,6 +1702,27 @@
 			};
 			name = Release;
 		};
+		CD8ECF3918B98D2D006AA8EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		CD8ECF3A18B98D2D006AA8EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		CD8ECF3B18B98D2D006AA8EE /* Test Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = "Test Release";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1719,6 +1765,15 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		CD8ECF3C18B98D2D006AA8EE /* Build configuration list for PBXAggregateTarget "Documentation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD8ECF3918B98D2D006AA8EE /* Debug */,
+				CD8ECF3A18B98D2D006AA8EE /* Release */,
+				CD8ECF3B18B98D2D006AA8EE /* Test Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
