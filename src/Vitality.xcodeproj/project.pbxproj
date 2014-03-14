@@ -80,6 +80,7 @@
 		A154A64417A83E090076603D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A154A64217A83E090076603D /* Localizable.strings */; };
 		A154A64B17C576700076603D /* Contract.m in Sources */ = {isa = PBXBuildFile; fileRef = A154A64617C576700076603D /* Contract.m */; };
 		A154A64D17C576700076603D /* Contracts.m in Sources */ = {isa = PBXBuildFile; fileRef = A154A64917C576700076603D /* Contracts.m */; };
+		A1A2DAA918D0CFB40077CD55 /* PlanOverview.m in Sources */ = {isa = PBXBuildFile; fileRef = A1A2DAA818D0CFB40077CD55 /* PlanOverview.m */; };
 		A1B21DAD181EE7E700F07DBE /* ContractDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B21DAB181EE7E700F07DBE /* ContractDetailsController.m */; };
 		A1B21DB0181EE7F200F07DBE /* ContractDetails.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1B21DAE181EE7F200F07DBE /* ContractDetails.xib */; };
 		A1B21DB3181F102200F07DBE /* MTISKFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B21DB2181F102100F07DBE /* MTISKFormatter.m */; };
@@ -283,6 +284,8 @@
 		A154A64817C576700076603D /* Contracts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contracts.h; sourceTree = "<group>"; };
 		A154A64917C576700076603D /* Contracts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contracts.m; sourceTree = "<group>"; };
 		A154A64A17C576700076603D /* Contract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contract.h; sourceTree = "<group>"; };
+		A1A2DAA718D0CFB40077CD55 /* PlanOverview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlanOverview.h; sourceTree = "<group>"; };
+		A1A2DAA818D0CFB40077CD55 /* PlanOverview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlanOverview.m; sourceTree = "<group>"; };
 		A1B21DAA181EE7E700F07DBE /* ContractDetailsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractDetailsController.h; sourceTree = "<group>"; };
 		A1B21DAB181EE7E700F07DBE /* ContractDetailsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractDetailsController.m; sourceTree = "<group>"; };
 		A1B21DAF181EE7F200F07DBE /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ContractDetails.xib; sourceTree = "<group>"; };
@@ -1019,6 +1022,8 @@
 				C9FF477110550BA60044BBAC /* SkillDatasource */,
 				C9FF476F10550BA60044BBAC /* PlanView2.h */,
 				C9FF477010550BA60044BBAC /* PlanView2.m */,
+				A1A2DAA718D0CFB40077CD55 /* PlanOverview.h */,
+				A1A2DAA818D0CFB40077CD55 /* PlanOverview.m */,
 				C9FF477910550BA60044BBAC /* SkillPlanController.h */,
 				C9FF477A10550BA60044BBAC /* SkillPlanController.m */,
 				C9FF477B10550BA60044BBAC /* SkillSearchView.h */,
@@ -1327,6 +1332,7 @@
 				A1FCD0561829881600A6655A /* METIDtoName.m in Sources */,
 				A1093C97183D7546000D4063 /* CertGroup.m in Sources */,
 				A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */,
+				A1A2DAA918D0CFB40077CD55 /* PlanOverview.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1774,6 +1780,7 @@
 				CD8ECF3B18B98D2D006AA8EE /* Test Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
