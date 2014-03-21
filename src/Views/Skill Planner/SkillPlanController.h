@@ -32,6 +32,7 @@
 
 #import "PlanView2.h"
 @class PlanView2Datasource;
+@class PlanOverview;
 
 /*
 	This class is responsable for mananging the subviews that are used to build the skill planner interface,
@@ -49,7 +50,8 @@
 	
 	IBOutlet SkillSearchView *skillSearchView;
 	IBOutlet PlanView2 *skillView2;
-	
+	IBOutlet PlanOverview *planOverview;
+    
 	Character *activeCharacter; /*the character we are displaying*/	
 	SkillTree *st; /*master skill tree*/
 	

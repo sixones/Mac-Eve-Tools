@@ -22,6 +22,7 @@
 #import "SkillSearchView.h"
 #import "Helpers.h"
 #import "PlanView2Datasource.h"
+#import "PlanOverview.h"
 
 /*datasources*/
 #import "SkillSearchCharacterDatasource.h"
@@ -168,6 +169,7 @@
 	}
 		
 	[skillView2 setDelegate:self];
+    [planOverview setDelegate:self];
 }
 
 -(void) dealloc
@@ -190,7 +192,8 @@
 	}
 
 	[skillView2 setCharacter:c];
-	
+	[planOverview setCharacter:c];
+    
 	activeCharacter = [c retain];
 	
 	[skillCharDatasource setCharacter:c];
@@ -221,6 +224,7 @@
 	[skillSearchView selectDefaultGroup];
 	
 	[skillView2 refreshPlanView];
+    [planOverview refreshPlanView];
 }
 
 -(void) viewWillBeDeactivated
@@ -312,11 +316,13 @@
 - (IBAction) nextSkillPlan: (id) sender
 {
     [skillView2 nextSkillPlan:sender];
+    [planOverview nextSkillPlan:sender];
 }
 
 - (IBAction) prevSkillPlan: (id) sender
 {
     [skillView2 prevSkillPlan:sender];
+    [planOverview prevSkillPlan:sender];
 }
 
 
