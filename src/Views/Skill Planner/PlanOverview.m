@@ -19,14 +19,12 @@
 
 #import "PlanOverview.h"
 #import "macros.h"
-//#import "PlannerColumn.h"
 
 #import "GlobalData.h"
 #import "SkillPlan.h"
 #import "PlanView2Datasource.h"
 #import "Character.h"
 
-//#import "MTSegmentedCellCategory.h"
 #import "SkillDetailsWindowController.h"
 #import "MTSegmentedCell.h"
 #import "MTSkillButtonCell.h"
@@ -43,23 +41,11 @@
 
 @interface PlanOverview (SkillView2Private)
 
--(void) loadPlan:(SkillPlan*)planIndex;
--(IBAction) displayPlanByPlanId:(NSInteger)tag;
--(void) switchColumns:(NSMutableArray*)colArray;
-
 -(void) deleteSkillPlan:(NSIndexSet*)planIndexes;
-
--(void) removeSkillsFromPlan:(NSIndexSet*)skillIndexes;
--(void) removeSkillsPopupConfirmation:(NSArray*)antiPlan;
--(void) removeSkillSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
-
--(void) repositionButton;
 
 -(void) cellPlusButtonClick:(id)sender;
 -(void) cellMinusButtonClick:(id)sender;
 -(void) cellNotesButtonClick:(id)sender;
-
-
 
 @end
 
@@ -79,94 +65,10 @@
 		if(plan == nil){
 			continue;
 		}
-		[[segmentedButton cell] removeCellWithTag:[plan planId]];
 		[character removeSkillPlan:plan];
     }
 
-    [segmentedButton setSelectedSegment:0];
     [self refreshPlanView];
-    [self repositionButton];
-}
-
-// The tag is the plan id.  There's no way to call this from the datasource after the rename
-// has completed. bah.
--(void) renameButtonWithTag:(NSInteger)tag
-{
-	NSUInteger rowsetCount = [segmentedButton segmentCount];
-	
-	for(NSUInteger i = 0; i < rowsetCount; i++){
-		if([[segmentedButton cell]tagForSegment:i] == tag){
-			SkillPlan *plan = [character skillPlanById:tag];
-			if(plan == nil){
-				return;
-			}
-			
-			[[segmentedButton cell]setLabel:[plan planName] forSegment:i];
-		}
-	}
-}
-
--(void) removeSkillSheetDidEnd:(NSWindow *)sheet 
-					returnCode:(NSInteger)returnCode 
-				   contextInfo:(void *)contextInfo
-{
-	NSArray *antiPlan = contextInfo;
-	if(returnCode == 1){
-		[pvDatasource removeSkillsFromPlan:antiPlan];
-		[self refreshPlanView];
-	}
-	[antiPlan release];
-}
-
--(void) removeSkillsPopupConfirmation:(NSArray*)antiPlan
-{
-	if([antiPlan count] == 1){
-		[pvDatasource removeSkillsFromPlan:antiPlan];
-		[self refreshPlanView];
-		return;
-	}
-	
-	SkillTree *st = [[GlobalData sharedInstance]skillTree];
-	
-	NSRect panelRect = basePanelSize;
-	
-	NSMutableString *str = [[NSMutableString alloc]init];
-	
-	for(SkillPair *sp in antiPlan){
-		Skill *s = [st skillForId:[sp typeID]];
-		[str appendFormat:@"%@ %@\n",[s skillName],romanForInteger([sp skillLevel])];	
-	}
-	[planSkillList setStringValue:str];
-	[str release];
-	
-	/*magic number. I can't seem to work out how to get the size of a text field, but this seems to work. fix later.*/
-	//Note to self: attributed strings
-	panelRect.size.height = basePanelSize.size.height + [antiPlan count] * 17; 
-	
-	[skillRemovePanel setFrame:panelRect display:YES];
-	
-	//[planSkillToRemove sizeToFit];
-	[planSkillList sizeToFit];
-	
-	[NSApp beginSheet:skillRemovePanel
-	   modalForWindow:[self window]
-		modalDelegate:self
-	   didEndSelector:@selector(removeSkillSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo:[antiPlan retain]];
-}
-
--(void) removeSkillsFromPlan:(NSIndexSet*)rowset
-{
-	NSUInteger rowsetCount = [rowset count];
-	NSUInteger *ary = malloc(sizeof(NSUInteger) * rowsetCount);
-	NSUInteger actual = [rowset getIndexes:ary maxCount:(sizeof(NSUInteger) * rowsetCount) inIndexRange:nil];
-	
-	assert(actual == rowsetCount);
-	
-	NSArray *antiPlan = [[pvDatasource currentPlan] constructAntiPlan:ary arrayLength:rowsetCount];
-	free(ary);
-	
-	[self removeSkillsPopupConfirmation:antiPlan];
 }
 
 /*This is for the new plan sheet*/
@@ -189,83 +91,11 @@
 	
 	if(plan != nil){
 		[self refreshPlanView];
-		[self loadPlan:plan];
-		[self displayPlanByPlanId:[plan planId]];
+		[[self delegate] loadPlan:plan];
 	}
 	[newPlanName setObjectValue:nil];
 }
 
-
--(void) switchColumns:(NSMutableArray*)colArray
-{
-	NSArray *tableCols = [[tableView tableColumns]copy];
-    
-	for(NSTableColumn *col in tableCols){
-		[tableView removeTableColumn:col];
-	}
-    
-	[tableCols release];
-	
-	for(NSTableColumn *col in colArray){
-		[tableView addTableColumn:col];
-	}
-        
-    [tableView setColumnAutoresizingStyle: NSTableViewFirstColumnOnlyAutoresizingStyle];
-    
-    [tableView deselectAll: self];
-    
-    //[scrollView reflectScrolledClipView: [scrollView contentView]];
-    //[tableView setFrame: [tableView frame]];
-}
-
--(void) loadPlan:(SkillPlan*)plan;
-{
-	//SkillPlan *plan = [character skillPlanAtIndex:planIndex];
-	
-	if(![[segmentedButton cell]selectSegmentWithTag:[plan planId]]){
-		NSInteger buttonCount = [segmentedButton segmentCount];
-		[segmentedButton setSegmentCount:buttonCount + 1];
-		[[segmentedButton cell]setTag:[plan planId] forSegment:buttonCount];
-		[[segmentedButton cell]setLabel:[plan planName] forSegment:buttonCount];
-		[[segmentedButton cell]selectSegmentWithTag:[plan planId]];
-		
-		NSMenu *menu = [[NSMenu alloc]initWithTitle:@"Close"];
-		NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"Close",@"Close a skill plan") 
-													 action:@selector(closePlan:) 
-											  keyEquivalent:@""];
-		[item setTarget:self];
-		[item setRepresentedObject:[NSNumber numberWithInteger:[plan planId]]];
-		[menu addItem:item];
-		[item release];
-		[segmentedButton setMenu:menu forSegment:buttonCount];
-		[menu release];
-		
-		[self repositionButton];
-	}
-	
-	[self displayPlanByPlanId:[plan planId]];
-}
-							
--(void) closePlan:(NSMenuItem*)item
-{
-	NSInteger tag = [[item representedObject]integerValue];
-	
-	if(currentTag == tag){
-		[self displayPlanByPlanId:-1];
-	}
-	
-	[[segmentedButton cell]removeCellWithTag:tag];
-	[self repositionButton];
-}
-
--(void) repositionButton
-{
-	[segmentedButton sizeToFit];
-	NSRect newSize = [segmentedButton frame];
-	NSRect viewSize = [self bounds];
-	newSize.origin.x = (viewSize.size.width / 2) - (newSize.size.width / 2);
-	[segmentedButton setFrameOrigin:newSize.origin];
-}
 
 -(void)toobarMessageForPlan:(SkillPlan*)plan
 {
@@ -275,37 +105,6 @@
 										   @"Bottom toolbar text. Shows plan training time"),
 						 [plan skillCount],trainingTime];
 	[delegate setToolbarMessage:message];
-}
-
-/*-1 is a special plan ID which triggers the overview*/
--(IBAction) displayPlanByPlanId:(NSInteger)tag
-{
-	if(tag == currentTag){
-		return;
-	}
-	
-	if(tag == -1){ //if we are switching to the overview
-		[self switchColumns:overviewColumns];
-		[pvDatasource setMode:SPMode_overview];
-		[delegate setToolbarMessage:nil];
-		[attributeModifierButton setEnabled:NO];
-        
-        [self buildAdvancedMenuForPlansOverview];
-        [segmentedButton selectSegmentWithTag:-1]; // reselect the overview segment
-	}else if(currentTag == -1){ //if we are switching FROM the overview
-		[self switchColumns:skillPlanColumns];
-		[pvDatasource setMode:SPMode_plan];
-		[pvDatasource setPlanId:tag];
-		[attributeModifierButton setEnabled:YES];
-        
-        [self buildAdvancedMenuForPlan];
-	}else{ // we are switching from plan A to plan B
-		[pvDatasource setPlanId:tag];
-		[attributeModifierButton setEnabled:YES];
-	}
-	
-	currentTag = tag;
-	[self refreshPlanView];
 }
 
 -(void) cellPlusButtonClick:(id)sender
@@ -363,14 +162,21 @@
 
 @synthesize delegate;
 
+-(SkillPlan *)currentPlan
+{
+    NSInteger selectedRow = [tableView selectedRow];
+    
+    if( !tableView || (selectedRow == -1) )
+    {
+        return nil;
+    }
+    
+    return [character skillPlanAtIndex:selectedRow];
+}
+
 -(void) refreshPlanView
 {
 	[tableView reloadData];
-	if([pvDatasource mode] == SPMode_plan){
-		[self toobarMessageForPlan:[pvDatasource currentPlan]];
-	}else{
-		[self repositionButton];
-	}
 }
 
 -(void) selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extend
@@ -540,7 +346,7 @@
 
 -(void) exportEvemonPlan:(id)sender
 {
-	[self performPlanExport:@""];
+	[self performPlanExport:[self currentPlan]];
 }
 
 -(void) exportPlanToText:(id)sender {
@@ -562,10 +368,10 @@
 
 -(void) awakeFromNib
 {
-	[self switchColumns:overviewColumns];
+	//[self switchColumns:overviewColumns];
     
 	[pvDatasource setMode:SPMode_overview];
-	[tableView setDataSource:pvDatasource];
+	[tableView setDataSource:self];
 	
 	[tableView registerForDraggedTypes:[NSArray arrayWithObjects:MTSkillArrayPBoardType,MTSkillIndexPBoardType,nil]];
 	
@@ -573,9 +379,7 @@
 	[tableView setTarget:self];
 	[tableView setDoubleAction:@selector(rowDoubleClick:)];
     [tableView setColumnAutoresizingStyle: NSTableViewFirstColumnOnlyAutoresizingStyle];
-	
-	[attributeModifierButton setEnabled:NO];
-	
+		
 	basePanelSize = [skillRemovePanel frame];
     
     [self buildAdvancedMenuForPlansOverview];
@@ -589,31 +393,23 @@
 {
 	NSInteger tag = [sender tag];
 	
-	if(tag == TAG_PLUS_BUTTON){
+	if(tag == TAG_PLUS_BUTTON)
+    {
 		[NSApp beginSheet:newPlan
-		   modalForWindow:[self window]
+		   modalForWindow:[tableView window]
 			modalDelegate:self
 		   didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:)
 			  contextInfo:NULL];
 		
-	}else if(tag == TAG_MINUS_BUTTON){
-		if([tableView selectedRow] == -1){
+	}
+    else if(tag == TAG_MINUS_BUTTON)
+    {
+		if([tableView selectedRow] == -1)
+        {
 			return;
 		}
 		
-		NSInteger segment = [segmentedButton selectedSegment];
-		if(segment == 0){
-			[self deleteSkillPlan:[tableView selectedRowIndexes]];
-		}else{
-			/*	This code will delete the plan, which on 2nd thought is not what we want at all.
-			NSInteger planId = [[segmentedButton cell] tagForSegment:[segmentedButton selectedSegment]];
-			[[segmentedButton cell]removeCellAtIndex:segment];
-			[character removeSkillPlanById:planId];
-			[segmentedButton setSelectedSegment:0];
-			[self displayPlanByPlanId:-1];
-			*/
-			[self removeSkillsFromPlan:[tableView selectedRowIndexes]];
-		}
+        [self deleteSkillPlan:[tableView selectedRowIndexes]];
 	}
 }
 
@@ -686,10 +482,7 @@
 		
 	}
 	
-	//If we are in overview mode, reload the datasource
-	if([pvDatasource mode] == SPMode_overview){
-		[self refreshPlanView];
-	}
+    [self refreshPlanView];
 }
 
 -(void) performPlanImport:(NSString*)filePath
@@ -701,26 +494,8 @@
 		  contextInfo:[filePath retain]];
 }
 
--(void) performPlanExport:(NSString*)filePath
+-(void) performPlanExport:(SkillPlan *)plan
 {
-	SkillPlan *plan;
-	if([pvDatasource mode] == SPMode_plan){
-		plan = [pvDatasource currentPlan];
-	}else{
-		NSAlert *alert = [[NSAlert alloc]init];
-		[alert addButtonWithTitle:@"Ok"];
-		[alert setMessageText:
-		 NSLocalizedString(@"Please open a skill plan first",
-						   @"Error message for when a user tries to export a skill plan without selecting a plan")];
-		[alert setInformativeText:
-		 NSLocalizedString(@"You must have a skill plan open in order to export it",
-						   @"Error message for when a user tries to export a skill plan without selecting a plan")];
-		[alert runModal];
-		[alert release];
-		 
-		return;
-	}
-	
 	NSString *proposedFileName = [NSString stringWithFormat:@"%@ - %@.emp",
 								  [character characterName],
 								  [plan planName]];
@@ -739,24 +514,7 @@
 }
 
 -(void) performTextPlanExportToClipboard:(BOOL) eveStyle {
-	SkillPlan *plan;
-	if([pvDatasource mode] == SPMode_plan){
-		plan = [pvDatasource currentPlan];
-	}else{
-		NSAlert *alert = [[NSAlert alloc]init];
-		[alert addButtonWithTitle:@"Ok"];
-		[alert setMessageText:
-		 NSLocalizedString(@"Please open a skill plan first",
-						   @"Error message for when a user tries to export a skill plan without selecting a plan")];
-		[alert setInformativeText:
-		 NSLocalizedString(@"You must have a skill plan open in order to export it",
-						   @"Error message for when a user tries to export a skill plan without selecting a plan")];
-		[alert runModal];
-		[alert release];
-        
-		return;
-	}
-    
+	SkillPlan *plan = [self currentPlan];
     SkillTree *st = [[GlobalData sharedInstance]skillTree];
     
     NSMutableString *planString = [NSMutableString string];
@@ -777,44 +535,6 @@
     [[NSPasteboard generalPasteboard] setString:planString forType:NSStringPboardType];
 }
 
--(IBAction) segmentedButtonClick:(id)sender
-{
-	NSInteger tag = [[sender cell]tagForSegment:[sender selectedSegment]];
-	[self displayPlanByPlanId:tag];
-}
-
--(void) rowDoubleClick:(id)sender
-{
-	NSInteger selectedRow = [sender selectedRow];
-	
-	if(selectedRow == -1){
-		return;
-	}
-	
-	if([pvDatasource mode] == SPMode_overview){
-		/*if this is in skill plan mode, */
-		SkillPlan *plan = [character skillPlanAtIndex:selectedRow];
-		[self loadPlan:plan];
-	}else{
-		/*we are in skill view mode. display a popup window for that skill*/
-		NSNumber *typeID = [[[character skillPlanById:[pvDatasource planId]]skillAtIndex:selectedRow]typeID];
-		[SkillDetailsWindowController displayWindowForTypeID:typeID forCharacter:character];
-	}
-}
-
-
--(void) displaySkillWindow:(id)sender
-{
-	Skill *s = [sender representedObject];
-	
-	if(s == nil){
-		NSLog(@"Error: Skill is nil!");
-		return;
-	}
-	
-	[SkillDetailsWindowController displayWindowForTypeID:[s typeID] forCharacter:character];
-}
-
 -(void) setCharacter:(Character*)c
 {
 	if(c == character){
@@ -823,9 +543,7 @@
 	
 	[character release];
 	character = [c retain];
-	[segmentedButton setSegmentCount:1];
 	[pvDatasource setCharacter:c];
-	[self displayPlanByPlanId:-1];
 	[self refreshPlanView];
 }
 
@@ -836,36 +554,22 @@
 
 - (IBAction) nextSkillPlan: (id) sender
 {
-    NSInteger index = [segmentedButton selectedSegment];
-    NSInteger count = [segmentedButton segmentCount];
-    if( index < (count-1) )
-    {
-        ++index;
-    }
-    else
-    {
-        index = 0;
-    }
-    NSInteger tag = [[segmentedButton cell] tagForSegment:index];
-    [segmentedButton selectSegmentWithTag:tag];
-    [self displayPlanByPlanId:tag];
+    NSInteger row = [tableView selectedRow];
+    NSInteger count = [tableView numberOfRows];
+    row++;
+    if( row >= count )
+        row = 0;
+    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 }
 
 - (IBAction) prevSkillPlan: (id) sender
 {
-    NSInteger index = [segmentedButton selectedSegment];
-    NSInteger count = [segmentedButton segmentCount];
-    if( index > 0 )
-    {
-        --index;
-    }
-    else
-    {
-        index = count - 1;
-    }
-    NSInteger tag = [[segmentedButton cell] tagForSegment:index];
-    [segmentedButton selectSegmentWithTag:tag];
-    [self displayPlanByPlanId:tag];
+    NSInteger row = [tableView selectedRow];
+    NSInteger count = [tableView numberOfRows];
+    row--;
+    if( row < 0 )
+        row = count - 1;
+    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 }
 
 #pragma mark TableView Delegate methods
@@ -882,16 +586,37 @@
 	{	
 		NSIndexSet *rowset = [tableView selectedRowIndexes];
 		
-		if([rowset count] > 0){
-			if([pvDatasource mode] == SPMode_plan){
-				[self removeSkillsFromPlan:rowset];
-			}else if([pvDatasource mode] == SPMode_overview){
-				[self deleteSkillPlan:rowset];
-			}
+		if( [rowset count] > 0 )
+        {
+            [self deleteSkillPlan:rowset];
 		}
 	}
 }
- /*menu delegates*/
+
+- (void)tableViewSelectionDidChange:(NSNotification *)notification
+{
+	NSInteger selectedRow = [tableView selectedRow];
+	
+	if(selectedRow == -1){
+		return;
+	}
+	
+    SkillPlan *plan = [character skillPlanAtIndex:selectedRow];
+    [[self delegate] loadPlan:plan];
+}
+
+/* Start in-place editing of the plan name */
+-(void) rowDoubleClick:(id)sender
+{
+	NSInteger selectedRow = [sender selectedRow];
+	    
+    NSInteger column = [tableView columnWithIdentifier:COL_POV_NAME];
+	
+	[tableView editColumn:column row:selectedRow withEvent:nil select:YES];
+}
+
+
+#pragma mark Table row menu delegates
 -(void) removeSkillPlanFromOverview:(id)sender
 {
 	NSNumber *planId = [sender representedObject];
@@ -912,22 +637,19 @@
 	NSNumber *planRow = [sender representedObject];
 	
 	SkillPlan *plan = [character skillPlanAtIndex:[planRow integerValue]];
-	[self loadPlan:plan];
+	[[self delegate] loadPlan:plan];
 }
 
--(void) removeSkillFromPlan:(id)sender
+-(void) exportPlanAtRow:(id)sender
 {
-	NSNumber *planId = [sender representedObject];
-	[self removeSkillsFromPlan:[NSIndexSet indexSetWithIndex:[planId unsignedIntegerValue]]];
+	NSNumber *planRow = [sender representedObject];
+	
+	SkillPlan *plan = [character skillPlanAtIndex:[planRow integerValue]];
+    [self performPlanExport:plan];
+
 }
 
--(void) trainSkillToLevel:(id)sender
-{
-	SkillPair *pair = [sender representedObject];
-	if([[pvDatasource currentPlan]increaseSkillToLevel:pair]){
-		[self refreshPlanView];
-	}
-}
+#pragma mark
 
 -(void) addSkillArrayToActivePlan:(NSArray*)skillArray
 {
@@ -966,5 +688,230 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 	
 	//The column at oldIndex got moved to newIndex.
 }
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
+{
+    return [character skillPlanCount];
+}
+
+-(id) tableView:(NSTableView *)aTableView
+objectValueForTableColumn:(NSTableColumn *)aTableColumn
+			row:(NSInteger)rowIndex
+{
+	SkillPlan *skillPlan = [character skillPlanAtIndex:rowIndex];
+	
+	if([[aTableColumn identifier]isEqualToString:COL_POV_NAME])
+    {
+		return [skillPlan planName];
+	}
+    else if([[aTableColumn identifier]isEqualToString:COL_POV_SKILLCOUNT])
+    {
+		return [NSNumber numberWithInteger:[skillPlan skillCount]];
+	}
+    else if([[aTableColumn identifier]isEqualToString:COL_POV_TIMELEFT])
+    {
+		return stringTrainingTime([skillPlan trainingTime]);
+	}
+	    
+	return nil;
+}
+
+- (void)tableView:(NSTableView *)aTableView
+   setObjectValue:(id)anObject
+   forTableColumn:(NSTableColumn *)aTableColumn
+			  row:(NSInteger)rowIndex
+{
+	SkillPlan *plan = [character skillPlanAtIndex:rowIndex];
+	NSString *oldName = [[plan planName]retain];
+	[plan setPlanName:anObject];
+	if(![character renameSkillPlan:plan]){ //verify that the name change succeded
+		[plan setPlanName:oldName];//rename failed. restore old name.
+	}
+	[oldName release];
+}
+
+-(NSMenu*) tableView:(NSTableView*)table
+  menuForTableColumn:(NSTableColumn*)column
+				 row:(NSInteger)row
+{
+	if(row == -1)
+    {
+		return nil;
+	}
+	
+	NSMenu *menu = nil;
+	SkillPlan *skillPlan = nil;
+	NSMenuItem *item = nil;
+	NSNumber *planRow = [NSNumber numberWithInteger:row];
+	
+	menu = [[[NSMenu alloc]initWithTitle:@""]autorelease];
+    
+    skillPlan = [character skillPlanAtIndex:row];
+    
+    if(skillPlan == nil){
+        return nil;
+    }
+    
+    item = [[NSMenuItem alloc]initWithTitle:[skillPlan planName]
+                                     action:@selector(activatePlanAtRow:)
+                              keyEquivalent:@""];
+    [item setRepresentedObject:planRow];
+    [menu addItem:item];
+    [item release];
+    
+    [menu addItem:[NSMenuItem separatorItem]];
+    
+    item = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"Delete",@"Delete a skill plan")
+                                     action:@selector(removeSkillPlanFromOverview:)
+                              keyEquivalent:@""];
+    [item setRepresentedObject:planRow];
+    [menu addItem:item];
+    [item release];
+    
+    item = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"Rename",@"Rename a skill plan")
+                                     action:@selector(renameSkillPlan:)
+                              keyEquivalent:@""];
+    [item setRepresentedObject:planRow];
+    [menu addItem:item];
+    [item release];
+	
+    item = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"Export",@"Export a skill plan")
+                                     action:@selector(exportPlanAtRow:)
+                              keyEquivalent:@""];
+    [item setRepresentedObject:planRow];
+    [menu addItem:item];
+    [item release];
+
+	return menu;
+}
+
+-(BOOL) shouldHighlightCell:(NSInteger)rowIndex
+{
+	return NO;
+}
+
+#pragma mark Drag and drop methods
+- (BOOL)tableView:(NSTableView *)tv
+writeRowsWithIndexes:(NSIndexSet *)rowIndexes
+	 toPasteboard:(NSPasteboard*)pboard
+{
+	[pboard declareTypes:[NSArray arrayWithObject:MTSkillIndexPBoardType] owner:self];
+	
+	id array;
+	NSMutableData *data = [[NSMutableData alloc]initWithCapacity:0];
+	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc]initForWritingWithMutableData:data];
+	
+	[archiver setOutputFormat:NSPropertyListBinaryFormat_v1_0];
+	
+	NSUInteger count = [rowIndexes count];
+	
+	if(count == 1){
+		array = [NSArray arrayWithObject:[NSNumber numberWithInteger:[rowIndexes firstIndex]]];
+	}else{
+		array = [[[NSMutableArray alloc]initWithCapacity:count]autorelease];
+		
+		NSUInteger *indexBuffer = malloc(sizeof(NSUInteger) * count);
+		
+		[rowIndexes getIndexes:indexBuffer maxCount:count inIndexRange:nil];
+		
+		for(NSUInteger i=0; i < count; i++){
+			[array addObject:[NSNumber numberWithInteger:(NSInteger)indexBuffer[i]]];
+		}
+		
+		free(indexBuffer);
+	}
+	
+	[archiver encodeObject:array forKey:DRAG_SKILLINDEX];
+	
+	[archiver finishEncoding];
+	
+	[pboard setData:data forType:MTSkillIndexPBoardType];
+	
+	[archiver release];
+	[data release];
+	
+	return YES;
+}
+
+
+- (NSDragOperation)tableView:(NSTableView *)aTableView
+				validateDrop:(id < NSDraggingInfo >)info
+				 proposedRow:(NSInteger)row
+	   proposedDropOperation:(NSTableViewDropOperation)operation
+{
+    if( [info draggingSource] == aTableView )
+    {
+        [aTableView setDropRow:row dropOperation:NSTableViewDropAbove];
+        return NSDragOperationMove;
+    }
+    else
+    {
+        [aTableView setDropRow:row dropOperation:NSTableViewDropOn];
+        return NSDragOperationCopy;
+    }
+    
+	if([info draggingSource] == aTableView){
+		[aTableView setDropRow:row dropOperation:NSTableViewDropAbove];
+		return NSDragOperationMove;
+	}
+	
+	return NSDragOperationCopy;
+}
+
+- (BOOL)tableView:(NSTableView *)aTableView
+	   acceptDrop:(id < NSDraggingInfo >)info
+			  row:(NSInteger)row
+	dropOperation:(NSTableViewDropOperation)operation
+{	
+	if([info draggingSource] == aTableView)
+    {
+		/*We are reording skills within a plan*/
+		NSData *data = [[info draggingPasteboard]dataForType:MTSkillIndexPBoardType];
+		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc]initForReadingWithData:data];
+		NSArray *indexArray = [unarchiver decodeObjectForKey:DRAG_SKILLINDEX];
+		
+		[unarchiver finishDecoding];
+		[unarchiver release];
+		
+
+        // What to do if we drop one skill plan on another? Copy all skills from the source plan to the destination?
+        NSIndexSet *indexes = [character moveSkillPlan:indexArray to:row];
+        [self selectRowIndexes:indexes byExtendingSelection:NO];
+        [self refreshPlanView];
+        return [indexes count] > 0;
+
+	}else{
+		/*
+		 this is a copy array type.  If we are in overview mode, append skills to the existing plan,
+		 or create a new plan, if is not dropped on an existing plan.
+		 
+		 if it is not overview mode, append to the current planId
+		 */
+		NSData *data = [[info draggingPasteboard]dataForType:MTSkillArrayPBoardType];
+		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc]initForReadingWithData:data];
+		
+		NSArray *array = [unarchiver decodeObject];
+		
+		[unarchiver finishDecoding];
+		[unarchiver release];
+		
+        if(operation == NSTableViewDropOn)
+        {
+            SkillPlan *plan = [character skillPlanAtIndex:row];
+
+            /*find the plan we are dropping on, append skills to this plan*/
+            //SkillPlan *dropPlan = [character skillPlanAtIndex:row];
+            [plan addSkillArrayToPlan:array];
+            [plan savePlan];
+            [aTableView setNeedsDisplayInRect:[aTableView frameOfCellAtColumn:1 row:row]];
+            [aTableView setNeedsDisplayInRect:[aTableView frameOfCellAtColumn:2 row:row]];
+            return YES;
+        }else if(operation == NSTableViewDropAbove){
+            return NO;
+        }
+	}
+	return NO;
+}
+
 
 @end

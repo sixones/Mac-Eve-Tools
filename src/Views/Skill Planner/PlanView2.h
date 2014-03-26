@@ -24,90 +24,38 @@
 #import "AttributeModifierController.h"
 
 @class SkillPlan;
-
-@protocol SkillView2Delegate <METInstance>
-
-/*
- the plan summary wants to create a new plan
- returns YES on success. NO if a plan was not created
- */
--(SkillPlan*) createNewPlan:(NSString*)name;
-
-/*
- Remove a plan from the queue
- YES on success NO on failure
- */
--(BOOL) removePlan:(NSInteger)planId;
-
-/*
- the user wants to move the plan in the plan list
- return YES if allowed, NO if not
- */
--(BOOL) planMovedFromIndex:(NSInteger)from toIndex:(NSInteger)to;
-
-@end
-
 @class PlanView2Datasource;
 @class Character;
 
 @interface PlanView2 : NSView <NSTableViewDelegate,PlanView2Delegate> {
-	IBOutlet NSButton *plusButton;
-	IBOutlet NSButton *minusButton;
-	IBOutlet NSButton *attributeModifierButton;
-    IBOutlet NSPopUpButton *advancedButton;
-	
-	IBOutlet NSSegmentedControl *segmentedButton;
 	IBOutlet NSTableView *tableView;
     IBOutlet NSScrollView *scrollView;
-	
-	IBOutlet NSPanel *newPlan;
-	IBOutlet NSTextField *newPlanName;
-	
+		
 	IBOutlet NSPanel *skillRemovePanel;
 	IBOutlet NSTextField *planSkillList;
 	
-	IBOutlet AttributeModifierController *attributeModifier;
-	IBOutlet NSPanel *attributeModifierPanel;
-	
 	NSRect basePanelSize;
-	
-	NSMutableArray *overviewColumns;
-	NSMutableArray *skillPlanColumns;
-	
+		
 	PlanView2Datasource *pvDatasource;
 	
 	Character *character;
 	
 	NSInteger currentTag;
 	
-	id<SkillView2Delegate> delegate;
+	id delegate;
 }
 
-@property (readwrite,nonatomic,assign) id<SkillView2Delegate> delegate;
+@property (readwrite,nonatomic,assign) id delegate;
 
--(IBAction) plusMinusButtonClick:(id)sender;
--(IBAction) segmentedButtonClick:(id)sender;
--(IBAction) planButtonClick:(id)sender;
 -(IBAction) antiPlanButtonClick:(id)sender;
--(IBAction) nextSkillPlan:(id)sender;
--(IBAction) prevSkillPlan:(id)sender;
-
--(IBAction) attributeModifierButtonClick:(id)sender;
 
 -(void) addSkillArrayToActivePlan:(NSArray*)skillArray;
 
 -(void) setCharacter:(Character*)c;
 -(Character*) character;
 
-//Import a plan at this path
--(void) performPlanImport:(NSString*)filePath;
--(void) performPlanExport:(NSString*)filePath;
-
--(void) performTextPlanExportToClipboard:(BOOL)eveStyle;
+-(void)loadPlan:(SkillPlan *)plan;
 
 -(void) refreshPlanView;
-
--(void) buildAdvancedMenuForPlansOverview;
--(void) buildAdvancedMenuForPlan;
 
 @end

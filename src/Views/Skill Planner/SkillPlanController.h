@@ -23,6 +23,8 @@
 #import "SkillTree.h"
 #import "Character.h"
 
+#import "SkillView2Delegate.h"
+
 #import "SkillSearchView.h"
 
 #import "SkillSearchCharacterDatasource.h"
@@ -31,8 +33,10 @@
 #import "SkillSearchModuleDatasource.h"
 
 #import "PlanView2.h"
+
 @class PlanView2Datasource;
 @class PlanOverview;
+@class AttributeModifierController;
 
 /*
 	This class is responsable for mananging the subviews that are used to build the skill planner interface,
@@ -51,8 +55,15 @@
 	IBOutlet SkillSearchView *skillSearchView;
 	IBOutlet PlanView2 *skillView2;
 	IBOutlet PlanOverview *planOverview;
-    
-	Character *activeCharacter; /*the character we are displaying*/	
+    IBOutlet NSPopUpButton *advancedButton;
+
+    IBOutlet NSPanel *newPlan;
+	IBOutlet NSTextField *newPlanName;
+
+    IBOutlet AttributeModifierController *attributeModifier;
+	IBOutlet NSPanel *attributeModifierPanel;
+
+	Character *activeCharacter; /*the character we are displaying*/
 	SkillTree *st; /*master skill tree*/
 	
 	/*datasources*/

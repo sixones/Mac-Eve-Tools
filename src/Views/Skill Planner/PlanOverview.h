@@ -22,41 +22,17 @@
 #import "METInstance.h"
 #import "PlanView2Datasource.h"
 #import "AttributeModifierController.h"
+#import "SkillView2Delegate.h"
 
 @class SkillPlan;
-
-@protocol SkillView2Delegate <METInstance>
-
-/*
- the plan summary wants to create a new plan
- returns YES on success. NO if a plan was not created
- */
--(SkillPlan*) createNewPlan:(NSString*)name;
-
-/*
- Remove a plan from the queue
- YES on success NO on failure
- */
--(BOOL) removePlan:(NSInteger)planId;
-
-/*
- the user wants to move the plan in the plan list
- return YES if allowed, NO if not
- */
--(BOOL) planMovedFromIndex:(NSInteger)from toIndex:(NSInteger)to;
-
-@end
-
 @class PlanView2Datasource;
 @class Character;
 
-@interface PlanOverview : NSView <NSTableViewDelegate,PlanView2Delegate> {
+@interface PlanOverview : NSView <NSTableViewDelegate,NSTableViewDataSource,PlanView2Delegate> {
 	IBOutlet NSButton *plusButton;
 	IBOutlet NSButton *minusButton;
-	IBOutlet NSButton *attributeModifierButton;
     IBOutlet NSPopUpButton *advancedButton;
 	
-	IBOutlet NSSegmentedControl *segmentedButton;
 	IBOutlet NSTableView *tableView;
     IBOutlet NSScrollView *scrollView;
 	
@@ -86,7 +62,6 @@
 @property (readwrite,nonatomic,assign) id<SkillView2Delegate> delegate;
 
 -(IBAction) plusMinusButtonClick:(id)sender;
--(IBAction) segmentedButtonClick:(id)sender;
 -(IBAction) planButtonClick:(id)sender;
 -(IBAction) antiPlanButtonClick:(id)sender;
 -(IBAction) nextSkillPlan:(id)sender;
@@ -101,7 +76,7 @@
 
 //Import a plan at this path
 -(void) performPlanImport:(NSString*)filePath;
--(void) performPlanExport:(NSString*)filePath;
+-(void) performPlanExport:(SkillPlan *)filePath;
 
 -(void) performTextPlanExportToClipboard:(BOOL)eveStyle;
 
@@ -110,4 +85,5 @@
 -(void) buildAdvancedMenuForPlansOverview;
 -(void) buildAdvancedMenuForPlan;
 
+-(SkillPlan *)currentPlan;
 @end

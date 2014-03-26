@@ -31,6 +31,12 @@
 
 #import "METInstance.h"
 
+#import "PlanIO.h"
+#import "EvemonXmlPlanIO.h"
+#import "Skill.h"
+#import "SkillPair.h"
+#import "SkillPlan.h"
+
 @interface SkillPlanController (SkillPlanControllerPrivate)
 
 /*delegate methods for the splitting panel*/
@@ -170,6 +176,8 @@
 		
 	[skillView2 setDelegate:self];
     [planOverview setDelegate:self];
+    
+    [self buildAdvancedMenu];
 }
 
 -(void) dealloc
@@ -315,15 +323,204 @@
 
 - (IBAction) nextSkillPlan: (id) sender
 {
-    [skillView2 nextSkillPlan:sender];
     [planOverview nextSkillPlan:sender];
 }
 
 - (IBAction) prevSkillPlan: (id) sender
 {
-    [skillView2 prevSkillPlan:sender];
     [planOverview prevSkillPlan:sender];
 }
 
+-(void) loadPlan:(SkillPlan*)plan
+{
+    [skillView2 loadPlan:plan];
+}
+
+#pragma mark Advanced menu methods
+-(void) buildAdvancedMenu
+{
+    while ([advancedButton.itemArray count] > 1) {
+        [advancedButton removeItemAtIndex: 1];
+    }
+    
+    NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:@"Setup Attributes" action:@selector(attributeModifierButtonClick:) keyEquivalent:@""];
+    [item setTarget:self];
+    [[advancedButton menu] addItem:item];
+    
+    [[advancedButton menu] addItem: [NSMenuItem separatorItem]];
+    
+    item = [[NSMenuItem alloc]initWithTitle:@"Import Plan from EVEMon XML" action:@selector(importEvemonPlan:) keyEquivalent:@""];
+    [item setTarget:self];
+    [[advancedButton menu] addItem:item];
+
+    item = [[NSMenuItem alloc]initWithTitle:@"Export Plan to EVEMon XML" action:@selector(exportEvemonPlan:) keyEquivalent:@""];
+    [item setTarget:self];
+    [[advancedButton menu] addItem:item];
+
+    [[advancedButton menu] addItem: [NSMenuItem separatorItem]];
+
+    item = [[NSMenuItem alloc]initWithTitle:@"Copy Plan as EVE Text" action:@selector(exportPlanToEVEText:) keyEquivalent:@""];
+    [item setTarget:self];
+    [[advancedButton menu] addItem:item];
+    
+    item = [[NSMenuItem alloc]initWithTitle:@"Copy Plan as Plain Text" action:@selector(exportPlanToText:) keyEquivalent:@""];
+    [item setTarget:self];
+    [[advancedButton menu] addItem:item];
+}
+
+-(void) importEvemonPlan:(id)sender
+{
+	NSOpenPanel *op = [NSOpenPanel openPanel];
+	[op setCanChooseDirectories:NO];
+	[op setCanChooseFiles:YES];
+	[op setAllowsMultipleSelection:NO];
+	[op setAllowedFileTypes:[NSArray arrayWithObjects:@"emp",@"xml",nil]];
+	
+	if([op runModal] == NSFileHandlingPanelCancelButton){
+		return;
+	}
+	
+	if([[op URLs]count] == 0){
+		return;
+	}
+	
+	NSURL *url = [[op URLs]objectAtIndex:0];
+	if(url == nil){
+		return;
+	}
+	
+	/*
+	 now we import the plan.
+	 the evemon format doesn't have the plan name encoded
+	 in the xml (and there could be a clash anyway) so prompt
+	 the user for the plan name.
+	 */
+	[self performPlanImport:[url path]];
+}
+
+-(void) exportEvemonPlan:(id)sender
+{
+	[self performPlanExport:@""];
+}
+
+-(void) exportPlanToText:(id)sender {
+    [self performTextPlanExportToClipboard: false];
+}
+
+-(void) exportPlanToEVEText:(id)sender {
+    [self performTextPlanExportToClipboard: true];
+}
+
+-(IBAction) attributeModifierButtonClick:(id)sender
+{
+	
+    SkillPlan *plan = [planOverview currentPlan];
+    
+    [attributeModifier setCharacter:activeCharacter andPlan:plan];
+    
+    [NSApp beginSheet:attributeModifierPanel
+       modalForWindow:[NSApp mainWindow]
+        modalDelegate:attributeModifier
+       didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:)
+          contextInfo:attributeModifierPanel];
+}
+
+/*
+ this is for importing a plan
+ It only seems to work if the plan view is active.
+ */
+-(void) importSheetDidEnd:(NSWindow *)sheet
+			   returnCode:(NSInteger)returnCode
+			  contextInfo:(NSString *)filePath
+{
+	[filePath autorelease];
+	
+	NSString *planName = [newPlanName stringValue];
+	
+	SkillPlan *plan = [self createNewPlan:planName];
+	if(plan == nil){
+		NSLog(@"Failed to create plan %@",planName);
+		return;
+	}
+	
+	/*import the evemon plan*/
+	EvemonXmlPlanIO *pio = [[EvemonXmlPlanIO alloc]init];
+	
+	BOOL rc = [pio read:filePath intoPlan:plan];
+	
+	[pio release];
+	
+	if(!rc){
+		NSLog(@"Failed to read plan!");
+		[activeCharacter removeSkillPlan:plan];
+        
+		NSAlert *alert = [[NSAlert alloc]init];
+		[alert addButtonWithTitle:@"Ok"];
+		[alert setMessageText:
+		 NSLocalizedString(@"Error importing the plan",
+						   @"error message generated when the program can't parse a skill plan import")];
+		[alert setInformativeText:
+		 NSLocalizedString(@"The plan file couldn't be understood\r\nOr there were no skills to import",
+						   @"error message generated when the program can't parse a skill plan import")];
+		[alert runModal];
+		[alert release];
+		
+	}
+	
+    // should select it
+    [planOverview refreshPlanView];
+}
+
+-(void) performPlanImport:(NSString*)filePath
+{
+	[NSApp beginSheet:newPlan
+	   modalForWindow:[NSApp mainWindow]
+		modalDelegate:self
+	   didEndSelector:@selector(importSheetDidEnd:returnCode:contextInfo:)
+		  contextInfo:[filePath retain]];
+}
+
+-(void) performPlanExport:(NSString*)filePath
+{
+	SkillPlan *plan = [planOverview currentPlan];
+	
+	NSString *proposedFileName = [NSString stringWithFormat:@"%@ - %@.emp",
+								  [activeCharacter characterName],
+								  [plan planName]];
+	
+	NSSavePanel *sp = [NSSavePanel savePanel];
+	
+	[sp setAllowedFileTypes:[NSArray arrayWithObjects:@"emp",@"xml",nil]];
+	[sp setNameFieldStringValue:proposedFileName];
+	[sp setCanSelectHiddenExtension:YES];
+	
+	if([sp runModal] == NSFileHandlingPanelOKButton){
+		EvemonXmlPlanIO *pio = [[EvemonXmlPlanIO alloc]init];
+		[pio write:plan toFile:[[sp URL]path]];
+		[pio release];
+	}
+}
+
+-(void) performTextPlanExportToClipboard:(BOOL) eveStyle {
+	SkillPlan *plan = [planOverview currentPlan];
+        
+    NSMutableString *planString = [NSMutableString string];
+	NSInteger counter = [plan skillCount];
+    
+	for(NSInteger i = 0; i < counter; i++)
+    {
+        SkillPair *sp = [plan skillAtIndex:i];
+		Skill *s = [st skillForId:[sp typeID]];
+        
+        if (eveStyle) {
+            [planString appendFormat:@"<a href='showinfo:%d'>%@</a>\t L%d\n", (int) [sp typeID], [s skillName], (int) [sp skillLevel]];
+        } else {
+            [planString appendFormat:@"%@\t L%d\n", [s skillName], (int) [sp skillLevel]];
+        }
+	}
+    
+    [[NSPasteboard generalPasteboard] clearContents];
+    [[NSPasteboard generalPasteboard] setString:planString forType:NSStringPboardType];
+}
 
 @end

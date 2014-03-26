@@ -272,6 +272,7 @@
 		9EF335C711E87875002A3B7D /* databaseIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = databaseIcon.png; sourceTree = "<group>"; };
 		A1093C95183D7545000D4063 /* CertGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertGroup.h; sourceTree = "<group>"; };
 		A1093C96183D7546000D4063 /* CertGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CertGroup.m; sourceTree = "<group>"; };
+		A112AD5B18E37F67001AF74B /* SkillView2Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkillView2Delegate.h; sourceTree = "<group>"; };
 		A12FC60117EA0C0D0053DC23 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ContractsView.xib; sourceTree = "<group>"; };
 		A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractsViewController.m; sourceTree = "<group>"; };
 		A12FC60317EA0C0D0053DC23 /* ContractsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractsViewController.h; sourceTree = "<group>"; };
@@ -1020,6 +1021,7 @@
 			children = (
 				C979E0011069AA0300457530 /* Config */,
 				C9FF477110550BA60044BBAC /* SkillDatasource */,
+				A112AD5B18E37F67001AF74B /* SkillView2Delegate.h */,
 				C9FF476F10550BA60044BBAC /* PlanView2.h */,
 				C9FF477010550BA60044BBAC /* PlanView2.m */,
 				A1A2DAA718D0CFB40077CD55 /* PlanOverview.h */,
