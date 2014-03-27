@@ -10,6 +10,7 @@
 #import "METPluggableView.h"
 
 @class Contracts;
+@class MetTableHeaderMenuManager;
 
 @interface ContractsViewController : NSViewController <METPluggableView,NSTableViewDataSource>
 {
@@ -19,6 +20,7 @@
     Character *character;
     id<METInstance> app;
     Contracts *contracts;
+    MetTableHeaderMenuManager *headerMenuManager;
 }
 @property (readwrite,retain,nonatomic) Character *character;
 @end

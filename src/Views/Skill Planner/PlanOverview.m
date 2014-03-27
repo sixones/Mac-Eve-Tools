@@ -28,6 +28,7 @@
 #import "SkillDetailsWindowController.h"
 #import "MTSegmentedCell.h"
 #import "MTSkillButtonCell.h"
+#import "MetTableHeaderMenuManager.h"
 
 #import "Helpers.h"
 #import "Config.h"
@@ -184,192 +185,28 @@
     [tableView selectRowIndexes:indexes byExtendingSelection:extend];
 }
 
--(void) buildSkillPlanColumnArray
+- (id)initWithFrame:(NSRect)frame
 {
-	NSTableColumn *col;
-	
-	[skillPlanColumns removeAllObjects];
-	
-	NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:SKILL_PLAN_CONFIG];
-	NSArray *ary;
-	
-	if(data == nil){
-		//fall back to defaults
-		ColumnConfigManager *ccm = [[ColumnConfigManager alloc]init];
-		[ccm readConfig];
-		ary = [ccm columns];
-		[ccm release];		
-	}else{
-		ary = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-	}
-	
-	for(PlannerColumn *pcol in ary){
-		if([pcol active]){
-			col = [[NSTableColumn alloc]initWithIdentifier:[pcol identifier]];
-			[col setWidth:[pcol columnWidth]];
-			[[col headerCell]setStringValue:[pcol columnName]];
-			[skillPlanColumns addObject:col];
-			[col release];
-			
-			
-			/*special case for the plan name column to add info and plus / minus buttons.*/
-			
-			if([[col identifier]isEqualToString:COL_PLAN_BUTTONS]){
-				MTSkillButtonCell *cell = [[MTSkillButtonCell alloc]init];
-				
-				[cell setTarget:self];
-				[cell setPlusButtonAction:@selector(cellPlusButtonClick:)];
-				[cell setMinusButtonAction:@selector(cellMinusButtonClick:)];
-				[cell setNotesButtonAction:@selector(cellNotesButtonClick:)];
-				
-				[col setDataCell:cell];
-			}
-		}
-	}
-}
-
--(void) buildSkillOverviewColumnArray
-{
-	NSTableColumn *col;
-	
-	[overviewColumns removeAllObjects];
-	
-	col = [[NSTableColumn alloc]initWithIdentifier:COL_POV_NAME];
-	[col setWidth:270.0];
-	[[col headerCell]setStringValue:NSLocalizedString(@"Plan Name",@"Column header for skill plan overview")];
-	[overviewColumns addObject:col];
-	[col release];
-	
-	col = [[NSTableColumn alloc]initWithIdentifier:COL_POV_SKILLCOUNT];
-	[col setWidth:90.0];
-	[[col headerCell]setStringValue:NSLocalizedString(@"Skill Count",@"Column header for skill plan overview")];
-	[overviewColumns addObject:col];
-	[col release];
-
-	col = [[NSTableColumn alloc]initWithIdentifier:COL_POV_TIMELEFT];
-	[col setWidth:160.0];
-	[[col headerCell]setStringValue:NSLocalizedString(@"Training Time",@"Column header for skill plan overview")];
-	[overviewColumns addObject:col];
-	[col release];
-}
-
--(void) buildTableviewColumns
-{
-	[self buildSkillOverviewColumnArray];
-	[self buildSkillPlanColumnArray];
-}
-
-- (id)initWithFrame:(NSRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code here.
-		overviewColumns = [[NSMutableArray alloc]init];
-		skillPlanColumns = [[NSMutableArray alloc]init];
-		
+    if( self = [super initWithFrame:frame] )
+    {
 		pvDatasource = [[PlanView2Datasource alloc]init];
 		[pvDatasource setViewDelegate:self];
-		
-		[self buildTableviewColumns];
-        [self buildAdvancedMenuForPlansOverview];
-        
+		        
 		currentTag = -1;
 	}
 	return self;
 }
 
--(void) buildAdvancedMenuForPlansOverview {
-    while ([advancedButton.itemArray count] > 1) {
-        [advancedButton removeItemAtIndex: 1];
-    }
-    
-    NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:@"Import from EVEMon XML" action:@selector(importEvemonPlan:) keyEquivalent:@""];
-    [item setTarget:self];
-    [[advancedButton menu] addItem:item];
-}
-
--(void) buildAdvancedMenuForPlan {
-    while ([advancedButton.itemArray count] > 1) {
-        [advancedButton removeItemAtIndex: 1];
-    }
-    
-    
-    NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:@"Setup Attributes" action:@selector(attributeModifierButtonClick:) keyEquivalent:@""];
-    [item setTarget:self];
-    [[advancedButton menu] addItem:item];
-    
-    [[advancedButton menu] addItem: [NSMenuItem separatorItem]];
-    
-    item = [[NSMenuItem alloc]initWithTitle:@"Copy as EVE Text" action:@selector(exportPlanToEVEText:) keyEquivalent:@""];
-    [item setTarget:self];
-    [[advancedButton menu] addItem:item];
-    
-    item = [[NSMenuItem alloc]initWithTitle:@"Copy as Plain Text" action:@selector(exportPlanToText:) keyEquivalent:@""];
-    [item setTarget:self];
-    [[advancedButton menu] addItem:item];
-    
-    [[advancedButton menu] addItem: [NSMenuItem separatorItem]];
-    
-    item = [[NSMenuItem alloc]initWithTitle:@"Export to EVEMon XML" action:@selector(exportEvemonPlan:) keyEquivalent:@""];
-    [item setTarget:self];
-    [[advancedButton menu] addItem:item];
-}
-
--(void) importEvemonPlan:(id)sender
-{
-	NSOpenPanel *op = [NSOpenPanel openPanel];
-	[op setCanChooseDirectories:NO];
-	[op setCanChooseFiles:YES];
-	[op setAllowsMultipleSelection:NO];
-	[op setAllowedFileTypes:[NSArray arrayWithObjects:@"emp",@"xml",nil]];
-	
-	if([op runModal] == NSFileHandlingPanelCancelButton){
-		return;
-	}
-	
-	if([[op URLs]count] == 0){
-		return;
-	}
-	
-	NSURL *url = [[op URLs]objectAtIndex:0];
-	if(url == nil){
-		return;
-	}
-	
-	/*
-	 now we import the plan.
-	 the evemon format doesn't have the plan name encoded
-	 in the xml (and there could be a clash anyway) so prompt
-	 the user for the plan name.
-	 */
-	[self performPlanImport:[url path]];
-}
-
--(void) exportEvemonPlan:(id)sender
-{
-	[self performPlanExport:[self currentPlan]];
-}
-
--(void) exportPlanToText:(id)sender {
-    [self performTextPlanExportToClipboard: false];
-}
-
--(void) exportPlanToEVEText:(id)sender {
-    [self performTextPlanExportToClipboard: true];
-}
-
 -(void) dealloc
 {
-	[overviewColumns release];
-	[skillPlanColumns release];
 	[character release];
 	[pvDatasource release];
+    [headerMenuManager release];
 	[super dealloc];
 }
 
 -(void) awakeFromNib
 {
-	//[self switchColumns:overviewColumns];
-    
 	[pvDatasource setMode:SPMode_overview];
 	[tableView setDataSource:self];
 	
@@ -379,10 +216,9 @@
 	[tableView setTarget:self];
 	[tableView setDoubleAction:@selector(rowDoubleClick:)];
     [tableView setColumnAutoresizingStyle: NSTableViewFirstColumnOnlyAutoresizingStyle];
-		
-	basePanelSize = [skillRemovePanel frame];
-    
-    [self buildAdvancedMenuForPlansOverview];
+    headerMenuManager = [[MetTableHeaderMenuManager alloc] initWithMenu:nil forTable:tableView];
+
+	basePanelSize = [skillRemovePanel frame];    
 }
 
 - (void)drawRect:(NSRect)rect {
@@ -438,101 +274,6 @@
 {
 	[NSApp endSheet:skillRemovePanel returnCode:[sender tag]];
 	[skillRemovePanel orderOut:sender];
-}
-
-/*
- this is for importing a plan
- It only seems to work if the plan view is active.
- */
--(void) importSheetDidEnd:(NSWindow *)sheet 
-			   returnCode:(NSInteger)returnCode 
-			  contextInfo:(NSString *)filePath
-{
-	[filePath autorelease];
-	
-	NSString *planName = [newPlanName stringValue];
-	
-	SkillPlan *plan = [delegate createNewPlan:planName];
-	if(plan == nil){
-		NSLog(@"Failed to create plan %@",planName);
-		return;
-	}
-	
-	/*import the evemon plan*/
-	EvemonXmlPlanIO *pio = [[EvemonXmlPlanIO alloc]init];
-	
-	BOOL rc = [pio read:filePath intoPlan:plan];
-	
-	[pio release];
-	
-	if(!rc){
-		NSLog(@"Failed to read plan!");
-		[character removeSkillPlan:plan];
-
-		NSAlert *alert = [[NSAlert alloc]init];
-		[alert addButtonWithTitle:@"Ok"];
-		[alert setMessageText:
-		 NSLocalizedString(@"Error importing the plan",
-						   @"error message generated when the program can't parse a skill plan import")];
-		[alert setInformativeText:
-		 NSLocalizedString(@"The plan file couldn't be understood\r\nOr there were no skills to import",
-						   @"error message generated when the program can't parse a skill plan import")];
-		[alert runModal];
-		[alert release];
-		
-	}
-	
-    [self refreshPlanView];
-}
-
--(void) performPlanImport:(NSString*)filePath
-{
-	[NSApp beginSheet:newPlan
-	   modalForWindow:[NSApp mainWindow]
-		modalDelegate:self
-	   didEndSelector:@selector(importSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo:[filePath retain]];
-}
-
--(void) performPlanExport:(SkillPlan *)plan
-{
-	NSString *proposedFileName = [NSString stringWithFormat:@"%@ - %@.emp",
-								  [character characterName],
-								  [plan planName]];
-	
-	NSSavePanel *sp = [NSSavePanel savePanel];
-	
-	[sp setAllowedFileTypes:[NSArray arrayWithObjects:@"emp",@"xml",nil]];
-	[sp setNameFieldStringValue:proposedFileName];
-	[sp setCanSelectHiddenExtension:YES];
-	
-	if([sp runModal] == NSFileHandlingPanelOKButton){
-		EvemonXmlPlanIO *pio = [[EvemonXmlPlanIO alloc]init];
-		[pio write:plan toFile:[[sp URL]path]];
-		[pio release];
-	}
-}
-
--(void) performTextPlanExportToClipboard:(BOOL) eveStyle {
-	SkillPlan *plan = [self currentPlan];
-    SkillTree *st = [[GlobalData sharedInstance]skillTree];
-    
-    NSMutableString *planString = [NSMutableString string];
-	NSInteger counter = [plan skillCount];
-    
-	for(NSInteger i = 0; i < counter; i++) {
-        SkillPair *sp = [plan skillAtIndex:i];
-		Skill *s = [st skillForId:[sp typeID]];
-        
-        if (eveStyle) {
-            [planString appendFormat:@"<a href='showinfo:%d'>%@</a>\t L%d\n", (int) [sp typeID], [s skillName], (int) [sp skillLevel]];
-        } else {
-            [planString appendFormat:@"%@\t L%d\n", [s skillName], (int) [sp skillLevel]];
-        }
-	}
-        
-    [[NSPasteboard generalPasteboard] clearContents];
-    [[NSPasteboard generalPasteboard] setString:planString forType:NSStringPboardType];
 }
 
 -(void) setCharacter:(Character*)c
@@ -645,7 +386,7 @@
 	NSNumber *planRow = [sender representedObject];
 	
 	SkillPlan *plan = [character skillPlanAtIndex:[planRow integerValue]];
-    [self performPlanExport:plan];
+    [delegate exportPlan:plan];
 
 }
 
@@ -663,30 +404,6 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 			  row:(NSInteger)rowIndex
 {
 	return NO;
-}
-
-- (void)tableViewColumnDidResize:(NSNotification *)aNotification
-{
-    // let the framework handle resizing
-    /*
-	NSTableColumn *col = [[aNotification userInfo]objectForKey:@"NSTableColumn"];
-	NSLog(@"resized %@ to %.2f",[col identifier],(double)[col width]);
-	
-	//write out the new column width
-	ColumnConfigManager *ccm = [[ColumnConfigManager alloc]init];	
-	
-	[ccm setWidth:[col width] forColumn:[col identifier]];
-	
-	[ccm release];
-    */
-}
-
-- (void)tableViewColumnDidMove:(NSNotification *)aNotification
-{
-	//NSNumber *oldIndex = [[aNotification userInfo]objectForKey:@"NSOldColumn"];
-	//NSNumber *newIndex = [[aNotification userInfo]objectForKey:@"NSNewColumn"];	
-	
-	//The column at oldIndex got moved to newIndex.
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
@@ -912,6 +629,5 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	}
 	return NO;
 }
-
 
 @end

@@ -10,6 +10,7 @@
 #import "METPluggableView.h"
 
 @class MarketOrders;
+@class MetTableHeaderMenuManager;
 
 @interface MarketViewController : NSViewController <METPluggableView,NSTableViewDataSource>
 {
@@ -19,9 +20,8 @@
     Character *character;
     id<METInstance> app;
     MarketOrders *orders;
+    MetTableHeaderMenuManager *headerMenuManager;
 }
 @property (readwrite,retain,nonatomic) Character *character;
 
-
-- (IBAction)toggleColumn:(id)sender; // show or hide a column ([sender representedObject])
 @end

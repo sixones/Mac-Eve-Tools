@@ -483,22 +483,7 @@
 -(void) performPlanExport:(NSString*)filePath
 {
 	SkillPlan *plan = [planOverview currentPlan];
-	
-	NSString *proposedFileName = [NSString stringWithFormat:@"%@ - %@.emp",
-								  [activeCharacter characterName],
-								  [plan planName]];
-	
-	NSSavePanel *sp = [NSSavePanel savePanel];
-	
-	[sp setAllowedFileTypes:[NSArray arrayWithObjects:@"emp",@"xml",nil]];
-	[sp setNameFieldStringValue:proposedFileName];
-	[sp setCanSelectHiddenExtension:YES];
-	
-	if([sp runModal] == NSFileHandlingPanelOKButton){
-		EvemonXmlPlanIO *pio = [[EvemonXmlPlanIO alloc]init];
-		[pio write:plan toFile:[[sp URL]path]];
-		[pio release];
-	}
+	[self exportPlan:plan];
 }
 
 -(void) performTextPlanExportToClipboard:(BOOL) eveStyle {
@@ -521,6 +506,25 @@
     
     [[NSPasteboard generalPasteboard] clearContents];
     [[NSPasteboard generalPasteboard] setString:planString forType:NSStringPboardType];
+}
+
+-(void) exportPlan:(SkillPlan *)plan
+{
+	NSString *proposedFileName = [NSString stringWithFormat:@"%@ - %@.emp",
+								  [activeCharacter characterName],
+								  [plan planName]];
+	
+	NSSavePanel *sp = [NSSavePanel savePanel];
+	
+	[sp setAllowedFileTypes:[NSArray arrayWithObjects:@"emp",@"xml",nil]];
+	[sp setNameFieldStringValue:proposedFileName];
+	[sp setCanSelectHiddenExtension:YES];
+	
+	if([sp runModal] == NSFileHandlingPanelOKButton){
+		EvemonXmlPlanIO *pio = [[EvemonXmlPlanIO alloc]init];
+		[pio write:plan toFile:[[sp URL]path]];
+		[pio release];
+	}
 }
 
 @end

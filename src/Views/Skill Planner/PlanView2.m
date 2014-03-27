@@ -27,6 +27,7 @@
 
 #import "SkillDetailsWindowController.h"
 #import "MTSkillButtonCell.h"
+#import "MetTableHeaderMenuManager.h"
 
 #import "Helpers.h"
 #import "Config.h"
@@ -235,6 +236,7 @@
 {
 	[character release];
 	[pvDatasource release];
+    [headerMenuManager release];
 	[super dealloc];
 }
 
@@ -248,7 +250,8 @@
 	[tableView setDelegate:self];
 	[tableView setTarget:self];
 	[tableView setDoubleAction:@selector(rowDoubleClick:)];
-		
+    headerMenuManager = [[MetTableHeaderMenuManager alloc] initWithMenu:nil forTable:tableView];
+
 	basePanelSize = [skillRemovePanel frame];
 }
 
@@ -348,30 +351,6 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 			  row:(NSInteger)rowIndex
 {
 	return NO;
-}
-
-- (void)tableViewColumnDidResize:(NSNotification *)aNotification
-{
-    // let the framework handle resizing
-    /*
-	NSTableColumn *col = [[aNotification userInfo]objectForKey:@"NSTableColumn"];
-	NSLog(@"resized %@ to %.2f",[col identifier],(double)[col width]);
-	
-	//write out the new column width
-	ColumnConfigManager *ccm = [[ColumnConfigManager alloc]init];	
-	
-	[ccm setWidth:[col width] forColumn:[col identifier]];
-	
-	[ccm release];
-    */
-}
-
-- (void)tableViewColumnDidMove:(NSNotification *)aNotification
-{
-	//NSNumber *oldIndex = [[aNotification userInfo]objectForKey:@"NSOldColumn"];
-	//NSNumber *newIndex = [[aNotification userInfo]objectForKey:@"NSNewColumn"];	
-	
-	//The column at oldIndex got moved to newIndex.
 }
 
 @end

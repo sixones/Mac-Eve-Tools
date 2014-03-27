@@ -27,6 +27,7 @@
 @class SkillPlan;
 @class PlanView2Datasource;
 @class Character;
+@class MetTableHeaderMenuManager;
 
 @interface PlanOverview : NSView <NSTableViewDelegate,NSTableViewDataSource,PlanView2Delegate> {
 	IBOutlet NSButton *plusButton;
@@ -46,10 +47,7 @@
 	IBOutlet NSPanel *attributeModifierPanel;
 	
 	NSRect basePanelSize;
-	
-	NSMutableArray *overviewColumns;
-	NSMutableArray *skillPlanColumns;
-	
+		
 	PlanView2Datasource *pvDatasource;
 	
 	Character *character;
@@ -57,6 +55,7 @@
 	NSInteger currentTag;
 	
 	id<SkillView2Delegate> delegate;
+    MetTableHeaderMenuManager *headerMenuManager;
 }
 
 @property (readwrite,nonatomic,assign) id<SkillView2Delegate> delegate;
@@ -74,16 +73,7 @@
 -(void) setCharacter:(Character*)c;
 -(Character*) character;
 
-//Import a plan at this path
--(void) performPlanImport:(NSString*)filePath;
--(void) performPlanExport:(SkillPlan *)filePath;
-
--(void) performTextPlanExportToClipboard:(BOOL)eveStyle;
-
 -(void) refreshPlanView;
-
--(void) buildAdvancedMenuForPlansOverview;
--(void) buildAdvancedMenuForPlan;
 
 -(SkillPlan *)currentPlan;
 @end

@@ -26,6 +26,7 @@
 @class SkillPlan;
 @class PlanView2Datasource;
 @class Character;
+@class MetTableHeaderMenuManager;
 
 @interface PlanView2 : NSView <NSTableViewDelegate,PlanView2Delegate> {
 	IBOutlet NSTableView *tableView;
@@ -43,6 +44,7 @@
 	NSInteger currentTag;
 	
 	id delegate;
+    MetTableHeaderMenuManager *headerMenuManager;
 }
 
 @property (readwrite,nonatomic,assign) id delegate;

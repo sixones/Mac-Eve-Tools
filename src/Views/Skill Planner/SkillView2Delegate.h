@@ -30,4 +30,5 @@
 
 -(void) loadPlan:(SkillPlan *)skillPlan;
 
+-(void) exportPlan:(SkillPlan *)skillPlan;
 @end
