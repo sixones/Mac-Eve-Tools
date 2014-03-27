@@ -36,11 +36,9 @@
 #import "MarketViewController.h"
 #import "ContractsViewController.h"
 
-	//#import "MBPreferencesController.h"
 #import "GeneralPrefViewController.h"
 #import "AccountPrefViewController.h"
 #import "DatabasePrefViewController.h"
-#import "SkillPlannerPrefViewController.h"
 
 #import "METConquerableStations.h"
 
@@ -597,12 +595,10 @@
 	AccountPrefViewController *accounts = [[AccountPrefViewController alloc] initWithNibName:@"AccountPrefView" bundle:nil];
 	GeneralPrefViewController *general = [[GeneralPrefViewController alloc] initWithNibNameAndController:@"GeneralPrefView" bundle:nil controller: self];
 	DatabasePrefViewController *database = [[DatabasePrefViewController alloc] initWithNibName:@"DatabasePrefView" bundle:nil];
-	SkillPlannerPrefViewController *skillPlanner = [[SkillPlannerPrefViewController alloc] initWithNibName:@"SkillPlannerPrefView" bundle:nil];
 	
-	[[MBPreferencesController sharedController] setWindowModules:[NSArray arrayWithObjects:general, accounts, skillPlanner, database, nil]];
+	[[MBPreferencesController sharedController] setWindowModules:[NSArray arrayWithObjects:general, accounts, database, nil]];
 	[accounts release];
 	[general release];
-	[skillPlanner release];
 	[database release];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(prefWindowWillClose:) name:NSWindowWillCloseNotification object:[[MBPreferencesController sharedController] window]];

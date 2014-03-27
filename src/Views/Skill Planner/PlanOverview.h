@@ -29,25 +29,16 @@
 @class Character;
 @class MetTableHeaderMenuManager;
 
-@interface PlanOverview : NSView <NSTableViewDelegate,NSTableViewDataSource,PlanView2Delegate> {
+@interface PlanOverview : NSObject <NSTableViewDelegate,NSTableViewDataSource,PlanView2Delegate> {
 	IBOutlet NSButton *plusButton;
 	IBOutlet NSButton *minusButton;
-    IBOutlet NSPopUpButton *advancedButton;
 	
 	IBOutlet NSTableView *tableView;
     IBOutlet NSScrollView *scrollView;
 	
 	IBOutlet NSPanel *newPlan;
 	IBOutlet NSTextField *newPlanName;
-	
-	IBOutlet NSPanel *skillRemovePanel;
-	IBOutlet NSTextField *planSkillList;
-	
-	IBOutlet AttributeModifierController *attributeModifier;
-	IBOutlet NSPanel *attributeModifierPanel;
-	
-	NSRect basePanelSize;
-		
+    
 	PlanView2Datasource *pvDatasource;
 	
 	Character *character;
@@ -62,11 +53,8 @@
 
 -(IBAction) plusMinusButtonClick:(id)sender;
 -(IBAction) planButtonClick:(id)sender;
--(IBAction) antiPlanButtonClick:(id)sender;
 -(IBAction) nextSkillPlan:(id)sender;
 -(IBAction) prevSkillPlan:(id)sender;
-
--(IBAction) attributeModifierButtonClick:(id)sender;
 
 -(void) addSkillArrayToActivePlan:(NSArray*)skillArray;
 

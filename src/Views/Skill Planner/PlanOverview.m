@@ -26,19 +26,10 @@
 #import "Character.h"
 
 #import "SkillDetailsWindowController.h"
-#import "MTSegmentedCell.h"
-#import "MTSkillButtonCell.h"
 #import "MetTableHeaderMenuManager.h"
 
 #import "Helpers.h"
 #import "Config.h"
-
-#import "PlanIO.h"
-#import "EvemonXmlPlanIO.h"
-
-#import "ColumnConfigManager.h"
-
-#import "AttributeModifierController.h"
 
 @interface PlanOverview (SkillView2Private)
 
@@ -93,6 +84,8 @@
 	if(plan != nil){
 		[self refreshPlanView];
 		[[self delegate] loadPlan:plan];
+        // New plan is always added at the end, so select the last index
+        [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:([character skillPlanCount]-1)] byExtendingSelection:NO];
 	}
 	[newPlanName setObjectValue:nil];
 }
@@ -185,9 +178,9 @@
     [tableView selectRowIndexes:indexes byExtendingSelection:extend];
 }
 
-- (id)initWithFrame:(NSRect)frame
+- (id)init
 {
-    if( self = [super initWithFrame:frame] )
+    if( self = [super init] )
     {
 		pvDatasource = [[PlanView2Datasource alloc]init];
 		[pvDatasource setViewDelegate:self];
@@ -217,8 +210,6 @@
 	[tableView setDoubleAction:@selector(rowDoubleClick:)];
     [tableView setColumnAutoresizingStyle: NSTableViewFirstColumnOnlyAutoresizingStyle];
     headerMenuManager = [[MetTableHeaderMenuManager alloc] initWithMenu:nil forTable:tableView];
-
-	basePanelSize = [skillRemovePanel frame];    
 }
 
 - (void)drawRect:(NSRect)rect {
@@ -246,22 +237,7 @@
 		}
 		
         [self deleteSkillPlan:[tableView selectedRowIndexes]];
-	}
-}
-
--(IBAction) attributeModifierButtonClick:(id)sender
-{
-	
-	if([pvDatasource mode] == SPMode_plan){
-		SkillPlan *plan = [character skillPlanById:[pvDatasource planId]];
-		
-		[attributeModifier setCharacter:character andPlan:plan];
-	
-		[NSApp beginSheet:attributeModifierPanel
-		   modalForWindow:[NSApp mainWindow]
-			modalDelegate:attributeModifier
-		   didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:)
-			  contextInfo:attributeModifierPanel];
+        [self tableViewSelectionDidChange:nil];
 	}
 }
 
@@ -269,11 +245,6 @@
 {
 	[NSApp endSheet:newPlan returnCode:[sender tag]];
 	[newPlan orderOut:sender];
-}
--(IBAction) antiPlanButtonClick:(id)sender
-{
-	[NSApp endSheet:skillRemovePanel returnCode:[sender tag]];
-	[skillRemovePanel orderOut:sender];
 }
 
 -(void) setCharacter:(Character*)c
@@ -473,6 +444,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
                                      action:@selector(activatePlanAtRow:)
                               keyEquivalent:@""];
     [item setRepresentedObject:planRow];
+    [item setTarget:self];
     [menu addItem:item];
     [item release];
     
@@ -482,6 +454,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
                                      action:@selector(removeSkillPlanFromOverview:)
                               keyEquivalent:@""];
     [item setRepresentedObject:planRow];
+    [item setTarget:self];
     [menu addItem:item];
     [item release];
     
@@ -489,6 +462,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
                                      action:@selector(renameSkillPlan:)
                               keyEquivalent:@""];
     [item setRepresentedObject:planRow];
+    [item setTarget:self];
     [menu addItem:item];
     [item release];
 	
@@ -496,6 +470,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
                                      action:@selector(exportPlanAtRow:)
                               keyEquivalent:@""];
     [item setRepresentedObject:planRow];
+    [item setTarget:self];
     [menu addItem:item];
     [item release];
 

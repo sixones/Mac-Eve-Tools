@@ -66,11 +66,9 @@
 		9EF3339011E79B1A002A3B7D /* AccountPrefView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EF3337811E79B19002A3B7D /* AccountPrefView.xib */; };
 		9EF3339111E79B1A002A3B7D /* DatabasePrefView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EF3337A11E79B19002A3B7D /* DatabasePrefView.xib */; };
 		9EF3339211E79B1A002A3B7D /* GeneralPrefView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EF3337C11E79B19002A3B7D /* GeneralPrefView.xib */; };
-		9EF3339311E79B1A002A3B7D /* SkillPlannerPrefView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EF3337E11E79B19002A3B7D /* SkillPlannerPrefView.xib */; };
 		9EF3339411E79B1A002A3B7D /* GeneralPrefViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EF3338111E79B19002A3B7D /* GeneralPrefViewController.m */; };
 		9EF3339511E79B1A002A3B7D /* MBPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EF3338711E79B19002A3B7D /* MBPreferencesController.m */; };
 		9EF3339611E79B1A002A3B7D /* NSTableViewCellExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EF3338911E79B19002A3B7D /* NSTableViewCellExtended.m */; };
-		9EF3339711E79B1A002A3B7D /* SkillPlannerPrefViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EF3338B11E79B19002A3B7D /* SkillPlannerPrefViewController.m */; };
 		9EF335C811E87875002A3B7D /* databaseIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EF335C711E87875002A3B7D /* databaseIcon.png */; };
 		A1093C97183D7546000D4063 /* CertGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = A1093C96183D7546000D4063 /* CertGroup.m */; };
 		A112AD5E18E48D80001AF74B /* MetTableHeaderMenuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A112AD5D18E48D80001AF74B /* MetTableHeaderMenuManager.m */; };
@@ -95,7 +93,6 @@
 		C92067901161D837001BBE14 /* SkillAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = C920678F1161D837001BBE14 /* SkillAttribute.m */; };
 		C92067B11162C792001BBE14 /* SkillPointAttributeQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = C92067B01162C792001BBE14 /* SkillPointAttributeQueue.m */; };
 		C926A9C511E0268200D16ECF /* CCPAttributeData.m in Sources */ = {isa = PBXBuildFile; fileRef = C926A9C411E0268200D16ECF /* CCPAttributeData.m */; };
-		C92EA238106DC26D00B57823 /* ColumnConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C92EA237106DC26D00B57823 /* ColumnConfigManager.m */; };
 		C930ED3210F80B2D006753D6 /* ShipAttributeDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = C930ED3110F80B2D006753D6 /* ShipAttributeDatasource.m */; };
 		C93815E5109E8FEF002C9B16 /* MTSkillButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C93815E4109E8FEF002C9B16 /* MTSkillButtonCell.m */; };
 		C94A94E51124F94600352F49 /* SkillDetailsPointsDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = C94A94E41124F94600352F49 /* SkillDetailsPointsDatasource.m */; };
@@ -113,7 +110,6 @@
 		C9661CC5110D6F7800FA9B72 /* SkillSearchCertDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = C9661CC4110D6F7800FA9B72 /* SkillSearchCertDatasource.m */; };
 		C9661E39110FC07200FA9B72 /* CertDetailsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9661E38110FC07200FA9B72 /* CertDetailsWindowController.m */; };
 		C9721EEA1121291D00035782 /* CharacterSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9721EE91121291D00035782 /* CharacterSheet.xib */; };
-		C979E00D1069C42700457530 /* PlannerColumn.m in Sources */ = {isa = PBXBuildFile; fileRef = C979E00C1069C42700457530 /* PlannerColumn.m */; };
 		C9824497113E180900D410A0 /* CertPrerequisiteDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = C9824496113E180900D410A0 /* CertPrerequisiteDatasource.m */; };
 		C993CEC51123FA200084BFFD /* DatabaseUpdate.xib in Resources */ = {isa = PBXBuildFile; fileRef = C993CEC41123FA200084BFFD /* DatabaseUpdate.xib */; };
 		C9BCF759116FEC0C009E269C /* SkillQueueDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = C9BCF758116FEC0C009E269C /* SkillQueueDatasource.m */; };
@@ -261,15 +257,12 @@
 		9EF3337911E79B19002A3B7D /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AccountPrefView.xib; sourceTree = "<group>"; };
 		9EF3337B11E79B19002A3B7D /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/DatabasePrefView.xib; sourceTree = "<group>"; };
 		9EF3337D11E79B19002A3B7D /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/GeneralPrefView.xib; sourceTree = "<group>"; };
-		9EF3337F11E79B19002A3B7D /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/SkillPlannerPrefView.xib; sourceTree = "<group>"; };
 		9EF3338011E79B19002A3B7D /* GeneralPrefViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneralPrefViewController.h; sourceTree = "<group>"; };
 		9EF3338111E79B19002A3B7D /* GeneralPrefViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneralPrefViewController.m; sourceTree = "<group>"; };
 		9EF3338611E79B19002A3B7D /* MBPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBPreferencesController.h; sourceTree = "<group>"; };
 		9EF3338711E79B19002A3B7D /* MBPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBPreferencesController.m; sourceTree = "<group>"; };
 		9EF3338811E79B19002A3B7D /* NSTableViewCellExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTableViewCellExtended.h; sourceTree = "<group>"; };
 		9EF3338911E79B19002A3B7D /* NSTableViewCellExtended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTableViewCellExtended.m; sourceTree = "<group>"; };
-		9EF3338A11E79B19002A3B7D /* SkillPlannerPrefViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkillPlannerPrefViewController.h; sourceTree = "<group>"; };
-		9EF3338B11E79B19002A3B7D /* SkillPlannerPrefViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SkillPlannerPrefViewController.m; sourceTree = "<group>"; };
 		9EF335C711E87875002A3B7D /* databaseIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = databaseIcon.png; sourceTree = "<group>"; };
 		A1093C95183D7545000D4063 /* CertGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertGroup.h; sourceTree = "<group>"; };
 		A1093C96183D7546000D4063 /* CertGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CertGroup.m; sourceTree = "<group>"; };
@@ -317,8 +310,6 @@
 		C92067B01162C792001BBE14 /* SkillPointAttributeQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SkillPointAttributeQueue.m; sourceTree = "<group>"; };
 		C926A9C311E0268200D16ECF /* CCPAttributeData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPAttributeData.h; sourceTree = "<group>"; };
 		C926A9C411E0268200D16ECF /* CCPAttributeData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPAttributeData.m; sourceTree = "<group>"; };
-		C92EA236106DC26D00B57823 /* ColumnConfigManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColumnConfigManager.h; sourceTree = "<group>"; };
-		C92EA237106DC26D00B57823 /* ColumnConfigManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColumnConfigManager.m; sourceTree = "<group>"; };
 		C930ED3010F80B2D006753D6 /* ShipAttributeDatasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShipAttributeDatasource.h; path = "../Views/Skill Planner/SkillDatasource/ShipAttributeDatasource.h"; sourceTree = "<group>"; };
 		C930ED3110F80B2D006753D6 /* ShipAttributeDatasource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShipAttributeDatasource.m; path = "../Views/Skill Planner/SkillDatasource/ShipAttributeDatasource.m"; sourceTree = "<group>"; };
 		C93815E3109E8FEF002C9B16 /* MTSkillButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTSkillButtonCell.h; sourceTree = "<group>"; };
@@ -353,8 +344,6 @@
 		C9661E35110FC05F00FA9B72 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/CertDetails.xib; sourceTree = "<group>"; };
 		C9661E37110FC07200FA9B72 /* CertDetailsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertDetailsWindowController.h; sourceTree = "<group>"; };
 		C9661E38110FC07200FA9B72 /* CertDetailsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CertDetailsWindowController.m; sourceTree = "<group>"; };
-		C979E00B1069C42700457530 /* PlannerColumn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlannerColumn.h; sourceTree = "<group>"; };
-		C979E00C1069C42700457530 /* PlannerColumn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlannerColumn.m; sourceTree = "<group>"; };
 		C9824495113E180900D410A0 /* CertPrerequisiteDatasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertPrerequisiteDatasource.h; sourceTree = "<group>"; };
 		C9824496113E180900D410A0 /* CertPrerequisiteDatasource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CertPrerequisiteDatasource.m; sourceTree = "<group>"; };
 		C98937761123A900006057C8 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/DatabaseUpdate.xib; sourceTree = "<group>"; };
@@ -626,15 +615,12 @@
 				9EF3337811E79B19002A3B7D /* AccountPrefView.xib */,
 				9EF3337A11E79B19002A3B7D /* DatabasePrefView.xib */,
 				9EF3337C11E79B19002A3B7D /* GeneralPrefView.xib */,
-				9EF3337E11E79B19002A3B7D /* SkillPlannerPrefView.xib */,
 				9EF3338011E79B19002A3B7D /* GeneralPrefViewController.h */,
 				9EF3338111E79B19002A3B7D /* GeneralPrefViewController.m */,
 				9EF3338611E79B19002A3B7D /* MBPreferencesController.h */,
 				9EF3338711E79B19002A3B7D /* MBPreferencesController.m */,
 				9EF3338811E79B19002A3B7D /* NSTableViewCellExtended.h */,
 				9EF3338911E79B19002A3B7D /* NSTableViewCellExtended.m */,
-				9EF3338A11E79B19002A3B7D /* SkillPlannerPrefViewController.h */,
-				9EF3338B11E79B19002A3B7D /* SkillPlannerPrefViewController.m */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -705,17 +691,6 @@
 				C9661B80110D3E6200FA9B72 /* CertPair.m */,
 			);
 			path = Certs;
-			sourceTree = "<group>";
-		};
-		C979E0011069AA0300457530 /* Config */ = {
-			isa = PBXGroup;
-			children = (
-				C979E00B1069C42700457530 /* PlannerColumn.h */,
-				C979E00C1069C42700457530 /* PlannerColumn.m */,
-				C92EA236106DC26D00B57823 /* ColumnConfigManager.h */,
-				C92EA237106DC26D00B57823 /* ColumnConfigManager.m */,
-			);
-			path = Config;
 			sourceTree = "<group>";
 		};
 		C99F735310F9465A00C6191D /* Datasource */ = {
@@ -1024,7 +999,6 @@
 		C9FF476E10550BA60044BBAC /* Skill Planner */ = {
 			isa = PBXGroup;
 			children = (
-				C979E0011069AA0300457530 /* Config */,
 				C9FF477110550BA60044BBAC /* SkillDatasource */,
 				A112AD5B18E37F67001AF74B /* SkillView2Delegate.h */,
 				C9FF476F10550BA60044BBAC /* PlanView2.h */,
@@ -1163,7 +1137,6 @@
 				9EF3339011E79B1A002A3B7D /* AccountPrefView.xib in Resources */,
 				9EF3339111E79B1A002A3B7D /* DatabasePrefView.xib in Resources */,
 				9EF3339211E79B1A002A3B7D /* GeneralPrefView.xib in Resources */,
-				9EF3339311E79B1A002A3B7D /* SkillPlannerPrefView.xib in Resources */,
 				9EF335C811E87875002A3B7D /* databaseIcon.png in Resources */,
 				14F8DAEF1739BF30001C4178 /* vitality.icns in Resources */,
 				14F8DAF11739BF30001C4178 /* vitality.png in Resources */,
@@ -1286,8 +1259,6 @@
 				C9F514A11056725600654F6D /* CharacterManager.m in Sources */,
 				C9EB4EC9105A0883009192BC /* CharacterTemplate.m in Sources */,
 				C9EB4F50105A16BD009192BC /* GenericDownloadOperation.m in Sources */,
-				C979E00D1069C42700457530 /* PlannerColumn.m in Sources */,
-				C92EA238106DC26D00B57823 /* ColumnConfigManager.m in Sources */,
 				C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */,
 				C93815E5109E8FEF002C9B16 /* MTSkillButtonCell.m in Sources */,
 				C964CB2210F42C8D00F735E9 /* CCPTypeAttribute.m in Sources */,
@@ -1320,7 +1291,6 @@
 				9EF3339411E79B1A002A3B7D /* GeneralPrefViewController.m in Sources */,
 				9EF3339511E79B1A002A3B7D /* MBPreferencesController.m in Sources */,
 				9EF3339611E79B1A002A3B7D /* NSTableViewCellExtended.m in Sources */,
-				9EF3339711E79B1A002A3B7D /* SkillPlannerPrefViewController.m in Sources */,
 				14B6F626173BD089005E8389 /* SkillSearchModuleDatasource.m in Sources */,
 				14B6F636173BE1FD005E8389 /* ModuleDetailsWindowController.m in Sources */,
 				A1C0A7B31761077F00A3A743 /* MarketOrder.m in Sources */,
@@ -1393,14 +1363,6 @@
 				9EF3337D11E79B19002A3B7D /* English */,
 			);
 			name = GeneralPrefView.xib;
-			sourceTree = "<group>";
-		};
-		9EF3337E11E79B19002A3B7D /* SkillPlannerPrefView.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				9EF3337F11E79B19002A3B7D /* English */,
-			);
-			name = SkillPlannerPrefView.xib;
 			sourceTree = "<group>";
 		};
 		A12FC60017EA0C0D0053DC23 /* ContractsView.xib */ = {
