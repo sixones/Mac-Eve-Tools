@@ -27,180 +27,597 @@
 #import "macros.h"
 
 
-/*
-	This class should represent everything about a particular charcater - all the info
-	parsed from the character XML sheet
- */
-
-
 /*prevent circular includes*/
 @class SkillPlan;
 
 @class Character;
 @class CharacterTemplate;
 
-@interface Character : NSObject <NSOutlineViewDataSource> {
-	NSUInteger characterId; /*char id. this + acct ID can be used to determine the URL for the sheet*/
-	NSString *characterName;
-	
-	NSString *characterFilePath; //The location of the character's data dir on disk
-	
-	NSMutableDictionary *data; /*generic key value data*/
-	SkillTree *skillTree; /*The skills that this character has.*/
-		
-	SkillPlan *trainingQueue; //Skills that are in the current training queue.
-	NSMutableArray *skillPlans;
-	CharacterDatabase *db;
-	NSNumber *trainingSkill;
-	
-	NSImage *portrait;
-	
-	NSString *errorMessage[CHAR_ERROR_TOTAL];
-	
-	NSDate *cacheExpiry;
-	
-	NSMutableSet *ownedCerts;//Certs that have been awarded to this character. NSNumber certID.
-	
-	NSInteger updateProgress;
-		
-	NSInteger baseAttributes[ATTR_TOTAL]; //base attribute levels before modification
-	NSInteger implantAttributes[ATTR_TOTAL]; //implants
-	NSInteger tempBonuses[ATTR_TOTAL]; //temporary values used when calculating an optimized training queue
-	
-	CGFloat attributeTotals[ATTR_TOTAL]; //the total with all bonuses applied
-	
-	BOOL error[CHAR_ERROR_TOTAL]; /*YES if there was an error*/
-	BOOL isTraining; /*is this character currently training?*/	
-}
-
-/*
-	Supply a path to the directory where all the character files live.  the object
-	will create itslef with the needed data.
+/**
+ The `Character` class represents all the information found in the EVE
+ Online API's Character Sheet call.
  */
 
+@interface Character : NSObject <NSOutlineViewDataSource> {
+	/**
+	 The character's database ID, as provided in the characterID API parameter.
+	 */
+	NSUInteger characterId;
+
+	/**
+	 The character's name.
+	 */
+	NSString *characterName;
+
+	/**
+	 The location of the character's data directory on disk.
+	 */
+	NSString *characterFilePath;
+
+	/**
+	 Generic key-value data storage used internally by `Character`.
+	 */
+	NSMutableDictionary *data;
+
+	/**
+	 This character's current skills.
+	 */
+	SkillTree *skillTree;
+
+	/**
+	 This character's training queue.
+	 */
+	SkillPlan *trainingQueue;
+
+	/**
+	 This character's saved training plans.
+	 */
+	NSMutableArray *skillPlans;
+
+	/**
+	 This character's record in the local SQLite database.
+	 */
+	CharacterDatabase *db;
+
+	/**
+	 The ID of this character's currently-training skill, which is the corresponding
+     /row[@typeID] attribute from the Skill Tree API call.
+	 */
+	NSNumber *trainingSkill;
+
+	/**
+	 This character's portrait.
+	 */
+	NSImage *portrait;
+
+	/**
+	 Current error messages, if any, for this character.
+	 */
+	NSString *errorMessage[CHAR_ERROR_TOTAL];
+
+	/**
+	 The expiration date of this character's locally-cached information.
+	 */
+	NSDate *cacheExpiry;
+
+	/**
+	 This character's current certificates, as `NSNumber`s corresponding to their
+     certID values.
+	 */
+	NSMutableSet *ownedCerts;
+
+	/**
+	 Unused value.
+	 */
+	NSInteger updateProgress;
+
+	/**
+	 This character's base (pre-implant) attribute levels.
+
+     The array's indices are `ATTR_INTELLIGENCE`, `ATTR_MEMORY`, `ATTR_CHARISMA`,
+     `ATTR_PERCEPTION`, and `ATTR_WILLPOWER`.
+	 */
+	NSInteger baseAttributes[ATTR_TOTAL];
+
+	/**
+	 This character's implant-provided attribute modifiers.
+
+     The array's indices are `ATTR_INTELLIGENCE`, `ATTR_MEMORY`, `ATTR_CHARISMA`,
+     `ATTR_PERCEPTION`, and `ATTR_WILLPOWER`.
+	 */
+	NSInteger implantAttributes[ATTR_TOTAL];
+
+	/**
+	 Temporary values used when calculating an optimized training queue.
+
+     The array's indices are `ATTR_INTELLIGENCE`, `ATTR_MEMORY`, `ATTR_CHARISMA`,
+     `ATTR_PERCEPTION`, and `ATTR_WILLPOWER`.
+	 */
+	NSInteger tempBonuses[ATTR_TOTAL];
+
+	/**
+	 This character's total attribute levels, with all bonuses applied.
+
+     The array's indices are `ATTR_INTELLIGENCE`, `ATTR_MEMORY`, `ATTR_CHARISMA`,
+     `ATTR_PERCEPTION`, and `ATTR_WILLPOWER`.
+	 */
+	CGFloat attributeTotals[ATTR_TOTAL];
+
+	/**
+	 `YES` if there was an error while updating this character; no otherwise.
+
+     The array's indices are `CHAR_ERROR_CHARSHEET`, `CHAR_ERROR_TRAININGSHEET`,
+     and `CHAR_ERROR_QUEUE`.
+	 */
+	BOOL error[CHAR_ERROR_TOTAL];
+
+	/**
+	 `YES` if this character is currently training a skill; `NO` otherwise.
+	 */
+	BOOL isTraining;
+}
+
+/**
+ @name Properties
+ */
+
+/**
+ This character's portrait.
+ */
+@property (readonly,nonatomic) NSImage* portrait;
+
+/**
+ This character's character ID, as provided by the Eve API.
+ */
+@property (readonly,nonatomic) NSUInteger characterId;
+
+/**
+ This character's name.
+ */
+@property (readonly,nonatomic) NSString* characterName;
+
+/**
+ This character's skill tree.
+ */
+@property (readonly,nonatomic) SkillTree* skillTree;
+
+/**
+ This character's current training queue.
+ */
+@property (readonly,nonatomic) SkillPlan* trainingQueue;
+
+/**
+ @name Initialization
+ */
+
+/**
+ Initialize this character object using the data in `path`.
+
+ @param path The path to a folder on disk containing character data as
+ populated by the `updateTemplateArray:delegate:` method of `CharacterManager`.
+
+ @return Self.
+ */
 -(Character*) initWithPath:(NSString*)path;
 
-/*Get a string value from the NSDictionary - see the #defines above for valid key values*/
+/**
+ @name Dictionary Access
+ */
+
+/**
+ Return a string value stored in this character's associated `NSDictionary`.
+ 
+ Valid keys are defined in `macros.h`.
+
+ @param key The value's key.
+
+ @return The requested value as an NSString.
+ */
 -(NSString*) stringForKey:(NSString*)key;
-/*
- returns an integer representation, if the value is an integer
- results are undefined if the key does not contain a string representation of an integer value
-*/
+
+/**
+ Return an integer value stored in this character's associated `NSDictionary`.
+
+ Valid keys are defined in `macros.h`.
+
+ @param key The value's key.
+
+ @return The requested value as an NSInteger. If the requested value is not
+ numeric, returns 0.
+ */
 -(NSInteger) integerForKey:(NSString*)key;
 
-/*returns an attribute as a string for easy display*/
+/**
+ Formats an NSInteger as a string with the specifier `%2.2f`.
+ 
+ This function is used when displaying a character's attribute values.
+
+ @param attr The integer to be formatted.
+
+ @return The formated integer as an NSString.
+ */
 -(NSString*) getAttributeString:(NSInteger)attr;
 
-/*returns the attribute without the learning bonus applied*/
+/**
+ @name Character Attributes
+ */
+
+/**
+ Returns an attribute's value without the learning bonus applied.
+ 
+ Valid attributes are:
+ 
+ - `ATTR_INTELLIGENCE`
+ - `ATTR_MEMORY`
+ - `ATTR_CHARISMA`
+ - `ATTR_PERCEPTION`
+ - `ATTR_WILLPOWER`.
+
+ @param attr The attribute's enum value.
+
+ @return The value of the attribute `attr`.
+ */
 -(NSInteger) attributeValue:(NSInteger)attr;
 
+/**
+ @name Character Skills
+ */
+
+/**
+ This character's total skill points.
+
+ @return The number of skill points.
+ */
 -(NSInteger) skillPointTotal;
+
+/**
+ This character's count of skills that have been trained to level V.
+
+ @return The number of skills at level V.
+ */
 -(NSInteger) skillsAtV;
+
+/**
+ This character's count of skills known (injected).
+
+ @return The number of skills injected.
+ */
 -(NSInteger) skillsKnown;
 
+/**
+ @name Character Portrait
+ */
+
+/**
+ Delete this character's portrait on disk.
+ */
 -(void) deletePortrait;
 
-/*the number of skill points per hour the character trains. see macros.h for skill types*/
+/**
+ @name Skill Training
+ */
 
-/*
- how long the character will take to train X skill points with the given attributes. 
-	does not take into account partially trained skills
+/**
+ Calculate the training time for a skill given the number of points required.
+
+ Skill types are defined in `macros.h`.
+
+ @param primary   The skill's primary attribute.
+ @param secondary The skill's secondary attribute.
+ @param sp        The number of skill points to be trained.
+
+ @return The training time in seconds.
  */
 -(NSInteger) trainingTimeInSeconds:(NSInteger)primary 
 						 secondary:(NSInteger)secondary 
 					   skillPoints:(NSInteger)sp;
 
-/*
-	how long the character will take to train the given skill. 
-	this will take in to account partially trained skills
+/**
+ Calculate the training time to train a skill to a given level. This method
+ considers partially-trained skills.
+
+ Skill types are defined in `macros.h`.
+
+ @param typeID    The skill's typeID value.
+ @param fromLevel The starting level.
+ @param toLevel   The desired ending level.
+
+ @return The training time in seconds.
  */
--(NSInteger) trainingTimeInSeconds:(NSNumber*)typeID 
+-(NSInteger) trainingTimeInSeconds:(NSNumber*)typeID
 						 fromLevel:(NSInteger)fromLevel 
 						   toLevel:(NSInteger)toLevel;
 
-/*
- as above, but take in to account the skill that is currently training
- by estimating how many skill points we would have, assuming training has
- been done uninterrupted.
+/**
+ Calculate the training time to train a skill to a given level. This method
+ considers partially-trained skills.
+
+ Skill types are defined in `macros.h`.
+
+ @param typeID    The skill's typeID value.
+ @param fromLevel The starting level.
+ @param toLevel   The desired ending level.
+ @param train     `YES` if the skill currently in training should be included.
+
+ @return The training time in seconds.
  */
 -(NSInteger) trainingTimeInSeconds:(NSNumber*)typeID 
 						 fromLevel:(NSInteger)fromLevel 
 						   toLevel:(NSInteger)toLevel 
 		   accountForTrainingSkill:(BOOL)train;
 
-/*0.0 - 1.0 how complete is the skill?*/
--(CGFloat) percentCompleted:(NSNumber*)typeID 
+/**
+ Calculate the portion of a skill that has been trained to the specified level.
+
+ @param typeID    The skill's type ID.
+ @param fromLevel The starting level.
+ @param toLevel   The ending level.
+
+ @return The skill's progress, from 0.0 (no training) to 1.0 (fully trained).
+ */
+-(CGFloat) percentCompleted:(NSNumber*)typeID
 				  fromLevel:(NSInteger)fromLevel 
 					toLevel:(NSInteger)toLevel;
 
--(NSInteger) spPerHour:(NSInteger)primary 
+/**
+ Calculate the number of skill-points trained per hour.
+
+ @param primary   The skill's primary attribute.
+ @param secondary The skill's secondary attribute.
+
+ @return The number of skill-points trained per hour.
+ */
+-(NSInteger) spPerHour:(NSInteger)primary
 			 secondary:(NSInteger)secondary;
-/*sp per hour for the currently training skill*/
+
+/**
+ Calculate the number of skill-points trained per hour for the skill currently
+ in training.
+
+ @return The number of skill-points trained per hour.
+ */
 -(NSInteger) spPerHour;
 
--(NSDictionary*) skillSet; /*get the current skill set*/
+/**
+ Check if this character is currently training a skill.
 
-/*Skill plan methods*/
--(NSInteger) skillPlanCount;
-
--(SkillPlan*) createSkillPlan:(NSString*)planName;
-
-//This is messy, remove the redundant ones and have a single method
--(void) removeSkillPlan:(SkillPlan*)plan;
--(void) removeSkillPlanById:(NSInteger)planId;
--(void) removeSkillPlanAtIndex:(NSInteger)index;
-
--(SkillPlan*) skillPlanAtIndex:(NSInteger)index;
--(SkillPlan*) skillPlanById:(NSInteger)planId;
-
-//save the name change of the plan.
--(BOOL) renameSkillPlan:(SkillPlan*)plan; 
-
-/* Returns an index set with the final location of the moved skill plans */
--(NSIndexSet *) moveSkillPlan:(NSArray*)fromIndexArray to:(NSInteger)toIndex;
-
-/*!NOTE! the skill functions below will be (possibly) be ripped out later.*/
--(void) updateSkillPlan:(SkillPlan*)plan; /*as above, but supply a skill plan object in the characters internal skill plan queue*/
-
-/*these error functions might also get ripped out.*/
--(BOOL) charSheetError;
--(BOOL) trainingSheetError;
-
--(NSString*) charSheetErrorMessage;
--(NSString*) trainingSheetErrorMessage;
-
-/*modify attribute by level - used for optimising a skill plan*/
--(void) modifyAttribute:(NSInteger)attribute  byLevel:(NSInteger)level;
--(void) setAttribute:(NSInteger)attribute toLevel:(NSInteger)level;
-
--(void) resetTempAttrBonus; //reset the bonuses back to the normal levels.
-
-/*calculate the final attribute totals*/
--(void) processAttributeSkills;
-
-/*is the character currently training?*/
+ @return `YES` if the character is training; `NO` otherwise.
+ */
 -(BOOL) isTraining;
+
+/**
+ Get the skill this character is currently training.
+
+ @bug The return value is undefined if no skill is being trained.
+
+ @return The typeID of the skill in training.
+ */
 -(NSNumber*)trainingSkill;
 
 /*
  returns autoreleased objects
  DO NOT call these methods if isTraining returns NO
  */
+
+/**
+ Get the time until the skill currently training advances to the next level.
+
+ @warning Do not call this method if isTraining returns `NO`.
+
+ @return The number of seconds until the next level is attained in the
+ currently-training skill.
+ */
 -(NSInteger) skillTrainingFinishSeconds;
+
+/**
+ Get the number of skill points trained to date in the currently-training skill.
+
+ @warning Do not call this method if isTraining returns `NO`.
+
+ @return The number of skill points in the currently-training skill, rounded
+ to the nearest integer.
+ */
 -(NSInteger) currentSPForTrainingSkill;
+
+/**
+ Get the currently-training skill.
+
+ @warning Do not call this method if isTraining returns `NO`.
+
+ @return The currently-training skill as a `SkillPair`.
+ */
 -(SkillPair*) currentlyTrainingSkill;
+
+/**
+ Get the end time for this character's queued training.
+
+ @warning Do not call this method if isTraining returns `NO`.
+
+ @return The time at which thhis character's currently-queued training ends.
+ */
 -(NSDate*) skillTrainingFinishDate;
 
-/*return YES if this Character has been awarded this cert.*/
+/**
+ @name Skill Plans
+ */
+
+/**
+ Get this character's skill set.
+
+ TODO: What does this function do? What is it used for? I haven't the slightest
+ clue.
+
+ @return The skill set dictionary.
+ */
+-(NSDictionary*) skillSet;
+
+/**
+ Get the number of skill plans created for this user.
+
+ @return The number of skill plans.
+ */
+-(NSInteger) skillPlanCount;
+
+/**
+ Create a new skill plan for this user.
+
+ @param planName The new skill plan's name.
+
+ @return A SkillPlan object for the new skill plan.
+ */
+-(SkillPlan*) createSkillPlan:(NSString*)planName;
+
+// TODO: This is messy; remove the redundant ones and have a single method
+/**
+ Remove a skill plan.
+
+ @param plan The SkillPlan object to be removed.
+ */
+-(void) removeSkillPlan:(SkillPlan*)plan;
+
+/**
+ Remove a skill plan by its local database ID.
+
+ @param planId The plan's database ID (primary key).
+ */
+-(void) removeSkillPlanById:(NSInteger)planId;
+
+/**
+ Remove a skill plan by its array index.
+
+ @param index The plan's index.
+ */
+-(void) removeSkillPlanAtIndex:(NSInteger)index;
+
+/**
+ Find a skill plan by its array index.
+
+ @param index The index into this character's plan arry.
+
+ @return The SkillPlan at that index. If the index is invalid, throws
+ `NSRangeException`.
+ */
+-(SkillPlan*) skillPlanAtIndex:(NSInteger)index;
+
+/**
+ Find a skill plan by its local database ID.
+
+ @param planId The plan's database ID (primary key).
+
+ @return The SkillPlan with that ID, or `nil` if no such plan exists.
+ */
+-(SkillPlan*) skillPlanById:(NSInteger)planId;
+
+/**
+ Save a skill plan's name change to local storage; its `planName`
+ property should have already been changed to the new name.
+
+ @param plan The SkillPlan to save.
+
+ @return `YES` if the save was successful, or `NO` otherwise.
+ */
+-(BOOL) renameSkillPlan:(SkillPlan*)plan;
+
+/**
+ Change one or more skill plans' positions in the character's list of plans.
+
+ @param fromIndexArray The SkillPlans' current array indices.
+ @param toIndex        The position at which to insert the SkillPlans.
+
+ @return An NSIndexSet containing the SkillPlans' new indices.
+ */
+-(NSIndexSet *) moveSkillPlan:(NSArray*)fromIndexArray to:(NSInteger)toIndex;
+
+/* TODO: The skill functions below will be (possibly) be ripped out later. */
+
+/**
+ Write a skill plan's changes, if any, to local storage.
+
+ @param plan The SkillPlan to commit.
+ */
+-(void) updateSkillPlan:(SkillPlan*)plan;
+
+/**
+ @name Error Messages
+ */
+
+/* TODO: These error functions might also get ripped out. */
+
+/**
+ Check for a character sheet error.
+
+ @return `YES` if there is a character sheet error to display; `NO` otherwise.
+ */
+-(BOOL) charSheetError;
+
+/**
+ Get the current character sheet error message.
+
+ @return The current character sheet error message, or `nil` if none.
+ */
+-(NSString*) charSheetErrorMessage;
+
+/**
+ Check for a training sheet error.
+
+ @return `YES` if there is a training sheet error to display; `NO` otherwise.
+ */
+-(BOOL) trainingSheetError;
+
+/**
+ Get the current training sheet error message.
+
+ @return The current training sheet error message, or `nil` if none.
+ */
+-(NSString*) trainingSheetErrorMessage;
+
+/**
+ @name Character Attributes
+ */
+
+// Used for optimising a skill plan.
+
+/**
+ Modify a character attribute.
+
+ @param attribute The attribute to modify, as defined in `macros.h`.
+ @param level     The number of levels to add (or subtract if negative).
+ */
+-(void) modifyAttribute:(NSInteger)attribute  byLevel:(NSInteger)level;
+
+/**
+ Set a character attribute.
+
+ @param attribute The attribute to modify, as defined in `macros.h`.
+ @param level     The new level for the attribute.
+ */
+-(void) setAttribute:(NSInteger)attribute toLevel:(NSInteger)level;
+
+/**
+ Reset all temporary attribute bonuses.
+ */
+-(void) resetTempAttrBonus;
+
+/**
+ Calculate the effective attributes based on implants and other bonuses.
+ */
+-(void) processAttributeSkills;
+
+/**
+ Check if this character has been awarded a certificate.
+
+ @param certID The certificate to check, expressed as the `certificateID`
+ attribute from the Certificate Tree API call.
+
+ @return `YES` if this character has the specified certificate; `NO` otherwise.
+ */
 -(BOOL) hasCert:(NSInteger)certID;
 
+/**
+ Get this character's template object.
+
+ @return The `CharacterTemplate` corresponding to this character.
+ */
 -(CharacterTemplate *)template;
-
-@property (readonly,nonatomic) NSImage* portrait;
-@property (readonly,nonatomic) NSUInteger characterId;
-@property (readonly,nonatomic) NSString* characterName;
-
-@property (readonly,nonatomic) SkillTree* skillTree;
-@property (readonly,nonatomic) SkillPlan* trainingQueue;
 
 @end

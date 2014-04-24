@@ -8,6 +8,21 @@ Building:
 Requires Snow Leopard and Xcode 3.2
 It can be made to work on Leopard 10.5 with a little effort.
 
+The "Documentation" build target generates HTML documentation for
+Vitality's classes; the documentation is added to Xcode's Documentation
+and API Reference, and is also available in the Quick Help inspector.
+Building the documentation requires [appledoc][ad], which can be
+installed using [Homebrew][hb] (`brew install appledoc`) or downloaded from that
+project's Github [releases][adr] page.
+
+**N.B.: As of April 2014, appledoc does not build using the latest
+version of XCode; if the HTML documentation is desired, install appledoc
+using the binary release.**
+
+[ad]: https://github.com/tomaz/appledoc/
+[adr]: https://github.com/tomaz/appledoc/releases/
+[hb]: http://brew.sh/
+
 Vitality uses Sparkle to manage updates and can be found here: http://sparkle.andymatuschak.org/
 
 Quasi design document:
@@ -50,3 +65,4 @@ Save the private key to dsa_priv.pem on the Desktop and export the build there. 
 
 cd ~/Desktop
 ruby sign_update.rb vitality-X.X.X.zip dsa_priv.pem
+
