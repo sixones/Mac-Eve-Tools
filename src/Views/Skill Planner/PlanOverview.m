@@ -538,14 +538,12 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
     }
     else
     {
+        if( row >= [character skillPlanCount] )
+            return NSDragOperationNone;
+        
         [aTableView setDropRow:row dropOperation:NSTableViewDropOn];
         return NSDragOperationCopy;
     }
-    
-	if([info draggingSource] == aTableView){
-		[aTableView setDropRow:row dropOperation:NSTableViewDropAbove];
-		return NSDragOperationMove;
-	}
 	
 	return NSDragOperationCopy;
 }

@@ -328,6 +328,36 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 }
 
 #pragma mark Drag and drop methods
+/** Write skill pairs (not just indexes) to the paste board.
+ This is needed if we are dragging from one table (e.g. skill plan detail table)
+ to another table (e.g. skill plan overview table)
+ */
+- (void)writeSkillArray:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard
+{
+    SkillPlan *skillPlan = [character skillPlanById:planId];
+    
+    if( skillPlan == nil )
+    {
+        return;
+    }
+
+	NSMutableArray *skillArray = [NSMutableArray array];
+
+    [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [skillArray addObject:[skillPlan skillAtIndex:idx]];
+    }];
+    
+    NSMutableData *data = [NSMutableData data];
+	NSKeyedArchiver *archiver = [[[NSKeyedArchiver alloc] initForWritingWithMutableData:data] autorelease];
+    
+	[archiver setOutputFormat:NSPropertyListBinaryFormat_v1_0];
+	[archiver encodeObject:skillArray];
+	[archiver finishEncoding];
+	
+    [pboard addTypes:[NSArray arrayWithObject:MTSkillArrayPBoardType] owner:self];	
+	[pboard setData:data forType:MTSkillArrayPBoardType];
+}
+
 - (BOOL)tableView:(NSTableView *)tv 
 writeRowsWithIndexes:(NSIndexSet *)rowIndexes 
 	 toPasteboard:(NSPasteboard*)pboard 
@@ -367,6 +397,9 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	[archiver release];
 	[data release];
 	
+    // This is for dragging skills from one skill plan into another
+    [self writeSkillArray:rowIndexes toPasteboard:pboard];
+    
 	return YES;
 }
 
