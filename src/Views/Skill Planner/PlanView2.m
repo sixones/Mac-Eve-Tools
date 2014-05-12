@@ -305,11 +305,11 @@
 
 #pragma mark TableView Delegate methods
 
--(void) tableView:(NSTableView*)aTableView keyDownEvent:(NSEvent*)theEvent
+-(BOOL) tableView:(NSTableView*)aTableView keyDownEvent:(NSEvent*)theEvent
 {
 	NSString *chars = [theEvent characters];
 	if([chars length] == 0){
-		return;
+		return NO;
 	}
 	unichar ch = [chars characterAtIndex:0];
 	/*if the user pressed a delete key, delete all the selected skills or plans*/
@@ -320,8 +320,10 @@
 		if([rowset count] > 0)
         {
             [self removeSkillsFromPlan:rowset];
+            return YES;
 		}
 	}
+    return NO;
 }
 
  /*menu delegates*/

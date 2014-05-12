@@ -19,6 +19,10 @@
 
 #import "MTTableView.h"
 
+@interface NSObject (MTTableViewDelegate)
+// This method on the delegate should return NO if the delegate does not handle the event.
+-(BOOL) tableView:(NSTableView*)aTableView keyDownEvent:(NSEvent*)theEvent;
+@end
 
 @implementation MTTableView
 
@@ -47,11 +51,13 @@
 	}
 	
 	id del = [self delegate];
-	if([del respondsToSelector:@selector(tableView:keyDownEvent:)]){
-		[del performSelector:@selector(tableView:keyDownEvent:) 
-				  withObject:self 
-				  withObject:event];
-	}else{
+	if( [del respondsToSelector:@selector(tableView:keyDownEvent:)] )
+    {
+        if( ![del tableView:self keyDownEvent:event] )
+            [super keyDown:event];
+	}
+    else
+    {
 		[super keyDown:event];		
 	}
 	
