@@ -88,5 +88,5 @@ This class should display the possible skill choices to the user.
 /*load the Skills panel. nasty hack*/
 -(void) selectDefaultGroup;
 
-
+- (NSSearchField *)searchField;
 @end

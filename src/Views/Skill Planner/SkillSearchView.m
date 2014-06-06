@@ -104,6 +104,8 @@
 
 -(void) awakeFromNib
 {
+    [[self window] setInitialFirstResponder:search];
+    
 	//NSLog(@"%@ awakeFromNib",[self className]);
 	[skillList setDelegate:self];
 	
@@ -140,6 +142,11 @@
 	[skillList setDataSource:nil];
 	[datasources removeAllObjects];
 	[skillSearchCategories setSegmentCount:0];
+}
+
+- (NSSearchField *)searchField
+{
+    return search;
 }
 
 -(IBAction) skillSearchCategoriesClick:(id)sender

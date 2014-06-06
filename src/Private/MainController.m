@@ -561,7 +561,7 @@
 	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.xml" forKey:UD_DB_UPDATE_URL];
 	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.sql.bz2" forKey:UD_DB_SQL_URL];
 	
-	[prefDefaults setObject:[NSNumber numberWithInt:12] forKey:UD_DATABASE_MIN_VERSION];
+	[prefDefaults setObject:[NSNumber numberWithInt:14] forKey:UD_DATABASE_MIN_VERSION];
 	 	
 	[[NSUserDefaults standardUserDefaults] registerDefaults:prefDefaults];
 	[prefDefaults release];
@@ -937,6 +937,14 @@
     if( [currentController respondsToSelector:@selector(prevSkillPlan:)] )
     {
         [currentController performSelector:@selector(prevSkillPlan:) withObject:sender];
+    }
+}
+
+- (void)performFindPanelAction:(id)sender
+{
+    if( [currentController respondsToSelector:@selector(performFindPanelAction:)] )
+    {
+        [currentController performSelector:@selector(performFindPanelAction:) withObject:sender];
     }
 }
 @end

@@ -233,6 +233,7 @@
 	
 	[skillView2 refreshPlanView];
     [planOverview refreshPlanView];
+    //[[[self view] window] makeFirstResponder:[skillSearchView searchField]];
 }
 
 -(void) viewWillBeDeactivated
@@ -257,6 +258,10 @@
 	return [super view];
 }
 
+- (void)performFindPanelAction:(id)sender
+{
+    [[[self view] window] makeFirstResponder:[skillSearchView searchField]];
+}
 
 /*Skill search delegate controls.  called when the SkillSearchView wants to add a skill to a plan*/
 #pragma mark SkillSearchViewDelegate

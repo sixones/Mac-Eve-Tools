@@ -606,4 +606,11 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	return NO;
 }
 
+-(void)tableView:(NSTableView *)tableView sortDescriptorsDidChange: (NSArray *)oldDescriptors
+{
+//    NSArray *newDescriptors = [tableView sortDescriptors];
+//    [orders sortUsingDescriptors:newDescriptors];
+//    [tableView reloadData];
+}
+
 @end
