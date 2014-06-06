@@ -16,6 +16,7 @@ CREATE TABLE "invMarketGroups" (
 CREATE INDEX "invMarketGroups_IX_graphicID" ON "invMarketGroups" ("graphicID");
 CREATE INDEX "invMarketGroups_IX_parentGroupID" ON "invMarketGroups" ("parentGroupID");
 CREATE INDEX "chrRaces_IX_graphicID" ON "chrRaces" ("graphicID");
+
 CREATE TABLE "invTypes" (
   "typeID" smallint(6) NOT NULL,
   "groupID" smallint(6) default NULL,
@@ -32,6 +33,15 @@ CREATE TABLE "invTypes" (
 CREATE INDEX "invTypes_IX_Group" ON "invTypes" ("groupID");
 CREATE INDEX "invTypes_IX_marketGroupID" ON "invTypes" ("marketGroupID");
 CREATE INDEX "invTypes_IX_raceID" ON "invTypes" ("raceID");
+
+CREATE TABLE "invTraits" (
+  "typeID" int(11) NOT NULL,
+  "skillID" int(11) DEFAULT NULL,
+  "bonus" double DEFAULT NULL,
+  "bonusText" varchar(3000),
+  "unitID" int(11) DEFAULT NULL
+);
+CREATE INDEX "invTraits_IX_TypeID" ON "invTraits" ("typeID");
 
 CREATE TABLE "invGroups" (
   "groupID" smallint(6) NOT NULL,

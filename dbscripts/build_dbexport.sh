@@ -2,8 +2,8 @@
 
 DBEXPORT=database.sql
 
-DBVERSION=13
-DBEXPANSION="Rubicon 1.1"
+DBVERSION=14
+DBEXPANSION="Kronos 1.0"
 
 VERQUERY="INSERT INTO version VALUES ($DBVERSION,'$DBEXPANSION');"
 
@@ -40,6 +40,6 @@ XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 echo $XML > database.xml
 
 rm -f $DBEXPORT
-rm -f tempdb.db
+#rm -f tempdb.db
 rm -f rows.sql
 

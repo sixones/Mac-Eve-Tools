@@ -27,6 +27,9 @@ FROM invTypes
 WHERE published = 1
 AND groupID IN (SELECT groupID FROM invGroups WHERE published = 1 AND categoryID IN ($CATEGORIES));"
 
+/usr/bin/python $SCRIPT -t invTraits -f $1 \
+-q "SELECT typeID,skillID,bonus,bonusText,unitID FROM invTraits;"
+
 /usr/bin/python $SCRIPT -t dgmTypeAttributes -f $1 \
 -q" SELECT typeID, attributeID, valueInt, valueFloat
 FROM dgmTypeAttributes
