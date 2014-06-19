@@ -169,6 +169,14 @@
     {
         value = [order issued];
     }
+    else if( [colID isEqualToString:@"totalValue"] )
+    {
+        value = [NSNumber numberWithDouble:[order totalValue]];
+    }
+    else if( [colID isEqualToString:@"remainingValue"] )
+    {
+        value = [NSNumber numberWithDouble:[order remainingValue]];
+    }
 
     return value;
 }

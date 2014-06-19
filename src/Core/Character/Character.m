@@ -287,6 +287,11 @@
 	return nil;
 }
 
+-(NSInteger) indexOfPlan:(SkillPlan *)plan
+{
+    return [skillPlans indexOfObject:plan];
+}
+
 -(void) removeSkillPlan:(SkillPlan*)plan
 {
 	if(![db deleteSkillPlan:plan]){
@@ -390,6 +395,11 @@
     
     [db writeOverviewPlanOrder:skillPlans];
     return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(toIndex, [objects count])];
+}
+
+- (void)sortSkillPlansUsingDescriptors:(NSArray *)descriptors
+{
+    [skillPlans sortUsingDescriptors:descriptors];
 }
 
 -(NSString*) getAttributeString:(NSInteger)attr

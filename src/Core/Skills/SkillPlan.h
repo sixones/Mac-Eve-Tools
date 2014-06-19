@@ -46,12 +46,14 @@
 	NSString *planName;
 	NSInteger planTrainingTime;
 	NSInteger planId;
+    NSInteger planOrder;
 	BOOL dirty;	
 }
 
 @property (readwrite,retain,nonatomic) NSString* planName;
 @property (readwrite,nonatomic) BOOL dirty;
 @property (readonly,nonatomic) NSInteger planId;
+@property (readwrite,nonatomic) NSInteger planOrder;
 
 /*name of the plan, and the skillset that the character has.*/
 

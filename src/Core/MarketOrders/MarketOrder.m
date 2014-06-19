@@ -81,4 +81,14 @@
     return _stationName;
 }
 
+- (double)totalValue
+{
+    return self.volEntered * self.price;
+}
+
+- (double)remainingValue
+{
+    return self.volRemaining * self.price;
+}
+
 @end

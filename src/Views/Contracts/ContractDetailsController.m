@@ -165,7 +165,7 @@
         [_values addObject:[contract expired]];
     }
     
-    if( isCourier )
+    if( isCourier && [contract accepted] )
     {
         [_labels addObject:@"Accepted"];
         [_values addObject:[contract accepted]];

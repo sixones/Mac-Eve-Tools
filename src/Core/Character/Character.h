@@ -152,12 +152,16 @@
 
 -(SkillPlan*) skillPlanAtIndex:(NSInteger)index;
 -(SkillPlan*) skillPlanById:(NSInteger)planId;
+-(NSInteger) indexOfPlan:(SkillPlan *)plan;
 
 //save the name change of the plan.
 -(BOOL) renameSkillPlan:(SkillPlan*)plan; 
 
 /* Returns an index set with the final location of the moved skill plans */
 -(NSIndexSet *) moveSkillPlan:(NSArray*)fromIndexArray to:(NSInteger)toIndex;
+
+/* Sort the skill plan overview. Sort based on planOrder to return to manual sort */
+- (void)sortSkillPlansUsingDescriptors:(NSArray *)descriptors;
 
 /*!NOTE! the skill functions below will be (possibly) be ripped out later.*/
 -(void) updateSkillPlan:(SkillPlan*)plan; /*as above, but supply a skill plan object in the characters internal skill plan queue*/

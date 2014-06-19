@@ -347,7 +347,7 @@
 -(NSMutableArray*) readSkillPlans:(Character*)character;
 {
 	NSMutableArray *skillPlans;
-	const char select_skill_plan_overview[] = "SELECT plan_id, plan_name FROM skill_plan_overview ORDER BY plan_order;";
+	const char select_skill_plan_overview[] = "SELECT plan_id, plan_name, plan_order FROM skill_plan_overview ORDER BY plan_order;";
 	sqlite3_stmt *read_overview_stmt;
 	int rc;
 	
@@ -369,16 +369,14 @@
 	while((rc = sqlite3_step(read_overview_stmt)) == SQLITE_ROW){
 		sqlite_int64 planId = sqlite3_column_int64(read_overview_stmt,0);
 		const unsigned char *planName = sqlite3_column_text(read_overview_stmt,1);
-		/*
-		SkillPlan *sp = [[SkillPlan alloc]initWithName:
-						 [NSString stringWithUTF8String:(const char*)planName]
-											 character:character];
-		*/
+        NSInteger planOrder = sqlite3_column_int64(read_overview_stmt,2);
+
 		SkillPlan *sp = [[SkillPlan alloc]
 						 initWithName:[NSString stringWithUTF8String:(const char*)planName]
 						 forCharacter:character
 						 withId:(NSInteger)planId];
-		
+		[sp setPlanOrder:planOrder];
+        
 		[self readSkillPlanPrivate:sp planId:planId];
 		[skillPlans addObject:sp];
 		[sp release];

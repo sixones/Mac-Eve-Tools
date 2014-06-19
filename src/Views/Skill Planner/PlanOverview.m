@@ -209,7 +209,16 @@
 	[tableView setTarget:self];
 	[tableView setDoubleAction:@selector(rowDoubleClick:)];
     [tableView setColumnAutoresizingStyle: NSTableViewFirstColumnOnlyAutoresizingStyle];
-    headerMenuManager = [[MetTableHeaderMenuManager alloc] initWithMenu:nil forTable:tableView];
+    
+    NSMenu * menu = [[[NSMenu alloc] init] autorelease];
+    NSMenuItem *reset = [[NSMenuItem alloc] initWithTitle:@"Manual Sorting" action:@selector(resetSorting:) keyEquivalent:@""];
+    [reset setTarget:self];
+    [menu addItem:reset];
+//    NSMenuItem *alternate = [[NSMenuItem alloc] initWithTitle:@"Color Alternate Rows" action:@selector(toggleAlternatingRows:) keyEquivalent:@""];
+//    [alternate setTarget:self];
+//    [menu addItem:alternate];
+    [menu addItem:[NSMenuItem separatorItem]];
+    headerMenuManager = [[MetTableHeaderMenuManager alloc] initWithMenu:menu forTable:tableView];
 }
 
 - (void)drawRect:(NSRect)rect {
@@ -257,6 +266,7 @@
 	character = [c retain];
 	[pvDatasource setCharacter:c];
 	[self refreshPlanView];
+    [self tableViewSelectionDidChange:nil]; // re-select the current plan to make sure the detail table is being displayed correctly
 }
 
 -(Character*) character
@@ -282,6 +292,12 @@
     if( row < 0 )
         row = count - 1;
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+}
+
+- (void)toggleAlternatingRows:(id)sender
+{
+    BOOL old = [tableView usesAlternatingRowBackgroundColors];
+    [tableView setUsesAlternatingRowBackgroundColors:!old];
 }
 
 #pragma mark TableView Delegate methods
@@ -606,11 +622,24 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	return NO;
 }
 
--(void)tableView:(NSTableView *)tableView sortDescriptorsDidChange: (NSArray *)oldDescriptors
+-(void)tableView:(NSTableView *)_tableView sortDescriptorsDidChange: (NSArray *)oldDescriptors
 {
-//    NSArray *newDescriptors = [tableView sortDescriptors];
-//    [orders sortUsingDescriptors:newDescriptors];
-//    [tableView reloadData];
+    // remember the currently selected plan, then re-select it after sorting
+    SkillPlan *current = [self currentPlan];
+    NSArray *newDescriptors = [_tableView sortDescriptors];
+    [character sortSkillPlansUsingDescriptors:newDescriptors];
+    [_tableView reloadData];
+    if( current )
+    {
+        NSInteger index = [character indexOfPlan:current];
+        [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+    }
 }
 
+-(void)resetSorting:(id)sender
+{
+    NSSortDescriptor *manual = [[NSSortDescriptor alloc] initWithKey:@"planOrder" ascending:YES];
+    [tableView setSortDescriptors:[NSArray arrayWithObject:manual]];
+    [self tableView:tableView sortDescriptorsDidChange:nil];
+}
 @end

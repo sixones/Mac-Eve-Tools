@@ -144,7 +144,7 @@
 @synthesize planName;
 @synthesize dirty;
 @synthesize planId;
-
+@synthesize planOrder;
 
 -(NSUInteger) hash;
 {

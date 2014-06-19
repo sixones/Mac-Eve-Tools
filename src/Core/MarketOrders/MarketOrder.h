@@ -40,4 +40,7 @@ typedef enum {
 
 - (NSString *)typeName;
 - (NSString *)state;
+
+- (double)totalValue;
+- (double)remainingValue;
 @end
