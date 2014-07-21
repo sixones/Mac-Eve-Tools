@@ -27,6 +27,7 @@
 
 #import "METShip.h"
 #import "METDependSkill.h"
+#import "METTrait.h"
 
 #import "Helpers.h"
 #import "macros.h"
@@ -691,6 +692,76 @@
 }
 
 //select ta.*,at.attributeName from dgmTypeAttributes ta INNER JOIN dgmAttributeTypes at ON ta.attributeID = at.attributeID where typeID = 17636;
+
+/*CREATE TABLE "invTraits" (
+ "typeID" int(11) NOT NULL,
+ "skillID" int(11) DEFAULT NULL,
+ "bonus" double DEFAULT NULL,
+ "bonusText" varchar(3000),
+ "unitID" int(11) DEFAULT NULL
+ );
+ CREATE INDEX "invTraits_IX_TypeID" ON "invTraits" ("typeID");
+
+ 
+ "SELECT at.attributeID, at.displayName, un.displayName, ta.valueInt, ta.valueFloat "
+ "FROM dgmTypeAttributes ta, dgmAttributeTypes at, eveUnits un "
+ "WHERE at.attributeID = ta.attributeID "
+ "AND un.unitID = at.unitID "
+ "AND ta.typeID = ?;";
+select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT OUTER JOIN eveUnits un ON tr.unitID = un.unitID where tr.typeID = 671;
+ 
+ */
+-(NSArray *) traitsForTypeID:(NSInteger)typeID
+{
+	NSMutableArray *traits = [NSMutableArray array];
+	const char query[] = "SELECT tr.skillID, tr.bonus, tr.bonusText, un.displayName FROM invTraits tr LEFT OUTER JOIN eveUnits un ON tr.unitID = un.unitID WHERE tr.typeID = ?;";
+	const char skillNameQuery[] = "SELECT typeName FROM invTypes WHERE typeID = ?;";
+	sqlite3_stmt *read_stmt;
+    sqlite3_stmt *skillNameStatement;
+	int rc;
+	
+	rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+	if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+		return -1;
+	}
+	
+    rc = sqlite3_prepare_v2(db,skillNameQuery,(int)sizeof(skillNameQuery),&skillNameStatement,NULL);
+	if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+		return -1;
+	}
+    
+	sqlite3_bind_nsint(read_stmt,1,typeID);
+	
+	while(sqlite3_step(read_stmt) == SQLITE_ROW)
+    {
+        NSInteger skillID = sqlite3_column_nsint(read_stmt, 0);
+        double bonus = sqlite3_column_double(read_stmt, 1);
+        NSString *bonusText = sqlite3_column_nsstr(read_stmt, 2);
+        NSString *unitString = sqlite3_column_nsstr(read_stmt, 3);
+        NSString *skillName = [self typeName:skillID];
+        
+        // This is only valid so long as traits are only for ships
+        if( !skillName )
+        {
+            skillName = @"Role Bonus"; // should be added to translations somehow, can't be based on skillID (-1), though.
+        }
+        
+        METTrait *trait = [[METTrait alloc] init];
+        [trait setBonus:bonus];
+        [trait setBonusString:bonusText];
+        [trait setSkillName:skillName];
+        [trait setUnitString:unitString];
+
+        [traits addObject:trait];
+	}
+	
+	sqlite3_finalize(read_stmt);
+	
+	return traits;
+}
+
 
 #pragma mark Certs
 

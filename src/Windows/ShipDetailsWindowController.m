@@ -25,7 +25,7 @@
 #import "CCPType.h"
 #import "Character.h"
 
-#import "METShip.h"
+#import "METTrait.h"
 
 #import "SkillPrerequisiteDatasource.h"
 #import "ShipAttributeDatasource.h"
@@ -34,6 +34,15 @@
 #import "Helpers.h"
 
 @implementation ShipDetailsWindowController
+
+-(NSString *)htmlStyleString
+{
+    return [NSString stringWithFormat:@"<style>\n%@%@%@%@%@\n</style>\n", @"body { font-family: ",
+            [[NSFont systemFontOfSize: 12] fontName],
+            @"; font-size: 12px; }\n",
+            @".topped { -webkit-margin-before: 2.0em; margin-bottom: 0.4em; }\n",
+            @".trait { margin-left:3em; margin-top: 0.4em; margin-bottom: 0.4em; text-indent:-1.5em; }\n"]; // indent each trait, reduce between paragraph spacing and add a hanging indent
+}
 
 -(void)awakeFromNib
 {
@@ -82,6 +91,40 @@
     [[wc window]makeKeyAndOrderFront:nil];
 }
 
+- (NSAttributedString *)traitsAttributedString
+{
+    NSArray *traitsArray = [ship traits];
+    NSMutableString *traits = [NSMutableString stringWithString:[self htmlStyleString]];
+    NSString *previousSkill = nil;
+    
+    traitsArray = [traitsArray sortedArrayUsingSelector:@selector(compare:)];
+    
+    for( METTrait *trait in traitsArray )
+    {
+        NSString *skillName = [trait skillName];
+        if( ![skillName isEqualToString:previousSkill] )
+        {
+            // New skill, so output a skill header
+            if( previousSkill )
+                [traits appendString:@"<br />"];
+            // add "bonuses (per skill level):" like in game? But have to skip that for Role Bonuses
+            [traits appendFormat:@"<h2 class=\"topped\">%@</h2>\n", (skillName?skillName:@"Role Bonus")];
+            previousSkill = skillName;
+        }
+
+        // don't display the bonus if it's zero
+        if( [trait bonus] < 0.0000000001 )
+            [traits appendFormat:@"<p class=\"trait\">%@ %@</p>\n",[trait unitString], [trait bonusString]];
+        else
+            [traits appendFormat:@"<p class=\"trait\">%.9g%@ %@</p>\n",[trait bonus], [trait unitString], [trait bonusString]];
+    }
+
+    
+    NSData *htmlTraitsData = [traits dataUsingEncoding:NSUTF8StringEncoding];
+    NSAttributedString *htmlTraits = [[NSAttributedString alloc] initWithHTML: htmlTraitsData baseURL: NULL documentAttributes: NULL];
+    return htmlTraits;
+}
+
 -(void) setLabels
 {
 	[shipName setStringValue:[ship typeName]];
@@ -90,11 +133,7 @@
     NSMutableString *description = [NSMutableString string];
     NSString *shipDesc = [[ship typeDescription] stringByReplacingOccurrencesOfString:@"\n" withString:@"<br />\n"];
     
-    // what a pain
-    [description appendString: @"<style>body { font-family: "];
-    [description appendString: [[NSFont systemFontOfSize: 12] fontName] ];
-    [description appendString: @"; }</style>"];
-    [description appendString: @"<style>font b { font-size: 14px; display: block; } b { display: inline; font-weight: bold; } br { display: block; } a { color: black; }</style>"];
+    [description appendString: [self htmlStyleString]];
     [description appendString: shipDesc];
     
     NSData *htmlDescriptionData = [description dataUsingEncoding:NSUTF8StringEncoding];
@@ -102,6 +141,9 @@
 	
 	[[shipDescription textStorage] setAttributedString: htmlDescription];
     [shipDescription setNeedsDisplay:YES];
+    
+    [[shipTraits textStorage] setAttributedString:[self traitsAttributedString]];
+    [shipTraits setNeedsDisplay:YES];
 }
 
 -(BOOL) displayImage

@@ -33,7 +33,8 @@
 	
 	//IBOutlet NSTextField *shipDescription;
 	IBOutlet NSTextView *shipDescription;
-	
+	IBOutlet NSTextView *shipTraits;
+    
 	IBOutlet NSOutlineView *shipAttributes;
 	
 	IBOutlet NSTableView *shipFitting;

@@ -95,4 +95,6 @@
  */
 -(CCPTypeAttribute*) attributeForID:(NSInteger)attrID;
 
+// returns an array of METTrait objects. Will be empty if this type isn't a ship
+-(NSArray *)traits;
 @end
