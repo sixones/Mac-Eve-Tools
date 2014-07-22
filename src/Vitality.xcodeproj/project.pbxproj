@@ -72,6 +72,7 @@
 		9EF335C811E87875002A3B7D /* databaseIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9EF335C711E87875002A3B7D /* databaseIcon.png */; };
 		A1093C97183D7546000D4063 /* CertGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = A1093C96183D7546000D4063 /* CertGroup.m */; };
 		A112AD5E18E48D80001AF74B /* MetTableHeaderMenuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A112AD5D18E48D80001AF74B /* MetTableHeaderMenuManager.m */; };
+		A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */ = {isa = PBXBuildFile; fileRef = A12EE8D3197D98E000ED6478 /* METTrait.m */; };
 		A12FC60417EA0C0D0053DC23 /* ContractsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A12FC60017EA0C0D0053DC23 /* ContractsView.xib */; };
 		A12FC60517EA0C0D0053DC23 /* ContractsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */; };
 		A12FC60817EA31420053DC23 /* METConquerableStations.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60717EA31420053DC23 /* METConquerableStations.m */; };
@@ -269,6 +270,8 @@
 		A112AD5B18E37F67001AF74B /* SkillView2Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkillView2Delegate.h; sourceTree = "<group>"; };
 		A112AD5C18E48D80001AF74B /* MetTableHeaderMenuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetTableHeaderMenuManager.h; sourceTree = "<group>"; };
 		A112AD5D18E48D80001AF74B /* MetTableHeaderMenuManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetTableHeaderMenuManager.m; sourceTree = "<group>"; };
+		A12EE8D2197D98E000ED6478 /* METTrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METTrait.h; sourceTree = "<group>"; };
+		A12EE8D3197D98E000ED6478 /* METTrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METTrait.m; sourceTree = "<group>"; };
 		A12FC60117EA0C0D0053DC23 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ContractsView.xib; sourceTree = "<group>"; };
 		A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractsViewController.m; sourceTree = "<group>"; };
 		A12FC60317EA0C0D0053DC23 /* ContractsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractsViewController.h; sourceTree = "<group>"; };
@@ -955,6 +958,8 @@
 				A12FC60717EA31420053DC23 /* METConquerableStations.m */,
 				A1FCD0541829881600A6655A /* METIDtoName.h */,
 				A1FCD0551829881600A6655A /* METIDtoName.m */,
+				A12EE8D2197D98E000ED6478 /* METTrait.h */,
+				A12EE8D3197D98E000ED6478 /* METTrait.m */,
 			);
 			path = "CCP Database";
 			sourceTree = "<group>";
@@ -1192,7 +1197,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Start constants\ncompany=\"Vitality\";\ncompanyID=\"org.Vitality\";\ncompanyURL=\"https://github.com/sixones/vitality\";\n#target=\"iphoneos\";\ntarget=\"macosx\";\noutputPath=\"~/help\";\n# End constants\n/usr/local/bin/appledoc \\\n--project-name \"${PROJECT_NAME}\" \\\n--project-company \"${company}\" \\\n--company-id \"${companyID}\" \\\n--docset-atom-filename \"${company}.atom\" \\\n--docset-feed-url \"${companyURL}/${company}/%DOCSETATOMFILENAME\" \\\n--docset-package-url \"${companyURL}/${company}/%DOCSETPACKAGEFILENAME\" \\\n--docset-fallback-url \"${companyURL}/${company}\" \\\n--output \"${outputPath}\" \\\n--publish-docset \\\n--docset-platform-family \"${target}\" \\\n--logformat xcode \\\n--keep-intermediate-files \\\n--no-repeat-first-par \\\n--no-warn-invalid-crossref \\\n--exit-threshold 2 \\\n\"${PROJECT_DIR}\"\n";
+			shellScript = "# Start constants\ncompany=\"Vitality\";\ncompanyID=\"org.Vitality\";\ncompanyURL=\"https://github.com/sixones/vitality\";\ntarget=\"macosx\";\noutputPath=\"~/help\";\n# End constants\n\nif [ -x /usr/local/bin/appledoc ]; then\n/usr/local/bin/appledoc \\\n--project-name \"${PROJECT_NAME}\" \\\n--project-company \"${company}\" \\\n--company-id \"${companyID}\" \\\n--docset-atom-filename \"${company}.atom\" \\\n--docset-feed-url \"${companyURL}/${company}/%DOCSETATOMFILENAME\" \\\n--docset-package-url \"${companyURL}/${company}/%DOCSETPACKAGEFILENAME\" \\\n--docset-fallback-url \"${companyURL}/${company}\" \\\n--output \"${outputPath}\" \\\n--publish-docset \\\n--docset-platform-family \"${target}\" \\\n--logformat xcode \\\n--keep-intermediate-files \\\n--no-repeat-first-par \\\n--no-warn-invalid-crossref \\\n--exit-threshold 2 \\\n\"${PROJECT_DIR}\"\nfi\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1311,6 +1316,7 @@
 				A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */,
 				A1A2DAA918D0CFB40077CD55 /* PlanOverview.m in Sources */,
 				A112AD5E18E48D80001AF74B /* MetTableHeaderMenuManager.m in Sources */,
+				A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

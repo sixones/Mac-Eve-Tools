@@ -150,4 +150,8 @@
     return _group;
 }
 
+-(NSArray *)traits
+{
+    return [database traitsForTypeID:[self typeID]];
+}
 @end
