@@ -112,8 +112,8 @@
             previousSkill = skillName;
         }
 
-        // don't display the bonus if it's zero
-        if( [trait bonus] < 0.0000000001 )
+        // don't display the bonus if it's zero. There are currently no bonuses that are less than zero but test the absolute value anyway
+        if( fabs([trait bonus]) < 0.0000000001 )
             [traits appendFormat:@"<p class=\"trait\">%@ %@</p>\n",[trait unitString], [trait bonusString]];
         else
             [traits appendFormat:@"<p class=\"trait\">%.9g%@ %@</p>\n",[trait bonus], [trait unitString], [trait bonusString]];
