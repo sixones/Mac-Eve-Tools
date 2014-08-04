@@ -64,10 +64,10 @@ AND attributeID IN
 /usr/bin/python $SCRIPT -t trnTranslationColumns -f $1 \
 -q "SELECT tcGroupID,tcID,tableName,columnName,masterID FROM trnTranslationColumns;"
 
-/usr/bin/python $SCRIPT -t crtCategories -f $1 \
--q "SELECT categoryID, categoryName FROM crtCategories WHERE categoryID <> 17;"
-
 # Pre-Rubicon certificate tables
+#/usr/bin/python $SCRIPT -t crtCategories -f $1 \
+#-q "SELECT categoryID, categoryName FROM crtCategories WHERE categoryID <> 17;"
+#
 #/usr/bin/python $SCRIPT -t crtCertificates -f $1 \
 #-q "SELECT certificateID, categoryID, classID, grade, description FROM crtCertificates;";
 #
