@@ -22,7 +22,6 @@
 
 #import "GlobalData.h"
 #import "SkillPlan.h"
-#import "PlanView2Datasource.h"
 #import "Character.h"
 
 #import "SkillDetailsWindowController.h"
@@ -35,8 +34,6 @@
 
 -(void) deleteSkillPlan:(NSIndexSet*)planIndexes;
 
--(void) cellPlusButtonClick:(id)sender;
--(void) cellMinusButtonClick:(id)sender;
 -(void) cellNotesButtonClick:(id)sender;
 
 @end
@@ -101,48 +98,6 @@
 	[delegate setToolbarMessage:message];
 }
 
--(void) cellPlusButtonClick:(id)sender
-{	
-	/*
-	 Find out what skill this is.
-	 If level 5, do nothing.
-	 Else, add it to the next level in the next row.
-	 */
-	NSInteger row = [sender clickedRow];
-	NSInteger insertRow = -1;
-	
-	SkillPlan *plan = [pvDatasource currentPlan];
-	
-	SkillPair *pair = [plan skillAtIndex:row];
-	
-	NSInteger maxQueuedLevel = [plan maxLevelForSkill:[pair typeID] atIndex:&insertRow];
-	
-	if((maxQueuedLevel == 5) || (maxQueuedLevel == 0)){
-		return;
-	}
-	
-	SkillPair *newPair = [[SkillPair alloc]initWithSkill:[pair typeID] level:maxQueuedLevel+1];
-	[plan addSkill:newPair atIndex:insertRow+1];
-	[newPair release];
-	
-	[[pvDatasource currentPlan]savePlan];
-	[self refreshPlanView];
-}
--(void) cellMinusButtonClick:(id)sender
-{
-	/*
-	 Find this skill and remove it from the plan
-	 */
-	NSInteger row = [sender clickedRow];
-	SkillPlan *plan = [pvDatasource currentPlan];
-	
-	/*this does not display the warning dialog.*/
-	[plan removeSkillAtIndex:row];
-	[[pvDatasource currentPlan]savePlan];
-	[self refreshPlanView];
-	
-	NSLog(@"Minus button click %ld",row);
-}
 -(void) cellNotesButtonClick:(id)sender
 {
 	NSInteger row = [sender clickedRow];
@@ -182,9 +137,6 @@
 {
     if( self = [super init] )
     {
-		pvDatasource = [[PlanView2Datasource alloc]init];
-		[pvDatasource setViewDelegate:self];
-		        
 		currentTag = -1;
 	}
 	return self;
@@ -193,14 +145,12 @@
 -(void) dealloc
 {
 	[character release];
-	[pvDatasource release];
     [headerMenuManager release];
 	[super dealloc];
 }
 
 -(void) awakeFromNib
 {
-	[pvDatasource setMode:SPMode_overview];
 	[tableView setDataSource:self];
 	
 	[tableView registerForDraggedTypes:[NSArray arrayWithObjects:MTSkillArrayPBoardType,MTSkillIndexPBoardType,nil]];
@@ -264,7 +214,6 @@
 	
 	[character release];
 	character = [c retain];
-	[pvDatasource setCharacter:c];
 	[self refreshPlanView];
     [self tableViewSelectionDidChange:nil]; // re-select the current plan to make sure the detail table is being displayed correctly
 }
@@ -381,13 +330,6 @@
 }
 
 #pragma mark
-
--(void) addSkillArrayToActivePlan:(NSArray*)skillArray
-{
-	[pvDatasource addSkillArrayToActivePlan:skillArray];
-	[[pvDatasource currentPlan]savePlan];
-	[self refreshPlanView];
-}
 
 - (BOOL)tableView:(NSTableView *)aTableView 
 shouldEditTableColumn:(NSTableColumn *)aTableColumn 

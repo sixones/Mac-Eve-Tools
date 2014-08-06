@@ -30,13 +30,11 @@
 @implementation PlanView2Datasource
 
 @synthesize planId;
-@synthesize mode;
 
 -(id) init
 {
 	if(self = [super init]){
 		masterSkillSet = [[[[GlobalData sharedInstance]skillTree] skillSet]retain];
-		mode = SPMode_none;
 	}
 	return self;
 }
@@ -64,9 +62,6 @@
 
 -(SkillPlan*) currentPlan
 {
-	if(mode != SPMode_plan){
-		return nil;
-	}
 	return [character skillPlanById:planId];
 }
 
@@ -79,42 +74,15 @@
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-	switch (mode) {
-		case SPMode_none:
-			return 0;
-		case SPMode_overview:
-			return [character skillPlanCount];
-		case SPMode_plan:
-			return [[character skillPlanById:planId]skillCount];
-		default:
-			assert(0);
-			break;
-	}
-	return 0;	
+	return [[character skillPlanById:planId] skillCount];
 }
 
 -(id) tableView:(NSTableView *)aTableView 
 objectValueForTableColumn:(NSTableColumn *)aTableColumn 
 			row:(NSInteger)rowIndex
 {
-	SkillPlan *skillPlan;
-	/*Fetch the skill plan we are displaying*/
-	if(mode == SPMode_overview){
-		skillPlan = [character skillPlanAtIndex:rowIndex];
-	}else{
-		skillPlan = [character skillPlanById:planId];
-	}
-	
-	if([[aTableColumn identifier]isEqualToString:COL_POV_NAME]){
-		return [skillPlan planName];
-	}else if([[aTableColumn identifier]isEqualToString:COL_POV_SKILLCOUNT]){
-		return [NSNumber numberWithInteger:[skillPlan skillCount]];
-	}else if([[aTableColumn identifier]isEqualToString:COL_POV_TIMELEFT]){
-		return stringTrainingTime([skillPlan trainingTime]); 
-	}
-	
-	/*Skill PLAN view datasource methods*/
-	SkillPair *sp = [skillPlan skillAtIndex:rowIndex];
+	SkillPlan *skillPlan = [character skillPlanById:planId];
+    SkillPair *sp = [skillPlan skillAtIndex:rowIndex];
 	Skill *s = [masterSkillSet objectForKey:[sp typeID]];
 	
 	if([[aTableColumn identifier] isEqualToString:COL_PLAN_SKILLNAME]){
@@ -207,100 +175,60 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 		return nil;
 	}
 	
-	NSMenu *menu = nil;
-	SkillPlan *skillPlan = nil;
-	NSMenuItem *item = nil;
+    SkillPlan *skillPlan = [character skillPlanById:planId];
+    
+    if(skillPlan == nil){
+        return nil;
+    }
+    
 	NSNumber *planRow = [NSNumber numberWithInteger:row];
-	
-	menu = [[[NSMenu alloc]initWithTitle:@""]autorelease];
-
-	if(mode == SPMode_plan){
-		
-		skillPlan = [character skillPlanById:planId];
-		
-		if(skillPlan == nil){
-			return nil;
-		}
-		
-		SkillPair *sp = [skillPlan skillAtIndex:row];
-		Skill *s = [masterSkillSet objectForKey:[sp typeID]];
-		
-		
-		item = [[NSMenuItem alloc]initWithTitle:[s skillName] 
-										 action:@selector(displaySkillWindow:) 
-								  keyEquivalent:@""];
-		[item setRepresentedObject:s];
-		[menu addItem:item];
-		[item release];
-		
-		[menu addItem:[NSMenuItem separatorItem]];
-		
-		item = [[NSMenuItem alloc]initWithTitle:[NSString stringWithFormat:
-												 NSLocalizedString(@"Remove %@ %@",@"Remove <SkillName> <SkillLevel>"),[s skillName],
-															 romanForInteger([sp skillLevel])]
-													 action:@selector(removeSkillFromPlan:)
-											  keyEquivalent:@""];
-		[item setRepresentedObject:planRow];
-		[menu addItem:item];
-		[item release];
-		
-		/*
-		 If the skill is not planned to a level higher than the current level
-		 then add the option to right-click and train to a particular level.
-		 */
-		
-//		if([sp skillLevel] < 5){
-		
-		NSInteger queuedIndex;
-		NSInteger queuedMax = [[self currentPlan]maxLevelForSkill:[sp typeID] atIndex:&queuedIndex];
-		
-		if(queuedMax < 5){
-			for(NSInteger i = queuedMax + 1; i <= 5; i++){
-				item = [[NSMenuItem alloc]initWithTitle:
-						[NSString stringWithFormat:
-						 NSLocalizedString(@"Train to level %@",@"Train skill to level"),romanForInteger(i) ]
-												 action:@selector(trainSkillToLevel:)
-										  keyEquivalent:@""];
-				
-				SkillPair *newPair = [[SkillPair alloc]initWithSkill:[sp typeID] level:i];
-				
-				[item setRepresentedObject:newPair];
-				[menu addItem:item];
-				[item release];
-				[newPair release];
-			}
-		}
-		
-	}else if(mode == SPMode_overview){
-		skillPlan = [character skillPlanAtIndex:row];
-		
-		if(skillPlan == nil){
-			return nil;
-		}
-		
-		item = [[NSMenuItem alloc]initWithTitle:[skillPlan planName] 
-										 action:@selector(activatePlanAtRow:) 
-								  keyEquivalent:@""];
-		[item setRepresentedObject:planRow];
-		[menu addItem:item];
-		[item release];
-		
-		[menu addItem:[NSMenuItem separatorItem]];
-		 
-		item = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"Delete",@"Delete a skill plan")
-													action:@selector(removeSkillPlanFromOverview:)
-											  keyEquivalent:@""];
-		[item setRepresentedObject:planRow];
-		[menu addItem:item];
-		[item release];
-		
-		item = [[NSMenuItem alloc]initWithTitle:NSLocalizedString(@"Rename",@"Rename a skill plan")
-										 action:@selector(renameSkillPlan:) 
-								  keyEquivalent:@""];
-		[item setRepresentedObject:planRow];
-		[menu addItem:item];
-		[item release];
-	}
+	NSMenu *menu = [[[NSMenu alloc]initWithTitle:@""]autorelease];
+    SkillPair *sp = [skillPlan skillAtIndex:row];
+    Skill *s = [masterSkillSet objectForKey:[sp typeID]];
+    
+    
+    NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:[s skillName]
+                                     action:@selector(displaySkillWindow:)
+                              keyEquivalent:@""];
+    [item setRepresentedObject:s];
+    [menu addItem:item];
+    [item release];
+    
+    [menu addItem:[NSMenuItem separatorItem]];
+    
+    item = [[NSMenuItem alloc]initWithTitle:[NSString stringWithFormat:
+                                             NSLocalizedString(@"Remove %@ %@",@"Remove <SkillName> <SkillLevel>"),[s skillName],
+                                             romanForInteger([sp skillLevel])]
+                                     action:@selector(removeSkillFromPlan:)
+                              keyEquivalent:@""];
+    [item setRepresentedObject:planRow];
+    [menu addItem:item];
+    [item release];
+    
+    /*
+     If the skill is not planned to a level higher than the current level
+     then add the option to right-click and train to a particular level.
+     */
+    
+    NSInteger queuedIndex;
+    NSInteger queuedMax = [[self currentPlan]maxLevelForSkill:[sp typeID] atIndex:&queuedIndex];
+    
+    if(queuedMax < 5){
+        for(NSInteger i = queuedMax + 1; i <= 5; i++){
+            item = [[NSMenuItem alloc]initWithTitle:
+                    [NSString stringWithFormat:
+                     NSLocalizedString(@"Train to level %@",@"Train skill to level"),romanForInteger(i) ]
+                                             action:@selector(trainSkillToLevel:)
+                                      keyEquivalent:@""];
+            
+            SkillPair *newPair = [[SkillPair alloc]initWithSkill:[sp typeID] level:i];
+            
+            [item setRepresentedObject:newPair];
+            [menu addItem:item];
+            [item release];
+            [newPair release];
+        }
+    }
 	
 	return menu;
 }
@@ -321,10 +249,8 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
 -(void) addSkillArrayToActivePlan:(NSArray*)skillArray
 {
-	if(mode == SPMode_plan){
-		SkillPlan *plan = [character skillPlanById:planId];
-		[plan addSkillArrayToPlan:skillArray];
-	}
+    SkillPlan *plan = [character skillPlanById:planId];
+    [plan addSkillArrayToPlan:skillArray];
 }
 
 #pragma mark Drag and drop methods
@@ -408,22 +334,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 				validateDrop:(id < NSDraggingInfo >)info
 				 proposedRow:(NSInteger)row 
 	   proposedDropOperation:(NSTableViewDropOperation)operation
-{
-	if(mode == SPMode_overview)
-    {
-        
-        if( [info draggingSource] == aTableView )
-        {
-            [aTableView setDropRow:row dropOperation:NSTableViewDropAbove];
-            return NSDragOperationMove;
-        }
-        else
-        {
-            [aTableView setDropRow:row dropOperation:NSTableViewDropOn];
-            return NSDragOperationCopy;
-        }
-	}
-	
+{	
 	if([info draggingSource] == aTableView){
 		[aTableView setDropRow:row dropOperation:NSTableViewDropAbove];
 		return NSDragOperationMove;
@@ -439,8 +350,9 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 {
 	SkillPlan *plan = [character skillPlanById:planId];
 	
-	if([info draggingSource] == aTableView){
-		/*We are reording skills within a plan*/
+	if( [info draggingSource] == aTableView )
+    {
+		/* We are reordering skills within a plan */
 		NSData *data = [[info draggingPasteboard]dataForType:MTSkillIndexPBoardType];
 		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc]initForReadingWithData:data];
 		NSArray *indexArray = [unarchiver decodeObjectForKey:DRAG_SKILLINDEX];
@@ -448,32 +360,22 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 		[unarchiver finishDecoding];
 		[unarchiver release];
 		
-        if( SPMode_plan == mode )
-        {
-            BOOL rc = [plan moveSkill:indexArray to:row];
-            
-            if(rc){
-                [plan savePlan];
-                [viewDelegate refreshPlanView];
-                [aTableView deselectAll:self];
-            }
-            
-            return rc;
-		}
-        else if( SPMode_overview == mode )
-        {
-            // What to do if we drop one skill plan on another? Copy all skills from the source plan to the destination?
-            NSIndexSet *indexes = [character moveSkillPlan:indexArray to:row];
-            [viewDelegate selectRowIndexes:indexes byExtendingSelection:NO];
+        BOOL rc = [plan moveSkill:indexArray to:row];
+        
+        if(rc){
+            [plan savePlan];
             [viewDelegate refreshPlanView];
-            return [indexes count] > 0;
+            [aTableView deselectAll:self];
         }
-	}else{
+        
+        return rc;
+	}
+    else
+    {
 		/*
-		 this is a copy array type.  If we are in overview mode, append skills to the existing plan,
-		 or create a new plan, if is not dropped on an existing plan.
+		 this is a copy array type.
 		 
-		 if it is not overview mode, append to the current planId
+		 append to the current planId
 		 */
 		NSData *data = [[info draggingPasteboard]dataForType:MTSkillArrayPBoardType];
 		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc]initForReadingWithData:data];
@@ -483,25 +385,10 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 		[unarchiver finishDecoding];
 		[unarchiver release];
 		
-		if(mode == SPMode_plan){
-			/*we are looking at a skill plan - append skills to the plan*/
-			[plan addSkillArrayToPlan:array];
-			[plan savePlan];
-			[viewDelegate refreshPlanView];
-			return YES;
-		}else if(mode == SPMode_overview){
-			if(operation == NSTableViewDropOn){
-				/*find the plan we are dropping on, append skills to this plan*/
-				//SkillPlan *dropPlan = [character skillPlanAtIndex:row];
-				[plan addSkillArrayToPlan:array];
-				[plan savePlan];
-				[aTableView setNeedsDisplayInRect:[aTableView frameOfCellAtColumn:1 row:row]];
-				[aTableView setNeedsDisplayInRect:[aTableView frameOfCellAtColumn:2 row:row]];
-				return YES;
-			}else if(operation == NSTableViewDropAbove){
-				return NO;
-			}
-		}
+        [plan addSkillArrayToPlan:array];
+        [plan savePlan];
+        [viewDelegate refreshPlanView];
+        return YES;
 	}
 	return NO;
 }

@@ -20,16 +20,14 @@
 #import <Cocoa/Cocoa.h>
 
 #import "METInstance.h"
-#import "PlanView2Datasource.h"
 #import "AttributeModifierController.h"
 #import "SkillView2Delegate.h"
 
 @class SkillPlan;
-@class PlanView2Datasource;
 @class Character;
 @class MetTableHeaderMenuManager;
 
-@interface PlanOverview : NSObject <NSTableViewDelegate,NSTableViewDataSource,PlanView2Delegate> {
+@interface PlanOverview : NSObject <NSTableViewDelegate,NSTableViewDataSource> {
 	IBOutlet NSButton *plusButton;
 	IBOutlet NSButton *minusButton;
 	
@@ -38,9 +36,7 @@
 	
 	IBOutlet NSPanel *newPlan;
 	IBOutlet NSTextField *newPlanName;
-    
-	PlanView2Datasource *pvDatasource;
-	
+    	
 	Character *character;
 	
 	NSInteger currentTag;
@@ -55,8 +51,6 @@
 -(IBAction) planButtonClick:(id)sender;
 -(IBAction) nextSkillPlan:(id)sender;
 -(IBAction) prevSkillPlan:(id)sender;
-
--(void) addSkillArrayToActivePlan:(NSArray*)skillArray;
 
 -(void) setCharacter:(Character*)c;
 -(Character*) character;

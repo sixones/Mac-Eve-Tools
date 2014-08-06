@@ -22,12 +22,6 @@
 
 #import "METInstance.h"
 
-enum SkillPlanMode{
-	SPMode_overview,
-	SPMode_plan,
-	SPMode_none
-};
-
 @class Character;
 @class SkillPlan;
 
@@ -40,17 +34,15 @@ enum SkillPlanMode{
 -(void) selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extend;
 @end
 
-
+/* This class is now only used by PlanView2. All references to the 'mode' have been removed. */
 @interface PlanView2Datasource : NSObject <NSTableViewDelegate, NSTableViewDataSource> {
 	NSDictionary *masterSkillSet;
 	Character *character;
 	NSInteger planId;
-	enum SkillPlanMode mode;
 	id<PlanView2Delegate> viewDelegate;
 }
 
 @property (readwrite,nonatomic) NSInteger planId;
-@property (readwrite,nonatomic) enum SkillPlanMode mode;
 
 -(id) init;
 

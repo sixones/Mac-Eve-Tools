@@ -124,7 +124,6 @@
 	[delegate setToolbarMessage:message];
 }
 
-/*-1 is a special plan ID which triggers the overview*/
 -(IBAction) displayPlanByPlanId:(NSInteger)tag
 {
 	if(tag == currentTag){
@@ -218,7 +217,6 @@
     if( self = [super initWithFrame:frame] )
     {
 		pvDatasource = [[PlanView2Datasource alloc] init];
-        [pvDatasource setMode:SPMode_plan];
 		[pvDatasource setViewDelegate:self];
 		        
 		currentTag = -1;
@@ -242,7 +240,6 @@
 
 -(void) awakeFromNib
 {
-	[pvDatasource setMode:SPMode_plan];
 	[tableView setDataSource:pvDatasource];
 	
 	[tableView registerForDraggedTypes:[NSArray arrayWithObjects:MTSkillArrayPBoardType,MTSkillIndexPBoardType,nil]];
@@ -250,7 +247,13 @@
 	[tableView setDelegate:self];
 	[tableView setTarget:self];
 	[tableView setDoubleAction:@selector(rowDoubleClick:)];
-    headerMenuManager = [[MetTableHeaderMenuManager alloc] initWithMenu:nil forTable:tableView];
+    
+    NSMenu * menu = [[[NSMenu alloc] init] autorelease];
+    NSMenuItem *reset = [[NSMenuItem alloc] initWithTitle:@"Manual Sorting" action:@selector(resetSorting:) keyEquivalent:@""];
+    [reset setTarget:self];
+    [menu addItem:reset];
+    [menu addItem:[NSMenuItem separatorItem]];
+    headerMenuManager = [[MetTableHeaderMenuManager alloc] initWithMenu:menu forTable:tableView];
 
 	basePanelSize = [skillRemovePanel frame];
 }
@@ -353,6 +356,27 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 			  row:(NSInteger)rowIndex
 {
 	return NO;
+}
+
+-(void)tableView:(NSTableView *)_tableView sortDescriptorsDidChange: (NSArray *)oldDescriptors
+{
+    // remember the currently selected plan, then re-select it after sorting
+//    NSIndexSet *current = [tableView selectedRowIndexes];
+    //NSArray *newDescriptors = [_tableView sortDescriptors];
+    //[character sortSkillPlansUsingDescriptors:newDescriptors];
+    [_tableView reloadData];
+//    if( current )
+//    {
+//        NSInteger index = [character indexOfPlan:current];
+//        [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+//    }
+}
+
+-(void)resetSorting:(id)sender
+{
+    NSSortDescriptor *manual = [[NSSortDescriptor alloc] initWithKey:@"planOrder" ascending:YES];
+    [tableView setSortDescriptors:[NSArray arrayWithObject:manual]];
+    [self tableView:tableView sortDescriptorsDidChange:nil];
 }
 
 @end
