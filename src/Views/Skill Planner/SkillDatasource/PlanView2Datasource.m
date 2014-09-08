@@ -393,4 +393,23 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 	return NO;
 }
 
+-(void)tableView:(NSTableView *)_tableView sortDescriptorsDidChange: (NSArray *)oldDescriptors
+{
+    // remember the currently selected plan, then re-select it after sorting
+    //    NSIndexSet *current = [tableView selectedRowIndexes];
+    [self sortSkillsUsingDescriptors:[_tableView sortDescriptors]];
+    [_tableView reloadData];
+    //    if( current )
+    //    {
+    //        NSInteger index = [character indexOfPlan:current];
+    //        [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+    //    }
+}
+
+- (void)sortSkillsUsingDescriptors:(NSArray *)descriptors
+{
+	SkillPlan *plan = [character skillPlanById:planId];
+    [plan sortUsingDescriptors:descriptors];
+}
+
 @end

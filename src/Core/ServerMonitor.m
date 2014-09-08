@@ -154,9 +154,6 @@
 {
 	[self parseXmlData:xmlData];
 	[xmlData setLength:0];
-    
-	NSLog(@"Tranquility: %@ (%ld)", status == ServerUp ? @"online" : @"offline", numPlayers);
-    
 	[self notifyListeners];
 }
 

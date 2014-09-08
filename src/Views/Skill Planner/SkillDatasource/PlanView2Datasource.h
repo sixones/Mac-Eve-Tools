@@ -59,4 +59,6 @@
 
 -(void) addSkillArrayToActivePlan:(NSArray*)skillArray;
 
+- (void)sortSkillsUsingDescriptors:(NSArray *)descriptors;
+
 @end

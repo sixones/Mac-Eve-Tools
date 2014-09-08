@@ -803,4 +803,35 @@ static NSDictionary *masterSkillSet = nil;;
 	[self removeSkillArrayFromPlan:ary];
 }
 
+- (void)sortUsingDescriptors:(NSArray *)sortDescriptors
+{
+    for( NSSortDescriptor *desc in [sortDescriptors reverseObjectEnumerator] )
+    {
+        if( [[desc key] isEqualToString:@"trainingTime"] )
+        {
+            [skillPlan sortUsingComparator:^(id obj1, id obj2) {
+                NSInteger t1 = [character trainingTimeInSeconds:[obj1 typeID] fromLevel:[obj1 skillLevel]-1 toLevel:[obj1 skillLevel]];
+                NSInteger t2 = [character trainingTimeInSeconds:[obj2 typeID] fromLevel:[obj2 skillLevel]-1 toLevel:[obj2 skillLevel]];
+                
+                if( t1 < t2 )
+                    return [desc ascending]?NSOrderedAscending:NSOrderedDescending;
+                else if( t2 < t1 )
+                    return [desc ascending]?NSOrderedDescending:NSOrderedAscending;
+                else
+                    return NSOrderedSame;
+            }];
+        }
+        else if( [[desc key] isEqualToString:@"name"] )
+        {
+            [skillPlan sortUsingDescriptors:[NSArray arrayWithObject:desc]];
+        }
+        else if( [[desc key] isEqualToString:@"manual"] )
+        {
+            // somehow revert to the last manual order
+        }
+    }
+
+    [self resetCache];
+}
+
 @end

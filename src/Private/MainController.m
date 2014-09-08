@@ -537,8 +537,6 @@
 
 -(void) awakeFromNib
 {
-	NSLog(@"Awoken from nib");
-	
 	[NSDateFormatter setDefaultFormatterBehavior:NSDateFormatterBehavior10_4];
 	
 	/* setting default preferences values */

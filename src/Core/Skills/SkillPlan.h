@@ -137,4 +137,5 @@
 /*used by the database backend to load up skill plans, does not perform validation*/
 -(void) secretAddSkillToPlan:(NSNumber*)typeID level:(NSInteger)level;
 
+- (void)sortUsingDescriptors:(NSArray *)sortDescriptors;
 @end
