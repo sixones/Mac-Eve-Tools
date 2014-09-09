@@ -87,6 +87,8 @@
 
 -(void) logProgress:(NSString*)progressMessage
 {
+    if( !progressMessage )
+        progressMessage = @"Unknown Download Error";
 	[textField setStringValue:progressMessage];
 }
 

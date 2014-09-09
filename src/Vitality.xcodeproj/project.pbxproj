@@ -130,7 +130,6 @@
 		C9F514A11056725600654F6D /* CharacterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F514A01056725600654F6D /* CharacterManager.m */; };
 		C9FAF5371160532D000EC789 /* AttributeModifierController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FAF5361160532D000EC789 /* AttributeModifierController.m */; };
 		C9FE051F10955F78004D373A /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9FE051E10955F78004D373A /* Sparkle.framework */; };
-		C9FE053510955FD0004D373A /* Cocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		C9FE054A1095608D004D373A /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C9FE051E10955F78004D373A /* Sparkle.framework */; };
 		C9FF4566105508950044BBAC /* charsheet.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FF455B105508950044BBAC /* charsheet.png */; };
 		C9FF4567105508950044BBAC /* darkgray.tiff in Resources */ = {isa = PBXBuildFile; fileRef = C9FF455C105508950044BBAC /* darkgray.tiff */; };
@@ -214,7 +213,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				C9FE054A1095608D004D373A /* Sparkle.framework in CopyFiles */,
-				C9FE053510955FD0004D373A /* Cocoa.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
