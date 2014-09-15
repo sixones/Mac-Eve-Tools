@@ -1,7 +1,14 @@
-Version 0.2.x
+Version 0.2.11a
+September 9, 2014
 
-Added Next/Previous Skill Plan menu items and keybindings for navigating between skill plans.
-Added manual ordering of skill plans in the Overview tab.
+This is a pre-release, experimental version.
+
+It includes the Hyperion database (August 2014) inside the application. In order to get Vitality to use the built-in database you will probably need to delete both URL's in the Database pane of the Preferences window, then re-launch the application.
+
+The Skill Plan view has been heavily modified, including limited support for sorting both the skill plan overview (list of skill plans) along with even more limited support for sorting skills within a plan. Right click on either table header to choose which columns to display or to revert to manual sorting. Drag and drop table column headers to move them within the table.
+
+You are strongly encouraged to back up your existing Vitality installation before installing this version. Save a copy of the previous version of the application along with the contents of the ~/Library/Application Support/Vitality folder.
+
 
 Version 0.2.8
 July 14, 2013
@@ -11,3 +18,10 @@ Fixed the contextual menu not appearing in skill planner options.
 Added a Status Bar menu to display info about the current character.
 Show cargo capacity in ship detail window.
 Updated skill icons to use the higher resolution 32x32 version.
+
+
+Version 0.2.x
+
+Added Next/Previous Skill Plan menu items and keybindings for navigating between skill plans.
+Added manual ordering of skill plans in the Overview tab.
+

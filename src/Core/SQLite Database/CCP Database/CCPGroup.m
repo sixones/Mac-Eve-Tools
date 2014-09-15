@@ -53,7 +53,8 @@
 	NSMutableArray *minmatar = [[[NSMutableArray alloc]init]autorelease];
 	NSMutableArray *gallente = [[[NSMutableArray alloc]init]autorelease];
 	NSMutableArray *pirate = [[[NSMutableArray alloc]init]autorelease];
-	
+    NSMutableArray *ore = [[[NSMutableArray alloc]init]autorelease];
+
 	for(CCPType *type in types){
 		if([type isPirateShip]){
 			[pirate addObject:type];
@@ -71,7 +72,13 @@
 				case Minmatar:
 					[minmatar addObject:type];
 					break;
-			}	
+                case ORE:
+                    [ore addObject:type];
+                    break;
+                default:
+                    NSLog( @"Other sub group type: %ld", (long)[type raceID] );
+                    break;
+			}
 		}
 	}
 	
@@ -93,9 +100,7 @@
 	[subGroups addObject:sg];
 	[sg release];
 	}
-    
-    NSLog(@"Pirate: %ld", [pirate count]);
-    
+        
 	//caldari
 	if([caldari count] > 0){
 	sg = [[METSubGroup alloc]
@@ -106,9 +111,7 @@
 	[subGroups addObject:sg];
 	[sg release];
 	}
-    
-    NSLog(@"Caldari: %ld", [caldari count]);
-    
+        
 	//gallente
 	if([gallente count] > 0){
 	sg = [[METSubGroup alloc]
@@ -119,9 +122,7 @@
 	[subGroups addObject:sg];
 	[sg release];
 	}
-    
-    NSLog(@"Gallente: %ld", [gallente count]);
-	
+    	
 	//amarr
 	if([amarr count] > 0){
 	sg = [[METSubGroup alloc]
@@ -132,9 +133,7 @@
 	[subGroups addObject:sg];
 	[sg release];
 	}
-    
-    NSLog(@"Amarr: %ld", [amarr count]);
-	
+    	
 	//Minmatar
 	if([minmatar count] > 0){
 	sg = [[METSubGroup alloc]
@@ -145,8 +144,18 @@
 	[subGroups addObject:sg];
 	[sg release];
 	}
-    
-    NSLog(@"Minmatar: %ld", [minmatar count]);
+        
+	//ORE
+	if( [ore count] > 0 )
+    {
+        sg = [[METSubGroup alloc]
+              initWithName:@"ORE"
+              andTypes:ore
+              forMetaGroup:NullType
+              withRace:ORE];
+        [subGroups addObject:sg];
+        [sg release];
+	}
 }
 
 -(CCPGroup*) initWithGroup:(NSInteger)gID

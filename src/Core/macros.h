@@ -246,7 +246,8 @@ enum CCPRace
 	Amarr = 4,
 	Gallente = 8,
 	Jove = 16,
-	Pirate = 32
+	Pirate = 32,
+    ORE = 128
 };
 typedef enum CCPRace CCPRace;
 

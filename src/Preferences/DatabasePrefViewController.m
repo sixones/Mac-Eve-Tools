@@ -103,6 +103,11 @@
 	[restartWarning setHidden:NO];
 }
 
+- (void) willBeDisplayed
+{
+    [self showVersion];
+}
+
 - (void) willBeClosed
 {
     // make sure all fields are de-selected so any changes will be saved.

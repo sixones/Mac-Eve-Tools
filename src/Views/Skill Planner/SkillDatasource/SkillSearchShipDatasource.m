@@ -120,11 +120,16 @@
 		return [category groupCount];
 	}
 	
-	if([item isKindOfClass:[CCPGroup class]]){
-		return [item subGroupCount];
+	if( [item isKindOfClass:[CCPGroup class]] )
+    {
+        NSInteger count = [item subGroupCount];
+        if( 0 == count )
+            count = [item typeCount];
+        return count;
 	}
 	
-	if([item isKindOfClass:[METSubGroup class]]){
+	if( [item isKindOfClass:[METSubGroup class]] )
+    {
 		return [item typeCount];
 	}
 	
@@ -139,8 +144,10 @@
 		}
 		return [category groupAtIndex:index];
 	}
-	if([item isKindOfClass:[CCPGroup class]]){
-		//return [item typeAtIndex:index];
+	if( [item isKindOfClass:[CCPGroup class]] )
+    {
+        if( 0 == [item subGroupCount] )
+            return [item typeAtIndex:index];
 		return [item subGroupAtIndex:index];
 	}
 	if([item isKindOfClass:[METSubGroup class]]){
