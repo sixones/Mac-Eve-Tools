@@ -238,19 +238,6 @@ enum AttributeType {
 
 #define UD_ACCOUNTS @"accounts"
 
-enum CCPRace
-{
-	NullRace = 0,
-	Caldari = 1,
-	Minmatar = 2,
-	Amarr = 4,
-	Gallente = 8,
-	Jove = 16,
-	Pirate = 32,
-    ORE = 128
-};
-typedef enum CCPRace CCPRace;
-
 enum CCPMetaGroup
 {
 	NullType = 0,

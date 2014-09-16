@@ -1566,4 +1566,35 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
 	return characterName;
 }
 
+- (NSString *)nameForRace:(NSInteger)raceID
+{
+    // first make sure the staStation table exists
+	const char query[] =
+    "SELECT raceName "
+    "FROM chrRaces "
+    "WHERE raceID = ?;";
+	sqlite3_stmt *read_stmt;
+	int rc;
+	
+	rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+	if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+		return nil;
+	}
+    
+	sqlite3_bind_nsint(read_stmt,1,raceID);
+	
+    NSString *raceName = nil;
+    
+    if( (rc = sqlite3_step(read_stmt)) != SQLITE_DONE )
+    {
+		
+		raceName = sqlite3_column_nsstr(read_stmt,0);
+	}
+	
+	sqlite3_finalize(read_stmt);
+	
+	return raceName;
+}
+
 @end
