@@ -155,8 +155,8 @@
         
 		if( xmlStrcmp(cur_node->name,(xmlChar*)"row") == 0 )
         {
-            NSUInteger stationID;
-            NSUInteger solarSystemID;
+            NSUInteger stationID = 0;
+            NSUInteger solarSystemID = 0;
             NSString *stationName = nil;
             
             for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )

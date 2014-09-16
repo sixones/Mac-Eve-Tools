@@ -38,22 +38,22 @@
 							  primary:(BOOL)isPrimary
 {
 	if((self = [super init])){
-		self.characterId = [charId retain];
-		self.characterName = [name retain];
-		self.verificationCode = [key retain];
-		self.accountId = [acctId retain];
-		self.active = isActive;
-		self.primary = isPrimary;
+		characterId = [charId retain];
+		characterName = [name retain];
+		verificationCode = [key retain];
+		accountId = [acctId retain];
+		active = isActive;
+		primary = isPrimary;
 	}
 	return self;
 }
 
 -(void)dealloc
 {
-	[self.characterId release];
-	[self.characterName release];
-	[self.verificationCode release];
-	[self.accountId release];
+	[characterId release];
+	[characterName release];
+	[verificationCode release];
+	[accountId release];
 	[super dealloc];
 }
 

@@ -137,7 +137,7 @@
 
 -(XmlFetcher*) initWithDelegate:(id <XmlFetcherDelegate>)del
 {
-	if([self init])
+	if(self = [self init])
 	{
 		delegate = del;
 	}

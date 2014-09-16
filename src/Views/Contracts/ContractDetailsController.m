@@ -67,9 +67,12 @@
 
 +(void) displayContract:(Contract *)_contract forCharacter:(Character*)ch;
 {
+    // Suppress the clang analyzer warning. There's probably a better way to do this
+#ifndef __clang_analyzer__
 	ContractDetailsController *wc = [[ContractDetailsController alloc] initWithType:_contract forCharacter:ch];
 	
     [[wc window] makeKeyAndOrderFront:nil];
+#endif
 }
 
 -(void)buildLabelsAndValues

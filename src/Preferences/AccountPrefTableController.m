@@ -54,7 +54,7 @@
 	NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:archive];
 	
 	if (self.accounts == nil) {
-		self.accounts = [[NSMutableArray alloc] init];
+		self.accounts = [NSMutableArray array];
 	}
 	else {
 		[self.accounts removeAllObjects];
@@ -105,7 +105,7 @@
 #pragma mark Control actions & events
 
 - (IBAction)addAccountClicked:(NSButton *)sender {
-	[self.accounts addObject:[[Account alloc] initWithName: NSLocalizedString(@"Untitled", @"Untitled")]];
+	[self.accounts addObject:[[[Account alloc] initWithName: NSLocalizedString(@"Untitled", @"Untitled")] autorelease]];
 	[self.accountTable noteNumberOfRowsChanged];
 	NSInteger newRowIndex = [self.accounts count] - 1;
 	NSIndexSet *index = [NSIndexSet indexSetWithIndex:newRowIndex];

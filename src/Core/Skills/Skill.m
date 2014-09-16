@@ -69,7 +69,7 @@
 					group:(NSNumber*)skillGroupID 
 					 type:(NSNumber*)skillTypeID
 {
-	if([self init])
+	if(self = [self init])
 	{
 		typeID = [skillTypeID retain];
 		groupID = [skillGroupID retain];

@@ -182,10 +182,9 @@ menuForTableColumnItem:(NSTableColumn*)column
 	if(s != nil){
 		//if the character has the skill, make the starting level the next one to train.
 		startingLevel = [s skillLevel];
-	}else{
-		s = [[[GlobalData sharedInstance]skillTree]skillForId:[item typeID]];
 	}
-	NSMenu *menu = [[[NSMenu alloc]initWithTitle:@"Menu"]autorelease];
+	
+    NSMenu *menu = [[[NSMenu alloc]initWithTitle:@"Menu"]autorelease];
 	NSMenuItem *menuItem;
 
 	menuItem = [[NSMenuItem alloc]initWithTitle: @"View Skill Details" action:@selector(displaySkillWindow:) keyEquivalent:@""];

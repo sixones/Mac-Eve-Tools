@@ -224,7 +224,7 @@ static NSDictionary *masterSkillSet = nil;;
 {
 	assert(ch);
 	assert(name);
-	if([self init]){
+	if(self = [self init]){
 		planName = [name retain];
 		character = ch; //NOT RETAINED.
 	}

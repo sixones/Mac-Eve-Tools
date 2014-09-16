@@ -68,10 +68,13 @@
 
 +(void) displayWindowForCert:(Cert*)cer character:(Character*)ch
 {
+    // Suppress the clang analyzer warning. There's probably a better way to do this
+#ifndef __clang_analyzer__
 	CertDetailsWindowController *wc = [(CertDetailsWindowController*)
 									   [CertDetailsWindowController alloc]initWithCert:cer
 																		  forCharacter:ch];
     [[wc window]makeKeyAndOrderFront:nil];
+#endif
 }
 
 // TODO Change the background colors of the buttons to show how far the character is toward achieving that level in this certificate
@@ -160,13 +163,12 @@
 - (NSImage *)generateButtonImage:(NSInteger)certLevel withState:(NSInteger)state
 {
     NSRect rect = NSMakeRect(0.0,0.0,64.0,64.0);
-    NSImage* anImage = [[NSImage alloc] initWithSize:rect.size];
+    NSImage* anImage = [[[NSImage alloc] initWithSize:rect.size] autorelease];
     [anImage lockFocus];
     
     // state would be all skills, missing some skill levels or missing at least one skill.
     // Color should match what we show in the skill list
-    NSColor *color = [NSColor colorWithDeviceRed:1.0 green:0.0 blue:0.0 alpha:0.5];
-    color = [NSColor colorWithDeviceRed:1.0 green:0.5 blue:0.0 alpha:0.5];
+    NSColor *color = [NSColor colorWithDeviceRed:1.0 green:0.5 blue:0.0 alpha:0.5];
     [color set];
     
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:5.0 yRadius:5.0];

@@ -249,26 +249,26 @@
 
 -(void) dealloc
 {
-	[self.keyID release];
-	[self.verificationCode release];
-	[self.characters release];
-	[self.accountName release];
+	[keyID release];
+	[verificationCode release];
+	[characters release];
+	[accountName release];
 	[super dealloc];
 }
 
 -(Account*) init
 {
 	if(self = [super init]){
-		self.characters = [[[NSMutableArray alloc] init] autorelease];
+		characters = [[NSMutableArray alloc] init];
 	}
 	return self;
 }
 
 -(Account*) initWithDetails:(NSString*)acctID acctKey:(NSString*)key
 {
-	if([self init]){
-		self.keyID = [acctID retain];
-		self.verificationCode = [key retain];
+	if(self = [self init]){
+		keyID = [acctID retain];
+		verificationCode = [key retain];
 	}
 	
 	return self;
@@ -276,8 +276,8 @@
 
 -(Account*) initWithName:(NSString*)name
 {
-	if([self init]){
-		self.accountName = name;
+	if(self = [self init]){
+		accountName = [name retain];
 	}
 	return self;
 }
@@ -314,12 +314,11 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 #pragma mark -
 #pragma mark NSCoding protocol
 - (id) initWithCoder:(NSCoder *)aDecoder {
-	self = [super init];
-	if (self != nil) {
+	if (self = [super init]) {
 		self.accountName = [aDecoder decodeObjectForKey:@"accountName"];
 		self.keyID = [aDecoder decodeObjectForKey:@"keyID"];
 		self.verificationCode = [aDecoder decodeObjectForKey:@"verificationCode"];
-		self.characters = [[NSMutableArray alloc] initWithArray: [aDecoder decodeObjectForKey:@"characters"]];
+		self.characters = [NSMutableArray arrayWithArray: [aDecoder decodeObjectForKey:@"characters"]];
 	}
 	return self;
 }

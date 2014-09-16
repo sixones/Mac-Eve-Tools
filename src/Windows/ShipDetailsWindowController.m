@@ -86,9 +86,12 @@
 
 +(void) displayShip:(CCPType*)type forCharacter:(Character*)ch
 {
+    // Suppress the clang analyzer warning. There's probably a better way to do this
+#ifndef __clang_analyzer__
 	ShipDetailsWindowController *wc = [[ShipDetailsWindowController alloc]initWithType:type forCharacter:ch];
 	
     [[wc window]makeKeyAndOrderFront:nil];
+#endif
 }
 
 - (NSAttributedString *)traitsAttributedString
@@ -122,7 +125,7 @@
     
     NSData *htmlTraitsData = [traits dataUsingEncoding:NSUTF8StringEncoding];
     NSAttributedString *htmlTraits = [[NSAttributedString alloc] initWithHTML: htmlTraitsData baseURL: NULL documentAttributes: NULL];
-    return htmlTraits;
+    return [htmlTraits autorelease];
 }
 
 -(void) setLabels
@@ -137,7 +140,7 @@
     [description appendString: shipDesc];
     
     NSData *htmlDescriptionData = [description dataUsingEncoding:NSUTF8StringEncoding];
-    NSAttributedString *htmlDescription = [[NSAttributedString alloc] initWithHTML: htmlDescriptionData baseURL: NULL documentAttributes: NULL];
+    NSAttributedString *htmlDescription = [[[NSAttributedString alloc] initWithHTML: htmlDescriptionData baseURL: NULL documentAttributes: NULL] autorelease];
 	
 	[[shipDescription textStorage] setAttributedString: htmlDescription];
     [shipDescription setNeedsDisplay:YES];

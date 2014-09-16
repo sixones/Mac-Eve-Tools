@@ -241,7 +241,7 @@
         
 		if( xmlStrcmp(cur_node->name,(xmlChar*)"row") == 0 )
         {
-            MarketOrder *order = [[MarketOrder alloc] init];
+            MarketOrder *order = [[[MarketOrder alloc] init] autorelease];
             
             for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )
             {

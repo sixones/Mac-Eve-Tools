@@ -135,7 +135,7 @@
 			val = @"capital";
 		}
 		else{
-			[val initWithFormat:@"%.2f",raw_val];
+			val = [NSString stringWithFormat:@"%.2f",raw_val];
 		}
 		[str appendString:val];
 	}

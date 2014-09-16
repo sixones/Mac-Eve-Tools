@@ -185,9 +185,9 @@
 	
 	rc = sqlite3_get_table(db, existenceTest, &results, &rows, &cols, &errormsg);
 	
-	if(rows != 1){
+	if( (rc != SQLITE_OK) || (rows != 1) )
+    {
 		NSLog(@"Database does not exist");
-		status = NO;
 		return NO;
 	}
 		
@@ -198,7 +198,7 @@
 	version = strtol(results[1],NULL,10);
 	
 	if(version != CURRENT_DB_VERSION){
-		rc = [self upgradeDatabaseFromVersion:version toVersion:CURRENT_DB_VERSION];
+		[self upgradeDatabaseFromVersion:version toVersion:CURRENT_DB_VERSION];
 	}
 	
 	if(results != NULL){
@@ -412,8 +412,8 @@
 
 	for(SkillPlan *sp in plans)
     {
-        rc = sqlite3_bind_nsint(rename_stmt,1,ord++);
-        rc = sqlite3_bind_nsint(rename_stmt,2,[sp planId]);
+        sqlite3_bind_nsint(rename_stmt,1,ord++);
+        sqlite3_bind_nsint(rename_stmt,2,[sp planId]);
         
         if((rc = sqlite3_step(rename_stmt)) != SQLITE_DONE)
         {
