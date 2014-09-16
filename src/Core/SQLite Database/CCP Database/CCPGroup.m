@@ -48,15 +48,6 @@
 {
     NSMutableDictionary *subGroupsTemp = [NSMutableDictionary dictionary];
     
-	/*group each item by faction, and filter by metaGroup*/
-	
-//	NSMutableArray *caldari = [[[NSMutableArray alloc]init]autorelease];
-//	NSMutableArray *amarr = [[[NSMutableArray alloc]init]autorelease];
-//	NSMutableArray *minmatar = [[[NSMutableArray alloc]init]autorelease];
-//	NSMutableArray *gallente = [[[NSMutableArray alloc]init]autorelease];
-//	NSMutableArray *pirate = [[[NSMutableArray alloc]init]autorelease];
-//    NSMutableArray *ore = [[[NSMutableArray alloc]init]autorelease];
-
 	for(CCPType *type in types)
     {
         NSString *raceName = [database nameForRace:[type raceID]];
@@ -78,107 +69,10 @@
         {
             NSLog( @"Unknown race ID: %ld", (long)[type raceID] );
         }
-//		if([type isPirateShip]){
-//			[pirate addObject:type];
-//		}else{
-//			switch([type raceID]){
-//				case Caldari:
-//					[caldari addObject:type];
-//					break;
-//				case Gallente:
-//					[gallente addObject:type];
-//					break;
-//				case Amarr:
-//					[amarr addObject:type];
-//					break;
-//				case Minmatar:
-//					[minmatar addObject:type];
-//					break;
-//                case ORE:
-//                    [ore addObject:type];
-//                    break;
-//                default:
-//                    NSLog( @"Other sub group type: %ld", (long)[type raceID] );
-//                    break;
-//			}
-//		}
 	}
 	
 	[subGroups release];
 	subGroups = [[NSMutableArray alloc] initWithArray:[subGroupsTemp allValues]];
-	
-	
-	/*this is ugly shit. rewrite this later.*/
-	/*
-	METSubGroup *sg;
-    
-	//pirate
-	if([pirate count] > 0){
-	sg = [[METSubGroup alloc]
-					   initWithName:@"Faction"
-					   andTypes:pirate
-					   forMetaGroup:NullType
-					   withRace:Pirate];
-	[subGroups addObject:sg];
-	[sg release];
-	}
-        
-	//caldari
-	if([caldari count] > 0){
-	sg = [[METSubGroup alloc]
-					   initWithName:@"Caldari"
-					   andTypes:caldari
-					   forMetaGroup:NullType
-					   withRace:Caldari];
-	[subGroups addObject:sg];
-	[sg release];
-	}
-        
-	//gallente
-	if([gallente count] > 0){
-	sg = [[METSubGroup alloc]
-					   initWithName:@"Gallente"
-					   andTypes:gallente
-					   forMetaGroup:NullType
-					   withRace:Gallente];
-	[subGroups addObject:sg];
-	[sg release];
-	}
-    	
-	//amarr
-	if([amarr count] > 0){
-	sg = [[METSubGroup alloc]
-					   initWithName:@"Amarr"
-					   andTypes:amarr
-					   forMetaGroup:NullType
-					   withRace:Amarr];
-	[subGroups addObject:sg];
-	[sg release];
-	}
-    	
-	//Minmatar
-	if([minmatar count] > 0){
-	sg = [[METSubGroup alloc]
-					   initWithName:@"Minmatar"
-					   andTypes:minmatar
-					   forMetaGroup:NullType
-					   withRace:Minmatar];
-	[subGroups addObject:sg];
-	[sg release];
-	}
-        
-	//ORE
-	if( [ore count] > 0 )
-    {
-        sg = [[METSubGroup alloc]
-              initWithName:@"ORE"
-              andTypes:ore
-              forMetaGroup:NullType
-              withRace:ORE];
-        [subGroups addObject:sg];
-        [sg release];
-	}
-    */
 }
 
 -(CCPGroup*) initWithGroup:(NSInteger)gID

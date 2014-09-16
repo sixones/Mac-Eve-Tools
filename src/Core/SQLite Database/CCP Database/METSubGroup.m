@@ -43,6 +43,13 @@
 	return self;
 }
 
+-(void)dealloc
+{
+    [groupName release];
+    [types release];
+    [super dealloc];
+}
+
 -(NSInteger) typeCount
 {
 	return [types count];
