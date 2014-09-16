@@ -192,6 +192,7 @@
     {
         menu = [[NSMenu alloc] init];
         [[table headerView] setMenu:menu];
+        [menu release];
     }
     
     //loop through columns, creating a menu item for each

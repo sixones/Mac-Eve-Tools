@@ -226,7 +226,7 @@ menuForTableColumnItem:(NSTableColumn*)column
 		 writeItems:(NSArray *)items 
 	   toPasteboard:(NSPasteboard *)pboard
 {			
-	NSMutableArray *array = [[NSMutableArray alloc]init];
+	NSMutableArray *array = [NSMutableArray array];
 	
 	//FIXME: TODO: type could also be a CCPGroup item
 	
@@ -251,7 +251,6 @@ menuForTableColumnItem:(NSTableColumn*)column
 	
 	[archiver release];
 	[data release];
-	[array release];
 	
 	return YES;
 }

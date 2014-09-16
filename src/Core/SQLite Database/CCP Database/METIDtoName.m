@@ -199,7 +199,7 @@
         
 		if( xmlStrcmp(cur_node->name,(xmlChar*)"row") == 0 )
         {
-            NSInteger characterID;
+            NSInteger characterID = 0;
             NSString *name = nil;
             
             for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )

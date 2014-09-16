@@ -33,7 +33,7 @@
 		return NO;
 	}
 	
-	rc = sqlite3_bind_int64(read_skill_stmt,1,planId);
+	sqlite3_bind_int64(read_skill_stmt,1,planId);
 	
 	NSMutableArray *array = [[NSMutableArray alloc]init];
 	
@@ -63,12 +63,14 @@
 	int rc;
 	
 	rc = sqlite3_exec(db,delete_overview,NULL,NULL,&errmsg);
-	if(errmsg != NULL){
+	if( (rc != SQLITE_OK) || (errmsg != NULL) )
+    {
 		[self logError:errmsg];
 		return NO;
 	}
 	rc = sqlite3_exec(db,delete_skill_plan,NULL,NULL,&errmsg);
-	if(errmsg != NULL){
+	if( (rc != SQLITE_OK) || (errmsg != NULL) )
+    {
 		[self logError:errmsg];
 		return NO;
 	}
@@ -236,14 +238,19 @@
 	NSInteger skillCount = [plan skillCount];
 	
 	rc = sqlite3_prepare_v2(db,insert_skill,(int)sizeof(insert_skill),&insert_skill_stmt,NULL);
-	
-	rc = sqlite3_bind_int64(insert_skill_stmt,1,planId);
+	if( rc != SQLITE_OK )
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return NO;
+    }
+    
+	sqlite3_bind_int64(insert_skill_stmt,1,planId);
 	
 	for(NSInteger i = 0; i< skillCount; i++){
 		SkillPair *sp = [plan skillAtIndex:i];
-		rc = sqlite3_bind_nsint(insert_skill_stmt,2,i);
-		rc = sqlite3_bind_nsint(insert_skill_stmt,3,[[sp typeID]integerValue]);
-		rc = sqlite3_bind_nsint(insert_skill_stmt,4,[sp skillLevel]);
+		sqlite3_bind_nsint(insert_skill_stmt,2,i);
+		sqlite3_bind_nsint(insert_skill_stmt,3,[[sp typeID]integerValue]);
+		sqlite3_bind_nsint(insert_skill_stmt,4,[sp skillLevel]);
 		
 		if((rc = sqlite3_step(insert_skill_stmt)) != SQLITE_DONE){
 			NSLog(@"sqlite error inserting skill plan");
@@ -266,13 +273,18 @@
 	int rc;
 	
 	rc = sqlite3_prepare_v2(db,rename_plan,(int)sizeof(rename_plan),&rename_stmt,NULL);
-	
+    if( rc != SQLITE_OK )
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return NO;
+    }
+
 	NSString *planName = [plan planName];
 	
-	rc = sqlite3_bind_text(rename_stmt,1,[planName UTF8String],
+	sqlite3_bind_text(rename_stmt,1,[planName UTF8String],
 						   (int)[planName lengthOfBytesUsingEncoding:NSUTF8StringEncoding],
 						   NULL);
-	rc = sqlite3_bind_nsint(rename_stmt,2,[plan planId]);
+	sqlite3_bind_nsint(rename_stmt,2,[plan planId]);
 	
 	if((rc = sqlite3_step(rename_stmt)) != SQLITE_DONE){
 		NSLog(@"Error renaming skill plan");

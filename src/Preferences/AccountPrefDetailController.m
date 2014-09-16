@@ -36,7 +36,7 @@
 - (void) dealloc
 {
 	[self removeObserver:self forKeyPath:@"account"];
-	[self.account release];
+	[account release];
 	[super dealloc];
 }
 

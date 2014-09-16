@@ -51,7 +51,7 @@ static GlobalData *_privateDataSingleton = nil;
 	self = [super init];
     _privateDataSingleton = self;
 	 
-	self.database = [[CCPDatabase alloc] initWithPath:[[NSUserDefaults standardUserDefaults] stringForKey:UD_ITEM_DB_PATH]];
+	database = [[CCPDatabase alloc] initWithPath:[[NSUserDefaults standardUserDefaults] stringForKey:UD_ITEM_DB_PATH]];
 	
     SkillTree *st = [database buildSkillTree];
 	CertTree *ct = [database buildCertTree];
@@ -68,12 +68,12 @@ static GlobalData *_privateDataSingleton = nil;
 		
 	[NSDateFormatter setDefaultFormatterBehavior:NSDateFormatterBehavior10_4];
 	
-	self.dateFormatter = [[NSDateFormatter alloc]init];
-	[self.dateFormatter setDateStyle:NSDateFormatterShortStyle];
-	[self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+	dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateStyle:NSDateFormatterShortStyle];
+	[dateFormatter setTimeStyle:NSDateFormatterShortStyle];
 	
-	self.skillTree = st;	
-	self.certTree = ct;
+	skillTree = [st retain];
+	certTree = [ct retain];
 		
     return self;
 }

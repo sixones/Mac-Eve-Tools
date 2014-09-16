@@ -178,8 +178,7 @@
 
 -(void) serverPlayerCount:(NSInteger)playerCount
 {
-	NSMutableString *str = [[NSMutableString alloc] init];
-    [str appendString: @"Tranquility"];
+	NSMutableString *str = [NSMutableString stringWithString:@"Tranquility"];
     
 	if(playerCount > 0){        
         NSNumberFormatter *countFormatter = [[NSNumberFormatter alloc] init];
@@ -455,6 +454,7 @@
     
     METConquerableStations *stat = [[METConquerableStations alloc] init];
     [stat reload:self];
+    [stat release];
 }
 
 -(void) setAsActiveView:(id<METPluggableView>)mvc
@@ -644,7 +644,7 @@
 
 - (void) openStatusWindowAt: (NSPoint) point {
     if (statusWindow == nil) {
-        StatusItemViewController *statusController = [[StatusItemViewController alloc] initWithNibName: @"StatusItemView" bundle: nil];
+        StatusItemViewController *statusController = [[[StatusItemViewController alloc] initWithNibName: @"StatusItemView" bundle: nil] autorelease];
         [statusController attachMainController: self];
         [statusController setCharacter: currentCharacter];
                 
@@ -834,6 +834,7 @@
     DBManager *manager = [[DBManager alloc] init];
     
     [manager checkForUpdate];
+    [manager release];
 }
 
 -(void) newDatabaseAvailable:(DBManager*)manager status:(BOOL)status

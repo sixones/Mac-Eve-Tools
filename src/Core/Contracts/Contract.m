@@ -343,7 +343,7 @@
 		if( xmlStrcmp(cur_node->name,(xmlChar*)"row") == 0 )
         {
 //            <row recordID="1119936138" typeID="21896" quantity="113" singleton="0" included="1" />
-            ContractItem *item = [[ContractItem alloc] init];
+            ContractItem *item = [[[ContractItem alloc] init] autorelease];
 
             for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )
             {

@@ -37,7 +37,7 @@
 		[self.columnList removeAllObjects];
 	}
 	else {
-		self.columnList = [[NSMutableArray alloc] init];
+		self.columnList = [NSMutableArray array];
 	}
 
 	[self.columnList addObjectsFromArray:[[ColumnConfigManager manager] columns]];
@@ -53,7 +53,7 @@
 
 -(void)dealloc
 {
-	[self.columnList release];
+	[columnList release];
 	[super dealloc];
 }
 

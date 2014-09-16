@@ -10,12 +10,12 @@
 #import "MBPreferencesController.h"
 
 @interface SkillPlannerPrefViewController : NSViewController <MBPreferencesModule, NSTableViewDataSource, NSTableViewDelegate> {
-	IBOutlet NSMutableArray *columnList; //The ordered list of columns.
+    NSMutableArray *columnList; //The ordered list of columns.
 	IBOutlet NSTableView *columnTable;
 	IBOutlet NSButton *defaultButton;
 }
 
-@property (assign) IBOutlet NSMutableArray *columnList; //The ordered list of columns.
+@property (retain) NSMutableArray *columnList; //The ordered list of columns.
 @property (assign) IBOutlet NSTableView *columnTable;
 @property (assign) IBOutlet NSButton *defaultButton;
 

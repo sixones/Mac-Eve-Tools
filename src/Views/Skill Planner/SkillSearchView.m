@@ -204,7 +204,7 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
         {
             [ShipDetailsWindowController displayShip:item forCharacter:[delegate character]];
         } else {
-            [ModuleDetailsWindowController displayShip:item forCharacter:[delegate character]];
+            [ModuleDetailsWindowController displayModule:item forCharacter:[delegate character]];
         }
 	} else if([item isKindOfClass:[Cert class]]) {
 		[CertDetailsWindowController displayWindowForCert:item character:[delegate character]];

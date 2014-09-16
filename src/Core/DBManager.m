@@ -263,7 +263,6 @@
 	
 	rc = sqlite3_open([path fileSystemRepresentation],&db);
 	if(rc != SQLITE_OK){
-		currentVersion = -1;
 		sqlite3_close(db);
 		return -1;
 	}
