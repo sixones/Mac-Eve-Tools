@@ -46,107 +46,33 @@
 
 -(void) buildSubGroups:(NSArray*)typeArray
 {
-	/*group each item by faction, and filter by metaGroup*/
-	
-	NSMutableArray *caldari = [[[NSMutableArray alloc]init]autorelease];
-	NSMutableArray *amarr = [[[NSMutableArray alloc]init]autorelease];
-	NSMutableArray *minmatar = [[[NSMutableArray alloc]init]autorelease];
-	NSMutableArray *gallente = [[[NSMutableArray alloc]init]autorelease];
-	NSMutableArray *pirate = [[[NSMutableArray alloc]init]autorelease];
-	
-	for(CCPType *type in types){
-		if([type isPirateShip]){
-			[pirate addObject:type];
-		}else{
-			switch([type raceID]){
-				case Caldari:
-					[caldari addObject:type];
-					break;
-				case Gallente:
-					[gallente addObject:type];
-					break;
-				case Amarr:
-					[amarr addObject:type];
-					break;
-				case Minmatar:
-					[minmatar addObject:type];
-					break;
-			}	
-		}
+    NSMutableDictionary *subGroupsTemp = [NSMutableDictionary dictionary];
+    
+	for(CCPType *type in types)
+    {
+        NSString *raceName = [database nameForRace:[type raceID]];
+        if( raceName )
+        {
+            METSubGroup *subgroup = [subGroupsTemp objectForKey:raceName];
+            if( !subgroup )
+            {
+                subgroup = [[METSubGroup alloc]
+                            initWithName:raceName
+                            andTypes:nil
+                            forMetaGroup:NullType
+                            withRace:[type raceID]];
+                [subGroupsTemp setObject:subgroup forKey:raceName];
+            }
+            [subgroup addType:type];
+        }
+        else
+        {
+            NSLog( @"Unknown race ID: %ld", (long)[type raceID] );
+        }
 	}
 	
 	[subGroups release];
-	subGroups = [[NSMutableArray alloc]initWithCapacity:5];
-	
-	
-	/*this is ugly shit. rewrite this later.*/
-	
-	METSubGroup *sg;
-    
-	/*pirate*/
-	if([pirate count] > 0){
-	sg = [[METSubGroup alloc]
-					   initWithName:@"Faction"
-					   andTypes:pirate
-					   forMetaGroup:NullType
-					   withRace:Pirate];
-	[subGroups addObject:sg];
-	[sg release];
-	}
-    
-    NSLog(@"Pirate: %ld", [pirate count]);
-    
-	//caldari
-	if([caldari count] > 0){
-	sg = [[METSubGroup alloc]
-					   initWithName:@"Caldari"
-					   andTypes:caldari
-					   forMetaGroup:NullType
-					   withRace:Caldari];
-	[subGroups addObject:sg];
-	[sg release];
-	}
-    
-    NSLog(@"Caldari: %ld", [caldari count]);
-    
-	//gallente
-	if([gallente count] > 0){
-	sg = [[METSubGroup alloc]
-					   initWithName:@"Gallente"
-					   andTypes:gallente
-					   forMetaGroup:NullType
-					   withRace:Gallente];
-	[subGroups addObject:sg];
-	[sg release];
-	}
-    
-    NSLog(@"Gallente: %ld", [gallente count]);
-	
-	//amarr
-	if([amarr count] > 0){
-	sg = [[METSubGroup alloc]
-					   initWithName:@"Amarr"
-					   andTypes:amarr
-					   forMetaGroup:NullType
-					   withRace:Amarr];
-	[subGroups addObject:sg];
-	[sg release];
-	}
-    
-    NSLog(@"Amarr: %ld", [amarr count]);
-	
-	//Minmatar
-	if([minmatar count] > 0){
-	sg = [[METSubGroup alloc]
-					   initWithName:@"Minmatar"
-					   andTypes:minmatar
-					   forMetaGroup:NullType
-					   withRace:Minmatar];
-	[subGroups addObject:sg];
-	[sg release];
-	}
-    
-    NSLog(@"Minmatar: %ld", [minmatar count]);
+	subGroups = [[NSMutableArray alloc] initWithArray:[subGroupsTemp allValues]];
 }
 
 -(CCPGroup*) initWithGroup:(NSInteger)gID

@@ -362,8 +362,7 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 {
     // remember the currently selected plan, then re-select it after sorting
 //    NSIndexSet *current = [tableView selectedRowIndexes];
-    //NSArray *newDescriptors = [_tableView sortDescriptors];
-    //[character sortSkillPlansUsingDescriptors:newDescriptors];
+    [pvDatasource sortSkillsUsingDescriptors:[_tableView sortDescriptors]];
     [_tableView reloadData];
 //    if( current )
 //    {
@@ -374,9 +373,10 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 
 -(void)resetSorting:(id)sender
 {
-    NSSortDescriptor *manual = [[NSSortDescriptor alloc] initWithKey:@"planOrder" ascending:YES];
+    NSSortDescriptor *manual = [[NSSortDescriptor alloc] initWithKey:@"manual" ascending:YES];
     [tableView setSortDescriptors:[NSArray arrayWithObject:manual]];
-    [self tableView:tableView sortDescriptorsDidChange:nil];
+    //[self tableView:tableView sortDescriptorsDidChange:nil];
+    [tableView reloadData];
 }
 
 @end

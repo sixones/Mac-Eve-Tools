@@ -29,23 +29,23 @@
  */
 
 @interface METSubGroup : NSObject {
-	NSArray *types; //array of type objects
+	NSMutableArray *types; //array of type objects
 	NSString *groupName; //name of the group;
 	CCPMetaGroup metaGroup;
-	CCPRace race;
+	NSInteger race; // From the chrRaces table
 }
 
 @property (readonly,nonatomic) NSString* groupName;
 @property (readonly,nonatomic) CCPMetaGroup metaGroup;
-@property (readonly,nonatomic) CCPRace race;
+@property (readonly,nonatomic) NSInteger race;
 
 -(id) initWithName:(NSString*)name 
 		  andTypes:(NSArray*)array 
 	  forMetaGroup:(CCPMetaGroup)group 
-		  withRace:(CCPRace)race;
+		  withRace:(NSInteger)race;
 
 -(NSInteger) typeCount;
 -(CCPType*) typeAtIndex:(NSInteger)index;
 
-
+- (void)addType:(CCPType *)type;
 @end

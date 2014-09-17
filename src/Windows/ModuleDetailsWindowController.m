@@ -33,6 +33,10 @@
 #import "SkillPlan.h"
 #import "Helpers.h"
 
+@interface ModuleDetailsWindowController()
+-(ModuleDetailsWindowController*)initWithType:(CCPType*)type forCharacter:(Character*)ch;
+@end
+
 @implementation ModuleDetailsWindowController
 
 -(void)awakeFromNib
@@ -68,18 +72,20 @@
 		character = [ch retain];
 		down = nil;
 		
-		//I think the compiler is on crack.  the warning given here makes no sense.
 		shipAttrDS = [[ShipAttributeDatasource alloc]initWithShip:ship forCharacter:character];
 		shipPreDS = [[SkillPrerequisiteDatasource alloc]initWithSkill:[ship prereqs] forCharacter:character];
 	}
 	return self;
 }
 
-+(void) displayShip:(CCPType*)type forCharacter:(Character*)ch
++(void) displayModule:(CCPType*)type forCharacter:(Character*)ch
 {
+    // Suppress the clang analyzer warning. There's probably a better way to do this
+#ifndef __clang_analyzer__
 	ModuleDetailsWindowController *wc = [[ModuleDetailsWindowController alloc]initWithType:type forCharacter:ch];
 	
 	[[wc window]makeKeyAndOrderFront:nil];
+#endif
 }
 
 -(void) setLabels
@@ -96,7 +102,7 @@
     [description appendString: [ship typeDescription]];
     
     NSData *htmlDescriptionData = [description dataUsingEncoding:NSUTF8StringEncoding];
-    NSAttributedString *htmlDescription = [[NSAttributedString alloc] initWithHTML: htmlDescriptionData baseURL: NULL documentAttributes: NULL];
+    NSAttributedString *htmlDescription = [[[NSAttributedString alloc] initWithHTML: htmlDescriptionData baseURL: NULL documentAttributes: NULL] autorelease];
 	
 	[[shipDescription textStorage] setAttributedString: htmlDescription];
 }

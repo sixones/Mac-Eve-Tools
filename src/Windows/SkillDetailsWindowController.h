@@ -57,14 +57,8 @@
 	Skill *skill;
 	Character *character;
 }
-/*
-@property (readwrite,retain,nonatomic) Skill* skill;
-@property (readwrite,retain,nonatomic) Character *character;
-*/
 
 +(void) displayWindowForTypeID:(NSNumber*)s forCharacter:(Character*)c;
 +(void) displayWindowForSkill:(Skill*)s forCharacter:(Character*)c;
-
-//-(void) setSkill:(Skill*)s forCharacter:(Character*)c;
 
 @end

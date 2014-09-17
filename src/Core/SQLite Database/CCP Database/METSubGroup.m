@@ -29,15 +29,25 @@
 -(id) initWithName:(NSString*)name 
 		  andTypes:(NSArray*)array 
 	  forMetaGroup:(CCPMetaGroup)group
-		  withRace:(CCPRace)cRace
+		  withRace:(NSInteger)cRace
 {
 	if(self = [super init]){
 		groupName = [name retain];
-		types = [array retain];
+        if( array )
+            types = [[NSMutableArray alloc] initWithArray:array];
+        else
+            types = [[NSMutableArray alloc] init];
 		metaGroup = group;
 		race = cRace;
 	}
 	return self;
+}
+
+-(void)dealloc
+{
+    [groupName release];
+    [types release];
+    [super dealloc];
 }
 
 -(NSInteger) typeCount
@@ -48,6 +58,11 @@
 -(CCPType*) typeAtIndex:(NSInteger)index
 {
 	return [types objectAtIndex:index];
+}
+
+- (void)addType:(CCPType *)type
+{
+    [types addObject:type];
 }
 
 @end

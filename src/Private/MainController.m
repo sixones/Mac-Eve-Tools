@@ -176,8 +176,7 @@
 
 -(void) serverPlayerCount:(NSInteger)playerCount
 {
-	NSMutableString *str = [[NSMutableString alloc] init];
-    [str appendString: @"Tranquility"];
+	NSMutableString *str = [NSMutableString stringWithString:@"Tranquility"];
     
 	if(playerCount > 0){        
         NSNumberFormatter *countFormatter = [[NSNumberFormatter alloc] init];
@@ -453,6 +452,7 @@
     
     METConquerableStations *stat = [[METConquerableStations alloc] init];
     [stat reload:self];
+    [stat release];
 }
 
 -(void) setAsActiveView:(id<METPluggableView>)mvc
@@ -537,8 +537,6 @@
 
 -(void) awakeFromNib
 {
-	NSLog(@"Awoken from nib");
-	
 	[NSDateFormatter setDefaultFormatterBehavior:NSDateFormatterBehavior10_4];
 	
 	/* setting default preferences values */
@@ -561,7 +559,7 @@
 	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.xml" forKey:UD_DB_UPDATE_URL];
 	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.sql.bz2" forKey:UD_DB_SQL_URL];
 	
-	[prefDefaults setObject:[NSNumber numberWithInt:14] forKey:UD_DATABASE_MIN_VERSION];
+	[prefDefaults setObject:[NSNumber numberWithInt:16] forKey:UD_DATABASE_MIN_VERSION];
 	 	
 	[[NSUserDefaults standardUserDefaults] registerDefaults:prefDefaults];
 	[prefDefaults release];
@@ -640,7 +638,7 @@
 
 - (void) openStatusWindowAt: (NSPoint) point {
     if (statusWindow == nil) {
-        StatusItemViewController *statusController = [[StatusItemViewController alloc] initWithNibName: @"StatusItemView" bundle: nil];
+        StatusItemViewController *statusController = [[[StatusItemViewController alloc] initWithNibName: @"StatusItemView" bundle: nil] autorelease];
         [statusController attachMainController: self];
         [statusController setCharacter: currentCharacter];
                 
@@ -830,6 +828,7 @@
     DBManager *manager = [[DBManager alloc] init];
     
     [manager checkForUpdate];
+    [manager release];
 }
 
 -(void) newDatabaseAvailable:(DBManager*)manager status:(BOOL)status

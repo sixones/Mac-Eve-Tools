@@ -17,8 +17,8 @@
 	
 	NSInteger categoryCount; //Number of unique Categories.
 	
-	id *dependSkillArray;
-	id *categoryNameArray;
+	NSArray *dependSkillArray;
+	NSArray *categoryNameArray;
 	
 	Character *character;
 }

@@ -54,6 +54,6 @@
 
 
 /*Display a ship, given the typeID of the ship*/
-+(void) displayShip:(CCPType*)type forCharacter:(Character*)ch;
++(void) displayModule:(CCPType*)type forCharacter:(Character*)ch;
 
 @end

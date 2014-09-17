@@ -23,12 +23,10 @@
 		
 		enabledTypes = [[db dependenciesForSkillByCategory:typeID]retain];
 		
-		if(enabledTypes != nil){
-			NSInteger count = [enabledTypes count];
-			dependSkillArray = malloc(sizeof(NSArray*) * count);
-			categoryNameArray = malloc(sizeof(NSString*) * count);
-			
-			[enabledTypes getObjects:dependSkillArray andKeys:categoryNameArray];
+		if(enabledTypes != nil)
+        {
+			dependSkillArray = [[enabledTypes allValues] retain];
+			categoryNameArray = [[enabledTypes allKeys] retain];
 		}
 		
 		character = [ch retain];
@@ -38,8 +36,8 @@
 
 -(void)dealloc
 {
-	free(dependSkillArray);
-	free(categoryNameArray);
+	[dependSkillArray release];
+	[categoryNameArray release];
 	[enabledTypes release];
 	[character release];
 	
@@ -59,7 +57,7 @@
 	}
 	
 	NSInteger index = [item integerValue];
-	NSArray *ary = dependSkillArray[index];
+	NSArray *ary = [dependSkillArray objectAtIndex:index];
 	return [ary count];
 }
 
@@ -72,7 +70,7 @@
 	}
 	
 	NSInteger parentIndex = [item integerValue];
-	NSArray *dskill = dependSkillArray[parentIndex];
+	NSArray *dskill = [dependSkillArray objectAtIndex:parentIndex];
 	return [dskill objectAtIndex:index];
 }
 
@@ -82,7 +80,7 @@ objectValueForTableColumn:(NSTableColumn *)tableColumn
 {
 	if([item isKindOfClass:[NSNumber class]]){
 		if([[tableColumn identifier]isEqualToString:COL_DEP_NAME]){
-			return categoryNameArray[[item integerValue]];
+			return [categoryNameArray objectAtIndex:[item integerValue]];
 		}
 	}
 	

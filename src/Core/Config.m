@@ -44,7 +44,7 @@ static Config *sharedSingletonCfg = nil;
 	self = [super init];
     sharedSingletonCfg = self;
 	
-    self.accounts = [[NSMutableArray alloc]init]; /*array of Account objects */
+    accounts = [[NSMutableArray alloc]init]; /*array of Account objects */
 	[self readConfig];
 	
     return self;
@@ -327,7 +327,7 @@ static Config *sharedSingletonCfg = nil;
 			[self.accounts removeAllObjects];
 		}
 		else {
-			self.accounts = [[NSMutableArray alloc] init];
+			self.accounts = [NSMutableArray array];
 		}
 	
 		[self.accounts addObjectsFromArray:array];

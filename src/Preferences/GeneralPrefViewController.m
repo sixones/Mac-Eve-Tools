@@ -18,9 +18,10 @@
 @implementation GeneralPrefViewController
 
 - (GeneralPrefViewController *) initWithNibNameAndController: (NSString*) nibName bundle: (NSBundle*) bundle controller: (MainController *) mainController {
-    [self initWithNibName: nibName bundle: bundle];
-    
-    _mainController = mainController;
+    if( self = [self initWithNibName: nibName bundle: bundle] )
+    {
+        _mainController = mainController;
+    }
     
     return self;
 }
@@ -55,7 +56,3 @@
 }
 
 @end
-
-/*
-
-*/

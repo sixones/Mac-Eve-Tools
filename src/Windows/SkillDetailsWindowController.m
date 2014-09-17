@@ -32,9 +32,6 @@
 
 @implementation SkillDetailsWindowController
 
-//@synthesize character;
-//@synthesize skill;
-
 -(void) awakeFromNib
 {
 	[skillPrerequisites setIndentationMarkerFollowsCell:YES];
@@ -57,12 +54,13 @@
 
 +(void) displayWindowForSkill:(Skill*)s forCharacter:(Character*)c
 {
-	/*Not a leak*/
+    // Suppress the clang analyzer warning. There's probably a better way to do this
+#ifndef __clang_analyzer__
 	SkillDetailsWindowController *wc = [[SkillDetailsWindowController alloc]
 										 initWithSkill:s forCharacter:c];
-	//[wc setSkill:s forCharacter:c];
     
     [[wc window]makeKeyAndOrderFront:nil];
+#endif
 }
 
 +(void) displayWindowForTypeID:(NSNumber*)tID forCharacter:(Character*)c

@@ -755,6 +755,7 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
         [trait setUnitString:unitString];
 
         [traits addObject:trait];
+        [trait release];
 	}
 	
 	sqlite3_finalize(read_stmt);
@@ -1176,7 +1177,11 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
     sqlite3_stmt *insert_attr_stmt;
     
     rc = sqlite3_prepare_v2( db, insert_attr, (int)sizeof(insert_attr), &insert_attr_stmt, NULL);
-    
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+		return nil;
+	}
+
 	sqlite3_bind_nsint( insert_attr_stmt, 6, attrNum );
     
 	while( sqlite3_step(read_stmt) == SQLITE_ROW )
@@ -1187,11 +1192,11 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
 		NSString *displayName = sqlite3_column_nsstr(read_stmt,3);
 		NSString *attrName = sqlite3_column_nsstr(read_stmt,4);
         
-        rc = sqlite3_bind_nsint( insert_attr_stmt, 1, attrID );
-        rc = sqlite3_bind_nsint( insert_attr_stmt, 2, unitID );
-        rc = sqlite3_bind_nsint( insert_attr_stmt, 3, iconID );
-        rc = sqlite3_bind_text( insert_attr_stmt, 4, [displayName UTF8String], (int)[displayName length], NULL );
-        rc = sqlite3_bind_text( insert_attr_stmt, 5, [attrName UTF8String], (int)[attrName length], NULL );
+        sqlite3_bind_nsint( insert_attr_stmt, 1, attrID );
+        sqlite3_bind_nsint( insert_attr_stmt, 2, unitID );
+        sqlite3_bind_nsint( insert_attr_stmt, 3, iconID );
+        sqlite3_bind_text( insert_attr_stmt, 4, [displayName UTF8String], (int)[displayName length], NULL );
+        sqlite3_bind_text( insert_attr_stmt, 5, [attrName UTF8String], (int)[attrName length], NULL );
         
         if( (rc = sqlite3_step(insert_attr_stmt)) != SQLITE_DONE )
         {
@@ -1374,7 +1379,7 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
             NSLog( @"typeID count %d, insert Count %ld", cntID, [self performCount:"SELECT COUNT(*) FROM typePrerequisites;"] );
         }
         
-        rc = sqlite3_bind_nsint( skillStatement, 1, typeID );
+        sqlite3_bind_nsint( skillStatement, 1, typeID );
         
         int i = 0;
         while( sqlite3_step(skillStatement) == SQLITE_ROW )
@@ -1389,10 +1394,10 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
             NSInteger skillTypeID = sqlite3_column_nsint(skillStatement,1);
             NSInteger skillLevel = sqlite3_column_nsint(skillStatement,2);
             
-            rc = sqlite3_bind_nsint( insert_attr_stmt, 1, typeID2 );
-            rc = sqlite3_bind_nsint( insert_attr_stmt, 2, skillTypeID );
-            rc = sqlite3_bind_nsint( insert_attr_stmt, 3, skillLevel );
-            rc = sqlite3_bind_nsint( insert_attr_stmt, 4, i );
+            sqlite3_bind_nsint( insert_attr_stmt, 1, typeID2 );
+            sqlite3_bind_nsint( insert_attr_stmt, 2, skillTypeID );
+            sqlite3_bind_nsint( insert_attr_stmt, 3, skillLevel );
+            sqlite3_bind_nsint( insert_attr_stmt, 4, i );
             
             if( (rc = sqlite3_step(insert_attr_stmt)) != SQLITE_DONE )
             {
@@ -1433,9 +1438,9 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
 		return;
 	}
 
-	rc = sqlite3_bind_nsint( insert_attr_stmt, 1, stationID );
-    rc = sqlite3_bind_nsint( insert_attr_stmt, 2, solarSystemID );
-    rc = sqlite3_bind_text( insert_attr_stmt, 3, [stationName UTF8String], (int)[stationName length], NULL );
+	sqlite3_bind_nsint( insert_attr_stmt, 1, stationID );
+    sqlite3_bind_nsint( insert_attr_stmt, 2, solarSystemID );
+    sqlite3_bind_text( insert_attr_stmt, 3, [stationName UTF8String], (int)[stationName length], NULL );
     
     if( (rc = sqlite3_step(insert_attr_stmt)) != SQLITE_DONE )
     {
@@ -1524,8 +1529,8 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
         }
 	}
     
-	rc = sqlite3_bind_nsint( insert_attr_stmt, 1, characterID );
-    rc = sqlite3_bind_text( insert_attr_stmt, 2, [name UTF8String], (int)[name length], NULL );
+	sqlite3_bind_nsint( insert_attr_stmt, 1, characterID );
+    sqlite3_bind_text( insert_attr_stmt, 2, [name UTF8String], (int)[name length], NULL );
     
     if( (rc = sqlite3_step(insert_attr_stmt)) != SQLITE_DONE )
     {
@@ -1564,6 +1569,37 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
 	sqlite3_finalize(read_stmt);
 	
 	return characterName;
+}
+
+- (NSString *)nameForRace:(NSInteger)raceID
+{
+    // first make sure the staStation table exists
+	const char query[] =
+    "SELECT raceName "
+    "FROM chrRaces "
+    "WHERE raceID = ?;";
+	sqlite3_stmt *read_stmt;
+	int rc;
+	
+	rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+	if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+		return nil;
+	}
+    
+	sqlite3_bind_nsint(read_stmt,1,raceID);
+	
+    NSString *raceName = nil;
+    
+    if( (rc = sqlite3_step(read_stmt)) != SQLITE_DONE )
+    {
+		
+		raceName = sqlite3_column_nsstr(read_stmt,0);
+	}
+	
+	sqlite3_finalize(read_stmt);
+	
+	return raceName;
 }
 
 @end

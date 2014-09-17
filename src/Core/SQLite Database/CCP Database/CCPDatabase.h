@@ -102,4 +102,6 @@
 
 // Traits for a given type ID. Return array may be empty. Currently only for ships, I think.
 -(NSArray *) traitsForTypeID:(NSInteger)typeID;
+
+- (NSString *)nameForRace:(NSInteger)raceID;
 @end

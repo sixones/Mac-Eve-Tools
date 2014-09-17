@@ -71,11 +71,8 @@
 
 -(void) main
 {
-	BOOL rc;
-	
-	rc = [self downloadXmlData:xmlDocUrl];
-	
-	if(!rc){
+	if( ![self downloadXmlData:xmlDocUrl] )
+    {
 		NSLog(@"Downloading error");
 		return;
 	}
@@ -83,7 +80,7 @@
 	NSString *fileName = [xmlDoc lastPathComponent];
 	NSString *filePath = [[self pendingDirectory]stringByAppendingFormat:@"/%@",fileName];
 	
-	rc = [self writeXmlDocument:filePath];
+	[self writeXmlDocument:filePath];
 }
 
 -(void) dealloc
