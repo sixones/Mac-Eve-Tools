@@ -290,7 +290,7 @@ static const long MarketOrdersMask = 4096;
 		NSLog(@"%@",getNodeText(result));
 		rc = NO;
         
-        NSRunAlertPanel(@"API Error",getNodeText(result),@"Close",nil,nil);
+        NSRunAlertPanel(@"API Error", @"%@",@"Close",nil,nil, getNodeText(result));
 	}
 	
 	xmlFreeDoc(doc);
@@ -301,7 +301,7 @@ static const long MarketOrdersMask = 4096;
 {
 	NSLog(@"Connection failed! (%@)",[xmlErrorMessage localizedDescription]);
 	
-	NSRunAlertPanel(@"API Connection Error",[xmlErrorMessage localizedDescription],@"Close",nil,nil);
+	NSRunAlertPanel(@"API Connection Error", @"%@",@"Close",nil,nil, [xmlErrorMessage localizedDescription]);
 }
 
 @end

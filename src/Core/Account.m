@@ -175,7 +175,7 @@
 		NSLog(@"%@",getNodeText(result));
 		rc = NO;
         
-        NSRunAlertPanel(@"API Error",getNodeText(result),@"Close",nil,nil);
+        NSRunAlertPanel(@"API Error",@"%@", @"Close",nil,nil, getNodeText(result) );
 	}
 	
 	xmlFreeDoc(doc);
@@ -186,7 +186,7 @@
 {
 	NSLog(@"Connection failed! (%@)",[xmlErrorMessage localizedDescription]);
 	
-	NSRunAlertPanel(@"API Connection Error",[xmlErrorMessage localizedDescription],@"Close",nil,nil);
+	NSRunAlertPanel(@"API Connection Error", @"%@",@"Close",nil,nil, [xmlErrorMessage localizedDescription]);
 }
 
 @end
