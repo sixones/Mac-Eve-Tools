@@ -1,8 +1,10 @@
 #! /usr/bin/python
 
 import re
+import sys
 from optparse import OptionParser
 from yaml import load, dump
+
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:

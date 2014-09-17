@@ -549,7 +549,7 @@
     // FIXME: should all be moved to compile definitions
 	[prefDefaults setObject:[@"~/Library/Application Support/Vitality" stringByExpandingTildeInPath] forKey:UD_ROOT_PATH];
 	[prefDefaults setObject:[[@"~/Library/Application Support/Vitality" stringByExpandingTildeInPath] stringByAppendingFormat:@"/database.sqlite"] forKey:UD_ITEM_DB_PATH];
-	[prefDefaults setObject:@"http://api.eve-online.com" forKey:UD_API_URL];
+	[prefDefaults setObject:@"https://api.eveonline.com" forKey:UD_API_URL];
 	[prefDefaults setObject:@"http://image.eveonline.com/Character/" forKey:UD_PICTURE_URL];
     [prefDefaults setObject:@"http://image.eveonline.com/" forKey:UD_IMAGE_URL];
 	

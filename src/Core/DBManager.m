@@ -136,7 +136,7 @@
 {
 	NSLog(@"Connection failed! (%@)",[xmlErrorMessage localizedDescription]);
 	
-	NSRunAlertPanel(@"Error Account XML",[xmlErrorMessage localizedDescription],@"Close",nil,nil);
+	NSRunAlertPanel(@"Error Account XML", @"%@",@"Close",nil,nil, [xmlErrorMessage localizedDescription]);
 }
 
 -(BOOL) xmlValidateData:(NSData*)xmlData xmlPath:(NSString*)path xmlDocName:(NSString*)docName

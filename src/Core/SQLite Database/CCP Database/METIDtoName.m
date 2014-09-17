@@ -74,7 +74,7 @@
     if( [validated count] > 250 )
     {
         NSLog( @"Too many character ID's. Skipping some" );
-        validated = [NSSet setWithArray:[[validated allObjects] subarrayWithRange:NSMakeRange(0,250)]];
+        return [NSSet setWithArray:[[validated allObjects] subarrayWithRange:NSMakeRange(0,250)]];
     }
     
     return validated;
