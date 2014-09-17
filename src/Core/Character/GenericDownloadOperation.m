@@ -42,7 +42,6 @@
 	
 	NSURLRequest *request = [[NSURLRequest alloc]initWithURL:url];
 	
-	NSLog(@"Downloading %@",urlPath);
 	NSData *data = [NSURLConnection sendSynchronousRequest:request 
 										 returningResponse:&response
 													 error:&error];

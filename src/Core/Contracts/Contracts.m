@@ -126,10 +126,6 @@
 			//NSLog(@"Could not create directory %@",pendingDir);
 			return;
 		}
-        else
-        {
-			//NSLog(@"Created directory %@",pendingDir);
-		}
 	}
 
 	XMLDownloadOperation *op = [[[XMLDownloadOperation alloc] init] autorelease];

@@ -144,7 +144,6 @@
 #pragma mark Table methods
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-	NSLog(@"found %ld chars",[self.account.characters count]);
 	return [self.account.characters count];
 }
 

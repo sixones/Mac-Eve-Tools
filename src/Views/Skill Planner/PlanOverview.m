@@ -580,7 +580,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 
 -(void)resetSorting:(id)sender
 {
-    NSSortDescriptor *manual = [[NSSortDescriptor alloc] initWithKey:@"planOrder" ascending:YES];
+    NSSortDescriptor *manual = [[[NSSortDescriptor alloc] initWithKey:@"planOrder" ascending:YES] autorelease];
     [tableView setSortDescriptors:[NSArray arrayWithObject:manual]];
     [self tableView:tableView sortDescriptorsDidChange:nil];
 }

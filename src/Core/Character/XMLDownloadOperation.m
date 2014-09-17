@@ -36,9 +36,7 @@
 	NSURLRequest *request = [[[NSURLRequest alloc]initWithURL:url]autorelease];
 	
 	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-	
-	NSLog(@"Downloading %@",url);
-	
+		
 	if(data == nil){
 		NSLog(@"Error downloading %@.  %@",fullDocUrl,[error description]);
 		xmlDownloadError = [error retain];
@@ -62,8 +60,6 @@
 	
 	if(!rc){
 		NSLog(@"Failed to write XML document %@",savePath);
-	}else{
-		NSLog(@"Wrote %lu bytes to %@",[xmlData length], savePath);
 	}
 	
 	return rc;

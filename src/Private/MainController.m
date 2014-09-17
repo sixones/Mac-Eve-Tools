@@ -214,8 +214,6 @@
 
 -(void) appWillTerminate:(NSNotification*)notification
 {
-	NSLog(@"Shutting down");	
-	
 	[monitor stopMonitoring];
 	[[self window] saveFrameUsingName:WINDOW_SAVE_NAME];
     [[[MBPreferencesController sharedController] moduleForIdentifier:@"AccountPrefView"] willBeClosed];

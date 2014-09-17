@@ -62,6 +62,7 @@
                             forMetaGroup:NullType
                             withRace:[type raceID]];
                 [subGroupsTemp setObject:subgroup forKey:raceName];
+                [subgroup release];
             }
             [subgroup addType:type];
         }

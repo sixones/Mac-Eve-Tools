@@ -237,8 +237,6 @@
 			if(![manager moveItemAtPath:fromDir toPath:toDir error:&error]){
 				NSLog(@"ERROR: Failed to move %@! (%@)",fileName,[error localizedDescription]);
 			}
-			
-			NSLog(@"Validated %@",pendingFile);
 		}
 	}
 	

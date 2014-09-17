@@ -231,10 +231,6 @@
             [self setLoading:NO];
 			return;
 		}
-        else
-        {
-			//NSLog(@"Created directory %@",pendingDir);
-		}
 	}
     
 	XMLDownloadOperation *op = [[[XMLDownloadOperation alloc] init] autorelease];

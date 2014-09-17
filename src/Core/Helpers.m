@@ -123,7 +123,6 @@ BOOL createDirectory(NSString *path)
 		if(![fm createDirectoryAtPath:path  withIntermediateDirectories:YES attributes:nil error:nil]){
 			NSLog(@"Could not create directory %@",path);
 		}else{
-			NSLog(@"Created directory %@",path);
 			rc = YES;
 		}
 	}

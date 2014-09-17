@@ -46,7 +46,6 @@
 	BOOL rc = NO;
 	
 	xmlPath = [path stringByAppendingFormat:@"/%@",[XMLAPI_CHAR_SHEET lastPathComponent]];
-	NSLog(@"Parsing %@",xmlPath);
 	
 	/*Parse CharacterSheet.xml.aspx*/
 	doc = xmlReadFile([xmlPath fileSystemRepresentation],NULL,0);
@@ -65,7 +64,6 @@
 	
 	/*parse the skill in training.*/
 	xmlPath = [path stringByAppendingFormat:@"/%@",[XMLAPI_CHAR_TRAINING lastPathComponent]];
-	NSLog(@"Parsing %@",xmlPath);
 	
 	doc = xmlReadFile([xmlPath fileSystemRepresentation],NULL,0);
 	if(doc == NULL){

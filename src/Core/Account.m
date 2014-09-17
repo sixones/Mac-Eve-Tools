@@ -157,7 +157,9 @@
 	}
 	
 	BOOL rc = [self loadXmlDocument];
-	
+    
+    NSLog(@"found %ld chars",[self.characters count]);
+
 	[delegate accountDidUpdate:self didSucceed:rc];
 }
 

@@ -96,8 +96,6 @@
 	if(! [fm fileExistsAtPath:[file stringByDeletingLastPathComponent] isDirectory:nil]){
 		if(![fm createDirectoryAtPath:[file stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil]){
 			NSLog(@"Could not create directory %@",[file stringByDeletingLastPathComponent]);
-		}else{
-			NSLog(@"Created directory %@",[file stringByDeletingLastPathComponent]);
 		}
 	}
 	
@@ -106,8 +104,6 @@
 	
 	if(!rc){
 		NSLog(@"Failed to write file %@",file);
-	}else{
-		NSLog(@"Wrote %lu bytes to %@",[data length],file);
 	}
 	
 	return rc;

@@ -127,8 +127,6 @@
 		  withIntermediateDirectories:YES attributes:nil error:nil]){
 			NSLog(@"Could not create directory %@",pendingDir);
 			return nil;
-		}else{
-			NSLog(@"Created directory %@",pendingDir);
 		}
 	}
 	

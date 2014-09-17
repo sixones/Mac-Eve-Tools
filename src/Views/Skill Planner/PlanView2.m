@@ -373,7 +373,7 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 
 -(void)resetSorting:(id)sender
 {
-    NSSortDescriptor *manual = [[NSSortDescriptor alloc] initWithKey:@"manual" ascending:YES];
+    NSSortDescriptor *manual = [[[NSSortDescriptor alloc] initWithKey:@"manual" ascending:YES] autorelease];
     [tableView setSortDescriptors:[NSArray arrayWithObject:manual]];
     //[self tableView:tableView sortDescriptorsDidChange:nil];
     [tableView reloadData];
