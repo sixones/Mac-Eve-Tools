@@ -214,8 +214,8 @@
 	
 	[character release];
 	character = [c retain];
-	[self refreshPlanView];
-    [self tableViewSelectionDidChange:nil]; // re-select the current plan to make sure the detail table is being displayed correctly
+    // this will reload the table while making sure the current sorting and selection is maintained
+    [self tableView:tableView sortDescriptorsDidChange:nil];
 }
 
 -(Character*) character
