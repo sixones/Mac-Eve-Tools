@@ -47,7 +47,9 @@
 	NSInteger planTrainingTime;
 	NSInteger planId;
     NSInteger planOrder;
-	BOOL dirty;	
+	BOOL dirty;
+    
+    NSArray *manualOrder; ///< A copy of the skillPlan with the skills in the original, un-sorted order
 }
 
 @property (readwrite,retain,nonatomic) NSString* planName;

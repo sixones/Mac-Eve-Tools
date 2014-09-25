@@ -175,5 +175,14 @@
 	/*given the start and finish skill point targets, find what percentage we have completed*/
 }
 
+- (NSString *) primary
+{
+    return strForAttrCode( [self primaryAttr] );
+}
+
+- (NSString *) secondary
+{
+    return strForAttrCode( [self secondaryAttr] );
+}
 
 @end

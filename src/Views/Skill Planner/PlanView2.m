@@ -136,8 +136,9 @@
     
     // TODO: it would be better if each plan remembered the last selected skill and we re-selected it
     [tableView deselectAll: self];
-    
-	[self refreshPlanView];
+    [self tableView:tableView sortDescriptorsDidChange:nil];
+
+//	[self refreshPlanView];
 }
 
 -(void) cellPlusButtonClick:(id)sender
@@ -373,8 +374,9 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 
 -(void)resetSorting:(id)sender
 {
-    NSSortDescriptor *manual = [[[NSSortDescriptor alloc] initWithKey:@"manual" ascending:YES] autorelease];
-    [tableView setSortDescriptors:[NSArray arrayWithObject:manual]];
+//    NSSortDescriptor *manual = [[[NSSortDescriptor alloc] initWithKey:@"manual" ascending:YES] autorelease];
+//    [tableView setSortDescriptors:[NSArray arrayWithObject:manual]];
+    [tableView setSortDescriptors:nil];
     //[self tableView:tableView sortDescriptorsDidChange:nil];
     [tableView reloadData];
 }

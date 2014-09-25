@@ -33,7 +33,7 @@
  returns zero if the skill does not exist
  */
 
--(void) addSkillToQueue:(NSNumber*)skill level:(NSInteger)level;
+-(void) addSkillToQueue:(NSNumber*)skill level:(NSInteger)level atFront:(BOOL)front;
 
 -(NSInteger) hasPrerequisiteSkill:(NSNumber*)typeID;
 -(NSInteger) hasPrerequisiteSkill:(NSNumber*)typeID beforeIndex:(NSInteger)index inPlan:(NSArray*)plan;
@@ -46,6 +46,8 @@
 
 -(void) insertTrainingSkill;
 
+- (void) updateManualOrder;
+- (void) restoreManualOrder;
 @end
 
 @implementation SkillPlan (SkillPlanPrivate)
@@ -53,23 +55,16 @@
 -(void) insertTrainingSkill
 {
 	/*if the character currently has a skill in training, then insert that at the front of the plan.*/
-	if([character integerForKey:CHAR_TRAINING_SKILLTRAINING] == 1){
-		/*a skill is being trained, return that for index 0*/
-		SkillPair *trainingSkill;
-		trainingSkill = [[SkillPair alloc]initWithSkill:[NSNumber numberWithInteger:[character integerForKey:CHAR_TRAINING_TYPEID]]
-												  level:[character integerForKey:CHAR_TRAINING_LEVEL]];
-		if([skillPlan count] == 0){
-			[skillPlan addObject:trainingSkill];
-		}else{
-			[skillPlan insertObject:trainingSkill atIndex:0];
-		}
-		[trainingSkill release];
-	}	
+	if([character integerForKey:CHAR_TRAINING_SKILLTRAINING] == 1)
+    {
+        [self addSkillToQueue:[NSNumber numberWithInteger:[character integerForKey:CHAR_TRAINING_TYPEID]] level:[character integerForKey:CHAR_TRAINING_LEVEL] atFront:YES];
+	}
 }
 
 -(void) removeSkillFromPlan:(SkillPair*)pair
 {
 	[skillPlan removeObject:pair];
+    [self updateManualOrder];
 }
 
 -(void) resetCache
@@ -80,11 +75,20 @@
 	[spHrArray removeAllObjects];
 }
 
--(void) addSkillToQueue:(NSNumber*)typeID level:(NSInteger)level
+-(void) addSkillToQueue:(NSNumber*)typeID level:(NSInteger)level atFront:(BOOL)front
 {
 	SkillPair *sp = [[SkillPair alloc]initWithSkill:typeID level:level];
-	[skillPlan addObject:sp];
+    
+    if( front && ([skillPlan count] != 0) )
+    {
+        [skillPlan insertObject:sp atIndex:0];
+    }
+    else
+    {
+        [skillPlan addObject:sp];
+    }
 	[sp release];
+    [self updateManualOrder];
 }
 
 /*
@@ -136,6 +140,19 @@
 	return level;
 }
 
+- (void) updateManualOrder
+{
+    if( manualOrder )
+        [manualOrder release];
+    manualOrder = [skillPlan copy];
+}
+
+- (void) restoreManualOrder
+{
+    [skillPlan release];
+    skillPlan = [[NSMutableArray alloc] initWithArray:manualOrder];
+}
+
 @end
 
 
@@ -185,7 +202,8 @@
 	[spHrArray release];
 	
 	[planName release];
-
+    [manualOrder release];
+    
 	[super dealloc];
 }
 
@@ -273,7 +291,7 @@ static NSDictionary *masterSkillSet = nil;;
 	
 	/*prerequisites have been satisfied. add skill at level*/
 	for(NSInteger i = currentLevel + 1; i <= skillLevel; i++){
-		[self addSkillToQueue:skillID level:i];
+		[self addSkillToQueue:skillID level:i atFront:NO];
 		//NSLog(@"Added %@ %ld to %@",skillID, skillLevel, planName);
 		skillsAdded++;
 	}
@@ -285,6 +303,7 @@ static NSDictionary *masterSkillSet = nil;;
 	NSInteger skillsAdded = [self privateAddSkillToPlan:skillID level:skillLevel];
 	if(skillsAdded > 0){
 		[self resetCache];
+        [self updateManualOrder];
 	}
 	return skillsAdded;
 }
@@ -299,6 +318,7 @@ static NSDictionary *masterSkillSet = nil;;
 	}
 	if(skillsAdded > 0){
 		[self resetCache];
+        [self updateManualOrder];
 	}
 }
 
@@ -306,7 +326,7 @@ static NSDictionary *masterSkillSet = nil;;
 /*for use by the database function that loads the skillplan from the database*/
 -(void) secretAddSkillToPlan:(NSNumber*)typeID level:(NSInteger)level
 {
-	[self addSkillToQueue:typeID level:level];
+	[self addSkillToQueue:typeID level:level atFront:NO];
 }
 
 
@@ -388,6 +408,7 @@ static NSDictionary *masterSkillSet = nil;;
 		[skillPlan release];
 		skillPlan = newPlan;
 		[self resetCache];
+        [self updateManualOrder];
 	}else{
 //		NSLog(@"new plan is invalid");
 		[newPlan release];
@@ -413,6 +434,7 @@ static NSDictionary *masterSkillSet = nil;;
 -(BOOL) removeSkillArrayFromPlan:(NSArray*)prereqArray
 {
 	[skillPlan removeObjectsInArray:prereqArray];
+    [self updateManualOrder];
 	[self resetCache];
 	return YES;
 }
@@ -608,6 +630,7 @@ static NSDictionary *masterSkillSet = nil;;
 		[skillPlan removeObjectsAtIndexes:index];
 		NSLog(@"remove %ld completed skills from plan",[index count]);
 		[self savePlan];
+        [self updateManualOrder];
 	}
 	
 	[index release];
@@ -764,6 +787,7 @@ static NSDictionary *masterSkillSet = nil;;
 		skillPlan = newPlan;
 		[self resetCache];
 		[self savePlan];
+        [self updateManualOrder];
 		return YES;
 	}else{
 		[newPlan release];
@@ -787,6 +811,7 @@ static NSDictionary *masterSkillSet = nil;;
 		skillPlan = newPlan;
 		[self resetCache];
 		[self savePlan];
+        [self updateManualOrder];
 		return YES;
 	}else{
 		[newPlan release];
@@ -825,12 +850,68 @@ static NSDictionary *masterSkillSet = nil;;
         {
             [skillPlan sortUsingDescriptors:[NSArray arrayWithObject:desc]];
         }
-        else if( [[desc key] isEqualToString:@"manual"] )
+        else if( [[desc key] isEqualToString:@"primary"] || [[desc key] isEqualToString:@"secondary"])
         {
-            // somehow revert to the last manual order
+            [skillPlan sortUsingComparator:^(id obj1, id obj2) {
+                Skill *s1 = [masterSkillSet objectForKey:[obj1 typeID]];
+                Skill *s2 = [masterSkillSet objectForKey:[obj2 typeID]];
+                NSString *attr1 = [s1 valueForKey:[desc key]];
+                NSString *attr2 = [s2 valueForKey:[desc key]];
+                
+                NSComparisonResult res = [attr1 compare:attr2];
+                if( NSOrderedSame == res )
+                    return res;
+                if( [desc ascending] )
+                    return res;
+                if( NSOrderedAscending == res )
+                    return NSOrderedDescending;
+                else
+                    return NSOrderedAscending;
+            }];
+        }
+        else if( [[desc key] isEqualToString:@"percent"] )
+        {
+            [skillPlan sortUsingComparator:^(id obj1, id obj2) {
+                CGFloat percent1 = [character percentCompleted:[obj1 typeID]
+                                                     fromLevel:[obj1 skillLevel]-1
+                                                       toLevel:[obj1 skillLevel]];
+                CGFloat percent2 = [character percentCompleted:[obj2 typeID]
+                                                     fromLevel:[obj2 skillLevel]-1
+                                                       toLevel:[obj2 skillLevel]];
+                
+                if( percent1 < percent2 )
+                    return [desc ascending]?NSOrderedAscending:NSOrderedDescending;
+                else if( percent2 < percent1 )
+                    return [desc ascending]?NSOrderedDescending:NSOrderedAscending;
+                else
+                    return NSOrderedSame;
+            }];
+        }
+        else if( [[desc key] isEqualToString:@"spPerHour"] )
+        {
+            [skillPlan sortUsingComparator:^(id obj1, id obj2) {
+                Skill *s1 = [masterSkillSet objectForKey:[obj1 typeID]];
+                Skill *s2 = [masterSkillSet objectForKey:[obj2 typeID]];
+                NSInteger spPerHour1 = [character spPerHour:[s1 primaryAttr]
+                                                  secondary:[s1 secondaryAttr]];
+                NSInteger spPerHour2 = [character spPerHour:[s2 primaryAttr]
+                                                  secondary:[s2 secondaryAttr]];
+
+                if( spPerHour1 < spPerHour2 )
+                    return [desc ascending]?NSOrderedAscending:NSOrderedDescending;
+                else if( spPerHour2 < spPerHour1 )
+                    return [desc ascending]?NSOrderedDescending:NSOrderedAscending;
+                else
+                    return NSOrderedSame;
+            }];
         }
     }
 
+    if( 0 == [sortDescriptors count] )
+    {
+        [self restoreManualOrder];
+    }
+    
     [self resetCache];
 }
 

@@ -86,12 +86,12 @@
 
 -(NSInteger) primaryAttributeForIndex:(NSUInteger)index
 {
-	return [[queue objectAtIndex:index]primary];
+	return [(SkillPointAttributeTotal *)[queue objectAtIndex:index]primary];
 }
 
 -(NSInteger) secondaryAttributeForIndex:(NSUInteger)index
 {
-	return [[queue objectAtIndex:index]secondary];
+	return [(SkillPointAttributeTotal *)[queue objectAtIndex:index]secondary];
 }
 
 -(NSInteger) skillPointsForIndex:(NSUInteger)index

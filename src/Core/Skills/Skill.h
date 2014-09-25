@@ -74,5 +74,7 @@
 @property (readwrite, assign, nonatomic) NSInteger primaryAttr;
 @property (readwrite, assign, nonatomic) NSInteger secondaryAttr;
 
+- (NSString *) primary;
+- (NSString *) secondary;
 
 @end

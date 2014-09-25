@@ -107,26 +107,6 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	}else if([[aTableColumn identifier] isEqualToString:COL_PLAN_CALFINISH]){
 		return [[GlobalData sharedInstance]formatDate:[skillPlan skillTrainingFinish:rowIndex]];
 	}else if([[aTableColumn identifier] isEqualToString:COL_PLAN_PERCENT]){
-		
-		/*push this into the skill plan class?*/
-		if([character isTraining]){
-			/*if the skill we are looking at is the currently training skill*/
-			if([[sp typeID]integerValue] == [character integerForKey:CHAR_TRAINING_TYPEID]){
-				/*if it is the currently training level*/
-				if([sp skillLevel] == [character integerForKey:CHAR_TRAINING_LEVEL]){
-					/*calculate the percentage completed*/
-					NSInteger currentSP = [character currentSPForTrainingSkill];
-					NSInteger startSP = totalSkillPointsForLevel([sp skillLevel]-1,[s skillRank]);
-					NSInteger finishSP = totalSkillPointsForLevel([sp skillLevel],[s skillRank]);
-					CGFloat percentCompleted = 
-						skillPercentCompleted(startSP,
-											  finishSP,
-											  currentSP) * 100.0;
-					long int intPercent = xlround(percentCompleted);
-					return [NSString stringWithFormat:@"%ld%%",MIN(intPercent,100l)];
-				}
-			}
-		}
 		CGFloat percentCompleted = [character percentCompleted:[sp typeID]
 													 fromLevel:[sp skillLevel]-1 
 													   toLevel:[sp skillLevel]];
