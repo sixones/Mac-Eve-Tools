@@ -213,6 +213,24 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	return menu;
 }
 
+- (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell1 forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex
+{
+	if( [[tableColumn identifier] isEqualToString:COL_PLAN_SKILLNAME] )
+    {
+        SkillPlan *skillPlan = [character skillPlanById:planId];
+
+        // If this skill is missing pre-requisites before it in the skill plan or already trained, then color the text red
+        if( ![skillPlan validateSkillAtIndex:rowIndex] )
+        {
+            [cell1 setTextColor:[NSColor redColor]];
+        }
+        else
+        {
+            [cell1 setTextColor:[NSColor blackColor]];
+        }
+    }
+}
+
 -(BOOL) shouldHighlightCell:(NSInteger)rowIndex
 {
 	if([character isTraining]){

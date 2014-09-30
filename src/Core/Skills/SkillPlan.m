@@ -371,6 +371,25 @@ static NSDictionary *masterSkillSet = nil;;
 	return YES;
 }
 
+-(BOOL) validateSkillAtIndex:(NSInteger)index
+{
+	SkillTree *masterTree = [[GlobalData sharedInstance] skillTree];
+	SkillPair *pair = [skillPlan objectAtIndex:index];
+    Skill *s = [masterTree skillForId:[pair typeID]];
+    
+    NSArray *prerequisites = [s prerequisites];
+    
+    for( SkillPair *pre in prerequisites )
+    {
+        NSInteger preCurrentLevel = [self hasPrerequisiteSkill:[pre typeID] beforeIndex:index-1 inPlan:skillPlan];
+        if( [pre skillLevel] > preCurrentLevel )
+        {
+            return NO;
+        }
+    }
+
+	return YES;
+}
 
 -(BOOL) privateMoveSkill:(NSArray*)fromIndexArray to:(NSInteger)toIndex
 {

@@ -140,4 +140,6 @@
 -(void) secretAddSkillToPlan:(NSNumber*)typeID level:(NSInteger)level;
 
 - (void)sortUsingDescriptors:(NSArray *)sortDescriptors;
+
+-(BOOL) validateSkillAtIndex:(NSInteger)index;
 @end

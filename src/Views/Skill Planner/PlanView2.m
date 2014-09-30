@@ -359,6 +359,11 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 	return NO;
 }
 
+- (void)tableView:(NSTableView *)_tableView willDisplayCell:(id)cell1 forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex
+{
+    [pvDatasource tableView:_tableView willDisplayCell:cell1 forTableColumn:tableColumn row:rowIndex];
+}
+
 -(void)tableView:(NSTableView *)_tableView sortDescriptorsDidChange: (NSArray *)oldDescriptors
 {
     // remember the currently selected plan, then re-select it after sorting
