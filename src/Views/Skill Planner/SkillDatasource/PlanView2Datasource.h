@@ -61,4 +61,5 @@
 
 - (void)sortSkillsUsingDescriptors:(NSArray *)descriptors;
 
+-(void) sortPlanByPrerequisites;
 @end

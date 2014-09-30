@@ -76,6 +76,19 @@
 	return NSOrderedAscending;
 }
 
+//-(BOOL)isEqualToSkillPair:(id)other
+//{
+//    if( ![other isKindOfClass:[SkillPair class]] )
+//        return NO;
+//    
+//	if( [self->typeID isEqualToNumber:[other typeID]]
+//       && self->skillLevel == [other skillLevel] )
+//    {
+//        return YES;
+//	}
+//    return NO;
+//}
+
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
 	[encoder encodeInteger:[typeID integerValue] forKey:@"typeID"];

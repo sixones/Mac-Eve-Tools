@@ -847,6 +847,87 @@ static NSDictionary *masterSkillSet = nil;;
 	[self removeSkillArrayFromPlan:ary];
 }
 
+-(NSInteger)indexOfSkill:(NSNumber *)typeID level:(NSInteger)level
+{
+    for( int i = 0; i < [skillPlan count]; i++ )
+    {
+//        if( [pair isEqualToSkillPair:[skillPlan objectAtIndex:i]] )
+        SkillPair *test = [skillPlan objectAtIndex:i];
+        if( [typeID isEqualToNumber:[test typeID]]
+           && (level == [test skillLevel]) )
+        {
+            return i;
+        }
+    }
+    return NSNotFound;
+}
+
+// start at the top of the plan
+// if current skill has any pre-requisite that's lower in the plan
+// then move current skill below that pre-requisite
+-(void) sortPlanByPrerequisites
+{
+	SkillTree *masterTree = [[GlobalData sharedInstance] skillTree];
+    NSDictionary *charSkillSet = [character skillSet];
+	NSInteger i = 0;
+	
+	while( i < ([skillPlan count] - 1) )
+    {
+        SkillPair *pair = [skillPlan objectAtIndex:i];
+		Skill *currentSkill = [masterTree skillForId:[pair typeID]];
+						
+		for( SkillPair *pre in [currentSkill prerequisites] )
+        {
+            Skill *s = [charSkillSet objectForKey:[pre typeID]];
+            if( [s skillLevel] >= [pre skillLevel] )
+                continue;
+
+            NSInteger preIndex = [self indexOfSkill:[pre typeID] level:[pre skillLevel]];
+            if( (NSNotFound != preIndex) && (preIndex > i) )
+            {
+                // pre-requisite is farther down the plan than the current skill. So move this skill after the pre-req.
+                [pair retain];
+                if( preIndex >= [skillPlan count] )
+                    [skillPlan addObject:pair];
+                else
+                    [skillPlan insertObject:pair atIndex:preIndex+1];
+                [skillPlan removeObjectAtIndex:i];
+                [pair release];
+                --i; // back up to make sure the skill we just swapped into i doesn't have any pre-requisites
+                break;
+            }
+		}
+		i++;
+	}
+    
+    // still have to make sure that levels within a skill are in the right order
+    i = 0;
+    while( i < ([skillPlan count] - 1) )
+    {
+        SkillPair *pair = [skillPlan objectAtIndex:i];
+        if( [pair skillLevel] > 1 )
+        {
+            NSInteger preIndex = [self indexOfSkill:[pair typeID] level:([pair skillLevel]-1)];
+            if( (NSNotFound != preIndex) && (preIndex > i) )
+            {
+                // Previous level of this skill is farther down the plan than the current skill. So move this skill after the pre-req.
+                [pair retain];
+                if( preIndex >= [skillPlan count] )
+                    [skillPlan addObject:pair];
+                else
+                    [skillPlan insertObject:pair atIndex:preIndex+1];
+                [skillPlan removeObjectAtIndex:i];
+                [pair release];
+                --i;
+            }
+        }
+        i++;
+    }
+    
+    [self updateManualOrder];
+    [self savePlan];
+}
+
 - (void)sortUsingDescriptors:(NSArray *)sortDescriptors
 {
     for( NSSortDescriptor *desc in [sortDescriptors reverseObjectEnumerator] )

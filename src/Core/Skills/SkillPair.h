@@ -43,4 +43,6 @@
 - (void)encodeWithCoder:(NSCoder *)encoder;
 - (id)initWithCoder:(NSCoder *)decoder;
 
+//-(BOOL)isEqualToSkillPair:(id)other;
+
 @end

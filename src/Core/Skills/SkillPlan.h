@@ -142,4 +142,7 @@
 - (void)sortUsingDescriptors:(NSArray *)sortDescriptors;
 
 -(BOOL) validateSkillAtIndex:(NSInteger)index;
+
+/* Do the minimal amount of sorting needed to make sure that all skills are after their pre-requisites */
+-(void) sortPlanByPrerequisites;
 @end

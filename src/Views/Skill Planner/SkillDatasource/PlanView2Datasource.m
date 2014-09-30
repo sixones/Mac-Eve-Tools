@@ -410,4 +410,10 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
     [plan sortUsingDescriptors:descriptors];
 }
 
+-(void) sortPlanByPrerequisites
+{
+	SkillPlan *plan = [character skillPlanById:planId];
+    [plan sortPlanByPrerequisites];
+}
+
 @end

@@ -250,10 +250,17 @@
 	[tableView setDoubleAction:@selector(rowDoubleClick:)];
     
     NSMenu * menu = [[[NSMenu alloc] init] autorelease];
+    
     NSMenuItem *reset = [[NSMenuItem alloc] initWithTitle:@"Manual Sorting" action:@selector(resetSorting:) keyEquivalent:@""];
     [reset setTarget:self];
     [menu addItem:reset];
+    
+    NSMenuItem *prereq = [[NSMenuItem alloc] initWithTitle:@"Fix Prerequisites" action:@selector(fixPrerequisites:) keyEquivalent:@""];
+    [prereq setTarget:self];
+    [menu addItem:prereq];
+    
     [menu addItem:[NSMenuItem separatorItem]];
+    
     headerMenuManager = [[MetTableHeaderMenuManager alloc] initWithMenu:menu forTable:tableView];
 
 	basePanelSize = [skillRemovePanel frame];
@@ -386,4 +393,10 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
     [tableView reloadData];
 }
 
+-(void) fixPrerequisites:(id)sender
+{
+    [pvDatasource sortPlanByPrerequisites];
+    [tableView setSortDescriptors:nil];
+    [tableView reloadData];
+}
 @end
