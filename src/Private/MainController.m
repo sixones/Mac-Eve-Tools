@@ -280,7 +280,7 @@
  */
 -(void) databaseReadyToCheck:(NSNotification *)notification
 {
-	DBManager *manager = [[[DBManager alloc]init]autorelease];
+	DBManager *manager = [[DBManager alloc] init]; // Need to figure out how to deallocate this when we're done with it
     
 	if(![manager dbVersionCheck:[[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_MIN_VERSION]]){
 		[manager checkForUpdate2];

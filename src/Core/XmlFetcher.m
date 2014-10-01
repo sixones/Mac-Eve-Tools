@@ -54,6 +54,7 @@
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
 	NSLog(@"Received Response");
+    [xmlData setLength:0];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -77,7 +78,8 @@
 	BOOL rc = NO;
 	
 	NSLog(@"Validating (%@)",savePath);
-	if([delegate xmlValidateData:xmlData xmlPath:savePath xmlDocName:docName]){
+	if( [delegate xmlValidateData:xmlData xmlPath:savePath xmlDocName:docName] )
+    {
 		rc = [self writeData:xmlData toFile:savePath];
 		NSLog(@"Writing (%@)",savePath);
 	}else{

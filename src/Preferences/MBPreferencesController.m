@@ -111,7 +111,7 @@ static MBPreferencesController *sharedPreferencesController = nil;
 
 - (void)showWindow:(id)sender {	
 	[self.window center];
-    
+    [_currentModule willBeDisplayed];
 	[super showWindow:sender];
 }
 

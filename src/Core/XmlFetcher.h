@@ -25,7 +25,7 @@
  */
 
 
-@protocol XmlFetcherDelegate
+@protocol XmlFetcherDelegate<NSObject>
 /*
  Delegate prototype. implement this method and it will be called when the document is finished.
  
