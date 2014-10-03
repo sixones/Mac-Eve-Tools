@@ -173,7 +173,9 @@
 	if (skillItemDatasource != nil){
 		[skillSearchView addDatasource: skillItemDatasource];
 	}
-		
+    
+    [skillSearchView selectDefaultGroup];
+    
 	[skillView2 setDelegate:self];
     [planOverview setDelegate:self];
     
@@ -229,7 +231,7 @@
 	[skillCharDatasource setCharacter:activeCharacter];
 	
 	[skillSearchView reloadDatasource:skillCharDatasource];
-	[skillSearchView selectDefaultGroup];
+//	[skillSearchView selectDefaultGroup];
 	
 	[skillView2 refreshPlanView];
     [planOverview refreshPlanView];

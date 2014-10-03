@@ -152,9 +152,17 @@
 -(IBAction) skillSearchCategoriesClick:(id)sender
 {
 	NSInteger tag = [[sender cell] tagForSegment:[sender selectedSegment]];
-	id<SkillSearchDatasource,NSOutlineViewDataSource> data = [datasources objectAtIndex:tag];
-	[skillList setDataSource:data];
-	currentDatasource = tag;
+    if( tag != currentDatasource )
+    {
+        // first clear the current search since it's not likely to make sense for a different tab
+        id<SkillSearchDatasource,NSOutlineViewDataSource> oldData = [datasources objectAtIndex:currentDatasource];
+        [search setStringValue:@""];
+        [oldData skillSearchFilter:search];
+        
+        id<SkillSearchDatasource,NSOutlineViewDataSource> data = [datasources objectAtIndex:tag];
+        [skillList setDataSource:data];
+        currentDatasource = tag;
+    }
 }
 
 -(IBAction) skillGroupsClick:(id)sender
@@ -194,7 +202,12 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
 -(void) selectDefaultGroup
 {
 	[skillSearchCategories setSelectedSegment:0];
-	[self skillSearchCategoriesClick:skillSearchCategories];
+	NSInteger tag = [[skillSearchCategories cell] tagForSegment:[skillSearchCategories selectedSegment]];
+    id<SkillSearchDatasource,NSOutlineViewDataSource> data = [datasources objectAtIndex:tag];
+    [skillList setDataSource:data];
+    currentDatasource = tag;
+
+//	[self skillSearchCategoriesClick:skillSearchCategories];
 }
 
 /*pop up the skill window*/

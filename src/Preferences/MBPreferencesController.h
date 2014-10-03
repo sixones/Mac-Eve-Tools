@@ -33,7 +33,7 @@
  *              MBPreferencesController has enough information to accurately populate the
  *              toolbar.
  */
-@protocol MBPreferencesModule
+@protocol MBPreferencesModule<NSObject>
 /**
  * @name		Module Attributes
  */

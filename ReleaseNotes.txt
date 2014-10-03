@@ -1,3 +1,27 @@
+Version 0.3.0a
+October 2, 2014
+
+This is a pre-release, experimental version.
+
+The minimum database version has been updated to 17 for the Oceanus 1.0 database.
+
+Large changes to the skill plan view. Skill plans are now a master/detail pair of tables.
+    All columns can be moved by dragging and dropping the column header.
+    Right clicking on a column header will bring up a contextual menu letting you show or hide columns, along with menu items related to sorting.
+    Because of the previous changes the Skill Plan related Preference pane is no longer necessary and has been removed.
+    Skill plans and skills can be sorted by clicking on a column header, except for columns whose data is calculated (e.g. Running Total, Start/Finish Date).
+    The Manual Sort menu item will undo all sorting, reverting you to the last manual sort.
+    Sorting skills within a plan may well violate skill pre-requisites. Skills that no longer follow their pre-requisites are displayed with a red name. The "Fix Prerequisites" menu item will attempt a minimal re-ordering of skills to satisfy all pre-requisites. The new order will be set as the latest manual sort.
+
+When changing tabs in the Skill Planner search section (i.e. Skills, Certs, Ships, Modules) the search field is cleared since it's likely to not make much sense for a different kind of search.
+
+The Database preference pane now updates properly if the database has just been updated.
+
+Changed the way ships are sorted into races in the Ships search view so all ships should now be visible, specifically ORE ships.
+
+The code has been cleaned up a lot to remove compiler warnings and to eliminiate some memory leaks.
+
+
 Version 0.2.11a
 September 9, 2014
 

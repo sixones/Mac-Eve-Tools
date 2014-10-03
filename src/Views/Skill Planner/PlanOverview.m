@@ -56,7 +56,8 @@
 		}
 		[character removeSkillPlan:plan];
     }
-
+    
+    [tableView selectRowIndexes:planIndexes byExtendingSelection:NO];
     [self refreshPlanView];
 }
 
