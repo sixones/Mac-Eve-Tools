@@ -19,7 +19,7 @@ The Database preference pane now updates properly if the database has just been 
 
 Changed the way ships are sorted into races in the Ships search view so all ships should now be visible, specifically ORE ships.
 
-The code has been cleaned up a lot to remove compiler warnings and to eliminiate some memory leaks.
+The code has been cleaned up a lot to remove compiler warnings and to eliminate some memory leaks.
 
 
 Version 0.2.11a
