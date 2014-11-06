@@ -11,7 +11,6 @@
 #import "Config.h"
 #import "GlobalData.h"
 #import "XmlHelpers.h"
-//#import "CharacterDatabase.h"
 #import "Character.h"
 #import "CharacterTemplate.h"
 #import "MarketOrder.h"

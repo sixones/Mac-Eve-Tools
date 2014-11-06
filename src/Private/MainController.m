@@ -27,7 +27,6 @@
 #import "SkillTree.h"
 #import "Helpers.h"
 #import "SkillPlanController.h"
-#import "CharacterDatabase.h"
 #import "ServerMonitor.h"
 #import "EvemonXmlPlanIO.h"
 #import "SkillPlan.h"
