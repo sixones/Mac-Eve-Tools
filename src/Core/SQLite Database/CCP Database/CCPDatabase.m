@@ -723,13 +723,13 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
 	rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
 	if(rc != SQLITE_OK){
         NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
-		return -1;
+		return traits;
 	}
 	
     rc = sqlite3_prepare_v2(db,skillNameQuery,(int)sizeof(skillNameQuery),&skillNameStatement,NULL);
 	if(rc != SQLITE_OK){
         NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
-		return -1;
+		return traits;
 	}
     
 	sqlite3_bind_nsint(read_stmt,1,typeID);
