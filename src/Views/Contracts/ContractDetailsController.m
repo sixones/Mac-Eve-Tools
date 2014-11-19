@@ -297,4 +297,14 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
     return nil;
 }
 
+- (IBAction)copy:(id)sender
+{
+    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    [pboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
+
+    NSString *str = [contract description];
+    NSData *data = [str dataUsingEncoding:NSUTF8StringEncoding];
+    
+    [pboard setData:data forType:NSStringPboardType];
+}
 @end

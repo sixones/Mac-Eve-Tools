@@ -26,8 +26,14 @@
 #import "SkillTree.h"
 #import "macros.h"
 
+@interface MTEveSkillQueueHeader()
+- (NSColor *)color1;
+- (NSColor *)color2;
+@end
+
 @implementation MTEveSkillQueueHeader
 
+@synthesize warn;
 
 
 #define VIEW_PADDING 3.0
@@ -171,7 +177,7 @@
 
 -(void) drawProgressBar:(NSRect)bounds
 {
-	NSColor *color = progressColor1;
+	NSColor *color = [self color1];
 	
 	[color set];
 	
@@ -221,17 +227,17 @@
 		drawArea.origin.x += drawArea.size.width;
 		width -= drawArea.size.width;
 		
-		if(color == progressColor1){
-			color = progressColor2;
+		if(color == [self color1]){
+			color = [self color2];
 		}else{
-			color = progressColor1;
+			color = [self color1];
 		}
 	}
 	bounds.size.width = bounds.size.width - width;
 	[self shadeProgressBar:bounds];
 }
 
--(void) drawStringEndingAtPoint:(const NSPoint*)endPoint 
+-(NSRect) drawStringEndingAtPoint:(const NSPoint*)endPoint
 						   text:(NSAttributedString*)text
 {
 	NSSize textSize = [text size];
@@ -239,18 +245,21 @@
 	NSRect area = NSMakeRect(endPoint->x - textSize.width, endPoint->y, textSize.width, textSize.height);
 	
 	[text drawInRect:area];
+    return area;
 }
 
--(void) drawCountdown:(const NSPoint*)endPoint
+-(NSRect) drawCountdown:(const NSPoint*)endPoint
 {
 	//NSString *str = stringTrainingTime2([plan trainingTime:YES],TTF_All);	
 	NSString *str = stringTrainingTime2(planTrainingTime, TTF_All);
 //	NSLog(@"%@",str);
 	NSAttributedString *astr = [[NSAttributedString alloc]initWithString:str];
 	
-	[self drawStringEndingAtPoint:endPoint text:astr];
+	NSRect rect = [self drawStringEndingAtPoint:endPoint text:astr];
 	
 	[astr release];
+    
+    return rect;
 }
 
 -(NSRect) getDrawFrame:(const NSRect*)rect
@@ -296,10 +305,11 @@
 	NSString *str;
 	NSMutableAttributedString *astr;
 	NSRect drawRect;
-	
+    NSRect countdownRect;
+    
 	if(trainingTime != 0){
 		NSPoint textEndPoint = NSMakePoint(newRect.size.width, newRect.origin.y);
-		[self drawCountdown:&textEndPoint];
+		countdownRect = [self drawCountdown:&textEndPoint];
 	}
 	
 	NSDate *finishDate = [plan skillTrainingFinish:[plan skillCount]-1];
@@ -312,11 +322,16 @@
         str = NSLocalizedString(@"<Unknown>", @"Missing string value");
 	astr = [[[NSMutableAttributedString alloc]initWithString:str]autorelease];
 	drawRect = [self rectForFinishDate:newRect text:astr];
+    
+    // Make sure the finish date and countdown rects don't overlap
+    if( NSContainsRect(drawRect,countdownRect) )
+        drawRect.size.width = countdownRect.origin.x;
+    
 	if(NSContainsRect(rect,drawRect)){
 		[self drawText:drawRect text:astr];
 	}
 	
-	drawRect = [self rectForProgressBar:newRect aboveText:astr];
+    drawRect = [self rectForProgressBar:newRect aboveText:astr];
 	if(NSContainsRect(rect,drawRect)){
 		[self drawProgressBar:drawRect];
 	}
@@ -337,7 +352,11 @@
     if (self) {
 		progressColor1 = [[NSColor colorWithDeviceRed:56.0/255.0 green:117.0/255.0 blue:215.0/255.0 alpha:1.0]retain];
 		progressColor2 = [[NSColor colorWithDeviceRed:20.0/255.0 green:61.0/255.0 blue:153.0/255.0 alpha:1.0]retain];
-		
+        warningColor1 = [[NSColor colorWithDeviceRed:225.0/255.0 green:20.0/255.0 blue:20.0/255.0 alpha:1.0]retain];
+        warningColor2 = [[NSColor colorWithDeviceRed:158.0/255.0 green:5.0/255.0 blue:5.0/255.0 alpha:1.0]retain];
+        
+        warn = YES;
+        
 		dFormat = [[NSDateFormatter alloc]init];
 		[dFormat setFormatterBehavior:NSDateFormatterBehavior10_4];
 		[dFormat setDateStyle:NSDateFormatterFullStyle];
@@ -376,6 +395,22 @@
 	[self setNeedsDisplay:YES];
 }
 
+static const NSInteger secondsPerDay = SEC_DAY;
+
+- (NSColor *)color1
+{
+    if( [self warn] && (planTrainingTime < secondsPerDay) )
+        return warningColor1;
+    return progressColor1;
+}
+
+- (NSColor *)color2
+{
+    if( [self warn] && (planTrainingTime < secondsPerDay) )
+        return warningColor2;
+    return progressColor2;
+}
+
 -(void) infoButtonAction:(NSTableView*)sender
 {
 	
@@ -384,6 +419,8 @@
 {
 	[progressColor1 release];
 	[progressColor2 release];
+	[warningColor1 release];
+	[warningColor2 release];
 	[dFormat release];
 	[super dealloc];
 }

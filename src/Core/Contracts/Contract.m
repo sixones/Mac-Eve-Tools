@@ -14,6 +14,7 @@
 #import "CCPDatabase.h"
 #import "Config.h"
 #import "METIDtoName.h"
+#import "MTISKFormatter.h"
 
 #import "Character.h"
 #import "CharacterTemplate.h"
@@ -444,4 +445,95 @@
     }
 }
 
+// A lot of this is somewhat duplicated from ContractDetailsController and should combined, somehow.
+- (NSString *)description
+{
+    NSMutableString *desc = [NSMutableString string];
+
+    BOOL isCourier = [[self type] isEqualToString:@"Courier"];
+    
+    [desc appendFormat:@"%@: %@\n", @"Type", [self type]];
+    [desc appendFormat:@"%@: %@\n", @"Status", [self status]];
+    [desc appendFormat:@"%@: %@\n", @"Contract ID", [NSString stringWithFormat:@"%ld",[self contractID]]];
+    [desc appendFormat:@"%@: %@\n", @"Start", [self startStationName]];
+    
+    if( isCourier )
+    {
+        [desc appendFormat:@"%@: %@\n", @"End", [self endStationName]];
+    }
+    
+    
+    id value = nil;
+    
+    value = [self issuerName];
+    [desc appendFormat:@"%@: %@\n", @"Issuer", (value?value:[NSNumber numberWithInteger:[self issuerID]])];
+    
+    value = [self issuerCorpName];
+    [desc appendFormat:@"%@: %@\n", @"Corporation", (value?value:[NSNumber numberWithInteger:[self issuerCorpID]])];
+    
+    // skip this for non-courier contracts?
+    if( [self assigneeID] != 0 )
+    {
+        value = [self assigneeName];
+        [desc appendFormat:@"%@: %@\n", @"Assignee", (value?value:[NSNumber numberWithInteger:[self assigneeID]])];
+    }
+    
+    if( [self acceptorID] != 0 )
+    {
+        value = [self acceptorName];
+        [desc appendFormat:@"%@: %@\n", @"Acceptor", (value?value:[NSNumber numberWithInteger:[self acceptorID]])];
+    }
+    
+    NSString *withSeparators = [NSNumberFormatter localizedStringFromNumber:[NSNumber numberWithDouble:[self volume]] numberStyle:NSNumberFormatterDecimalStyle];
+    [desc appendFormat:@"%@: %@\n", @"Volume", [NSString stringWithFormat:@"%@ m\u00B3",withSeparators]];
+    
+    MTISKFormatter *iskFormatter = [[[MTISKFormatter alloc] init] autorelease];
+
+    NSString *priceStr = [iskFormatter stringFromNumber:[NSNumber numberWithDouble:[self price]]];
+    if( priceStr )
+    {
+        [desc appendFormat:@"%@: %@\n", @"Price", priceStr];
+    }
+    
+    if( isCourier )
+    {
+        [desc appendFormat:@"%@: %@\n", @"Reward", [iskFormatter stringFromNumber:[NSNumber numberWithDouble:[self reward]]]];
+        
+        [desc appendFormat:@"%@: %@\n", @"Collateral", [iskFormatter stringFromNumber:[NSNumber numberWithDouble:[self collateral]]]];
+    }
+    
+    if( [[self type] isEqualToString:@"Auction"] )
+    {
+        [desc appendFormat:@"%@: %@\n", @"Buyout", [iskFormatter stringFromNumber:[NSNumber numberWithDouble:[self buyout]]]];
+    }
+    
+    [desc appendFormat:@"%@: %@\n", @"Issued", [self issued]];
+    
+    if( (![self completed] && [self expired]) || ([self completed] && ([[self expired] compare:[self completed]] == NSOrderedAscending)) )
+    {
+        BOOL future = [[self expired] compare:[NSDate date]] == NSOrderedDescending;
+        if( future )
+            [desc appendFormat:@"%@: %@\n", @"Expires", [self expired]];
+        else
+            [desc appendFormat:@"%@: %@\n", @"Expired", [self expired]];
+    }
+    
+    if( isCourier && [self accepted] )
+    {
+        [desc appendFormat:@"%@: %@\n", @"Accepted", [self accepted]];
+    }
+    
+    if( [self completed] )
+    {
+        [desc appendFormat:@"%@: %@\n", @"Completed", [self completed]];
+    }
+
+    [desc appendString:@"\n"];
+    
+    for( ContractItem *item in [self items] )
+    {
+        [desc appendFormat:@"%@ x%ld\n", [item name], [item quantity]];
+    }
+    return desc;
+}
 @end
