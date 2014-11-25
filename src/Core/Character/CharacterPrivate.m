@@ -24,6 +24,9 @@
 #import "XmlHelpers.h"
 #import "CharacterDatabase.h"
 #import "SkillPlan.h"
+#import "CCPType.h"
+#import "CCPDatabase.h"
+#import "CCPImplant.h"
 
 #import "XMLDownloadOperation.h"
 
@@ -443,13 +446,20 @@
 			
 			xmlChar* rowset_name = xmlGetProp(cur_node,(xmlChar*)"name");
 			
-			if(xmlStrcmp(rowset_name,(xmlChar*)"skills") == 0){
+			if(xmlStrcmp(rowset_name,(xmlChar*)"skills") == 0)
+            {
 				/*process the skills for the character here.*/
 				[self buildSkillTree:cur_node];
-			}else if(xmlStrcmp(rowset_name,(xmlChar*)"certificates") == 0){
+			}
+            else if(xmlStrcmp(rowset_name,(xmlChar*)"certificates") == 0)
+            {
 				[self parseCertList:cur_node];
 			}
-			
+            else if(xmlStrcmp(rowset_name,(xmlChar*)"implants") == 0)
+            {
+                [self parseImplants:cur_node];
+            }
+
 			xmlFree(rowset_name);
 		}
 	}
@@ -528,6 +538,42 @@
 		}
 	}
 	return YES;
+}
+
+/*
+<rowset name="implants" key="typeID" columns="typeID,typeName">
+<row typeID="13283" typeName="Limited Ocular Filter" />
+<row typeID="9956" typeName="Social Adaptation Chip - Basic" />
+<row typeID="9941" typeName="Memory Augmentation - Basic" />
+<row typeID="9943" typeName="Cybernetic Subprocessor - Basic" />
+</rowset>
+*/
+-(BOOL) parseImplants:(xmlNode*)attrs
+{
+    CCPDatabase *ccpdb = [[GlobalData sharedInstance] database];
+
+    for(xmlNode *attr_node = attrs->children;
+        attr_node != NULL;
+        attr_node = attr_node->next)
+    {
+        if(attr_node->type != XML_ELEMENT_NODE){
+            continue;
+        }
+        
+        xmlChar* typeID = xmlGetProp(attr_node,(xmlChar*)"typeID");
+//        xmlChar* typeName = xmlGetProp(attr_node,(xmlChar*)"typeName");
+        
+        NSString *typeIDString = [NSString stringWithUTF8String:(const char *)typeID];
+        CCPImplant *implant = [ccpdb implantWithID:[typeIDString integerValue]]; // save these if/when we have some other use for them. E.g. showing the user what implants they have injected
+        NSLog( @"Implant: %@", [implant description] );
+        implantAttributes[ATTR_PERCEPTION] += [implant perception];
+        implantAttributes[ATTR_MEMORY] += [implant memory];
+        implantAttributes[ATTR_WILLPOWER] += [implant willpower];
+        implantAttributes[ATTR_INTELLIGENCE] += [implant intelligence];
+        implantAttributes[ATTR_CHARISMA] += [implant charisma];
+
+    }
+    return YES;
 }
 
 -(void) addToDictionary:(const xmlChar*)xmlKey value:(NSString*)value

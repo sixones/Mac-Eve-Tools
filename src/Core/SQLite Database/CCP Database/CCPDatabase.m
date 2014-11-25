@@ -22,6 +22,7 @@
 #import "CCPCategory.h"
 #import "CCPType.h"
 #import "CCPTypeAttribute.h"
+#import "CCPImplant.h"
 
 #import "CCPAttributeData.h"
 
@@ -1601,5 +1602,73 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
 	
 	return raceName;
 }
+
+/*
+ Example results
+ +-------------+-------------------+----------+
+ | attributeID | attributeName     | valueInt |
+ +-------------+-------------------+----------+
+ |         175 | charismaBonus     |        0 |
+ |         176 | intelligenceBonus |        3 |
+ |         177 | memoryBonus       |        0 |
+ |         178 | perceptionBonus   |        0 |
+ |         179 | willpowerBonus    |        0 |
+ +-------------+-------------------+----------+
+*/
+-(CCPImplant *) implantWithID:(NSInteger)typeID
+{
+    /* We're currently not using the attribute name, so we could simplify this to just read
+     from dgmTypeAttributes, however, this does show the table relationships should we need them.
+     */
+    const char query[] =
+    "SELECT d.attributeID, d.attributeName, t.valueInt "
+    "FROM dgmAttributeTypes d, dgmTypeAttributes t "
+    "WHERE t.typeID = ? AND d.attributeID = t.attributeID AND d.attributeID BETWEEN 175 AND 179 ORDER BY d.attributeID;";
+    sqlite3_stmt *read_stmt;
+    int rc;
+    
+    CCPType *type = [self type:typeID];
+    if( !type )
+        return nil;
+    
+    // should check here to make sure it's an implant, i.e. category 20
+    
+    rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+    if(rc != SQLITE_OK)
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return nil;
+    }
+    
+    sqlite3_bind_nsint(read_stmt,1,typeID);
+    
+    CCPImplant *implant = [[[CCPImplant alloc] initWithType:type] autorelease];
+    
+    while( sqlite3_step(read_stmt) == SQLITE_ROW )
+    {
+        NSInteger attrID = sqlite3_column_nsint(read_stmt,0);
+        NSString *attrName = sqlite3_column_nsstr(read_stmt,1);
+        NSInteger value = sqlite3_column_nsint(read_stmt,2);
+
+        switch( attrID )
+        {
+            case 175: [implant setCharisma:value]; break;
+            case 176: [implant setIntelligence:value]; break;
+            case 177: [implant setMemory:value]; break;
+            case 178: [implant setPerception:value]; break;
+            case 179: [implant setWillpower:value]; break;
+        }
+        
+        if(lang != l_EN)
+        {
+            attrName = [self translation:typeID forColumn:TRN_TYPE_NAME fallback:attrName];
+        }
+    }
+    
+    sqlite3_finalize(read_stmt);
+    
+    return implant;
+}
+
 
 @end

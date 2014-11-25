@@ -88,6 +88,7 @@
 		A1C0A7B41761077F00A3A743 /* MarketOrders.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7B21761077F00A3A743 /* MarketOrders.m */; };
 		A1C0A7C117610CDA00A3A743 /* MarketView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C0A7BE17610CDA00A3A743 /* MarketView.xib */; };
 		A1C0A7C217610CDA00A3A743 /* MarketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7C017610CDA00A3A743 /* MarketViewController.m */; };
+		A1E4374A1A23C05200B19A34 /* CCPImplant.m in Sources */ = {isa = PBXBuildFile; fileRef = A1E437491A23C05200B19A34 /* CCPImplant.m */; };
 		A1FCD0501822DED500A6655A /* ContractItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD04F1822DED500A6655A /* ContractItem.m */; };
 		A1FCD0561829881600A6655A /* METIDtoName.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD0551829881600A6655A /* METIDtoName.m */; };
 		C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */ = {isa = PBXBuildFile; fileRef = C911FED610782C50000D88E2 /* CharacterParseError.m */; };
@@ -296,6 +297,8 @@
 		A1C0A7BD17610CDA00A3A743 /* MarketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarketViewController.h; sourceTree = "<group>"; };
 		A1C0A7BF17610CDA00A3A743 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MarketView.xib; sourceTree = "<group>"; };
 		A1C0A7C017610CDA00A3A743 /* MarketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarketViewController.m; sourceTree = "<group>"; };
+		A1E437481A23C05200B19A34 /* CCPImplant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPImplant.h; sourceTree = "<group>"; };
+		A1E437491A23C05200B19A34 /* CCPImplant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPImplant.m; sourceTree = "<group>"; };
 		A1FCD04E1822DED500A6655A /* ContractItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractItem.h; sourceTree = "<group>"; };
 		A1FCD04F1822DED500A6655A /* ContractItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractItem.m; sourceTree = "<group>"; };
 		A1FCD05118245DDC00A6655A /* MetLabelValueTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetLabelValueTableCellView.h; path = Core/MetLabelValueTableCellView.h; sourceTree = SOURCE_ROOT; };
@@ -958,6 +961,8 @@
 				A1FCD0551829881600A6655A /* METIDtoName.m */,
 				A12EE8D2197D98E000ED6478 /* METTrait.h */,
 				A12EE8D3197D98E000ED6478 /* METTrait.m */,
+				A1E437481A23C05200B19A34 /* CCPImplant.h */,
+				A1E437491A23C05200B19A34 /* CCPImplant.m */,
 			);
 			path = "CCP Database";
 			sourceTree = "<group>";
@@ -1238,6 +1243,7 @@
 				C9FF47A710550BA60044BBAC /* CCPMarketGroup.m in Sources */,
 				C9FF47A810550BA60044BBAC /* CCPMarketSubGroup.m in Sources */,
 				C9FF47A910550BA60044BBAC /* METShip.m in Sources */,
+				A1E4374A1A23C05200B19A34 /* CCPImplant.m in Sources */,
 				C9FF47AA10550BA60044BBAC /* CCPType.m in Sources */,
 				C9FF47AB10550BA60044BBAC /* METSubGroup.m in Sources */,
 				C9FF47AC10550BA60044BBAC /* CharacterDatabase.m in Sources */,

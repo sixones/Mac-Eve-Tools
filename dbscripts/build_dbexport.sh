@@ -1,9 +1,15 @@
 #!/bin/bash
 
+# requirements:
+# MySQL running, with connection information in db_config.py
+# The EVE sde imported into MySQL
+# MySQL-python installed
+# PyYAML installed
+
 DBEXPORT=database.sql
 
-DBVERSION=17
-DBEXPANSION="Oceanus 1.0"
+DBVERSION=19
+DBEXPANSION="Phoebe 1.0"
 
 VERQUERY="INSERT INTO version VALUES ($DBVERSION,'$DBEXPANSION');"
 

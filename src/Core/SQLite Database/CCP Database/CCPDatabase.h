@@ -29,6 +29,7 @@
 @class METShip;
 @class CertTree;
 @class SkillTree;
+@class CCPImplant;
 
 @interface CCPDatabase : SqliteDatabase {
 	sqlite3_stmt *tran_stmt; //translation prepared statment
@@ -104,4 +105,7 @@
 -(NSArray *) traitsForTypeID:(NSInteger)typeID;
 
 - (NSString *)nameForRace:(NSInteger)raceID;
+
+// Given a type ID that represents an implant, create and return the implant
+-(CCPImplant *) implantWithID:(NSInteger)typeID;
 @end
