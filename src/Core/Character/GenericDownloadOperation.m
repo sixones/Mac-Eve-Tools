@@ -19,7 +19,7 @@
 
 
 #import "GenericDownloadOperation.h"
-
+#import "METURLRequest.h"
 
 @implementation GenericDownloadOperation
 
@@ -40,7 +40,7 @@
 	
 	NSURL *url = [NSURL URLWithString:urlPath];
 	
-	NSURLRequest *request = [[NSURLRequest alloc]initWithURL:url];
+    METURLRequest *request = [[METURLRequest alloc] initWithURL:url];
 	
 	NSData *data = [NSURLConnection sendSynchronousRequest:request 
 										 returningResponse:&response

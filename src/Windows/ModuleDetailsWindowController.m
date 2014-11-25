@@ -24,6 +24,7 @@
 #import "CCPDatabase.h"
 #import "CCPType.h"
 #import "Character.h"
+#import "METURLRequest.h"
 
 #import "METShip.h"
 
@@ -144,7 +145,7 @@
 	
 	/*image does not exist. download it and display it when it's done.*/
 	NSURL *url = [NSURL URLWithString:imageUrl];
-	NSURLRequest *request = [NSURLRequest requestWithURL:url];
+	METURLRequest *request = [METURLRequest requestWithURL:url];
 	NSURLDownload *download = [[NSURLDownload alloc]initWithRequest:request delegate:self];
 	[download setDestination:filePath allowOverwrite:NO];
 	

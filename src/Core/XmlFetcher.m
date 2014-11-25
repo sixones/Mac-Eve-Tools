@@ -19,6 +19,7 @@
 
 #import "XmlFetcher.h"
 #import "Config.h"
+#import "METURLRequest.h"
 
 #pragma mark XmlFetcher delegate methods
 
@@ -152,7 +153,7 @@
 	
 	//NSLog(@"Requesting URL %@",fullDocUrl);
 	
-	NSURLRequest *apiRequest = [NSURLRequest requestWithURL: [ NSURL URLWithString: fullDocUrl]
+	METURLRequest *apiRequest = [METURLRequest requestWithURL: [ NSURL URLWithString: fullDocUrl]
 												cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0];
 	
 	NSURLConnection *apiConnection = [[NSURLConnection alloc] initWithRequest:apiRequest delegate:self startImmediately:NO];
@@ -176,11 +177,10 @@
 -(BOOL) saveXmlDocument:(NSString*)fullDocUrl savePath:(NSString*)path
 {
 	NSData *data;
-	NSMutableURLRequest *request;
 	NSError *err = nil;
 	NSURLResponse *resp = nil;
 	
-	request = [[NSMutableURLRequest alloc]initWithURL:[NSURL URLWithString:fullDocUrl]];
+	METURLRequest *request = [[METURLRequest alloc] initWithURL:[NSURL URLWithString:fullDocUrl]];
 	[request autorelease];
 	
 	data = [NSURLConnection sendSynchronousRequest:request returningResponse:&resp error:&err];

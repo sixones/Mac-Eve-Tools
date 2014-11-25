@@ -565,7 +565,6 @@
         
         NSString *typeIDString = [NSString stringWithUTF8String:(const char *)typeID];
         CCPImplant *implant = [ccpdb implantWithID:[typeIDString integerValue]]; // save these if/when we have some other use for them. E.g. showing the user what implants they have injected
-        NSLog( @"Implant: %@", [implant description] );
         implantAttributes[ATTR_PERCEPTION] += [implant perception];
         implantAttributes[ATTR_MEMORY] += [implant memory];
         implantAttributes[ATTR_WILLPOWER] += [implant willpower];

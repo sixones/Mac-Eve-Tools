@@ -8,6 +8,7 @@
 
 DBEXPORT=database.sql
 
+# This should match what's in the application's user defaults under UD_DATABASE_MIN_VERSION
 DBVERSION=19
 DBEXPANSION="Phoebe 1.0"
 

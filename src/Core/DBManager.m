@@ -21,6 +21,7 @@
 #import "Config.h"
 #import "XmlHelpers.h"
 #import "XmlFetcher.h"
+#import "METURLRequest.h"
 
 #import "bsd-base64.h"
 
@@ -689,7 +690,7 @@ _finish_cleanup:
 	[self checkForUpdate];
 	
 	NSURL *url = [NSURL URLWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_DB_SQL_URL]];
-	NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    METURLRequest *request = [METURLRequest requestWithURL:url];
 	NSURLDownload *download = [[NSURLDownload alloc]initWithRequest:request delegate:self];
 	
 	if(download == nil){

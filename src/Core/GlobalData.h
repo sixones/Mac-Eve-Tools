@@ -44,6 +44,7 @@
 @property (nonatomic, retain) CertTree* certTree;
 @property (nonatomic, retain) CCPDatabase* database;
 @property (nonatomic, retain) NSDateFormatter* dateFormatter;
+@property (nonatomic, retain, readonly) NSString *userAgent; ///< See Also: https://developers.eveonline.com/resource/xml-api
 
 /**
  @name Access the GlobalData Object

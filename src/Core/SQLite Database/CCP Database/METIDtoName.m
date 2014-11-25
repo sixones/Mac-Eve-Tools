@@ -12,8 +12,9 @@
 #import "GlobalData.h"
 #import "XmlHelpers.h"
 #import "CCPDatabase.h"
-#include <assert.h>
+#import "METURLRequest.h"
 
+#include <assert.h>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #import <sqlite3.h>
@@ -105,7 +106,7 @@
     urlPath = [NSString stringWithFormat:@"%@?ids=%@",urlPath,IDString];
 	NSURL *url = [NSURL URLWithString:urlPath];
     
-	NSURLRequest *request = [NSURLRequest requestWithURL:url];
+	METURLRequest *request = [METURLRequest requestWithURL:url];
     [NSURLConnection connectionWithRequest:request delegate:self];
 }
 
