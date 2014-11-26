@@ -9,6 +9,15 @@
 #import <Foundation/Foundation.h>
 
 @interface ContractItem : NSObject
+{
+    NSUInteger _typeID;
+    long _quantity;
+    long _rawQuantity;
+    BOOL _singleton;
+    BOOL _included;
+    NSString *_name;
+    NSString *_description;
+}
 @property (assign) NSUInteger typeID;
 @property (assign) long quantity;
 @property (assign) long rawQuantity;

@@ -1647,7 +1647,7 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
     while( sqlite3_step(read_stmt) == SQLITE_ROW )
     {
         NSInteger attrID = sqlite3_column_nsint(read_stmt,0);
-        NSString *attrName = sqlite3_column_nsstr(read_stmt,1);
+//        NSString *attrName = sqlite3_column_nsstr(read_stmt,1);
         NSInteger value = sqlite3_column_nsint(read_stmt,2);
 
         switch( attrID )
@@ -1659,10 +1659,10 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
             case 179: [implant setWillpower:value]; break;
         }
         
-        if(lang != l_EN)
-        {
-            attrName = [self translation:typeID forColumn:TRN_TYPE_NAME fallback:attrName];
-        }
+//        if(lang != l_EN)
+//        {
+//            attrName = [self translation:typeID forColumn:TRN_TYPE_NAME fallback:attrName];
+//        }
     }
     
     sqlite3_finalize(read_stmt);

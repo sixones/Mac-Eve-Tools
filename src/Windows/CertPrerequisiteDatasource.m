@@ -26,7 +26,7 @@
 @implementation CertPrerequisiteDatasource
 
 @synthesize certLevel;
-@synthesize levelSkills;
+@synthesize levelSkills = _levelSkills;
 
 -(CertPrerequisiteDatasource*) initWithCert:(Cert*)c
 							   forCharacter:(Character*)ch;
@@ -43,6 +43,7 @@
 {
 	[character release];
 	[cert release];
+    [_levelSkills release];
 	[super dealloc];
 }
 

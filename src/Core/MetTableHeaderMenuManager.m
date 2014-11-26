@@ -15,17 +15,17 @@
 
 @implementation MetTableHeaderMenuManager
 
-@synthesize table;
-@synthesize menu;
+@synthesize table = _table;
+@synthesize menu = _menu;
 
-- (id)initWithMenu:(NSMenu *)_menu forTable:(NSTableView *)_table
+- (id)initWithMenu:(NSMenu *)tmpMenu forTable:(NSTableView *)tmpTable
 {
     if( self = [super init] )
     {
-        if( !_menu )
-            _menu = [[[NSMenu alloc] init] autorelease];
-        [self setTable:_table];
-        [self setMenu:_menu];
+        if( !tmpMenu )
+            tmpMenu = [[[NSMenu alloc] init] autorelease];
+        _table = [tmpTable retain];
+        _menu = [tmpMenu retain];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tableViewColumnDidMove:) name:NSTableViewColumnDidMoveNotification object:[self table]];
 
         [self reset];
@@ -36,8 +36,8 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [menu release];
-    [table release];
+    [_menu release];
+    [_table release];
     [super dealloc];
 }
 

@@ -38,6 +38,7 @@
 	CCPDatabase *database;
 	
 	NSDateFormatter *dateFormatter;
+    NSString *_userAgent;
 }
 
 @property (nonatomic, retain) SkillTree* skillTree;

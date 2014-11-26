@@ -52,7 +52,6 @@
  */
 
 @interface Contract()
-@property (readwrite) NSString *stationName;
 @property (readwrite,retain) NSDate *cachedUntil; // For contained items, not the contract itself
 @property (readwrite,retain) NSString *xmlPath;
 @property (readwrite,assign) BOOL loading;
@@ -66,20 +65,20 @@
 
 @implementation Contract
 
-@synthesize character;
-@synthesize xmlPath;
-@synthesize delegate;
+@synthesize character = _character;
+@synthesize xmlPath = _xmlPath;
+@synthesize delegate = _delegate;
 
-@synthesize type;
-@synthesize status;
-@synthesize contractID;
-@synthesize startStationID;
-@synthesize endStationID;
+@synthesize type = _type;
+@synthesize status = _status;
+@synthesize contractID = _contractID;
+@synthesize startStationID = _startStationID;
+@synthesize endStationID = _endStationID;
 
-@synthesize issuerID;
-@synthesize issuerCorpID;
-@synthesize acceptorID;
-@synthesize assigneeID;
+@synthesize issuerID = _issuerID;
+@synthesize issuerCorpID = _issuerCorpID;
+@synthesize acceptorID = _acceptorID;
+@synthesize assigneeID = _assigneeID;
 @synthesize issuerName = _issuerName;
 @synthesize issuerCorpName = _issuerCorpName;
 @synthesize assigneeName = _assigneeName;
@@ -88,21 +87,22 @@
 @synthesize startStationName = _startStationName;
 @synthesize endStationName = _endStationName;
 
-@synthesize volume;
-@synthesize price;
-@synthesize reward;
-@synthesize collateral;
-@synthesize issued;
-@synthesize expired;
-@synthesize accepted;
-@synthesize completed;
-@synthesize availability;
-@synthesize title;
-@synthesize days;
-@synthesize forCorp;
-@synthesize cachedUntil;
+@synthesize volume = _volume;
+@synthesize price = _price;
+@synthesize reward = _reward;
+@synthesize collateral = _collateral;
+@synthesize buyout = _buyout;
+@synthesize issued = _issued;
+@synthesize expired = _expired;
+@synthesize accepted = _accepted;
+@synthesize completed = _completed;
+@synthesize availability = _availability;
+@synthesize title = _title;
+@synthesize days = _days;
+@synthesize forCorp = _forCorp;
+@synthesize cachedUntil = _cachedUntil;
 @synthesize items = _items;
-@synthesize loading;
+@synthesize loading = _loading;
 
 - (id)init
 {
@@ -119,18 +119,18 @@
 - (void)dealloc
 {
     [super dealloc];
-    [character release];
-    [xmlPath release];
-    [type release];
-    [status release];
+    [_character release];
+    [_xmlPath release];
+    [_type release];
+    [_status release];
     [_items release];
-    [issued release];
-    [expired release];
-    [accepted release];
-    [completed release];
-    [availability release];
-    [title release];
-    [cachedUntil release];
+    [_issued release];
+    [_expired release];
+    [_accepted release];
+    [_completed release];
+    [_availability release];
+    [_title release];
+    [_cachedUntil release];
     [_startStationName release];
     [_endStationName release];
     [nameFetcher release];
@@ -150,7 +150,7 @@
     if( nil == _startStationName )
     {
         CCPDatabase *db = [[GlobalData sharedInstance] database];
-        NSDictionary *station = [db stationForID:startStationID];
+        NSDictionary *station = [db stationForID:[self startStationID]];
         [self setStartStationName:[station objectForKey:@"name"]];
     }
     return _startStationName;
@@ -170,7 +170,7 @@
     if( nil == _endStationName )
     {
         CCPDatabase *db = [[GlobalData sharedInstance] database];
-        NSDictionary *station = [db stationForID:endStationID];
+        NSDictionary *station = [db stationForID:[self endStationID]];
         [self setEndStationName:[station objectForKey:@"name"]];
     }
     return _endStationName;
@@ -196,7 +196,7 @@
     if( [[self type] isEqualToString:@"Courier"] )
         return; // Courier contracts never include items
     
-    if( [cachedUntil isGreaterThan:[NSDate date]] )
+    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
     {
         NSLog( @"Skipping download of Contract items because of Cached Until date" );
         [self setLoading:NO];
@@ -212,13 +212,13 @@
                                    keyID:[template accountId]
                         verificationCode:[template verificationCode]
                                   charId:[template characterId]];
-    apiUrl = [apiUrl stringByAppendingFormat:@"&contractID=%ld",[self contractID]];
+    apiUrl = [apiUrl stringByAppendingFormat:@"&contractID=%ld",(unsigned long)[self contractID]];
 
 	NSString *characterDir = [Config charDirectoryPath:[template accountId]
 											 character:[template characterId]];
     NSString *pendingDir = [characterDir stringByAppendingString:@"/pending"];
     
-    NSString *docPathID = [[[docPath stringByDeletingPathExtension] stringByAppendingFormat:@"_%ld", [self contractID]] stringByAppendingPathExtension:[docPath pathExtension]];
+    NSString *docPathID = [[[docPath stringByDeletingPathExtension] stringByAppendingFormat:@"_%ld", (unsigned long)[self contractID]] stringByAppendingPathExtension:[docPath pathExtension]];
     [self setXmlPath:[characterDir stringByAppendingPathComponent:[docPathID lastPathComponent]]]; // this won't work. need at least the contract ID.
     
 	//create the output directory, the XMLParseOperation will clean it up
@@ -265,10 +265,10 @@
 {
     // read data from marketFile and create an xmlDoc
     // parse it
-    xmlDoc *doc = xmlReadFile( [xmlPath fileSystemRepresentation], NULL, 0 );
+    xmlDoc *doc = xmlReadFile( [[self xmlPath] fileSystemRepresentation], NULL, 0 );
 	if( doc == NULL )
     {
-		NSLog(@"Failed to read %@",xmlPath);
+		NSLog(@"Failed to read %@",[self xmlPath]);
         [self setLoading:NO];
 		return;
 	}
@@ -381,9 +381,9 @@
         
     }
     
-    if( [delegate conformsToProtocol:@protocol(ContractDelegate)] )
+    if( [[self delegate] conformsToProtocol:@protocol(ContractDelegate)] )
     {
-        [delegate contractItemsFinishedUpdating];
+        [[self delegate] contractItemsFinishedUpdating];
     }
     
     [self setLoading:NO];
@@ -439,9 +439,9 @@
         changed = YES;
     }
     
-    if( changed && [delegate conformsToProtocol:@protocol(ContractDelegate)] )
+    if( changed && [[self delegate] conformsToProtocol:@protocol(ContractDelegate)] )
     {
-        [delegate contractNamesFinishedUpdating];
+        [[self delegate] contractNamesFinishedUpdating];
     }
 }
 

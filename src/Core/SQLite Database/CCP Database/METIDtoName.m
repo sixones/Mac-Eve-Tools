@@ -26,7 +26,8 @@
 
 @implementation METIDtoName
 
-@synthesize cachedUntil;
+@synthesize cachedUntil = _cachedUntil;
+@synthesize delegate = _delegate;
 
 + (NSString *)reloadNotificationName
 {
@@ -38,7 +39,7 @@
     if( self = [super init] )
     {
         xmlData = [[NSMutableData alloc] init];
-        cachedUntil = [[NSDate distantPast] retain];
+        _cachedUntil = [[NSDate distantPast] retain];
         cachedNames = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -47,7 +48,7 @@
 - (void)dealloc
 {
     [xmlData release];
-    [cachedUntil release];
+    [_cachedUntil release];
     [cachedNames release];
     [super dealloc];
 }
@@ -83,7 +84,7 @@
 
 - (void)namesForIDs:(NSSet *)IDs
 {
-    if( [cachedUntil isGreaterThan:[NSDate date]] )
+    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
     {
         NSLog( @"Skipping download of Names from IDs because of Cached Until date" );
         return;

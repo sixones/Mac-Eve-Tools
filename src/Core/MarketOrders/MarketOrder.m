@@ -17,20 +17,20 @@
 
 @implementation MarketOrder
 
-@synthesize orderID;
-@synthesize charID;
-@synthesize stationID;
-@synthesize volEntered;
-@synthesize volRemaining;
-@synthesize minVolume;
-@synthesize orderState;
-@synthesize typeID;
-@synthesize range;
-@synthesize accountKey;
-@synthesize price;
-@synthesize escrow;
-@synthesize buy;
-@synthesize issued;
+@synthesize orderID = _orderID;
+@synthesize charID = _charID;
+@synthesize stationID = _stationID;
+@synthesize volEntered = _volEntered;
+@synthesize volRemaining = _volRemaining;
+@synthesize minVolume = _minVolume;
+@synthesize orderState = _orderState;
+@synthesize typeID = _typeID;
+@synthesize range = _range;
+@synthesize accountKey = _accountKey;
+@synthesize price = _price;
+@synthesize escrow = _escrow;
+@synthesize buy = _buy;
+@synthesize issued = _issued;
 @synthesize stationName = _stationName;
 
 - (NSString *)typeName
@@ -75,7 +75,7 @@
     if( nil == _stationName )
     {
         CCPDatabase *db = [[GlobalData sharedInstance] database];
-        NSDictionary *station = [db stationForID:stationID];
+        NSDictionary *station = [db stationForID:[self stationID]];
         [self setStationName:[station objectForKey:@"name"]];
     }
     return _stationName;

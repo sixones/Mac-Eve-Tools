@@ -44,7 +44,7 @@ XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 </EveDatabaseExport>"
 
 
-echo $XML > database.xml
+echo "$XML" > database.xml
 
 rm -f $DBEXPORT
 #rm -f tempdb.db

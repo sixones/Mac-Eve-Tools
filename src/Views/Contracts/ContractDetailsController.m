@@ -30,8 +30,8 @@
 
 @implementation ContractDetailsController
 
-@synthesize labels;
-@synthesize values;
+@synthesize labels = _labels;
+@synthesize values = _values;
 
 -(void)awakeFromNib
 {
@@ -42,8 +42,8 @@
 	[contract release];
 	[character release];
 	[iskFormatter release];
-    [labels release];
-    [values release];
+    [_labels release];
+    [_values release];
     
 	[super dealloc];
 }
@@ -77,83 +77,83 @@
 
 -(void)buildLabelsAndValues
 {
-    NSMutableArray *_labels = [NSMutableArray array];
-    NSMutableArray *_values = [NSMutableArray array];
+    NSMutableArray *tmpLabels = [NSMutableArray array];
+    NSMutableArray *tmpValues = [NSMutableArray array];
     BOOL isCourier = [[contract type] isEqualToString:@"Courier"];
     
-    [_labels addObject:@"Type"];
-    [_values addObject:[contract type]];
+    [tmpLabels addObject:@"Type"];
+    [tmpValues addObject:[contract type]];
 
-    [_labels addObject:@"Status"];
-    [_values addObject:[contract status]];
+    [tmpLabels addObject:@"Status"];
+    [tmpValues addObject:[contract status]];
 
-    [_labels addObject:@"Contract ID"];
-    [_values addObject:[NSString stringWithFormat:@"%ld",[contract contractID]]];
+    [tmpLabels addObject:@"Contract ID"];
+    [tmpValues addObject:[NSString stringWithFormat:@"%ld", (unsigned long)[contract contractID]]];
 
-    [_labels addObject:@"Start"];
-    [_values addObject:[contract startStationName]];
+    [tmpLabels addObject:@"Start"];
+    [tmpValues addObject:[contract startStationName]];
     
     if( isCourier )
     {
-        [_labels addObject:@"End"];
-        [_values addObject:[contract endStationName]];
+        [tmpLabels addObject:@"End"];
+        [tmpValues addObject:[contract endStationName]];
     }
 
     
     id value = nil;
     
     value = [contract issuerName];
-    [_labels addObject:@"Issuer"];
-    [_values addObject:(value?value:[NSNumber numberWithInteger:[contract issuerID]])];
+    [tmpLabels addObject:@"Issuer"];
+    [tmpValues addObject:(value?value:[NSNumber numberWithInteger:[contract issuerID]])];
 
     value = [contract issuerCorpName];
-    [_labels addObject:@"Corporation"];
-    [_values addObject:(value?value:[NSNumber numberWithInteger:[contract issuerCorpID]])];
+    [tmpLabels addObject:@"Corporation"];
+    [tmpValues addObject:(value?value:[NSNumber numberWithInteger:[contract issuerCorpID]])];
     
     // skip this for non-courier contracts?
     if( [contract assigneeID] != 0 )
     {
         value = [contract assigneeName];
-        [_labels addObject:@"Assignee"];
-        [_values addObject:(value?value:[NSNumber numberWithInteger:[contract assigneeID]])];
+        [tmpLabels addObject:@"Assignee"];
+        [tmpValues addObject:(value?value:[NSNumber numberWithInteger:[contract assigneeID]])];
     }
     
     if( [contract acceptorID] != 0 )
     {
         value = [contract acceptorName];
-        [_labels addObject:@"Acceptor"];
-        [_values addObject:(value?value:[NSNumber numberWithInteger:[contract acceptorID]])];
+        [tmpLabels addObject:@"Acceptor"];
+        [tmpValues addObject:(value?value:[NSNumber numberWithInteger:[contract acceptorID]])];
     }
     
-    [_labels addObject:@"Volume"];
+    [tmpLabels addObject:@"Volume"];
     NSString *withSeparators = [NSNumberFormatter localizedStringFromNumber:[NSNumber numberWithDouble:[contract volume]] numberStyle:NSNumberFormatterDecimalStyle];
     // need to figure out how to specify 2 decimal places
-    [_values addObject:[NSString stringWithFormat:@"%@ m\u00B3",withSeparators]];
+    [tmpValues addObject:[NSString stringWithFormat:@"%@ m\u00B3",withSeparators]];
     
     NSString *price = [iskFormatter stringFromNumber:[NSNumber numberWithDouble:[contract price]]];
     if( price )
     {
-        [_labels addObject:@"Price"];
-        [_values addObject:price];
+        [tmpLabels addObject:@"Price"];
+        [tmpValues addObject:price];
     }
     
     if( isCourier )
     {
-        [_labels addObject:@"Reward"];
-        [_values addObject:[iskFormatter stringFromNumber:[NSNumber numberWithDouble:[contract reward]]]];
+        [tmpLabels addObject:@"Reward"];
+        [tmpValues addObject:[iskFormatter stringFromNumber:[NSNumber numberWithDouble:[contract reward]]]];
 
-        [_labels addObject:@"Collateral"];
-        [_values addObject:[iskFormatter stringFromNumber:[NSNumber numberWithDouble:[contract collateral]]]];
+        [tmpLabels addObject:@"Collateral"];
+        [tmpValues addObject:[iskFormatter stringFromNumber:[NSNumber numberWithDouble:[contract collateral]]]];
     }
     
     if( [[contract type] isEqualToString:@"Auction"] )
     {
-        [_labels addObject:@"Buyout"];
-        [_values addObject:[iskFormatter stringFromNumber:[NSNumber numberWithDouble:[contract buyout]]]];
+        [tmpLabels addObject:@"Buyout"];
+        [tmpValues addObject:[iskFormatter stringFromNumber:[NSNumber numberWithDouble:[contract buyout]]]];
     }
     
-    [_labels addObject:@"Issued"];
-    [_values addObject:[contract issued]];
+    [tmpLabels addObject:@"Issued"];
+    [tmpValues addObject:[contract issued]];
     
     NSDate *completed = [contract completed];
     NSDate *expired = [contract expired];
@@ -162,26 +162,26 @@
     {
         BOOL future = [expired compare:[NSDate date]] == NSOrderedDescending;
         if( future )
-            [_labels addObject:@"Expires"];
+            [tmpLabels addObject:@"Expires"];
         else
-            [_labels addObject:@"Expired"];
-        [_values addObject:[contract expired]];
+            [tmpLabels addObject:@"Expired"];
+        [tmpValues addObject:[contract expired]];
     }
     
     if( isCourier && [contract accepted] )
     {
-        [_labels addObject:@"Accepted"];
-        [_values addObject:[contract accepted]];
+        [tmpLabels addObject:@"Accepted"];
+        [tmpValues addObject:[contract accepted]];
     }
     
     if( completed )
     {
-        [_labels addObject:@"Completed"];
-        [_values addObject:[contract completed]];
+        [tmpLabels addObject:@"Completed"];
+        [tmpValues addObject:[contract completed]];
     }
     
-    [self setLabels:_labels];
-    [self setValues:_values];
+    [self setLabels:tmpLabels];
+    [self setValues:tmpValues];
 }
 
 #pragma mark Delegates

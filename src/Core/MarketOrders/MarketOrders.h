@@ -11,7 +11,13 @@
 @class Character;
 
 @interface MarketOrders : NSObject
-
+{
+    Character *_character;
+    NSMutableArray *_orders;
+    NSString *_xmlPath;
+    NSDate *_cachedUntil;
+    id _delegate;
+}
 @property (retain) Character *character;
 @property (retain) NSMutableArray *orders;
 @property (readonly,retain) NSString *xmlPath;

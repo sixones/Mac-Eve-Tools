@@ -33,10 +33,28 @@
 
 @implementation MTEveSkillQueueHeader
 
-@synthesize warn;
+@synthesize warn = _warn;
 
 
 #define VIEW_PADDING 3.0
+
+- (id)initWithFrame:(NSRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        progressColor1 = [[NSColor colorWithDeviceRed:56.0/255.0 green:117.0/255.0 blue:215.0/255.0 alpha:1.0]retain];
+        progressColor2 = [[NSColor colorWithDeviceRed:20.0/255.0 green:61.0/255.0 blue:153.0/255.0 alpha:1.0]retain];
+        warningColor1 = [[NSColor colorWithDeviceRed:225.0/255.0 green:20.0/255.0 blue:20.0/255.0 alpha:1.0]retain];
+        warningColor2 = [[NSColor colorWithDeviceRed:158.0/255.0 green:5.0/255.0 blue:5.0/255.0 alpha:1.0]retain];
+        
+        _warn = YES;
+        
+        dFormat = [[NSDateFormatter alloc]init];
+        [dFormat setFormatterBehavior:NSDateFormatterBehavior10_4];
+        [dFormat setDateStyle:NSDateFormatterFullStyle];
+        [dFormat setTimeStyle:NSDateFormatterShortStyle];
+    }
+    return self;
+}
 
 -(void)awakeFromNib
 {
@@ -324,7 +342,7 @@
 	drawRect = [self rectForFinishDate:newRect text:astr];
     
     // Make sure the finish date and countdown rects don't overlap
-    if( NSContainsRect(drawRect,countdownRect) )
+    if( (trainingTime != 0) && NSContainsRect(drawRect,countdownRect) )
         drawRect.size.width = countdownRect.origin.x;
     
 	if(NSContainsRect(rect,drawRect)){
@@ -346,25 +364,6 @@
 {
 	return YES;
 }
-
-- (id)initWithFrame:(NSRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-		progressColor1 = [[NSColor colorWithDeviceRed:56.0/255.0 green:117.0/255.0 blue:215.0/255.0 alpha:1.0]retain];
-		progressColor2 = [[NSColor colorWithDeviceRed:20.0/255.0 green:61.0/255.0 blue:153.0/255.0 alpha:1.0]retain];
-        warningColor1 = [[NSColor colorWithDeviceRed:225.0/255.0 green:20.0/255.0 blue:20.0/255.0 alpha:1.0]retain];
-        warningColor2 = [[NSColor colorWithDeviceRed:158.0/255.0 green:5.0/255.0 blue:5.0/255.0 alpha:1.0]retain];
-        
-        warn = YES;
-        
-		dFormat = [[NSDateFormatter alloc]init];
-		[dFormat setFormatterBehavior:NSDateFormatterBehavior10_4];
-		[dFormat setDateStyle:NSDateFormatterFullStyle];
-		[dFormat setTimeStyle:NSDateFormatterShortStyle];
-	}
-	return self;
-}
-		
 
 -(SkillPlan*) skillPlan
 {

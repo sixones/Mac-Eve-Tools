@@ -13,6 +13,14 @@
  ignoring any fitting, damage or other effects.
  */
 @interface CCPImplant : NSObject
+{
+    CCPType *_type;
+    NSInteger charisma;
+    NSInteger intelligence;
+    NSInteger memory;
+    NSInteger perception;
+    NSInteger willpower;
+}
 
 @property (retain,readwrite) CCPType *type;
 @property (assign) NSInteger charisma;

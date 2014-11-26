@@ -16,6 +16,7 @@
 	Cert *cert;
 	Character *character;
     NSInteger certLevel; // what level to use for displaying skills
+    NSArray *_levelSkills;
 }
 
 @property (readwrite,nonatomic,assign) NSInteger certLevel;

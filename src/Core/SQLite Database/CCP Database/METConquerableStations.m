@@ -26,7 +26,7 @@
 
 @implementation METConquerableStations
 
-@synthesize cachedUntil;
+@synthesize cachedUntil = _cachedUntil;
 
 + (NSString *)reloadNotificationName
 {
@@ -38,7 +38,7 @@
     if( self = [super init] )
     {
         xmlData = [[NSMutableData alloc] init];
-        cachedUntil = [[NSDate distantPast] retain];
+        _cachedUntil = [[NSDate distantPast] retain];
     }
     return self;
 }
@@ -46,13 +46,13 @@
 - (void)dealloc
 {
     [xmlData release];
-    [cachedUntil release];
+    [_cachedUntil release];
     [super dealloc];
 }
 
 - (IBAction)reload:(id)sender
 {    
-    if( [cachedUntil isGreaterThan:[NSDate date]] )
+    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
     {
         NSLog( @"Skipping download of Conquerable Stations because of Cached Until date" );
         return;

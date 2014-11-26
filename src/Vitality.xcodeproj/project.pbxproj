@@ -1492,6 +1492,8 @@
 				INFOPLIST_FILE = vitality.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				PER_ARCH_CFLAGS_i386 = "";
+				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
 				SDKROOT = macosx;
 			};
@@ -1515,6 +1517,8 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				ONLY_ACTIVE_ARCH = NO;
+				PER_ARCH_CFLAGS_i386 = "";
+				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
 				SDKROOT = macosx;
 			};
@@ -1626,6 +1630,8 @@
 				INFOPLIST_FILE = vitality.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				PER_ARCH_CFLAGS_i386 = "";
+				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
 				SDKROOT = macosx;
 			};

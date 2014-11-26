@@ -11,6 +11,7 @@
 @interface METConquerableStations : NSObject
 {
     NSMutableData *xmlData;
+    NSDate *_cachedUntil;
 }
 
 @property (readonly,retain) NSDate *cachedUntil;

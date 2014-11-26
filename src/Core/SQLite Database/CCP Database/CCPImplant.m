@@ -11,18 +11,18 @@
 
 @implementation CCPImplant
 
-@synthesize type;
+@synthesize type = _type;
 @synthesize charisma;
 @synthesize intelligence;
 @synthesize memory;
 @synthesize perception;
 @synthesize willpower;
 
-- (id)initWithType:(CCPType *)_type
+- (id)initWithType:(CCPType *)baseType
 {
     if( self = [super init] )
     {
-        type = [_type retain];
+        _type = [baseType retain];
     }
     
     return self;
@@ -30,7 +30,7 @@
 
 - (void)dealloc
 {
-    [type release];
+    [_type release];
     [super dealloc];
 }
 

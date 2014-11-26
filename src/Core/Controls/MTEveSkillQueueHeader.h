@@ -32,7 +32,8 @@
     NSColor *warningColor2;
     
 	BOOL active;
-	
+    BOOL _warn;
+    
 	NSInteger planTrainingTime;
 	
 	NSDateFormatter *dFormat;

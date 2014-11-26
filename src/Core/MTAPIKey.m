@@ -131,8 +131,6 @@ static const long MarketOrdersMask = 4096;
 
 -(void) downloadXml;
 
--(NSString*)savePath;
-
 -(BOOL) parseXmlDocument:(xmlDoc*) doc;
 -(BOOL) loadXmlDocument;
 

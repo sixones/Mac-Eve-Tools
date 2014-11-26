@@ -11,6 +11,13 @@
 @class Character;
 
 @interface Contracts : NSObject
+{
+    Character *_character;
+    NSMutableArray *_contracts;
+    NSString *_xmlPath;
+    NSDate *_cachedUntil;
+    id _delegate;
+}
 
 @property (retain) Character *character;
 @property (retain) NSMutableArray *contracts;

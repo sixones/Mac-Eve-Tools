@@ -21,7 +21,23 @@ typedef enum {
 } OrderStateType;
 
 @interface MarketOrder : NSObject
-
+{
+    NSUInteger _orderID;
+    NSUInteger _charID;
+    NSUInteger _stationID;
+    NSUInteger _volEntered;
+    NSUInteger _volRemaining;
+    NSUInteger _minVolume;
+    OrderStateType _orderState;
+    NSUInteger _typeID;
+    NSString *_range;
+    NSUInteger _accountKey;
+    double _price;
+    double _escrow;
+    BOOL _buy;
+    NSDate *_issued;
+    NSString *_stationName;
+}
 @property (assign) NSUInteger orderID;
 @property (assign) NSUInteger charID;
 @property (assign) NSUInteger stationID;
