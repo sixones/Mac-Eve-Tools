@@ -130,7 +130,7 @@
 	
 	[pilotTrainingRate setStringValue:
 			[NSString stringWithFormat:@"%ld SP/hr",
-			[character spPerHour:[skill primaryAttr]
+			(long)[character spPerHour:[skill primaryAttr]
 				   secondary:[skill secondaryAttr]]]];
 	[pilotTrainingRate sizeToFit];
 	

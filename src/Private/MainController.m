@@ -395,7 +395,7 @@
 
 	[[self window] makeMainWindow];
 	[[self window] setDelegate:self];
-	[NSApp setDelegate:self];
+	[(NSApplication *)NSApp setDelegate:self];
 		
 #ifdef HAVE_SPARKLE
 	SUUpdater *updater = [SUUpdater sharedUpdater];
@@ -703,7 +703,7 @@
         character = [characterManager defaultCharacter];
         if( nil == character )
         {
-            NSLog(@"ERROR: Couldn't find character %lu.  Can't update.",[currentCharacter characterId]);
+            NSLog(@"ERROR: Couldn't find character %lu.  Can't update.", (unsigned long)[currentCharacter characterId]);
             return;
         }
 	}

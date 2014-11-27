@@ -1377,7 +1377,7 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
         
         if( !(cntID++ % 100) )
         {
-            NSLog( @"typeID count %d, insert Count %ld", cntID, [self performCount:"SELECT COUNT(*) FROM typePrerequisites;"] );
+            NSLog( @"typeID count %d, insert Count %ld", cntID, (long)[self performCount:"SELECT COUNT(*) FROM typePrerequisites;"] );
         }
         
         sqlite3_bind_nsint( skillStatement, 1, typeID );

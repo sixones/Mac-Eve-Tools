@@ -37,8 +37,6 @@
 
 @interface PlanView2 (SkillView2Private)
 
--(IBAction) displayPlanByPlanId:(NSInteger)tag;
-
 -(void) removeSkillsFromPlan:(NSIndexSet*)skillIndexes;
 -(void) removeSkillsPopupConfirmation:(NSArray*)antiPlan;
 -(void) removeSkillSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
@@ -124,23 +122,6 @@
 	[delegate setToolbarMessage:message];
 }
 
--(IBAction) displayPlanByPlanId:(NSInteger)tag
-{
-	if(tag == currentTag){
-		return;
-	}
-
-    [pvDatasource setPlanId:tag];
-
-	currentTag = tag;
-    
-    // TODO: it would be better if each plan remembered the last selected skill and we re-selected it
-    [tableView deselectAll: self];
-    [self tableView:tableView sortDescriptorsDidChange:nil];
-
-//	[self refreshPlanView];
-}
-
 -(void) cellPlusButtonClick:(id)sender
 {	
 	/*
@@ -181,12 +162,12 @@
 	[[pvDatasource currentPlan]savePlan];
 	[self refreshPlanView];
 	
-	NSLog(@"Minus button click %ld",row);
+	NSLog(@"Minus button click %ld", (long)row);
 }
 -(void) cellNotesButtonClick:(id)sender
 {
 	NSInteger row = [sender clickedRow];
-	NSLog(@"Notes button click row %ld",row);
+	NSLog(@"Notes button click row %ld", (long)row);
 }
 
 @end
@@ -195,6 +176,23 @@
 @implementation PlanView2
 
 @synthesize delegate;
+
+-(IBAction) displayPlanByPlanId:(NSInteger)tag
+{
+    if(tag == currentTag){
+        return;
+    }
+    
+    [pvDatasource setPlanId:tag];
+    
+    currentTag = tag;
+    
+    // TODO: it would be better if each plan remembered the last selected skill and we re-selected it
+    [tableView deselectAll: self];
+    [self tableView:tableView sortDescriptorsDidChange:nil];
+    
+    //	[self refreshPlanView];
+}
 
 -(void) loadPlan:(SkillPlan*)plan;
 {

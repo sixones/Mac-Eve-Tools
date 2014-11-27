@@ -454,7 +454,7 @@
     
     [desc appendFormat:@"%@: %@\n", @"Type", [self type]];
     [desc appendFormat:@"%@: %@\n", @"Status", [self status]];
-    [desc appendFormat:@"%@: %@\n", @"Contract ID", [NSString stringWithFormat:@"%ld",[self contractID]]];
+    [desc appendFormat:@"%@: %@\n", @"Contract ID", [NSString stringWithFormat:@"%ld", (unsigned long)[self contractID]]];
     [desc appendFormat:@"%@: %@\n", @"Start", [self startStationName]];
     
     if( isCourier )

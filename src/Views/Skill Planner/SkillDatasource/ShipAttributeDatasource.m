@@ -175,7 +175,7 @@
 	else {
 		// just render the value depending on its type
 		if([item valueInt] != NSIntegerMax){
-			[str appendFormat:@"%ld",[item valueInt]];
+			[str appendFormat:@"%ld", (long)[item valueInt]];
 		}else{
 			[str appendFormat:@"%.2f",(double)[item valueFloat]];
 		}

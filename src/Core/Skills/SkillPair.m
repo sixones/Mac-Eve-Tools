@@ -63,7 +63,7 @@
 -(NSString*) description
 {
 	SkillTree *st = [[GlobalData sharedInstance]skillTree];
-	return [NSString stringWithFormat:@"%@ %@ %ld",[st skillForId:typeID], typeID,skillLevel];
+	return [NSString stringWithFormat:@"%@ %@ %ld", [st skillForId:typeID], typeID, (long)skillLevel];
 }
 
 -(NSComparisonResult) compare:(SkillPair*)rhs

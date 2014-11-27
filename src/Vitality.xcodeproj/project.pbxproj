@@ -127,7 +127,6 @@
 		C9EB4F50105A16BD009192BC /* GenericDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C9EB4F4F105A16BD009192BC /* GenericDownloadOperation.m */; };
 		C9F5143E10566CA200654F6D /* CharacterSheetPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F5143D10566CA200654F6D /* CharacterSheetPlugin.m */; };
 		C9F514951056721300654F6D /* MainController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F5148E1056721300654F6D /* MainController.m */; };
-		C9F514971056721300654F6D /* MTSegmentedCellCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F514911056721300654F6D /* MTSegmentedCellCategory.m */; };
 		C9F514981056721300654F6D /* MTTableViewCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F514931056721300654F6D /* MTTableViewCategory.m */; };
 		C9F514A11056725600654F6D /* CharacterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F514A01056725600654F6D /* CharacterManager.m */; };
 		C9FAF5371160532D000EC789 /* AttributeModifierController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FAF5361160532D000EC789 /* AttributeModifierController.m */; };
@@ -158,7 +157,6 @@
 		C9FF478E10550BA60044BBAC /* MTEveSkillCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF470610550BA50044BBAC /* MTEveSkillCell.m */; };
 		C9FF478F10550BA60044BBAC /* MTEveSkillQueueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF470810550BA50044BBAC /* MTEveSkillQueueCell.m */; };
 		C9FF479010550BA60044BBAC /* MTEveSkillQueueHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF470A10550BA50044BBAC /* MTEveSkillQueueHeader.m */; };
-		C9FF479110550BA60044BBAC /* MTSegmentedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF470C10550BA50044BBAC /* MTSegmentedCell.m */; };
 		C9FF479410550BA60044BBAC /* MTSkillProgressCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF471210550BA50044BBAC /* MTSkillProgressCell.m */; };
 		C9FF479510550BA60044BBAC /* MTTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF471410550BA50044BBAC /* MTTableView.m */; };
 		C9FF479610550BA60044BBAC /* DBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF471610550BA50044BBAC /* DBManager.m */; };
@@ -1230,7 +1228,6 @@
 				A1C44C681A24EEC100443AE2 /* METURLRequest.m in Sources */,
 				C9FF478F10550BA60044BBAC /* MTEveSkillQueueCell.m in Sources */,
 				C9FF479010550BA60044BBAC /* MTEveSkillQueueHeader.m in Sources */,
-				C9FF479110550BA60044BBAC /* MTSegmentedCell.m in Sources */,
 				C9FF479410550BA60044BBAC /* MTSkillProgressCell.m in Sources */,
 				C9FF479510550BA60044BBAC /* MTTableView.m in Sources */,
 				C9FF479610550BA60044BBAC /* DBManager.m in Sources */,
@@ -1269,7 +1266,6 @@
 				C9FF48D91055151F0044BBAC /* GlobalData.m in Sources */,
 				C9F5143E10566CA200654F6D /* CharacterSheetPlugin.m in Sources */,
 				C9F514951056721300654F6D /* MainController.m in Sources */,
-				C9F514971056721300654F6D /* MTSegmentedCellCategory.m in Sources */,
 				C9F514981056721300654F6D /* MTTableViewCategory.m in Sources */,
 				C9F514A11056725600654F6D /* CharacterManager.m in Sources */,
 				C9EB4EC9105A0883009192BC /* CharacterTemplate.m in Sources */,
@@ -1491,7 +1487,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = HAVE_SPARKLE;
 				INFOPLIST_FILE = vitality.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = NO;
 				PER_ARCH_CFLAGS_i386 = "";
 				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
@@ -1515,7 +1512,7 @@
 				GCC_PREFIX_HEADER = vitality.pch;
 				INFOPLIST_FILE = vitality.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				PER_ARCH_CFLAGS_i386 = "";
 				PER_ARCH_CFLAGS_ppc = "";
@@ -1629,7 +1626,7 @@
 				GCC_PREFIX_HEADER = vitality.pch;
 				INFOPLIST_FILE = vitality.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PER_ARCH_CFLAGS_i386 = "";
 				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;

@@ -102,7 +102,7 @@
 -(void) cellNotesButtonClick:(id)sender
 {
 	NSInteger row = [sender clickedRow];
-	NSLog(@"Notes button click row %ld",row);
+	NSLog(@"Notes button click row %ld", (long)row);
 }
 
 @end

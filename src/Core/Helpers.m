@@ -166,16 +166,16 @@ NSString* stringTrainingTime2(NSInteger trainingTime , enum TrainingTimeFields t
 	sec = remain - (min * SEC_MINUTE);
 	
 	if(days > 0 && (ttf & TTF_Days)){
-		[str appendFormat:@"%ldd ",days];
+		[str appendFormat:@"%ldd ", (long)days];
 	}
 	if(hours > 0 && (ttf & TTF_Hours)){
-		[str appendFormat:@"%ldh ",hours];
+		[str appendFormat:@"%ldh ", (long)hours];
 	}
 	if(min > 0 && (ttf & TTF_Minutes)){
-		[str appendFormat:@"%ldm ",min];
+		[str appendFormat:@"%ldm ", (long)min];
 	}
 	if(sec > 0 && (ttf & TTF_Seconds)){
-		[str appendFormat:@"%lds",sec];
+		[str appendFormat:@"%lds", (long)sec];
 	}
 	
 	if(!(ttf & TTF_Seconds)){

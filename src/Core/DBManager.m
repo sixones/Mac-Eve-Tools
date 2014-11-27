@@ -282,7 +282,7 @@
 		currentVersion = strtol(results[1],NULL,10);
 	}
 	
-	NSLog(@"Database current version: %ld",currentVersion);
+	NSLog(@"Database current version: %ld", (long)currentVersion);
 	
 	sqlite3_free_table(results);
 	sqlite3_close(db);
@@ -408,7 +408,7 @@
 		double percentComplete = (bytesReceived / (double)expectedLength) * (double)100.0;
 		[self progressThread:percentComplete];
 	}else{
-		[self logProgress:[NSString stringWithFormat:@"Received %lu bytes",length]];
+		[self logProgress:[NSString stringWithFormat:@"Received %lu bytes", (unsigned long)length]];
 	}
 }
 

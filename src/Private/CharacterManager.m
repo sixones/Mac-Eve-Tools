@@ -383,7 +383,7 @@
 			}
 		}
 	}
-	NSLog(@"Character %lu not found",characterId);
+	NSLog(@"Character %lu not found", (unsigned long)characterId);
 	return nil;
 }
 

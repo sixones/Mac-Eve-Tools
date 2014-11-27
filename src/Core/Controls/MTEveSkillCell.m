@@ -527,7 +527,7 @@
 	NSMutableAttributedString *astr;
 		
 	/*draw the training to level;*/
-	str = [NSString stringWithFormat:@"Level %ld",skillLevel];
+	str = [NSString stringWithFormat:@"Level %ld", (long)skillLevel];
 	astr = [[[NSMutableAttributedString alloc]initWithString:str]autorelease];
 	
 	NSRange strrange = NSMakeRange(0,[str length]);
@@ -605,7 +605,7 @@
 	if(skillName == nil){
 		NSLog(@"nil skill name for -> %@", [skill typeID ]);
 	}
-	str = [NSString stringWithFormat:@"%@ (%ldx)",[skill skillName],[skill skillRank]];
+	str = [NSString stringWithFormat:@"%@ (%ldx)", [skill skillName], (long)[skill skillRank]];
 	astr = [[[NSMutableAttributedString alloc]initWithString:str]autorelease];
 	/*this needs to be calculated with regard to the skill progress boxes*/  
 	//Skill name rect (upper rect)
@@ -730,7 +730,7 @@
     [(NSControl *)[self controlView] updateCell:self];
 }
 
-- (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
+- (NSCellHitResult)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
 	
     NSPoint point = [controlView convertPoint:[event locationInWindow] fromView:nil];
 	
