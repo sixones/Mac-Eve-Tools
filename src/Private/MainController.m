@@ -34,6 +34,7 @@
 #import "CharacterManager.h"
 #import "MarketViewController.h"
 #import "ContractsViewController.h"
+#import "VitalityMail.h"
 
 #import "GeneralPrefViewController.h"
 #import "AccountPrefViewController.h"
@@ -392,9 +393,15 @@
     [viewControllers addObject:mvc];
     [(NSObject*)mvc release];
 
+    mvc = [[VitalityMail alloc] init];
+    [mvc view];//trigger the awakeFromNib
+    [mvc setInstance:self];
+    [viewControllers addObject:mvc];
+    [mvc release];
+
 	[[self window] makeMainWindow];
 	[[self window] setDelegate:self];
-	[NSApp setDelegate:self];
+	[(NSApplication *)NSApp setDelegate:self];
 		
 #ifdef HAVE_SPARKLE
 	SUUpdater *updater = [SUUpdater sharedUpdater];

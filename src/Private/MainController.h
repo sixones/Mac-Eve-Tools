@@ -35,7 +35,7 @@
 @class CharacterManager;
 
 @interface MainController : NSWindowController 
-	<DBManagerDelegate, NSWindowDelegate ,METInstance>
+	<DBManagerDelegate, NSWindowDelegate ,METInstance, NSApplicationDelegate>
 {
 	IBOutlet NSToolbar *toolbar;
 	

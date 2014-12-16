@@ -8,7 +8,27 @@
 
 #import "VitalityMail.h"
 
+#import "METMail.h"
+
 @implementation VitalityMail
+
+-(id) init
+{
+    if( (self = [super initWithNibName:@"MailView" bundle:nil]) )
+    {
+        mail = [[METMail alloc] init];
+        [mail setDelegate:self];
+    }
+    
+    return self;
+}
+
+- (void)dealloc
+{
+    [character release];
+    [mail release];
+    [super dealloc];
+}
 
 - (void)setCharacter:(Character *)_character
 {
@@ -16,10 +36,13 @@
     {
         [character release];
         character = [_character retain];
-        [app setToolbarMessage:NSLocalizedString(@"Updating Contracts…",@"Updating Contracts status line")];
+        [mail setCharacter:character];
+        [mail reload:self];
+        [app setToolbarMessage:NSLocalizedString(@"Getting Mail…",@"Getting Mail status line")];
         [app startLoadingAnimation];
     }
 }
+
 
 //called after the window has become active
 -(void) viewIsActive
@@ -39,8 +62,9 @@
 
 -(void) viewWillBeActivated
 {
-    [app setToolbarMessage:NSLocalizedString(@"Updating Contracts…",@"Updating Contracts status line")];
+    [app setToolbarMessage:NSLocalizedString(@"Getting Mail…",@"Getting Mail status line")];
     [app startLoadingAnimation];
+    [mail reload:self];
 }
 
 -(void) setInstance:(id<METInstance>)instance
@@ -56,5 +80,21 @@
 {
     return nil;
 }
+
+- (void)mailFinishedUpdating
+{
+//    NSArray *newDescriptors = [contractsTable sortDescriptors];
+//    [contracts sortUsingDescriptors:newDescriptors];
+//    [contractsTable reloadData];
+    [app setToolbarMessage:NSLocalizedString(@"Finished Updating Mail…",@"Finished Updating Mail status line") time:5];
+    [app stopLoadingAnimation];
+}
+
+- (void)mailSkippedUpdating
+{
+    [app setToolbarMessage:NSLocalizedString(@"Using Cached Mail…",@"Using Cached Mail status line") time:5];
+    [app stopLoadingAnimation];
+}
+
 
 @end

@@ -11,11 +11,14 @@
 
 @class Character;
 @class METInstance;
+@class METMail;
 
 @interface VitalityMail : NSViewController <METPluggableView,NSTableViewDataSource>
 {
     Character *character;
     id<METInstance> app;
+    
+    METMail *mail;
 }
 
 @end
