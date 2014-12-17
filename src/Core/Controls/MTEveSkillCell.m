@@ -513,7 +513,7 @@
 
 -(void) drawInfoIcon:(NSRect)bounds
 {
-	[infoIcon drawInRect:bounds fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+	[infoIcon drawInRect:bounds fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:YES hints:nil];
 }
 
 /*
@@ -572,11 +572,8 @@
 	NSImage *book = [skill skillLevel] == 5 ? skillBookV : skillBook;
 	NSRange strrange;
 	
-	[book setFlipped:[controlView isFlipped]];
-	[infoIcon setFlipped:[controlView isFlipped]];
-	
 	NSRect imageRect = [self imageRectForBounds:bounds];
-	[book drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+	[book drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:YES hints:nil];
 	
 	//draw info icon	
 	NSRect infoRect = [self infoButtonRect:bounds];

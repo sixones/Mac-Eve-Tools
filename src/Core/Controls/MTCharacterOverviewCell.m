@@ -131,18 +131,9 @@
 	
 	NSRect portraitFrame = [self portraitRectForBounds:bounds];
 	
-	//Flip the image and unflip when done.
-	if([controlView isFlipped]){
-		[portrait setFlipped:YES];
-	}
-	
-	// Draw the character portrait.
-	[portrait drawInRect:portraitFrame fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-	
-	if([controlView isFlipped]){
-		[portrait setFlipped:NO];
-	}
-	
+    // Draw the character portrait.
+    [portrait drawInRect:portraitFrame fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:YES hints:nil];
+    
 	drawPoint.x = PORTRAIT_SIZE + (PORTRAIT_PADDING * 2.0) + 5.0;
 	drawPoint.y = 0.0;
 	
