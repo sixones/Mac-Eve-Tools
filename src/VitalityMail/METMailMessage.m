@@ -24,7 +24,6 @@
 
 
 @interface METMailMessage()
-@property (readwrite) NSString *stationName;
 @property (readwrite,retain) NSDate *cachedUntil; // For contained items, not the contract itself
 @property (readwrite,retain) NSString *xmlPath;
 @property (readwrite,assign) BOOL loading;
@@ -32,8 +31,6 @@
 @property (readwrite,retain) NSString *issuerCorpName;
 @property (readwrite,retain) NSString *assigneeName;
 @property (readwrite,retain) NSString *acceptorName;
-@property (readwrite,retain) NSString *startStationName;
-@property (readwrite,retain) NSString *endStationName;
 @end
 
 @implementation METMailMessage
@@ -44,6 +41,7 @@
 @synthesize senderName;
 @synthesize subject;
 @synthesize cachedUntil;
+@synthesize body;
 
 - (id)init
 {

@@ -47,10 +47,11 @@
 @property (readwrite,retain) NSString *senderName;
 @property (retain) NSDate *sentDate;
 @property (readwrite,retain) NSString *subject;
-@property (assign) NSUInteger toCropOrAllianceID;
+@property (assign) NSUInteger toCorpOrAllianceID;
 @property (assign) NSUInteger senderTypeID;
-@property (readonly,retain) NSArray *toCharacterIDs;
+@property (readwrite,retain) NSArray *toCharacterIDs;
 @property (assign) NSUInteger toListID;
+@property (readwrite,retain) NSString *body;
 
 @property (readonly,retain) NSDate *cachedUntil; // For contained items, not the contract itself
 

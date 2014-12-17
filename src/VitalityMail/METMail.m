@@ -269,6 +269,18 @@
                 {
                     [message setSubject:value];
                 }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"toCorpOrAllianceID") == 0 )
+                {
+                    [message setToCorpOrAllianceID:[value integerValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"toCharacterIDs") == 0 )
+                {
+                    [message setToCharacterIDs:[value componentsSeparatedByString:@","]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"toListID") == 0 )
+                {
+                    [message setToListID:[value integerValue]];
+                }
             }
             [messages addObject:message];
         }
