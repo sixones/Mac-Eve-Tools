@@ -379,6 +379,11 @@
 	return YES;
 }
 
+/* TODO: Add support for Jump Fatigue:
+ <jumpActivation>2014-12-14 04:48:27</jumpActivation>
+ <jumpFatigue>2014-12-14 05:41:06</jumpFatigue>
+ <jumpLastUpdate>2014-12-14 04:42:37</jumpLastUpdate>
+*/
 -(BOOL) parseXmlSheet:(xmlDoc*)document
 {
 	xmlNode *root_node;
@@ -430,15 +435,8 @@
 			[self addToDictionary:cur_node->name value:getNodeText(cur_node)];
 		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"corporationID") == 0){
 			[self addToDictionary:cur_node->name value:getNodeText(cur_node)];
-		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"cloneName") == 0){
-			[self addToDictionary:cur_node->name value:getNodeText(cur_node)];
-		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"cloneSkillPoints") == 0){
-			[self addToDictionary:cur_node->name value:getNodeText(cur_node)];
 		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"balance") == 0){
 			[self addToDictionary:cur_node->name value:getNodeText(cur_node)];
-		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"attributeEnhancers") == 0){
-			/*process the attribute enhancers in a seperate function*/
-			[self parseAttributeImplants:cur_node];
 		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"attributes") == 0){
 			/*process attributes here*/
 			[self parseAttributes:cur_node];
@@ -459,7 +457,19 @@
             {
                 [self parseImplants:cur_node];
             }
-
+            /* TODO: Parse and display jump clones
+             <rowset name="jumpClones" key="jumpCloneID" columns="jumpCloneID,typeID,locationID,cloneName">
+             <row jumpCloneID="19933997" typeID="164" locationID="60010825" cloneName="" />
+             <row jumpCloneID="20412514" typeID="164" locationID="60010861" cloneName="" />
+             <row jumpCloneID="20842890" typeID="164" locationID="61000260" cloneName="" />
+             </rowset>
+             <rowset name="jumpCloneImplants" key="jumpCloneID" columns="jumpCloneID,typeID,typeName">
+             <row jumpCloneID="19933997" typeID="9899" typeName="Ocular Filter - Basic" />
+             <row jumpCloneID="19933997" typeID="9941" typeName="Memory Augmentation - Basic" />
+             <row jumpCloneID="19933997" typeID="9942" typeName="Neural Boost - Basic" />
+             <row jumpCloneID="19933997" typeID="9943" typeName="Cybernetic Subprocessor - Basic" />
+             </rowset>
+             */
 			xmlFree(rowset_name);
 		}
 	}
@@ -502,39 +512,6 @@
 			baseAttributes[ATTR_PERCEPTION] = value;
 		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"willpower") == 0){
 			baseAttributes[ATTR_WILLPOWER] = value;
-		}
-	}
-	return YES;
-}
-
--(BOOL) parseAttributeImplants:(xmlNode*)attrs
-{
-	/*this loop will iterate over the <perceptionBonus> type tags*/
-	for(xmlNode *attr_node = attrs->children;
-		attr_node != NULL;
-		attr_node = attr_node->next)
-	{
-		if(attr_node->type != XML_ELEMENT_NODE){
-			continue;
-		}
-		
-		xmlNode *node = findChildNode(attr_node,(xmlChar*)"augmentatorValue");
-		if(node == NULL){
-			continue;
-		}
-		
-		NSInteger bonus = [getNodeText(node) integerValue];
-		
-		if(xmlStrcmp(attr_node->name,(xmlChar*)"perceptionBonus") == 0){
-			implantAttributes[ATTR_PERCEPTION] = bonus;
-		}else if(xmlStrcmp(attr_node->name,(xmlChar*)"memoryBonus") == 0){
-			implantAttributes[ATTR_MEMORY] = bonus;
-		}else if(xmlStrcmp(attr_node->name,(xmlChar*)"willpowerBonus") == 0){
-			implantAttributes[ATTR_WILLPOWER] = bonus;
-		}else if(xmlStrcmp(attr_node->name,(xmlChar*)"intelligenceBonus") == 0){
-			implantAttributes[ATTR_INTELLIGENCE] = bonus;
-		}else if(xmlStrcmp(attr_node->name,(xmlChar*)"charismaBonus") == 0){
-			implantAttributes[ATTR_CHARISMA] = bonus;
 		}
 	}
 	return YES;

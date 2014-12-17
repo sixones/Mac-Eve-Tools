@@ -127,23 +127,8 @@
 	[charIsk setObjectValue:[NSDecimalNumber decimalNumberWithString:[character stringForKey:CHAR_BALANCE]]];
 	[charIsk sizeToFit];
 	
-	NSInteger clonePoints = [character integerForKey:CHAR_CLONE_SP];
 	NSInteger charPoints = [character skillPointTotal];
     
-	NSInteger threshold = (CGFloat)clonePoints * 0.95;
-	
-	if((clonePoints < charPoints) || (threshold < charPoints)){
-		//clone is not up to date, make clone SP red to alert the user
-		[cloneSP setTextColor:[NSColor redColor]];
-	}else{
-		[cloneSP setTextColor:[NSColor textColor]];
-	}
-    
-    [cloneSP setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%@ (%@)", nil), [character stringForKey: CHAR_CLONE_NAME], [SPFormatter stringFromNumber:[NSNumber numberWithInteger: clonePoints]] ]];
-    
-	//[cloneSP setObjectValue: [NSNumber numberWithInteger:clonePoints]];
-	[cloneSP sizeToFit];
-	
 	[charSP setObjectValue:[NSNumber numberWithInteger:charPoints]];
 	[charSP sizeToFit];
 	
@@ -421,7 +406,6 @@
 	[f setNumberStyle:NSNumberFormatterDecimalStyle];
 	[f setPositiveSuffix:@" SP"];
 	[charSP setFormatter:f];
-	[cloneSP setFormatter:f];
 	[f release];
 	
 	skillQueueDatasource = [[SkillQueueDatasource alloc]init];
