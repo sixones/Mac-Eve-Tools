@@ -274,6 +274,8 @@
 
 -(SkillPlan*) skillPlanAtIndex:(NSInteger)index
 {
+    if( index >= [skillPlans count] )
+        return nil;
 	return [skillPlans objectAtIndex:index];
 }
 
