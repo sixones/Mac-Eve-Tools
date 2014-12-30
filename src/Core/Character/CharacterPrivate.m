@@ -383,6 +383,20 @@
  <jumpActivation>2014-12-14 04:48:27</jumpActivation>
  <jumpFatigue>2014-12-14 05:41:06</jumpFatigue>
  <jumpLastUpdate>2014-12-14 04:42:37</jumpLastUpdate>
+ 
+ Both jumpFatigue and jumpActivation are time stamps for when those counters expire. So in the above example the character will be able to jump again at 17:33:41 on 2014-10-28 and their fatigue will expire at the same time. jumpLastUpdate is when the last jump occurred by that character. This was included for those who wish to show something like what the EVE client does with timers (such as these). To If you wanted to show something like that you need a start time, and thats what jumpLastUpdate is.
+ 
+http://community.eveonline.com/news/dev-blogs/long-distance-travel-changes-inbound/
+ 
+ 
+ And next available clone jump using this plus skills:
+ <cloneJumpDate>2014-10-08 20:54:50</cloneJumpDate>
+ 
+ And this would be useful when looking at skill plans:
+ <rowset name="multiCharacterTraining" key="trainingEnd" columns="trainingEnd">
+ <row trainingEnd="2014-12-11 14:15:16" />
+ <row trainingEnd="2014-12-11 20:20:20" />
+ </rowset>
 */
 -(BOOL) parseXmlSheet:(xmlDoc*)document
 {

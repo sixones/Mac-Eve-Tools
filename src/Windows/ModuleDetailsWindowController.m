@@ -106,6 +106,7 @@
     NSAttributedString *htmlDescription = [[[NSAttributedString alloc] initWithHTML: htmlDescriptionData baseURL: NULL documentAttributes: NULL] autorelease];
 	
 	[[shipDescription textStorage] setAttributedString: htmlDescription];
+    [shipDescription setNeedsDisplay:YES];
 }
 
 -(BOOL) displayImage
