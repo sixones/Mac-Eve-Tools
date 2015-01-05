@@ -22,6 +22,46 @@
 {
 @private
     METIDtoName *nameFetcher;
+
+    Character *_character;
+    NSString *_xmlPath;
+    BOOL _loading;
+    id<ContractDelegate> _delegate;
+    
+    NSString *_type;
+    NSString *_status;
+    NSUInteger _contractID;
+    NSUInteger _startStationID;
+    NSUInteger _endStationID;
+    double _volume;
+    double _price;
+    double _reward;
+    double _collateral;
+    double _buyout;
+    
+    NSUInteger _issuerID;
+    NSUInteger _issuerCorpID;
+    NSUInteger _assigneeID;
+    NSUInteger _acceptorID;
+    NSString *_issuerName;
+    NSString *_issuerCorpName;
+    NSString *_assigneeName;
+    NSString *_acceptorName;
+    
+    NSDate *_issued;
+    NSDate *_expired;
+    NSDate *_accepted;
+    NSDate *_completed;
+    NSString *_availability;
+    NSString *_title;
+    NSUInteger _days;
+    BOOL _forCorp;
+    
+    NSString *_startStationName;
+    NSString *_endStationName;
+    
+    NSDate *_cachedUntil;
+    NSMutableArray *_items;
 }
 
 @property (retain) Character *character;

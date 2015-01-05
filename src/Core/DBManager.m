@@ -21,6 +21,7 @@
 #import "Config.h"
 #import "XmlHelpers.h"
 #import "XmlFetcher.h"
+#import "METURLRequest.h"
 
 #import "bsd-base64.h"
 
@@ -281,7 +282,7 @@
 		currentVersion = strtol(results[1],NULL,10);
 	}
 	
-	NSLog(@"Database current version: %ld",currentVersion);
+	NSLog(@"Database current version: %ld", (long)currentVersion);
 	
 	sqlite3_free_table(results);
 	sqlite3_close(db);
@@ -407,7 +408,7 @@
 		double percentComplete = (bytesReceived / (double)expectedLength) * (double)100.0;
 		[self progressThread:percentComplete];
 	}else{
-		[self logProgress:[NSString stringWithFormat:@"Received %lu bytes",length]];
+		[self logProgress:[NSString stringWithFormat:@"Received %lu bytes", (unsigned long)length]];
 	}
 }
 
@@ -689,7 +690,7 @@ _finish_cleanup:
 	[self checkForUpdate];
 	
 	NSURL *url = [NSURL URLWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_DB_SQL_URL]];
-	NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    METURLRequest *request = [METURLRequest requestWithURL:url];
 	NSURLDownload *download = [[NSURLDownload alloc]initWithRequest:request delegate:self];
 	
 	if(download == nil){

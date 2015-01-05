@@ -369,13 +369,13 @@
 	while((rc = sqlite3_step(read_overview_stmt)) == SQLITE_ROW){
 		sqlite_int64 planId = sqlite3_column_int64(read_overview_stmt,0);
 		const unsigned char *planName = sqlite3_column_text(read_overview_stmt,1);
-        NSInteger planOrder = sqlite3_column_int64(read_overview_stmt,2);
+        sqlite_int64 planOrder = sqlite3_column_int64(read_overview_stmt,2);
 
 		SkillPlan *sp = [[SkillPlan alloc]
 						 initWithName:[NSString stringWithUTF8String:(const char*)planName]
 						 forCharacter:character
 						 withId:(NSInteger)planId];
-		[sp setPlanOrder:planOrder];
+		[sp setPlanOrder:(NSInteger)planOrder];
         
 		[self readSkillPlanPrivate:sp planId:planId];
 		[skillPlans addObject:sp];

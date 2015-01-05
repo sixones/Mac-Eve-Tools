@@ -130,12 +130,16 @@
 	
 	[pilotTrainingRate setStringValue:
 			[NSString stringWithFormat:@"%ld SP/hr",
-			[character spPerHour:[skill primaryAttr]
+			(long)[character spPerHour:[skill primaryAttr]
 				   secondary:[skill secondaryAttr]]]];
 	[pilotTrainingRate sizeToFit];
 	
-	[skillDescription setStringValue:[skill skillDescription]];
-	//[skillDescription sizeToFit];
+    // Some skills contain html and should be converted to attributed strings before display
+    // E.g. Advanced skill at using Jump Drives. Each skill level grants a 20% increase in maximum jump range.
+    //      <font color="0xffF67828"><b>This skill cannot be trained on Trial Accounts.</b></font>
+    NSString *tempDesc = [[skill skillDescription] stringByReplacingOccurrencesOfString:@"\n" withString:@"<br />\n"];
+    NSAttributedString *display = [[[NSAttributedString alloc] initWithHTML:[tempDesc dataUsingEncoding:NSUTF8StringEncoding] options:nil documentAttributes:nil] autorelease];
+	[skillDescription setAttributedStringValue:display];
 	
 	[skillPrerequisites setDelegate:self];
 	[skillPoints setDelegate:self];

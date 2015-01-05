@@ -13,6 +13,10 @@
  If the user re-orders columns the menu will be updated to reflect the new order.
  */
 @interface MetTableHeaderMenuManager : NSObject
+{
+    NSTableView *_table;
+    NSMenu *_menu;
+}
 
 @property (retain,readonly) NSTableView *table;
 @property (retain,readonly) NSMenu *menu;

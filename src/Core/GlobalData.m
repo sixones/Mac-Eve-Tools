@@ -33,6 +33,7 @@
 @synthesize dateFormatter;
 @synthesize certTree;
 @synthesize database;
+@synthesize userAgent = _userAgent;
 
 static GlobalData *_privateDataSingleton = nil;
 
@@ -43,6 +44,7 @@ static GlobalData *_privateDataSingleton = nil;
 	[certTree release];
 	[dateFormatter release];
 	[database release];
+    [_userAgent release];
 	[super dealloc];
 }
 
@@ -74,7 +76,10 @@ static GlobalData *_privateDataSingleton = nil;
 	
 	skillTree = [st retain];
 	certTree = [ct retain];
-		
+    
+    // Default User-Agent would be something like: "Vitality/0.3.0a CFNetwork/673.3 Darwin/13.4.0 (x86_64) (MacPro6%2C1)"
+    _userAgent = [[NSString alloc] initWithFormat:@"Vitality/%@ (https://github.com/sixones/vitality)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    
     return self;
 }
 
@@ -97,7 +102,7 @@ static GlobalData *_privateDataSingleton = nil;
 }
 
 
--(unsigned long)retainCount {
+-(NSUInteger)retainCount {
     return UINT_MAX;  //denotes an object that cannot be release
 }
 

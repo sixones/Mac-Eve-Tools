@@ -12,8 +12,9 @@
 #import "GlobalData.h"
 #import "XmlHelpers.h"
 #import "CCPDatabase.h"
-#include <assert.h>
+#import "METURLRequest.h"
 
+#include <assert.h>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #import <sqlite3.h>
@@ -25,7 +26,8 @@
 
 @implementation METIDtoName
 
-@synthesize cachedUntil;
+@synthesize cachedUntil = _cachedUntil;
+@synthesize delegate = _delegate;
 
 + (NSString *)reloadNotificationName
 {
@@ -37,7 +39,7 @@
     if( self = [super init] )
     {
         xmlData = [[NSMutableData alloc] init];
-        cachedUntil = [[NSDate distantPast] retain];
+        _cachedUntil = [[NSDate distantPast] retain];
         cachedNames = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -46,7 +48,7 @@
 - (void)dealloc
 {
     [xmlData release];
-    [cachedUntil release];
+    [_cachedUntil release];
     [cachedNames release];
     [super dealloc];
 }
@@ -82,7 +84,7 @@
 
 - (void)namesForIDs:(NSSet *)IDs
 {
-    if( [cachedUntil isGreaterThan:[NSDate date]] )
+    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
     {
         NSLog( @"Skipping download of Names from IDs because of Cached Until date" );
         return;
@@ -105,7 +107,7 @@
     urlPath = [NSString stringWithFormat:@"%@?ids=%@",urlPath,IDString];
 	NSURL *url = [NSURL URLWithString:urlPath];
     
-	NSURLRequest *request = [NSURLRequest requestWithURL:url];
+	METURLRequest *request = [METURLRequest requestWithURL:url];
     [NSURLConnection connectionWithRequest:request delegate:self];
 }
 

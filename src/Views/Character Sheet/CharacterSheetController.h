@@ -39,7 +39,6 @@
 	IBOutlet NSTextField *charName;
 	IBOutlet NSTextField *charIsk;
 	IBOutlet NSTextField *charSP;
-	IBOutlet NSTextField *cloneSP;
 	
 	IBOutlet NSTextField *charKnownSkills;
 	IBOutlet NSTextField *charTraining;

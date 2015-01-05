@@ -53,6 +53,8 @@
     NSDate *expires;
 
 	id <APIKeyValidationDelegate> delegate;
+    
+    NSString *savePath;
 }
 
 /**

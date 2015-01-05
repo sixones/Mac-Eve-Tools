@@ -32,8 +32,13 @@
 	Contract *contract;
 	Character *character;
 	MTISKFormatter *iskFormatter;
+
+    NSArray *_labels;
+    NSArray *_values;
 }
 
+@property (readonly,retain) NSArray *labels;
+@property (readonly,retain) NSArray *values;
 
 /* Display details of a contract */
 +(void) displayContract:(Contract *)_contract forCharacter:(Character*)ch;

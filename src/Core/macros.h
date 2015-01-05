@@ -35,7 +35,6 @@
 #define CHAR_CORP_NAME @"corporationName"
 #define CHAR_CORP_ID @"corporationID"
 #define CHAR_CLONE_NAME @"cloneName"
-#define CHAR_CLONE_SP @"cloneSkillPoints"
 #define CHAR_BALANCE @"balance"
 
 #define CHAR_TRAINING_END @"trainingEndTime"

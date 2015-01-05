@@ -19,6 +19,7 @@
 
 #import "ServerMonitor.h"
 #import "Config.h"
+#import "METURLRequest.h"
 
 #import "XmlHelpers.h"
 
@@ -73,7 +74,7 @@
 {
 	NSString *urlPath = [Config getApiUrl:XMLAPI_SERVER_STATUS keyID:nil verificationCode:nil charId:nil];
 	NSURL *url = [NSURL URLWithString:urlPath];
-	NSURLRequest *request = [NSURLRequest requestWithURL:url];
+	METURLRequest *request = [METURLRequest requestWithURL:url];
 	[NSURLConnection connectionWithRequest:request delegate:self];
 }
 

@@ -9,10 +9,10 @@
 #import "METTrait.h"
 
 @implementation METTrait
-@synthesize skillName;
-@synthesize bonus;
-@synthesize bonusString;
-@synthesize unitString;
+@synthesize skillName = _skillName;
+@synthesize bonus = _bonus;
+@synthesize bonusString = _bonusString;
+@synthesize unitString = _unitString;
 
 - (NSComparisonResult)compare:(id)other
 {

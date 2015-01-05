@@ -18,7 +18,7 @@
  */
 
 #import "XMLDownloadOperation.h"
-
+#import "METURLRequest.h"
 
 @implementation XMLDownloadOperation
 
@@ -33,7 +33,7 @@
 	
 	NSURL *url = [NSURL URLWithString:fullDocUrl];
 	
-	NSURLRequest *request = [[[NSURLRequest alloc]initWithURL:url]autorelease];
+	METURLRequest *request = [[[METURLRequest alloc] initWithURL:url]autorelease];
 	
 	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
 		

@@ -69,7 +69,7 @@ static Config *sharedSingletonCfg = nil;
 }
 
 
--(unsigned long)retainCount {
+-(NSUInteger)retainCount {
     return UINT_MAX;  //denotes an object that cannot be release
 }
 
@@ -409,7 +409,7 @@ static Config *sharedSingletonCfg = nil;
 
 -(NSString*) pathForImageType:(NSInteger)typeID
 {
-	return [NSString stringWithFormat:@"%@/Cache/types/%ld_64.png", [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH],typeID];
+	return [NSString stringWithFormat:@"%@/Cache/types/%ld_64.png", [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH], (long)typeID];
 }
 
 -(NSString*) urlForImageType:(NSInteger)typeID
@@ -417,14 +417,14 @@ static Config *sharedSingletonCfg = nil;
 	NSMutableString *url = [NSMutableString string];
 	
 	[url appendFormat:@"%@", [[NSUserDefaults standardUserDefaults] stringForKey:UD_IMAGE_URL]];
-	[url appendFormat:@"Type/%ld_64.png",typeID];
+	[url appendFormat:@"Type/%ld_64.png", (long)typeID];
 	
 	return url;
 }
 
 -(NSString*) pathForImageRender:(NSInteger)typeID
 {
-	return [NSString stringWithFormat:@"%@/Cache/renders/%ld_64.png", [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH],typeID];
+	return [NSString stringWithFormat:@"%@/Cache/renders/%ld_64.png", [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH], (long)typeID];
 }
 
 -(NSString*) urlForImageRender:(NSInteger)typeID
@@ -432,7 +432,7 @@ static Config *sharedSingletonCfg = nil;
 	NSMutableString *url = [NSMutableString string];
 	
 	[url appendFormat:@"%@", [[NSUserDefaults standardUserDefaults] stringForKey:UD_IMAGE_URL]];
-	[url appendFormat:@"Render/%ld_64.png",typeID];
+	[url appendFormat:@"Render/%ld_64.png", (long)typeID];
 	
 	return url;
 }

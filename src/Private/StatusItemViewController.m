@@ -25,6 +25,8 @@
 	[characterBalance setFormatter: iskFormatter];
 	[iskFormatter release];
     
+    [skillQueueHeader setWarn:NO];
+
     [self clearCharacter];
     [self updateCharacterDetails];
 }

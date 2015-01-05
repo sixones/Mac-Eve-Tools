@@ -190,7 +190,7 @@
 	SkillTree *st = [[GlobalData sharedInstance]skillTree];
 	NSLog(@"Printing plan");
 	for(SkillPair *p in skillPlan){
-		NSLog(@"%@ level %ld",[[st skillForId:[p typeID]]skillName], [p skillLevel]);
+		NSLog(@"%@ level %ld",[[st skillForId:[p typeID]]skillName], (long)[p skillLevel]);
 	}
 	NSLog(@"Done printing plan");
 }
@@ -647,7 +647,7 @@ static NSDictionary *masterSkillSet = nil;;
 	}
 	if((i = [index count]) > 0){
 		[skillPlan removeObjectsAtIndexes:index];
-		NSLog(@"remove %ld completed skills from plan",[index count]);
+		NSLog(@"remove %ld completed skills from plan", (unsigned long)[index count]);
 		[self savePlan];
         [self updateManualOrder];
 	}
@@ -665,7 +665,7 @@ static NSDictionary *masterSkillSet = nil;;
 	}
 	
 	if((NSUInteger)skillIndex >= [skillPlan count]){
-		NSLog(@"Error: %ld is out of bounds (%ld)",skillIndex,[skillPlan count]);
+		NSLog(@"Error: %ld is out of bounds (%ld)", (long)skillIndex, (unsigned long)[skillPlan count]);
 	}
 	
 	return [skillDates objectAtIndex:skillIndex * 2];
@@ -678,7 +678,7 @@ static NSDictionary *masterSkillSet = nil;;
 	}
 	
 	if((NSUInteger)skillIndex >= [skillPlan count]){
-		NSLog(@"Error: %ld is out of bounds (%ld)",skillIndex,[skillPlan count]);
+		NSLog(@"Error: %ld is out of bounds (%ld)", (long)skillIndex, (unsigned long)[skillPlan count]);
 	}
 	
 	return [skillDates objectAtIndex:(skillIndex*2)+1];

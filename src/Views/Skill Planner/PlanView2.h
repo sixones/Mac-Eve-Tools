@@ -50,6 +50,7 @@
 @property (readwrite,nonatomic,assign) id delegate;
 
 -(IBAction) antiPlanButtonClick:(id)sender;
+-(IBAction) displayPlanByPlanId:(NSInteger)tag;
 
 -(void) addSkillArrayToActivePlan:(NSArray*)skillArray;
 

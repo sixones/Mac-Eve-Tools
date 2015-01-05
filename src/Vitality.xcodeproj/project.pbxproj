@@ -100,6 +100,8 @@
 		A1C44C761A366AC600443AE2 /* METMailMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C44C701A366AC600443AE2 /* METMailMessage.m */; };
 		A1C44C791A3A5ABC00443AE2 /* MailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C44C771A3A5ABC00443AE2 /* MailView.xib */; };
 		A1C44C7A1A3A5ABC00443AE2 /* MailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C44C771A3A5ABC00443AE2 /* MailView.xib */; };
+		A1C44C681A24EEC100443AE2 /* METURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C44C671A24EEC100443AE2 /* METURLRequest.m */; };
+		A1E4374A1A23C05200B19A34 /* CCPImplant.m in Sources */ = {isa = PBXBuildFile; fileRef = A1E437491A23C05200B19A34 /* CCPImplant.m */; };
 		A1FCD0501822DED500A6655A /* ContractItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD04F1822DED500A6655A /* ContractItem.m */; };
 		A1FCD0561829881600A6655A /* METIDtoName.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD0551829881600A6655A /* METIDtoName.m */; };
 		C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */ = {isa = PBXBuildFile; fileRef = C911FED610782C50000D88E2 /* CharacterParseError.m */; };
@@ -137,7 +139,6 @@
 		C9EB4F50105A16BD009192BC /* GenericDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C9EB4F4F105A16BD009192BC /* GenericDownloadOperation.m */; };
 		C9F5143E10566CA200654F6D /* CharacterSheetPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F5143D10566CA200654F6D /* CharacterSheetPlugin.m */; };
 		C9F514951056721300654F6D /* MainController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F5148E1056721300654F6D /* MainController.m */; };
-		C9F514971056721300654F6D /* MTSegmentedCellCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F514911056721300654F6D /* MTSegmentedCellCategory.m */; };
 		C9F514981056721300654F6D /* MTTableViewCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F514931056721300654F6D /* MTTableViewCategory.m */; };
 		C9F514A11056725600654F6D /* CharacterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F514A01056725600654F6D /* CharacterManager.m */; };
 		C9FAF5371160532D000EC789 /* AttributeModifierController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FAF5361160532D000EC789 /* AttributeModifierController.m */; };
@@ -168,7 +169,6 @@
 		C9FF478E10550BA60044BBAC /* MTEveSkillCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF470610550BA50044BBAC /* MTEveSkillCell.m */; };
 		C9FF478F10550BA60044BBAC /* MTEveSkillQueueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF470810550BA50044BBAC /* MTEveSkillQueueCell.m */; };
 		C9FF479010550BA60044BBAC /* MTEveSkillQueueHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF470A10550BA50044BBAC /* MTEveSkillQueueHeader.m */; };
-		C9FF479110550BA60044BBAC /* MTSegmentedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF470C10550BA50044BBAC /* MTSegmentedCell.m */; };
 		C9FF479410550BA60044BBAC /* MTSkillProgressCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF471210550BA50044BBAC /* MTSkillProgressCell.m */; };
 		C9FF479510550BA60044BBAC /* MTTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF471410550BA50044BBAC /* MTTableView.m */; };
 		C9FF479610550BA60044BBAC /* DBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF471610550BA50044BBAC /* DBManager.m */; };
@@ -320,6 +320,10 @@
 		A1C44C6F1A366AC600443AE2 /* METMailMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METMailMessage.h; sourceTree = "<group>"; };
 		A1C44C701A366AC600443AE2 /* METMailMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METMailMessage.m; sourceTree = "<group>"; };
 		A1C44C781A3A5ABC00443AE2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MailView.xib; sourceTree = "<group>"; };
+		A1C44C661A24EEC100443AE2 /* METURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METURLRequest.h; sourceTree = "<group>"; };
+		A1C44C671A24EEC100443AE2 /* METURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METURLRequest.m; sourceTree = "<group>"; };
+		A1E437481A23C05200B19A34 /* CCPImplant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPImplant.h; sourceTree = "<group>"; };
+		A1E437491A23C05200B19A34 /* CCPImplant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPImplant.m; sourceTree = "<group>"; };
 		A1FCD04E1822DED500A6655A /* ContractItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractItem.h; sourceTree = "<group>"; };
 		A1FCD04F1822DED500A6655A /* ContractItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractItem.m; sourceTree = "<group>"; };
 		A1FCD05118245DDC00A6655A /* MetLabelValueTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetLabelValueTableCellView.h; path = Core/MetLabelValueTableCellView.h; sourceTree = SOURCE_ROOT; };
@@ -894,6 +898,8 @@
 				A147AB39184D4C6B009D2A08 /* MTAPIKey.m */,
 				A112AD5C18E48D80001AF74B /* MetTableHeaderMenuManager.h */,
 				A112AD5D18E48D80001AF74B /* MetTableHeaderMenuManager.m */,
+				A1C44C661A24EEC100443AE2 /* METURLRequest.h */,
+				A1C44C671A24EEC100443AE2 /* METURLRequest.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1018,6 +1024,8 @@
 				A1FCD0551829881600A6655A /* METIDtoName.m */,
 				A12EE8D2197D98E000ED6478 /* METTrait.h */,
 				A12EE8D3197D98E000ED6478 /* METTrait.m */,
+				A1E437481A23C05200B19A34 /* CCPImplant.h */,
+				A1E437491A23C05200B19A34 /* CCPImplant.m */,
 			);
 			path = "CCP Database";
 			sourceTree = "<group>";
@@ -1319,9 +1327,9 @@
 				C9FF478C10550BA60044BBAC /* MTCharacterOverviewCell.m in Sources */,
 				C9FF478D10550BA60044BBAC /* MTCountdown.m in Sources */,
 				C9FF478E10550BA60044BBAC /* MTEveSkillCell.m in Sources */,
+				A1C44C681A24EEC100443AE2 /* METURLRequest.m in Sources */,
 				C9FF478F10550BA60044BBAC /* MTEveSkillQueueCell.m in Sources */,
 				C9FF479010550BA60044BBAC /* MTEveSkillQueueHeader.m in Sources */,
-				C9FF479110550BA60044BBAC /* MTSegmentedCell.m in Sources */,
 				C9FF479410550BA60044BBAC /* MTSkillProgressCell.m in Sources */,
 				C9FF479510550BA60044BBAC /* MTTableView.m in Sources */,
 				C9FF479610550BA60044BBAC /* DBManager.m in Sources */,
@@ -1340,6 +1348,7 @@
 				C9FF47A710550BA60044BBAC /* CCPMarketGroup.m in Sources */,
 				C9FF47A810550BA60044BBAC /* CCPMarketSubGroup.m in Sources */,
 				C9FF47A910550BA60044BBAC /* METShip.m in Sources */,
+				A1E4374A1A23C05200B19A34 /* CCPImplant.m in Sources */,
 				C9FF47AA10550BA60044BBAC /* CCPType.m in Sources */,
 				C9FF47AB10550BA60044BBAC /* METSubGroup.m in Sources */,
 				C9FF47AC10550BA60044BBAC /* CharacterDatabase.m in Sources */,
@@ -1360,7 +1369,6 @@
 				C9FF48D91055151F0044BBAC /* GlobalData.m in Sources */,
 				C9F5143E10566CA200654F6D /* CharacterSheetPlugin.m in Sources */,
 				C9F514951056721300654F6D /* MainController.m in Sources */,
-				C9F514971056721300654F6D /* MTSegmentedCellCategory.m in Sources */,
 				C9F514981056721300654F6D /* MTTableViewCategory.m in Sources */,
 				C9F514A11056725600654F6D /* CharacterManager.m in Sources */,
 				C9EB4EC9105A0883009192BC /* CharacterTemplate.m in Sources */,
@@ -1702,7 +1710,10 @@
 				GCC_PREPROCESSOR_DEFINITIONS = HAVE_SPARKLE;
 				INFOPLIST_FILE = vitality.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = NO;
+				PER_ARCH_CFLAGS_i386 = "";
+				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
 				SDKROOT = macosx;
 			};
@@ -1724,8 +1735,10 @@
 				GCC_PREFIX_HEADER = vitality.pch;
 				INFOPLIST_FILE = vitality.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				ONLY_ACTIVE_ARCH = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = NO;
+				PER_ARCH_CFLAGS_i386 = "";
+				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
 				SDKROOT = macosx;
 			};
@@ -1836,7 +1849,9 @@
 				GCC_PREFIX_HEADER = vitality.pch;
 				INFOPLIST_FILE = vitality.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PER_ARCH_CFLAGS_i386 = "";
+				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
 				SDKROOT = macosx;
 			};

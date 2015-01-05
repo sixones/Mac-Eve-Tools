@@ -30,26 +30,25 @@
 
 @implementation Contracts
 
-@synthesize character = _character;
-@synthesize contracts;
-@synthesize xmlPath;
-@synthesize cachedUntil;
-@synthesize delegate;
+@synthesize contracts = _contracts;
+@synthesize xmlPath = _xmlPath;
+@synthesize cachedUntil = _cachedUntil;
+@synthesize delegate = _delegate;
 
 - (id)init
 {
     if( self = [super init] )
     {
-        contracts = [[NSMutableArray alloc] init];
-        cachedUntil = [[NSDate distantPast] retain];
+        _contracts = [[NSMutableArray alloc] init];
+        _cachedUntil = [[NSDate distantPast] retain];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [contracts release];
-    [cachedUntil release];
+    [_contracts release];
+    [_cachedUntil release];
     [super dealloc];
 }
 
@@ -71,7 +70,7 @@
 
 - (void)sortUsingDescriptors:(NSArray *)descriptors
 {
-    [contracts sortUsingDescriptors:descriptors];
+    [[self contracts] sortUsingDescriptors:descriptors];
 }
 
 - (IBAction)reload:(id)sender
@@ -79,13 +78,13 @@
     if( ![self character] )
         return;
     
-    if( [cachedUntil isGreaterThan:[NSDate date]] )
+    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
     {
-        NSLog( @"Skipping download of Contracts because of Cached Until date: %@", cachedUntil );
+        NSLog( @"Skipping download of Contracts because of Cached Until date: %@", [self cachedUntil] );
         // Turn off the spinning download indicator
-        if( [delegate respondsToSelector:@selector(contractsSkippedUpdating)] )
+        if( [[self delegate] respondsToSelector:@selector(contractsSkippedUpdating)] )
         {
-            [delegate performSelector:@selector(contractsSkippedUpdating)];
+            [[self delegate] performSelector:@selector(contractsSkippedUpdating)];
         }
         return;
     }
@@ -159,10 +158,10 @@
 {
     // read data from marketFile and create an xmlDoc
     // parse it
-    xmlDoc *doc = xmlReadFile( [xmlPath fileSystemRepresentation], NULL, 0 );
+    xmlDoc *doc = xmlReadFile( [[self xmlPath] fileSystemRepresentation], NULL, 0 );
 	if( doc == NULL )
     {
-		NSLog(@"Failed to read %@",xmlPath);
+		NSLog(@"Failed to read %@",[self xmlPath]);
 		return;
 	}
 	[self parseXmlContracts:doc];
@@ -217,7 +216,7 @@
 		return NO;
 	}
 
-    [contracts removeAllObjects];
+    [[self contracts] removeAllObjects];
     
 	for( xmlNode *cur_node = rowset->children;
 		 NULL != cur_node;
@@ -329,7 +328,7 @@
                     [contract setAcceptorID:[value integerValue]];
                 }
             }
-            [contracts addObject:contract];
+            [[self contracts] addObject:contract];
         }
 	}
     
@@ -344,9 +343,9 @@
 
     }
     
-    if( [delegate respondsToSelector:@selector(contractsFinishedUpdating)] )
+    if( [[self delegate] respondsToSelector:@selector(contractsFinishedUpdating)] )
     {
-        [delegate performSelector:@selector(contractsFinishedUpdating)];
+        [[self delegate] performSelector:@selector(contractsFinishedUpdating)];
     }
 	return YES;
 }

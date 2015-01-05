@@ -24,6 +24,9 @@
 #import "XmlHelpers.h"
 #import "CharacterDatabase.h"
 #import "SkillPlan.h"
+#import "CCPType.h"
+#import "CCPDatabase.h"
+#import "CCPImplant.h"
 
 #import "XMLDownloadOperation.h"
 
@@ -376,6 +379,25 @@
 	return YES;
 }
 
+/* TODO: Add support for Jump Fatigue:
+ <jumpActivation>2014-12-14 04:48:27</jumpActivation>
+ <jumpFatigue>2014-12-14 05:41:06</jumpFatigue>
+ <jumpLastUpdate>2014-12-14 04:42:37</jumpLastUpdate>
+ 
+ Both jumpFatigue and jumpActivation are time stamps for when those counters expire. So in the above example the character will be able to jump again at 17:33:41 on 2014-10-28 and their fatigue will expire at the same time. jumpLastUpdate is when the last jump occurred by that character. This was included for those who wish to show something like what the EVE client does with timers (such as these). To If you wanted to show something like that you need a start time, and thats what jumpLastUpdate is.
+ 
+http://community.eveonline.com/news/dev-blogs/long-distance-travel-changes-inbound/
+ 
+ 
+ And next available clone jump using this plus skills:
+ <cloneJumpDate>2014-10-08 20:54:50</cloneJumpDate>
+ 
+ And this would be useful when looking at skill plans:
+ <rowset name="multiCharacterTraining" key="trainingEnd" columns="trainingEnd">
+ <row trainingEnd="2014-12-11 14:15:16" />
+ <row trainingEnd="2014-12-11 20:20:20" />
+ </rowset>
+*/
 -(BOOL) parseXmlSheet:(xmlDoc*)document
 {
 	xmlNode *root_node;
@@ -427,15 +449,8 @@
 			[self addToDictionary:cur_node->name value:getNodeText(cur_node)];
 		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"corporationID") == 0){
 			[self addToDictionary:cur_node->name value:getNodeText(cur_node)];
-		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"cloneName") == 0){
-			[self addToDictionary:cur_node->name value:getNodeText(cur_node)];
-		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"cloneSkillPoints") == 0){
-			[self addToDictionary:cur_node->name value:getNodeText(cur_node)];
 		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"balance") == 0){
 			[self addToDictionary:cur_node->name value:getNodeText(cur_node)];
-		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"attributeEnhancers") == 0){
-			/*process the attribute enhancers in a seperate function*/
-			[self parseAttributeImplants:cur_node];
 		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"attributes") == 0){
 			/*process attributes here*/
 			[self parseAttributes:cur_node];
@@ -443,13 +458,32 @@
 			
 			xmlChar* rowset_name = xmlGetProp(cur_node,(xmlChar*)"name");
 			
-			if(xmlStrcmp(rowset_name,(xmlChar*)"skills") == 0){
+			if(xmlStrcmp(rowset_name,(xmlChar*)"skills") == 0)
+            {
 				/*process the skills for the character here.*/
 				[self buildSkillTree:cur_node];
-			}else if(xmlStrcmp(rowset_name,(xmlChar*)"certificates") == 0){
+			}
+            else if(xmlStrcmp(rowset_name,(xmlChar*)"certificates") == 0)
+            {
 				[self parseCertList:cur_node];
 			}
-			
+            else if(xmlStrcmp(rowset_name,(xmlChar*)"implants") == 0)
+            {
+                [self parseImplants:cur_node];
+            }
+            /* TODO: Parse and display jump clones
+             <rowset name="jumpClones" key="jumpCloneID" columns="jumpCloneID,typeID,locationID,cloneName">
+             <row jumpCloneID="19933997" typeID="164" locationID="60010825" cloneName="" />
+             <row jumpCloneID="20412514" typeID="164" locationID="60010861" cloneName="" />
+             <row jumpCloneID="20842890" typeID="164" locationID="61000260" cloneName="" />
+             </rowset>
+             <rowset name="jumpCloneImplants" key="jumpCloneID" columns="jumpCloneID,typeID,typeName">
+             <row jumpCloneID="19933997" typeID="9899" typeName="Ocular Filter - Basic" />
+             <row jumpCloneID="19933997" typeID="9941" typeName="Memory Augmentation - Basic" />
+             <row jumpCloneID="19933997" typeID="9942" typeName="Neural Boost - Basic" />
+             <row jumpCloneID="19933997" typeID="9943" typeName="Cybernetic Subprocessor - Basic" />
+             </rowset>
+             */
 			xmlFree(rowset_name);
 		}
 	}
@@ -497,37 +531,39 @@
 	return YES;
 }
 
--(BOOL) parseAttributeImplants:(xmlNode*)attrs
+/*
+<rowset name="implants" key="typeID" columns="typeID,typeName">
+<row typeID="13283" typeName="Limited Ocular Filter" />
+<row typeID="9956" typeName="Social Adaptation Chip - Basic" />
+<row typeID="9941" typeName="Memory Augmentation - Basic" />
+<row typeID="9943" typeName="Cybernetic Subprocessor - Basic" />
+</rowset>
+*/
+-(BOOL) parseImplants:(xmlNode*)attrs
 {
-	/*this loop will iterate over the <perceptionBonus> type tags*/
-	for(xmlNode *attr_node = attrs->children;
-		attr_node != NULL;
-		attr_node = attr_node->next)
-	{
-		if(attr_node->type != XML_ELEMENT_NODE){
-			continue;
-		}
-		
-		xmlNode *node = findChildNode(attr_node,(xmlChar*)"augmentatorValue");
-		if(node == NULL){
-			continue;
-		}
-		
-		NSInteger bonus = [getNodeText(node) integerValue];
-		
-		if(xmlStrcmp(attr_node->name,(xmlChar*)"perceptionBonus") == 0){
-			implantAttributes[ATTR_PERCEPTION] = bonus;
-		}else if(xmlStrcmp(attr_node->name,(xmlChar*)"memoryBonus") == 0){
-			implantAttributes[ATTR_MEMORY] = bonus;
-		}else if(xmlStrcmp(attr_node->name,(xmlChar*)"willpowerBonus") == 0){
-			implantAttributes[ATTR_WILLPOWER] = bonus;
-		}else if(xmlStrcmp(attr_node->name,(xmlChar*)"intelligenceBonus") == 0){
-			implantAttributes[ATTR_INTELLIGENCE] = bonus;
-		}else if(xmlStrcmp(attr_node->name,(xmlChar*)"charismaBonus") == 0){
-			implantAttributes[ATTR_CHARISMA] = bonus;
-		}
-	}
-	return YES;
+    CCPDatabase *ccpdb = [[GlobalData sharedInstance] database];
+
+    for(xmlNode *attr_node = attrs->children;
+        attr_node != NULL;
+        attr_node = attr_node->next)
+    {
+        if(attr_node->type != XML_ELEMENT_NODE){
+            continue;
+        }
+        
+        xmlChar* typeID = xmlGetProp(attr_node,(xmlChar*)"typeID");
+//        xmlChar* typeName = xmlGetProp(attr_node,(xmlChar*)"typeName");
+        
+        NSString *typeIDString = [NSString stringWithUTF8String:(const char *)typeID];
+        CCPImplant *implant = [ccpdb implantWithID:[typeIDString integerValue]]; // save these if/when we have some other use for them. E.g. showing the user what implants they have injected
+        implantAttributes[ATTR_PERCEPTION] += [implant perception];
+        implantAttributes[ATTR_MEMORY] += [implant memory];
+        implantAttributes[ATTR_WILLPOWER] += [implant willpower];
+        implantAttributes[ATTR_INTELLIGENCE] += [implant intelligence];
+        implantAttributes[ATTR_CHARISMA] += [implant charisma];
+
+    }
+    return YES;
 }
 
 -(void) addToDictionary:(const xmlChar*)xmlKey value:(NSString*)value

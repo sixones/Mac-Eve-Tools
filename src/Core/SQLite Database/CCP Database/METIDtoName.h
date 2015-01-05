@@ -16,6 +16,9 @@
 {
     NSMutableData *xmlData;
     NSMutableDictionary *cachedNames; // temporary cache only. Actual data is pulled from the local database or an API call
+
+    id _delegate;
+    NSDate *_cachedUntil;
 }
 
 @property (readwrite,assign) id delegate;

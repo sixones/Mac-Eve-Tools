@@ -1,9 +1,16 @@
 #!/bin/bash
 
+# requirements:
+# MySQL running, with connection information in db_config.py
+# The EVE sde imported into MySQL
+# MySQL-python installed
+# PyYAML installed
+
 DBEXPORT=database.sql
 
-DBVERSION=17
-DBEXPANSION="Oceanus 1.0"
+# This should match what's in the application's user defaults under UD_DATABASE_MIN_VERSION
+DBVERSION=19
+DBEXPANSION="Phoebe 1.0"
 
 VERQUERY="INSERT INTO version VALUES ($DBVERSION,'$DBEXPANSION');"
 
@@ -37,7 +44,7 @@ XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 </EveDatabaseExport>"
 
 
-echo $XML > database.xml
+echo "$XML" > database.xml
 
 rm -f $DBEXPORT
 #rm -f tempdb.db

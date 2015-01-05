@@ -18,6 +18,13 @@
  */
 
 @interface METTrait : NSObject
+{
+    NSString *_skillName;
+    double _bonus;
+    NSString *_bonusString;
+    NSString *_unitString;
+}
+
 @property (readwrite,retain) NSString *skillName;
 @property (readwrite) double bonus;
 @property (readwrite,retain) NSString *bonusString;

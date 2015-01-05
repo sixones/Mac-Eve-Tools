@@ -31,25 +31,25 @@
 @implementation MarketOrders
 
 @synthesize character = _character;
-@synthesize orders;
-@synthesize xmlPath;
-@synthesize cachedUntil;
-@synthesize delegate;
+@synthesize orders = _orders;
+@synthesize xmlPath = _xmlPath;
+@synthesize cachedUntil = _cachedUntil;
+@synthesize delegate = _delegate;
 
 - (id)init
 {
     if( self = [super init] )
     {
-        orders = [[NSMutableArray alloc] init];
-        cachedUntil = [[NSDate distantPast] retain];
+        _orders = [[NSMutableArray alloc] init];
+        _cachedUntil = [[NSDate distantPast] retain];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [orders release];
-    [cachedUntil release];
+    [_orders release];
+    [_cachedUntil release];
     [super dealloc];
 }
 
@@ -71,7 +71,7 @@
 
 - (void)sortUsingDescriptors:(NSArray *)descriptors
 {
-    [orders sortUsingDescriptors:descriptors];
+    [[self orders] sortUsingDescriptors:descriptors];
 }
 
 - (IBAction)reload:(id)sender
@@ -79,13 +79,13 @@
     if( ![self character] )
         return;
     
-    if( [cachedUntil isGreaterThan:[NSDate date]] )
+    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
     {
-        NSLog( @"Skipping download of Market Orders because of Cached Until date: %@", cachedUntil );
+        NSLog( @"Skipping download of Market Orders because of Cached Until date: %@", [self cachedUntil] );
         // Turn off the spinning download indicator
-        if( [delegate respondsToSelector:@selector(ordersSkippedUpdating)] )
+        if( [[self delegate] respondsToSelector:@selector(ordersSkippedUpdating)] )
         {
-            [delegate performSelector:@selector(ordersSkippedUpdating)];
+            [[self delegate] performSelector:@selector(ordersSkippedUpdating)];
         }
         return;
     }
@@ -159,10 +159,10 @@
 {
     // read data from marketFile and create an xmlDoc
     // parse it
-    xmlDoc *doc = xmlReadFile( [xmlPath fileSystemRepresentation], NULL, 0 );
+    xmlDoc *doc = xmlReadFile( [[self xmlPath] fileSystemRepresentation], NULL, 0 );
 	if( doc == NULL )
     {
-		NSLog(@"Failed to read %@",xmlPath);
+		NSLog(@"Failed to read %@",[self xmlPath]);
 	}
     else
     {
@@ -170,9 +170,9 @@
         xmlFreeDoc(doc);
     }
 
-    if( [delegate respondsToSelector:@selector(ordersFinishedUpdating)] )
+    if( [[self delegate] respondsToSelector:@selector(ordersFinishedUpdating)] )
     {
-        [delegate performSelector:@selector(ordersFinishedUpdating)];
+        [[self delegate] performSelector:@selector(ordersFinishedUpdating)];
     }
 }
 
@@ -223,7 +223,7 @@
 		return NO;
 	}
 
-    [orders removeAllObjects];
+    [[self orders] removeAllObjects];
     
 	for( xmlNode *cur_node = rowset->children;
 		 NULL != cur_node;
@@ -311,7 +311,7 @@
 //                <row orderID="639587440" charID="118406849" stationID="60003760" volEntered="25" volRemaining="4" minVolume="1" orderState="0" typeID="26082" range="32767" accountKey="1000" duration="1" escrow="0.00" price="3399999.98" bid="0" issued="2008-02-03 22:35:54"/>
 
             }
-            [orders addObject:order];
+            [[self orders] addObject:order];
         }
 	}
     

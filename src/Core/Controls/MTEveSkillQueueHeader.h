@@ -28,13 +28,18 @@
 	
 	NSColor *progressColor1;
 	NSColor *progressColor2;
-	
+    NSColor *warningColor1;
+    NSColor *warningColor2;
+    
 	BOOL active;
-	
+    BOOL _warn;
+    
 	NSInteger planTrainingTime;
 	
 	NSDateFormatter *dFormat;
 }
+
+@property (assign) BOOL warn; ///< Visually warn the user if there's less than 24 hours in the queue.
 
 -(BOOL) hidden;
 -(void) setHidden:(BOOL)a;

@@ -18,11 +18,11 @@
 @end
 
 @implementation ContractItem
-@synthesize typeID;
-@synthesize quantity;
-@synthesize rawQuantity;
-@synthesize singleton;
-@synthesize included;
+@synthesize typeID = _typeID;
+@synthesize quantity = _quantity;
+@synthesize rawQuantity = _rawQuantity;
+@synthesize singleton = _singleton;
+@synthesize included = _included;
 @synthesize name = _name;
 @synthesize description = _description;
 
@@ -43,7 +43,7 @@
     }
     if( nil == _name )
     {
-        return [NSString stringWithFormat:@"(id=%ld)",[self typeID]];
+        return [NSString stringWithFormat:@"(id=%ld)", (unsigned long)[self typeID]];
     }
     return _name;
 }

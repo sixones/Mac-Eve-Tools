@@ -92,16 +92,6 @@
 -(BOOL) parseAttributes:(xmlNode*)attributes;
 
 /**
- Parse the `attributeEnhancers` node of the character sheet XML.
-
- @param attrs The `attributeEnhancers` node.
-
- @return `YES` if the attributes were successfully processed; `NO`
- otherwise.
- */
--(BOOL) parseAttributeImplants:(xmlNode*)attrs;
-
-/**
  Store data from the parsed XML in this object's dictionary.
 
  @param xmlKey The node's name.

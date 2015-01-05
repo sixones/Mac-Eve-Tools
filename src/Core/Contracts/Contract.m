@@ -14,6 +14,7 @@
 #import "CCPDatabase.h"
 #import "Config.h"
 #import "METIDtoName.h"
+#import "MTISKFormatter.h"
 
 #import "Character.h"
 #import "CharacterTemplate.h"
@@ -51,7 +52,6 @@
  */
 
 @interface Contract()
-@property (readwrite) NSString *stationName;
 @property (readwrite,retain) NSDate *cachedUntil; // For contained items, not the contract itself
 @property (readwrite,retain) NSString *xmlPath;
 @property (readwrite,assign) BOOL loading;
@@ -65,20 +65,20 @@
 
 @implementation Contract
 
-@synthesize character;
-@synthesize xmlPath;
-@synthesize delegate;
+@synthesize character = _character;
+@synthesize xmlPath = _xmlPath;
+@synthesize delegate = _delegate;
 
-@synthesize type;
-@synthesize status;
-@synthesize contractID;
-@synthesize startStationID;
-@synthesize endStationID;
+@synthesize type = _type;
+@synthesize status = _status;
+@synthesize contractID = _contractID;
+@synthesize startStationID = _startStationID;
+@synthesize endStationID = _endStationID;
 
-@synthesize issuerID;
-@synthesize issuerCorpID;
-@synthesize acceptorID;
-@synthesize assigneeID;
+@synthesize issuerID = _issuerID;
+@synthesize issuerCorpID = _issuerCorpID;
+@synthesize acceptorID = _acceptorID;
+@synthesize assigneeID = _assigneeID;
 @synthesize issuerName = _issuerName;
 @synthesize issuerCorpName = _issuerCorpName;
 @synthesize assigneeName = _assigneeName;
@@ -87,21 +87,22 @@
 @synthesize startStationName = _startStationName;
 @synthesize endStationName = _endStationName;
 
-@synthesize volume;
-@synthesize price;
-@synthesize reward;
-@synthesize collateral;
-@synthesize issued;
-@synthesize expired;
-@synthesize accepted;
-@synthesize completed;
-@synthesize availability;
-@synthesize title;
-@synthesize days;
-@synthesize forCorp;
-@synthesize cachedUntil;
+@synthesize volume = _volume;
+@synthesize price = _price;
+@synthesize reward = _reward;
+@synthesize collateral = _collateral;
+@synthesize buyout = _buyout;
+@synthesize issued = _issued;
+@synthesize expired = _expired;
+@synthesize accepted = _accepted;
+@synthesize completed = _completed;
+@synthesize availability = _availability;
+@synthesize title = _title;
+@synthesize days = _days;
+@synthesize forCorp = _forCorp;
+@synthesize cachedUntil = _cachedUntil;
 @synthesize items = _items;
-@synthesize loading;
+@synthesize loading = _loading;
 
 - (id)init
 {
@@ -118,18 +119,18 @@
 - (void)dealloc
 {
     [super dealloc];
-    [character release];
-    [xmlPath release];
-    [type release];
-    [status release];
+    [_character release];
+    [_xmlPath release];
+    [_type release];
+    [_status release];
     [_items release];
-    [issued release];
-    [expired release];
-    [accepted release];
-    [completed release];
-    [availability release];
-    [title release];
-    [cachedUntil release];
+    [_issued release];
+    [_expired release];
+    [_accepted release];
+    [_completed release];
+    [_availability release];
+    [_title release];
+    [_cachedUntil release];
     [_startStationName release];
     [_endStationName release];
     [nameFetcher release];
@@ -149,7 +150,7 @@
     if( nil == _startStationName )
     {
         CCPDatabase *db = [[GlobalData sharedInstance] database];
-        NSDictionary *station = [db stationForID:startStationID];
+        NSDictionary *station = [db stationForID:[self startStationID]];
         [self setStartStationName:[station objectForKey:@"name"]];
     }
     return _startStationName;
@@ -169,7 +170,7 @@
     if( nil == _endStationName )
     {
         CCPDatabase *db = [[GlobalData sharedInstance] database];
-        NSDictionary *station = [db stationForID:endStationID];
+        NSDictionary *station = [db stationForID:[self endStationID]];
         [self setEndStationName:[station objectForKey:@"name"]];
     }
     return _endStationName;
@@ -195,7 +196,7 @@
     if( [[self type] isEqualToString:@"Courier"] )
         return; // Courier contracts never include items
     
-    if( [cachedUntil isGreaterThan:[NSDate date]] )
+    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
     {
         NSLog( @"Skipping download of Contract items because of Cached Until date" );
         [self setLoading:NO];
@@ -211,13 +212,13 @@
                                    keyID:[template accountId]
                         verificationCode:[template verificationCode]
                                   charId:[template characterId]];
-    apiUrl = [apiUrl stringByAppendingFormat:@"&contractID=%ld",[self contractID]];
+    apiUrl = [apiUrl stringByAppendingFormat:@"&contractID=%ld",(unsigned long)[self contractID]];
 
 	NSString *characterDir = [Config charDirectoryPath:[template accountId]
 											 character:[template characterId]];
     NSString *pendingDir = [characterDir stringByAppendingString:@"/pending"];
     
-    NSString *docPathID = [[[docPath stringByDeletingPathExtension] stringByAppendingFormat:@"_%ld", [self contractID]] stringByAppendingPathExtension:[docPath pathExtension]];
+    NSString *docPathID = [[[docPath stringByDeletingPathExtension] stringByAppendingFormat:@"_%ld", (unsigned long)[self contractID]] stringByAppendingPathExtension:[docPath pathExtension]];
     [self setXmlPath:[characterDir stringByAppendingPathComponent:[docPathID lastPathComponent]]]; // this won't work. need at least the contract ID.
     
 	//create the output directory, the XMLParseOperation will clean it up
@@ -264,10 +265,10 @@
 {
     // read data from marketFile and create an xmlDoc
     // parse it
-    xmlDoc *doc = xmlReadFile( [xmlPath fileSystemRepresentation], NULL, 0 );
+    xmlDoc *doc = xmlReadFile( [[self xmlPath] fileSystemRepresentation], NULL, 0 );
 	if( doc == NULL )
     {
-		NSLog(@"Failed to read %@",xmlPath);
+		NSLog(@"Failed to read %@",[self xmlPath]);
         [self setLoading:NO];
 		return;
 	}
@@ -380,9 +381,9 @@
         
     }
     
-    if( [delegate conformsToProtocol:@protocol(ContractDelegate)] )
+    if( [[self delegate] conformsToProtocol:@protocol(ContractDelegate)] )
     {
-        [delegate contractItemsFinishedUpdating];
+        [[self delegate] contractItemsFinishedUpdating];
     }
     
     [self setLoading:NO];
@@ -438,10 +439,101 @@
         changed = YES;
     }
     
-    if( changed && [delegate conformsToProtocol:@protocol(ContractDelegate)] )
+    if( changed && [[self delegate] conformsToProtocol:@protocol(ContractDelegate)] )
     {
-        [delegate contractNamesFinishedUpdating];
+        [[self delegate] contractNamesFinishedUpdating];
     }
 }
 
+// A lot of this is somewhat duplicated from ContractDetailsController and should combined, somehow.
+- (NSString *)description
+{
+    NSMutableString *desc = [NSMutableString string];
+
+    BOOL isCourier = [[self type] isEqualToString:@"Courier"];
+    
+    [desc appendFormat:@"%@: %@\n", @"Type", [self type]];
+    [desc appendFormat:@"%@: %@\n", @"Status", [self status]];
+    [desc appendFormat:@"%@: %@\n", @"Contract ID", [NSString stringWithFormat:@"%ld", (unsigned long)[self contractID]]];
+    [desc appendFormat:@"%@: %@\n", @"Start", [self startStationName]];
+    
+    if( isCourier )
+    {
+        [desc appendFormat:@"%@: %@\n", @"End", [self endStationName]];
+    }
+    
+    
+    id value = nil;
+    
+    value = [self issuerName];
+    [desc appendFormat:@"%@: %@\n", @"Issuer", (value?value:[NSNumber numberWithInteger:[self issuerID]])];
+    
+    value = [self issuerCorpName];
+    [desc appendFormat:@"%@: %@\n", @"Corporation", (value?value:[NSNumber numberWithInteger:[self issuerCorpID]])];
+    
+    // skip this for non-courier contracts?
+    if( [self assigneeID] != 0 )
+    {
+        value = [self assigneeName];
+        [desc appendFormat:@"%@: %@\n", @"Assignee", (value?value:[NSNumber numberWithInteger:[self assigneeID]])];
+    }
+    
+    if( [self acceptorID] != 0 )
+    {
+        value = [self acceptorName];
+        [desc appendFormat:@"%@: %@\n", @"Acceptor", (value?value:[NSNumber numberWithInteger:[self acceptorID]])];
+    }
+    
+    NSString *withSeparators = [NSNumberFormatter localizedStringFromNumber:[NSNumber numberWithDouble:[self volume]] numberStyle:NSNumberFormatterDecimalStyle];
+    [desc appendFormat:@"%@: %@\n", @"Volume", [NSString stringWithFormat:@"%@ m\u00B3",withSeparators]];
+    
+    MTISKFormatter *iskFormatter = [[[MTISKFormatter alloc] init] autorelease];
+
+    NSString *priceStr = [iskFormatter stringFromNumber:[NSNumber numberWithDouble:[self price]]];
+    if( priceStr )
+    {
+        [desc appendFormat:@"%@: %@\n", @"Price", priceStr];
+    }
+    
+    if( isCourier )
+    {
+        [desc appendFormat:@"%@: %@\n", @"Reward", [iskFormatter stringFromNumber:[NSNumber numberWithDouble:[self reward]]]];
+        
+        [desc appendFormat:@"%@: %@\n", @"Collateral", [iskFormatter stringFromNumber:[NSNumber numberWithDouble:[self collateral]]]];
+    }
+    
+    if( [[self type] isEqualToString:@"Auction"] )
+    {
+        [desc appendFormat:@"%@: %@\n", @"Buyout", [iskFormatter stringFromNumber:[NSNumber numberWithDouble:[self buyout]]]];
+    }
+    
+    [desc appendFormat:@"%@: %@\n", @"Issued", [self issued]];
+    
+    if( (![self completed] && [self expired]) || ([self completed] && ([[self expired] compare:[self completed]] == NSOrderedAscending)) )
+    {
+        BOOL future = [[self expired] compare:[NSDate date]] == NSOrderedDescending;
+        if( future )
+            [desc appendFormat:@"%@: %@\n", @"Expires", [self expired]];
+        else
+            [desc appendFormat:@"%@: %@\n", @"Expired", [self expired]];
+    }
+    
+    if( isCourier && [self accepted] )
+    {
+        [desc appendFormat:@"%@: %@\n", @"Accepted", [self accepted]];
+    }
+    
+    if( [self completed] )
+    {
+        [desc appendFormat:@"%@: %@\n", @"Completed", [self completed]];
+    }
+
+    [desc appendString:@"\n"];
+    
+    for( ContractItem *item in [self items] )
+    {
+        [desc appendFormat:@"%@ x%ld\n", [item name], [item quantity]];
+    }
+    return desc;
+}
 @end
