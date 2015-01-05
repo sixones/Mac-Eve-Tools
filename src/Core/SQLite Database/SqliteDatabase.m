@@ -79,7 +79,7 @@
 	
 	rc = sqlite3_get_table(db,query,&results,&rows,&cols,&errormsg);
 	if(rc == SQLITE_OK){
-		count = strtol(results[0],NULL,10);
+		count = strtol(results[1],NULL,10);
 		sqlite3_free_table(results);
 	}
 	

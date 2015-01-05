@@ -35,6 +35,24 @@
 @interface METMailMessage : NSObject<METIDtoNameDelegate>
 {
 @private
+    Character *character;
+    NSString *xmlPath;
+    id<MailMessageDelegate> delegate;
+
+    NSUInteger messageID;
+    NSUInteger senderID;
+    NSString *senderName;
+    NSDate *sentDate;
+    NSString *subject;
+    NSString *body;
+    NSUInteger toCorpOrAllianceID;
+    NSUInteger senderTypeID;
+    NSArray *toCharacterIDs;
+    NSUInteger toListID;
+
+    NSDate *cachedUntil;
+    BOOL loading;
+    
     METIDtoName *nameFetcher;
 }
 
@@ -54,9 +72,6 @@
 @property (readwrite,retain) NSString *body;
 
 @property (readonly,retain) NSDate *cachedUntil; // For contained items, not the contract itself
-
-// If we haven't downloaded any items, or the cachedUntil time has passed, then download and store contract items
-- (void)preloadItems;
 
 // Get names associated with IDs in this contract
 - (void)preloadNames;

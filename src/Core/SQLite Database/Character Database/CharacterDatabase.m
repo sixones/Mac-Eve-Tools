@@ -21,7 +21,7 @@
 	main table
  
  int version ;database schema version
- varchar character_name ; name of the character
+ varchar table_name ; name of a table, so tables can be versioned separately
 
 	skill plan overview table
 
@@ -40,14 +40,14 @@
 
 @implementation CharacterDatabase
 
-#define CURRENT_DB_VERSION 3
+#define CURRENT_DB_VERSION 4
 
 -(BOOL) createDatabase
 {
 	char *errmsg;
 	char *strbuf;
-	const char createMasterTable[] = "CREATE TABLE master (version INTEGER, character_name VARCHAR(32));";
-	const char populateMasterTable[] = "INSERT INTO master (version,character_name) VALUES (%d,%Q);";
+	const char createMasterTable[] = "CREATE TABLE master (version INTEGER, table_name VARCHAR(32));";
+	const char populateMasterTable[] = "INSERT INTO master (version,table_name) VALUES (%d,%Q);";
 	const char createSkillPlanOverviewTable[] = 
 			"CREATE TABLE skill_plan_overview (plan_id INTEGER PRIMARY KEY, plan_name VARCHAR(64), plan_order INTEGER, UNIQUE(plan_name));";
 	const char createSkillPlanTable[] =
@@ -63,7 +63,7 @@
 		return NO;
 	}
 	
-	strbuf = sqlite3_mprintf(populateMasterTable,CURRENT_DB_VERSION,"");
+	strbuf = sqlite3_mprintf(populateMasterTable,CURRENT_DB_VERSION,"master");
 	rc = sqlite3_exec(db,strbuf,NULL,NULL,&errmsg);
 	sqlite3_free(strbuf);
 	
@@ -94,16 +94,57 @@
 -(BOOL) upgradeDatabaseFromVersion:(NSInteger)currentVersion 
 						 toVersion:(NSInteger)toVersion
 {
-	if(currentVersion == 1){
+    if( currentVersion == toVersion )
+    {
+        return YES;
+    }
+    
+    [self beginTransaction];
+
+    if( (currentVersion >= 1) && (currentVersion <= 3) )
+    {
+        char *error = nil;
+        int rc;
+        // There's no way to change a column name, so we have to drop the table and recreate it.
+        const char dropMasterTable[] = "DROP TABLE master;";
+        const char createMasterTable[] = "CREATE TABLE master (version INTEGER, table_name VARCHAR(32));";
+        
+        rc = sqlite3_exec(db,dropMasterTable,NULL,NULL,&error);
+        if(rc != SQLITE_OK){
+            [self logError:error];
+            [self rollbackTransaction];
+            return NO;
+        }
+        
+        rc = sqlite3_exec(db,createMasterTable,NULL,NULL,&error);
+        if(rc != SQLITE_OK){
+            [self logError:error];
+            [self rollbackTransaction];
+            return NO;
+        }
+        
+        const char populateMasterTable[] = "INSERT INTO master (version,table_name) VALUES (%d,%Q);";
+        char *strbuf = sqlite3_mprintf(populateMasterTable,CURRENT_DB_VERSION,"master");
+        rc = sqlite3_exec(db,strbuf,NULL,NULL,&error);
+        sqlite3_free(strbuf);
+        
+        if(rc != SQLITE_OK){
+            [self logError:error];
+            [self rollbackTransaction];
+            return NO;
+        }
+        
+        NSLog(@"Succesfully upgraded character database master table");
+    }
+
+    if(currentVersion == 1){
 		const char rename[] = "ALTER TABLE skill_plan_overview RENAME TO skill_plan_overview_old;";
 		const char createSkillPlanOverviewTable2[] = 
 			"CREATE TABLE skill_plan_overview (plan_id INTEGER PRIMARY KEY, plan_name VARCHAR(64), plan_order INTEGER, UNIQUE(plan_name));";
 		const char copySkillPlanTable[] = "INSERT INTO skill_plan_overview SELECT plan_id, plan_name FROM skill_plan_overview_old;";
 		const char dropOldPlanOverview[] = "DROP TABLE skill_plan_overview_old;";
-		const char updateVersion[] = "UPDATE master SET version = 3;";
-		char *error;
+		char *error = nil;
 		int rc;
-		[self beginTransaction];
 		
 		rc = sqlite3_exec(db,rename,NULL,NULL,&error);
 		if(rc != SQLITE_OK){
@@ -129,26 +170,14 @@
 			[self rollbackTransaction];
 			return NO;
 		}
-		
-		rc = sqlite3_exec(db,updateVersion,NULL,NULL,&error);
-		if(rc != SQLITE_OK){
-			[self logError:error];
-			[self rollbackTransaction];
-			return NO;
-		}
-		
-		[self commitTransaction];
-		
-		NSLog(@"Succesfully upgraded character database");
-		return YES;
+				
+		NSLog(@"Succesfully upgraded character database from version 1");
 	}
     else if(currentVersion == 2)
     {
 		const char rename[] = "ALTER TABLE skill_plan_overview ADD COLUMN plan_order INTEGER AFTER plan_name;";
-		const char updateVersion[] = "UPDATE master SET version = 3;";
 		char *error = nil;
 		int rc;
-		[self beginTransaction];
 		
 		rc = sqlite3_exec(db,rename,NULL,NULL,&error);
 		if(rc != SQLITE_OK){
@@ -157,32 +186,48 @@
 			return NO;
 		}
         
-        rc = sqlite3_exec(db,updateVersion,NULL,NULL,&error);
-		if(rc != SQLITE_OK){
-			[self logError:error];
-			[self rollbackTransaction];
-			return NO;
-		}
-
-		[self commitTransaction];
-		
-		NSLog(@"Succesfully upgraded character database");
-		return YES;
+		NSLog(@"Succesfully upgraded character database from version 2");
     }
-	return NO;
+
+    {
+        sqlite3_stmt *update_master;
+        const char updateMasterTable[] = "UPDATE master SET version = ? WHERE table_name = 'master';";
+        
+        int rc = sqlite3_prepare_v2(db,updateMasterTable,(int)sizeof(updateMasterTable),&update_master,NULL);
+        if( rc != SQLITE_OK )
+        {
+            NSLog( @"Failed to prepare master table update" );
+            return NO;
+        }
+        sqlite3_bind_nsint(update_master,1,CURRENT_DB_VERSION);
+        if((rc = sqlite3_step(update_master)) != SQLITE_DONE)
+        {
+            NSLog(@"Error populating master table");
+        }
+        sqlite3_reset(update_master);
+        sqlite3_finalize(update_master);
+    }
+    
+    [self commitTransaction];
+    return YES;
 }
 
 -(BOOL) checkStatus
 {
 	char **results;
 	char *errormsg;
-	const char existenceTest[] = "SELECT version FROM master;";
+    const char countMaster[] = "SELECT COUNT(*) FROM master;";
+    const char *existenceTest = "SELECT version FROM master;";
 	BOOL status = YES;
 	int rc;
 	int rows;
 	int cols;
 	long version;
 	
+    NSInteger count = [self performCount:countMaster];
+    if( count > 1 )
+        existenceTest = "SELECT version FROM master WHERE table_name = 'master';";
+    
 	rc = sqlite3_get_table(db, existenceTest, &results, &rows, &cols, &errormsg);
 	
 	if( (rc != SQLITE_OK) || (rows != 1) )

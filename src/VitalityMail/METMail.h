@@ -11,6 +11,13 @@
 @class Character;
 
 @interface METMail : NSObject
+{
+    Character *_character;
+    NSMutableArray *messages;
+    NSString *xmlPath;
+    NSDate *cachedUntil;
+    id delegate;
+}
 
 @property (retain) Character *character;
 @property (retain) NSMutableArray *messages;
