@@ -21,4 +21,6 @@
     METMail *mail;
 }
 
+- (BOOL)saveMailMessages:(NSArray *)messages;
+
 @end

@@ -25,6 +25,7 @@
 #import "Helpers.h"
 #import "SkillPlan.h"
 #import "CharacterTemplate.h"
+#import "CharacterDatabase.h"
 
 #import "GlobalData.h"
 
@@ -43,14 +44,15 @@
 @synthesize characterName;
 @synthesize portrait;
 @synthesize trainingQueue;
+@synthesize database;
 
 -(void) dealloc
 {
 	[characterName release];
 	[data release];
 	[skillTree release];
-	[db closeDatabase];
-	[db release];
+	[database closeDatabase];
+	[database release];
 	[skillPlans release];
 	[portrait release];
 	[trainingQueue release];
@@ -82,7 +84,7 @@
 		
 		characterFilePath = [path retain];
 		
-		db = [[CharacterDatabase alloc]initWithPath:[path stringByAppendingString:@"/database.sqlite"]];
+		database = [[CharacterDatabase alloc]initWithPath:[path stringByAppendingString:@"/database.sqlite"]];
 		portrait = [[NSImage alloc]initWithContentsOfFile:[path stringByAppendingString:@"/portrait.jpg"]];
 		
 		ownedCerts = [[NSMutableSet alloc]init];
@@ -296,7 +298,7 @@
 
 -(void) removeSkillPlan:(SkillPlan*)plan
 {
-	if(![db deleteSkillPlan:plan]){
+	if(![database deleteSkillPlan:plan]){
 		NSLog(@"Failed to delete plan from database");
 		return;
 	}
@@ -331,7 +333,7 @@
 
 -(SkillPlan*) createSkillPlan:(NSString*)planName
 {
-	SkillPlan *plan = [db createPlan:planName forCharacter:self];
+	SkillPlan *plan = [database createPlan:planName forCharacter:self];
 	
 	if(plan == nil){
 		return nil;
@@ -350,7 +352,7 @@
 		return;
 	}
 	
-	[db writeSkillPlan:plan];
+	[database writeSkillPlan:plan];
 }
 
 -(BOOL) renameSkillPlan:(SkillPlan*)plan
@@ -361,7 +363,7 @@
 		return NO;
 	}
 	
-	return [db renameSkillPlan:plan];
+	return [database renameSkillPlan:plan];
 }
 
 -(NSIndexSet *) moveSkillPlan:(NSArray*)fromIndexArray to:(NSInteger)toIndex
@@ -395,7 +397,7 @@
         }
     }
     
-    [db writeOverviewPlanOrder:skillPlans];
+    [database writeOverviewPlanOrder:skillPlans];
     return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(toIndex, [objects count])];
 }
 

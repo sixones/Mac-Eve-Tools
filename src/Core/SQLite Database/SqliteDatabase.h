@@ -31,13 +31,14 @@ typedef struct sqlite3 sqlite3;
 
 -(void) logError:(char*)errmsg;
 
--(void) openDatabase;
+-(sqlite3 *) openDatabase;
 -(void) closeDatabase;
 
 -(BOOL) beginTransaction;
 -(BOOL) commitTransaction;
 -(BOOL) rollbackTransaction;
 
+-(BOOL) doesTableExist:(NSString *)tableName;
 -(NSInteger) performCount:(const char*)query;
 
 @end

@@ -581,14 +581,14 @@ http://community.eveonline.com/news/dev-blogs/long-distance-travel-changes-inbou
 		[skillPlans release];
 	}
 	
-	skillPlans = [[db readSkillPlans:self]retain];
+	skillPlans = [[database readSkillPlans:self]retain];
 	
 	return [skillPlans count];
 }
 
 -(BOOL) writeSkillPlan
 {
-	return [db writeSkillPlans:skillPlans];
+	return [database writeSkillPlans:skillPlans];
 }
 
 

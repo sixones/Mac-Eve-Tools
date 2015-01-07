@@ -22,7 +22,6 @@
 	//#import "Account.h"
 #import "Character.h"
 #import "SkillTree.h"
-#import "CharacterDatabase.h"
 #import "SkillPair.h"
 #import "macros.h"
 
@@ -32,6 +31,7 @@
 
 @class Character;
 @class CharacterTemplate;
+@class CharacterDatabase;
 
 /**
  The `Character` class represents all the information found in the EVE
@@ -77,7 +77,7 @@
 	/**
 	 This character's record in the local SQLite database.
 	 */
-	CharacterDatabase *db;
+	CharacterDatabase *database;
 
 	/**
 	 The ID of this character's currently-training skill, which is the corresponding
@@ -185,6 +185,8 @@
  This character's current training queue.
  */
 @property (readonly,nonatomic) SkillPlan* trainingQueue;
+
+@property (readonly,nonatomic) CharacterDatabase *database;
 
 /**
  @name Initialization

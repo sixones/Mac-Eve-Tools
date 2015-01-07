@@ -20,6 +20,7 @@
 #import "SqliteDatabase.h"
 
 #import <sqlite3.h>
+#import "macros.h"
 
 @implementation SqliteDatabase
 
@@ -42,7 +43,7 @@
 	[super dealloc];
 }
 
--(void) openDatabase
+-(sqlite3 *) openDatabase
 {
 	if(db == NULL){
 		int rc  = sqlite3_open(path,&db);
@@ -51,6 +52,7 @@
 			[self closeDatabase];
 		}
 	}
+    return db;
 }
 -(void) closeDatabase
 {	
@@ -87,6 +89,33 @@
 		[self closeDatabase];
 	}
 	return count;
+}
+
+-(BOOL) doesTableExist:(NSString *)tableName
+{
+    const char checkTable[] = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=%Q;";
+    sqlite3_stmt *checkStatement = NULL;
+    char *strbuf = sqlite3_mprintf( checkTable, [tableName UTF8String] );
+
+    int rc = sqlite3_prepare_v2( db, strbuf, (int)strlen(strbuf), &checkStatement, NULL );
+    if(rc != SQLITE_OK){
+        
+        NSLog(@"Error preparing check table statement\n");
+        if(checkStatement != NULL){
+            sqlite3_finalize(checkStatement);
+        }
+        
+        return NO;
+    }
+    
+    while(sqlite3_step(checkStatement) == SQLITE_ROW)
+    {
+        NSInteger count = sqlite3_column_nsint(checkStatement,0);
+        if( count > 0 )
+            return YES;
+    }
+    
+    return NO;
 }
 
 -(BOOL) beginTransaction
