@@ -282,12 +282,13 @@
 {
 	DBManager *manager = [[DBManager alloc] init]; // Need to figure out how to deallocate this when we're done with it
     
-	if(![manager dbVersionCheck:[[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_MIN_VERSION]]){
-		[manager checkForUpdate2];
-		[[NSNotificationCenter defaultCenter]addObserver:self 
+	if(![manager dbVersionCheck:[[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_MIN_VERSION]])
+    {
+		[[NSNotificationCenter defaultCenter]addObserver:self
 												selector:@selector(databaseReadyToBuild:)
 													name:NOTE_DATABASE_DOWNLOAD_COMPLETE
 												  object:nil];
+        [manager checkForUpdate2];
 	}else{
 		/*database version is current - launch app normally*/
 		[self performSelector:@selector(launchAppFinal:) withObject:nil];

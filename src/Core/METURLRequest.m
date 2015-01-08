@@ -15,7 +15,7 @@
 {
     if( self = [super initWithURL:URL] )
     {
-        [super setValue:[[GlobalData sharedInstance] userAgent] forHTTPHeaderField:@"User-Agent"];
+        [super setValue:[GlobalData userAgent] forHTTPHeaderField:@"User-Agent"];
     }
     return self;
 }
@@ -24,7 +24,7 @@
 {
     if( self = [super initWithURL:URL cachePolicy:cachePolicy timeoutInterval:timeoutInterval] )
     {
-        [super setValue:[[GlobalData sharedInstance] userAgent] forHTTPHeaderField:@"User-Agent"];
+        [super setValue:[GlobalData userAgent] forHTTPHeaderField:@"User-Agent"];
     }
     return self;
 }

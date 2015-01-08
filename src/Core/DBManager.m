@@ -209,15 +209,27 @@
             // can't copy over existing file, so remove any older version first
             if( [[NSFileManager defaultManager] fileExistsAtPath:dbXml]
                && ![[NSFileManager defaultManager] removeItemAtPath:dbXml error:&error] )
+            {
+                NSLog( @"Unable to remove older database XML file." );
                 return NO;
+            }
             if( [[NSFileManager defaultManager] fileExistsAtPath:dbTarball]
                && ![[NSFileManager defaultManager] removeItemAtPath:dbTarball error:&error] )
-                return NO;
+            {
+                NSLog( @"Unable to remove older database bz2 file." );
+               return NO;
+            }
 
             if( ![[NSFileManager defaultManager] copyItemAtPath:includedDBXML toPath:dbXml error:&error] )
+            {
+                NSLog( @"Unable to copy included database XML file." );
                 return NO;
+            }
             if( ![[NSFileManager defaultManager] copyItemAtPath:includedDB toPath:dbTarball error:&error] )
+            {
+                NSLog( @"Unable to copy included database XML file." );
                 return NO; // should delete the copied over xml file at this point
+            }
             
             return YES;
         }

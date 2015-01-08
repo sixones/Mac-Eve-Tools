@@ -1170,7 +1170,7 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
 	rc = sqlite3_prepare_v2( db, [queryString UTF8String], (int)[queryString length], &read_stmt, NULL );
 	if( rc != SQLITE_OK )
     {
-		[self logError:"Error preparing Attribute type query"];
+		NSLog(@"Error preparing Attribute type query");
 		return NO;
 	}
     

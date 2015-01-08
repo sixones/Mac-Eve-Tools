@@ -51,3 +51,8 @@ When MET starts up it should be using the new database.
 You can verfy this by looking at the database name in the database
 tab in the preference menu.
 
+History:
+Release Date  DBVERSION   DBEXPANSION   Vitality Version
+
+Nov 26, 2014  19          Phoebe 1.0    0.3.1b
+
