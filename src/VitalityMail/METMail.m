@@ -304,4 +304,178 @@
 	return YES;
 }
 
+- (IBAction)loadMessageBodies:(id)sender
+{
+    if( ![self character] )
+        return;
+    
+    if( [cachedUntil isGreaterThan:[NSDate date]] )
+    {
+        NSLog( @"Skipping download of Mail because of Cached Until date: %@", cachedUntil );
+        // Turn off the spinning download indicator
+        if( [delegate respondsToSelector:@selector(mailSkippedUpdating)] )
+        {
+            [delegate performSelector:@selector(mailSkippedUpdating)];
+        }
+        return;
+    }
+    
+    CharacterTemplate *template = nil;
+    NSUInteger chID = [[self character] characterId];
+    
+    for( CharacterTemplate *charTemplate in [[Config sharedInstance] activeCharacters] )
+    {
+        NSUInteger tempID = [[charTemplate characterId] integerValue];
+        if( tempID == chID )
+        {
+            template = charTemplate;
+            break;
+        }
+    }
+    
+    
+    NSString *docPath = @"/char/MailMessages.xml.aspx";
+    NSString *apiUrl = [Config getApiUrl:docPath
+                                   keyID:[template accountId]
+                        verificationCode:[template verificationCode]
+                                  charId:[template characterId]];
+    
+    NSString *characterDir = [Config charDirectoryPath:[template accountId]
+                                             character:[template characterId]];
+    NSString *pendingDir = [characterDir stringByAppendingString:@"/pending"];
+    
+    [self setXmlPath:[characterDir stringByAppendingPathComponent:[docPath lastPathComponent]]];
+    
+    //create the output directory, the XMLParseOperation will clean it up
+    // TODO move this to an operations sub-class and have all of the download operations depend on it
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if( ![fm fileExistsAtPath:pendingDir isDirectory:nil] )
+    {
+        if( ![fm createDirectoryAtPath: pendingDir withIntermediateDirectories:YES attributes:nil error:nil] )
+        {
+            //NSLog(@"Could not create directory %@",pendingDir);
+            return;
+        }
+    }
+    
+    XMLDownloadOperation *op = [[[XMLDownloadOperation alloc] init] autorelease];
+    [op setXmlDocUrl:apiUrl];
+    [op setCharacterDirectory:characterDir];
+    [op setXmlDoc:docPath];
+    
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [queue setMaxConcurrentOperationCount:3];
+    
+    //This object will call the delegate function.
+    
+    XMLParseOperation *opParse = [[XMLParseOperation alloc] init];
+    
+    [opParse setDelegate:self];
+    [opParse setCallback:@selector(parseMailBodiesOperationDone:errors:)];
+    [opParse setObject:nil];
+    
+    [opParse addDependency:op]; //THIS MUST BE THE FIRST DEPENDENCY.
+    [opParse addCharacterDir:characterDir forSheet:docPath];
+    
+    [queue addOperation:op];
+    [queue addOperation:opParse];
+    
+    [opParse release];
+    [queue release];
+    
+}
+
+- (void) parseMailBodiesOperationDone:(id)ignore errors:(NSArray *)errors
+{
+    xmlDoc *doc = xmlReadFile( [xmlPath fileSystemRepresentation], NULL, 0 );
+    if( doc == NULL )
+    {
+        NSLog(@"Failed to read %@",xmlPath);
+        return;
+    }
+    [self parseXmlMailBodies:doc];
+    xmlFreeDoc(doc);
+}
+
+-(BOOL) parseXmlMailBodies:(xmlDoc*)document
+{
+    xmlNode *root_node;
+    xmlNode *result;
+    xmlNode *rowset;
+    
+    root_node = xmlDocGetRootElement(document);
+    
+    result = findChildNode(root_node,(xmlChar*)"result");
+    if( NULL == result )
+    {
+        NSLog(@"Could not get result tag in parseXmlMailBodies");
+        
+        xmlNode *xmlErrorMessage = findChildNode(root_node,(xmlChar*)"error");
+        if( NULL != xmlErrorMessage )
+        {
+            NSLog( @"%@", [NSString stringWithString:getNodeText(xmlErrorMessage)] );
+        }
+        return NO;
+    }
+    
+    rowset = findChildNode(result,(xmlChar*)"rowset");
+    if( NULL == result )
+    {
+        NSLog(@"Could not get rowset tag in parseXmlMailBodies");
+        
+        xmlNode *xmlErrorMessage = findChildNode(root_node,(xmlChar*)"error");
+        if( NULL != xmlErrorMessage )
+        {
+            NSLog( @"%@", [NSString stringWithString:getNodeText(xmlErrorMessage)] );
+        }
+        return NO;
+    }
+    
+    for( xmlNode *cur_node = rowset->children;
+        NULL != cur_node;
+        cur_node = cur_node->next)
+    {
+        if( XML_ELEMENT_NODE != cur_node->type )
+        {
+            continue;
+        }
+        
+        /*
+         <rowset name="messages" key="messageID" columns="messageID">
+         <row messageID="343465359"><![CDATA[<font size="12" color="#bfffffff">Hi all!<br><br>Time for the sexy cats :-)<br><br>Read this: </font><font size="12" color="#ffffa600"><loc><a href="http://www.kadeshi.com/forum/index.php?topic=6834.0">http://www.kadeshi.com/forum/index.php?topic=6834.0</a></loc><br><br></font><font size="12" color="#bfffffff">Hope to see you there!<br><br>Best Regards<br><br>Ltd SpacePig</font>]]></row>
+         */
+        if( xmlStrcmp(cur_node->name,(xmlChar*)"row") == 0 )
+        {
+            METMailMessage *message = nil;
+            
+            for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )
+            {
+                NSString *value = [NSString stringWithUTF8String:(const char*) attr->children->content];
+                if( xmlStrcmp(attr->name, (xmlChar *)"messageID") == 0 )
+                {
+                    message = nil; // Find the message with this messageID
+                }
+            }
+            // now get the content of this row (a CDATA node) and set it as the body of the message
+        }
+    }
+    
+    // Should also grab the "cachedUntil" node so we don't re-request data until after that time.
+    // 2013-05-22 22:32:5
+    xmlNode *cached = findChildNode( root_node, (xmlChar *)"cachedUntil" );
+    if( NULL != cached )
+    {
+        NSString *dtString = getNodeText( cached );
+        NSDate *cacheDate = [NSDate dateWithNaturalLanguageString:dtString];
+        [self setCachedUntil:cacheDate];
+        
+    }
+    
+    // change this to a different callback so we know to update mail bodies in the database
+    if( [delegate respondsToSelector:@selector(mailFinishedUpdating)] )
+    {
+        [delegate performSelector:@selector(mailFinishedUpdating)];
+    }
+    return YES;
+}
 @end
