@@ -53,6 +53,7 @@
 	[self addAttribute:attrType groupName:@"Targeting"];
 	
 	attrType = [db attributeForType:typeID groupBy:Other];
+    if( [ship capacity] > 0 )
     {
         // A hack to at least have the ship's cargo capacity show
         NSMutableArray *mutAttrType = (NSMutableArray *)attrType;
@@ -174,13 +175,42 @@
 	}
 	else {
 		// just render the value depending on its type
+        if( [@"typeID" isEqualToString:unit] )
+        {
+            // lookup value as a typeID and get the name of the type
+            NSInteger typeInt = [item valueInt];
+            if( NSIntegerMax == typeInt )
+                typeInt = [item valueFloat];
+            CCPType *type = [db type:typeInt];
+            if( type && ([[type typeName] length] > 0) )
+            {
+                [str appendString:[type typeName]];
+                return str;
+            }
+        }
 		if([item valueInt] != NSIntegerMax){
 			[str appendFormat:@"%ld", (long)[item valueInt]];
-		}else{
-			[str appendFormat:@"%.2f",(double)[item valueFloat]];
+		}
+        else
+        {
+            BOOL displayAsInt = NO;
+            
+            if( [@"hardpoints" isEqualToString:unit]
+               || [@"points" isEqualToString:unit]
+               || [@"HP" isEqualToString:unit]
+               || [@"Level" isEqualToString:unit]
+               || [dn hasSuffix:@" Slots"]
+               || [dn isEqualToString:@"Maximum Locked Targets"] )
+                displayAsInt = YES;
+            
+            if( displayAsInt )
+                [str appendFormat:@"%.0f",(double)[item valueFloat]];
+            else
+                [str appendFormat:@"%.2f",(double)[item valueFloat]];
 		}
         
-		if(unit != nil){
+		if( (unit != nil) && ![unit isEqualToString:@"Level"] )
+        {
 			[str appendFormat:@" %@",unit];
 		}
 	}
