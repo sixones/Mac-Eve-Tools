@@ -29,9 +29,14 @@ def dumpAttribute(conn,query,attrNum):
         else:
             row2 = row[2]
 
+        if row[3] == None:
+            row3 = ""
+        else:
+            row3 = row[3]
+
         try:
             insertQuery = u"INSERT INTO metAttributeTypes VALUES (" + unicode(row[0]) + u"," + unicode(row1) + u"," \
-                + unicode(row2) + u",\"" + unicode(row[3]) + u"\",\"" + unicode(row[4]) + u"\"," + unicode(attrNum) + u");"
+                + unicode(row2) + u",\"" + unicode(row3) + u"\",\"" + unicode(row[4]) + u"\"," + unicode(attrNum) + u");"
         except Exception as e:
             print row
             print "%s" % e

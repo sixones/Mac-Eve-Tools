@@ -86,6 +86,8 @@
     StatusItemWindow *statusWindow;
     
     IBOutlet NSView *statusWindowView;
+    
+    DBManager *dbManager;
 }
 
 - (id) init;

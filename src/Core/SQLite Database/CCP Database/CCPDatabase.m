@@ -58,6 +58,27 @@
 
 @synthesize lang;
 
++ (NSInteger)dbVersion
+{
+    NSInteger ver = -1;
+    
+    NSString *path = [[NSUserDefaults standardUserDefaults] stringForKey:UD_ITEM_DB_PATH];
+    
+    if( ![[NSFileManager defaultManager] fileExistsAtPath:path] )
+    {
+        NSLog(@"Database does not exist!");
+        return ver;
+    }
+    
+    CCPDatabase *db = [[CCPDatabase alloc] initWithPath:path];
+    
+    ver = [db dbVersion];
+    
+    [db release];
+
+    return ver;
+}
+
 -(CCPDatabase*) initWithPath:(NSString*)dbpath
 {
 	if(self = [super initWithPath:dbpath]){
@@ -632,8 +653,8 @@
 -(NSArray*) attributeForType:(NSInteger)typeID groupBy:(enum AttributeTypeGroups)group
 {
 	const char query[] =
-	"SELECT COALESCE(at.displayName,at.attributeName), ta.valueInt, "
-		"ta.valueFloat, at.attributeID, un.displayName "
+	"SELECT at.displayName, ta.valueInt, "
+		"ta.valueFloat, at.attributeID, un.displayName, at.attributeName "
 	"FROM dgmTypeAttributes ta, metAttributeTypes at LEFT OUTER JOIN eveUnits un ON at.unitID = un.unitID "
 	"WHERE at.attributeID = ta.attributeID "
 	"AND typeID = ? "
@@ -657,7 +678,8 @@
 		NSString *displayName = sqlite3_column_nsstr(read_stmt,0);
 		NSInteger attrID = sqlite3_column_nsint(read_stmt,3);
 		NSString *unitDisplay = sqlite3_column_nsstr(read_stmt,4);
-		
+        NSString *attributeName = sqlite3_column_nsstr(read_stmt,5);
+
 		NSInteger vInt;
 		
 		if(sqlite3_column_type(read_stmt,1) == SQLITE_NULL){
@@ -674,6 +696,10 @@
 			vFloat = (CGFloat) sqlite3_column_double(read_stmt, 2);
 		}
 		
+        // TODO: This is probably caused by a bug in dump_attrs.py, but I haven't been able to fix that
+        if( (0 == [displayName length]) || [@"None" isEqualToString:displayName] || [@"NULL" isEqualToString:displayName] )
+            displayName = attributeName;
+        
 		CCPTypeAttribute *ta = [CCPTypeAttribute createTypeAttribute:attrID
 															dispName:displayName 
 														 unitDisplay:unitDisplay

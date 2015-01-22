@@ -5,19 +5,18 @@ This is a series of scripts that will take the CCP db export
 MET can use.
 
 You need:
-The CCP DB export, hosted on a MySQL server. It can be found here:
-http://www.eveonline.com/ingameboard.asp?a=channel&channelID=3525
+The CCP DB export, e.g. SDE (Static Data Export). I get the MySQL
+version from
+https://www.fuzzwork.co.uk/dump/
 
-Edit the various .py and .pl files and edit the connection
+Copy db_config_empty.py to db_config.py and edit the connection
 info to point to your database.
-
-Compile the SHA1 hash program by running make.
 
 Edit build_dbexport.sh.
 
-Edit the DB version number ($DBVERSION) to match what is in the 
+    Edit the DB version number ($DBVERSION) to match what is in the 
 config object in MET.
-Edit the DB name ($DBEXPANSION) to match the name of the expansion
+    Edit the DB name ($DBEXPANSION) to match the name of the expansion
 that the database belongs to.
 
 Important:
@@ -33,7 +32,7 @@ To build the database run build_dbexport.sh
 If it ran with no errors, you will have two new files
 
 * database.sql.bz2
-* MacEveApi-database.xml
+* database.xml
 
 The sql.bz2 file is a compressed SQL dump containing all the
 SQL statements needed to build a new sqlite database.

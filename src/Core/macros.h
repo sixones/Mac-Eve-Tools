@@ -187,6 +187,7 @@ enum AttributeType {
 /*Notifications*/
 
 #define NOTE_DATABASE_DOWNLOAD_COMPLETE @"databaseDownloadCompleted"
+#define NOTE_DATABASE_BUILD_COMPLETE @"databaseBuildCompleted"
 
 /*
  the character sheet has finished updating. skill plans may or may not have

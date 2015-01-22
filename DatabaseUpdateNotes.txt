@@ -24,7 +24,6 @@ MainController::databaseReadyToBuild
 		DBManager::buildDatabase2:@selector(launchAppFinal:) obj:self
 			DBManager::threadBuildDatabase (on another thread)
 				DBManager::privateBuildDatabase
-				MainController::launchAppFinal
 					Sha1 check of tar ball
 					extract tarball
 					Sha1 check of sql file
@@ -32,6 +31,7 @@ MainController::databaseReadyToBuild
 					delete old db
 					rename new db
 					cleanup (remove intermediate files)
+				MainController::launchAppFinal
 
 
 

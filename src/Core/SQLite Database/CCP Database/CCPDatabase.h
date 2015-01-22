@@ -42,6 +42,8 @@
 
 @property (readwrite,nonatomic,assign) enum DatabaseLanguage lang;
 
++ (NSInteger)dbVersion; ///< This is moderately expensive, currently only used by DBManager to determine if we need to update the db.
+
 -(CCPDatabase*) initWithPath:(NSString*)dbpath;
 
 //Database version

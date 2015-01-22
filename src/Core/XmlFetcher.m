@@ -174,13 +174,14 @@
 }
 
 /*syncronous method*/
--(BOOL) saveXmlDocument:(NSString*)fullDocUrl savePath:(NSString*)path
+-(BOOL) saveXmlDocument:(NSString*)fullDocUrl savePath:(NSString*)path withTimeout:(NSTimeInterval)timeout
 {
 	NSData *data;
 	NSError *err = nil;
 	NSURLResponse *resp = nil;
 	
 	METURLRequest *request = [[METURLRequest alloc] initWithURL:[NSURL URLWithString:fullDocUrl]];
+    [request setTimeoutInterval:timeout];
 	[request autorelease];
 	
 	data = [NSURLConnection sendSynchronousRequest:request returningResponse:&resp error:&err];
