@@ -44,6 +44,8 @@
 
 @interface XmlFetcher : NSObject {
 	
+    NSURLConnection *apiConnection;
+    
 	NSMutableData *xmlData; //URL data
 	
 	NSString *docName; /*@"/char/charsheet.aspx.xml  returned to the user*/
@@ -74,6 +76,8 @@
 -(void) saveXmlDocument:(NSString*)fullDocUrl docName:(NSString*)name savePath:(NSString*)path runLoopMode:(NSString*)mode;
 -(void) saveXmlDocument:(NSString*)fullDocUrl docName:(NSString*)name savePath:(NSString*)path;
 -(BOOL) saveXmlDocument:(NSString*)fullDocUrl savePath:(NSString*)path withTimeout:(NSTimeInterval)timeout; // synchronous
+
+- (void)cancel;
 
 -(NSString *)savePath;
 @end

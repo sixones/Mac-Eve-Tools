@@ -51,16 +51,20 @@
 	IBOutlet NSProgressIndicator *progressIndicator;
 	IBOutlet NSTextField *title;
 	
-	NSURLResponse *downloadResponse;
+    NSURLDownload *dbDownload;
+    NSURLResponse *downloadResponse;
 	long long bytesReceived;
     
     XmlFetcher *remoteFetcher;
+    
+    BOOL cancelling;
 }
 
 - (void) databaseCheckAndUpdate:(BOOL)force; ///< If force is true, then check included and remote databases even if our current version is greater than or equal to the minimum version
 
 -(void) setDelegate:(id<DBManagerDelegate>)del;
 -(id<DBManagerDelegate>) delegate;
--(IBAction) closeSheet:(id)sender;
+
+-(IBAction)cancel:(id)sender; ///< Cancel any download or build that is in progress
 
 @end

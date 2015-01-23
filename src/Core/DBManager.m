@@ -57,7 +57,6 @@
 -(void) logProgressThread:(NSString*)progressMessage;
 
 -(void) closeWindow:(id)object;
--(void) showCloseButton:(id)object;
 
 - (BOOL)checkIncludedDB;
 
@@ -116,18 +115,14 @@
 	[[self window]close];
 }
 
-/*allow the user to close the window*/
--(void) showCloseButton:(id)object
+-(IBAction)cancel:(id)sender
 {
-	[closeButton setEnabled:YES];
+    cancelling = YES;
+    [remoteFetcher cancel];
+    [dbDownload cancel];
+    // cancelling an NSURLDownload doesn't provide any feedback so we have to do it ourselves
+    [self download:dbDownload didFailWithError:[NSError errorWithDomain:@"User Cancelled" code:1 userInfo:nil]];
 }
-
--(IBAction) closeSheet:(id)sender
-{
-    [NSApp endSheet:progressPanel];
-    [progressPanel orderOut:sender];
-}
-
 
 -(void) progressThread:(double)currentProgress
 {
@@ -257,9 +252,11 @@
  */
 -(void) downloadFinished:(NSURLDownload*)download
 {
+    [dbDownload release];
+    dbDownload = nil;
+    
 	[downloadResponse release];
 	downloadResponse = nil;
-	[download release];
 	 
 	NSNotification *not = [NSNotification notificationWithName:NOTE_DATABASE_DOWNLOAD_COMPLETE object:self];
 	[[NSNotificationCenter defaultCenter]postNotification:not];
@@ -301,6 +298,7 @@
 
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error
 {
+    NSLog( @"Database download failed: %@", [error localizedDescription] );
 	[self logProgressThread:[error localizedFailureReason]];
 	[self downloadFinished:download];
 }
@@ -536,8 +534,7 @@ _finish_cleanup:
 	[progressIndicator setMinValue:0.0];
 	[progressIndicator setMaxValue:7.0];
 	[progressIndicator setDoubleValue:0.0];
-	[title setStringValue:NSLocalizedString(@"Building Database",
-											@"database constuction start")];
+	[title setStringValue:NSLocalizedString(@"Building Database", @"database constuction start")];
     
 	[NSThread detachNewThreadSelector:@selector(threadBuildDatabase:) 
 							 toTarget:self 
@@ -567,6 +564,9 @@ _finish_cleanup:
 
 -(BOOL) downloadDatabase
 {
+    if( ![self checkAndCreateRootDirectory] )
+        return NO;
+    
     [progressIndicator setMinValue:0.0];
     [progressIndicator setMaxValue:100.0];
     [progressIndicator setDoubleValue:0.0];
@@ -574,21 +574,17 @@ _finish_cleanup:
     
     [[self window] makeKeyAndOrderFront:nil];
 
-    if( ![self checkAndCreateRootDirectory] )
-        return NO;
-    
 	NSURL *url = [NSURL URLWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_DB_SQL_URL]];
     METURLRequest *request = [METURLRequest requestWithURL:url];
-	NSURLDownload *download = [[NSURLDownload alloc]initWithRequest:request delegate:self];
+	dbDownload = [[NSURLDownload alloc]initWithRequest:request delegate:self];
 	
-	if(download == nil){
+	if(dbDownload == nil){
 		[self logProgressThread:@"Error creating connection!"];
-		[self showCloseButton:nil];
         return NO;
 	}else{
 		NSString *dest = [Config filePath:DATABASE_SQL_BZ2,nil];
-		[download setDestination:dest allowOverwrite:YES];
-		[download setDeletesFileUponFailure:YES];
+		[dbDownload setDestination:dest allowOverwrite:YES];
+		[dbDownload setDeletesFileUponFailure:YES];
 	}
     return YES;
 }
@@ -626,6 +622,8 @@ _finish_cleanup:
  */
 - (void) databaseCheckAndUpdate:(BOOL)force
 {
+    cancelling = NO;
+    
     NSInteger minVer = [[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_MIN_VERSION];
     currentVersion = [CCPDatabase dbVersion];
     
@@ -638,6 +636,10 @@ _finish_cleanup:
         return;
     }
     
+    [[self window] makeKeyAndOrderFront:nil];
+    [title setStringValue:NSLocalizedString(@"Checking Database Versions",@"checking database versions")];    
+    [self logProgressThread:NSLocalizedString(@"Checking remote version",)];
+
     NSString *url = [NSString stringWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_DB_UPDATE_URL]];
     
     remoteFetcher = [[XmlFetcher alloc] initWithDelegate:self];
@@ -663,9 +665,12 @@ _finish_cleanup:
     NSInteger remoteVer = [self parseDBXmlVersion:remoteXMLPath versionOnly:YES];
     
     NSLog( @"Database check min/current/included/external: %ld/%ld/%ld/%ld", (long)minVer, (long)currentVersion, (long)includedVer, (long)remoteVer );
-    
+    [self logProgressThread:NSLocalizedString(@"Comparing versions",)];
+
     if( (includedVer >= remoteVer) && (includedVer > currentVersion) )
     {
+        [title setStringValue:NSLocalizedString(@"Building Database", @"database constuction start")];
+        [self logProgressThread:NSLocalizedString(@"Using built-in database",)];
         if( [self checkIncludedDB] )
         {
             [self buildDatabase];
@@ -678,6 +683,10 @@ _finish_cleanup:
         BOOL failed = NO;
         NSString *path = [Config buildPathSingle:DBUPDATE_DEFN];
         NSError *error = nil;
+        
+        if( ![self checkAndCreateRootDirectory] )
+            failed = YES;
+
         // can't copy over existing file, so remove any older version first
         if( [[NSFileManager defaultManager] fileExistsAtPath:path]
            && ![[NSFileManager defaultManager] removeItemAtPath:path error:&error] )
@@ -688,7 +697,7 @@ _finish_cleanup:
         
         if( ![[NSFileManager defaultManager] moveItemAtPath:remoteXMLPath toPath:path error:&error] )
         {
-            NSLog( @"Unable to move temporary database XML file." );
+            NSLog( @"Unable to move temporary database XML file: %@", [error localizedDescription] );
             failed = YES;
         }
         if( !failed )
@@ -699,6 +708,8 @@ _finish_cleanup:
                 return; // notification will be sent when the DB is built
         }
     }
+    
+    [self closeWindow:self];
     
     // If we got here either we're up-to-date, or we failed.
     // Either way the main controller needs to know to proceed.

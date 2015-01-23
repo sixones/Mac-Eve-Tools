@@ -50,11 +50,12 @@
 		[docName release];
 		docName = nil;
 	}
+    [apiConnection release];
+    apiConnection = nil;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-	NSLog(@"Received Response");
     [xmlData setLength:0];
 }
 
@@ -71,7 +72,6 @@
 	[delegate xmlDocumentFinished:NO xmlPath:nil xmlDocName:docName];
 	
 	[self finishedCleanup];
-	[connection autorelease];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
@@ -89,7 +89,6 @@
 	[delegate xmlDocumentFinished:rc xmlPath:savePath xmlDocName:docName];
 	
 	[self finishedCleanup];
-	[connection autorelease];
 }
 
 -(BOOL) writeData:(NSData*)data toFile:(NSString*)file
@@ -148,6 +147,12 @@
     return savePath;
 }
 
+- (void)cancel
+{
+    [apiConnection cancel];
+    [self connection:apiConnection didFailWithError:[NSError errorWithDomain:@"User Cancelled" code:1 userInfo:nil]];
+}
+
 -(void) saveXmlDocument:(NSString*)fullDocUrl docName:(NSString*)name savePath:(NSString*)path runLoopMode:(NSString*)mode
 {
 	docName = [name retain];
@@ -160,7 +165,7 @@
 	METURLRequest *apiRequest = [METURLRequest requestWithURL: [ NSURL URLWithString: fullDocUrl]
 												cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0];
 	
-	NSURLConnection *apiConnection = [[NSURLConnection alloc] initWithRequest:apiRequest delegate:self startImmediately:NO];
+	apiConnection = [[NSURLConnection alloc] initWithRequest:apiRequest delegate:self startImmediately:NO];
 	
 	[apiConnection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:mode];
 	[apiConnection start];
