@@ -127,7 +127,9 @@ if __name__ == "__main__":
         FROM dgmAttributeTypes WHERE attributeID NOT IN
         (SELECT attributeID FROM metAttributeTypes);""";
     dumpAttribute(conn,otherQuery,8)
-    
+
+    conn.query("UPDATE metAttributeTypes SET displayName = NULL WHERE displayName = '';")
+
     dquery = "SELECT attributeID, unitID, iconID, displayName, attributeName, typeGroupID FROM metAttributeTypes;"
     dump_table.dumpTable("metAttributeTypes",dquery,options.file);
 

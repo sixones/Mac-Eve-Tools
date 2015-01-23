@@ -75,5 +75,6 @@
 -(void) saveXmlDocument:(NSString*)fullDocUrl docName:(NSString*)name savePath:(NSString*)path;
 -(BOOL) saveXmlDocument:(NSString*)fullDocUrl savePath:(NSString*)path withTimeout:(NSTimeInterval)timeout; // synchronous
 
+-(NSString *)savePath;
 @end
 

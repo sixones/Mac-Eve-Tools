@@ -299,7 +299,7 @@
                                              selector:@selector(databaseFinishedBuilding:)
                                                  name:NOTE_DATABASE_BUILD_COMPLETE
                                                object:nil];
-    [dbManager databaseCheckAndUpdate];
+    [dbManager databaseCheckAndUpdate:NO];
 }
 
 /*
@@ -795,7 +795,7 @@
                                              selector:@selector(databaseFinishedBuilding2:)
                                                  name:NOTE_DATABASE_BUILD_COMPLETE
                                                object:nil];
-    [dbManager databaseCheckAndUpdate];
+    [dbManager databaseCheckAndUpdate:YES];
 }
 
 -(void) databaseFinishedBuilding2:(NSNotification *)notification

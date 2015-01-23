@@ -143,6 +143,10 @@
 	return self;
 }
 
+-(NSString *)savePath
+{
+    return savePath;
+}
 
 -(void) saveXmlDocument:(NSString*)fullDocUrl docName:(NSString*)name savePath:(NSString*)path runLoopMode:(NSString*)mode
 {

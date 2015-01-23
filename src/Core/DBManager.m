@@ -143,42 +143,6 @@
     });
 }
 
--(void) xmlDocumentFinished:(BOOL)status 
-					xmlPath:(NSString*)path 
-				 xmlDocName:(NSString*)docName
-{
-	if([docName isEqualToString:UPDATE_FILE]){
-		/*parse the file, determine if there is a new version available*/
-		[self parseDBXmlVersion:path versionOnly:NO];
-		BOOL update = (availableVersion > [CCPDatabase dbVersion]);
-        if( !update )
-        {
-            // check to see if there is a new version included in the app bundle
-            if( [self checkIncludedDB] )
-            {
-                update = YES;
-            }
-        }
-		if(delegate != nil){
-			[delegate newDatabaseAvailable:self status:update];
-		}
-	}
-}
-
--(void) xmlDidFailWithError:(NSError*)xmlErrorMessage 
-					xmlPath:(NSString*)path 
-				 xmlDocName:(NSString*)docName
-{
-	NSLog(@"Connection failed! (%@)",[xmlErrorMessage localizedDescription]);
-	
-	NSRunAlertPanel(@"Error Account XML", @"%@",@"Close",nil,nil, [xmlErrorMessage localizedDescription]);
-}
-
--(BOOL) xmlValidateData:(NSData*)xmlData xmlPath:(NSString*)path xmlDocName:(NSString*)docName
-{
-	return YES;
-}
-
 -(NSInteger) parseDBXmlVersion:(NSString*)xmlPath versionOnly:(BOOL)versionOnly
 {
     NSInteger ver = -1;
@@ -629,73 +593,110 @@ _finish_cleanup:
     return YES;
 }
 
+-(void) xmlDocumentFinished:(BOOL)status
+                    xmlPath:(NSString*)path
+                 xmlDocName:(NSString*)docName
+{
+    if( [docName isEqualToString:UPDATE_FILE] )
+    {
+        [self databaseCheckAndUpdate2];
+    }
+}
+
+-(void) xmlDidFailWithError:(NSError*)xmlErrorMessage
+                    xmlPath:(NSString*)path
+                 xmlDocName:(NSString*)docName
+{
+    NSLog(@"Database XML connection failed! (%@)",[xmlErrorMessage localizedDescription]);
+}
+
+-(BOOL) xmlValidateData:(NSData*)xmlData xmlPath:(NSString*)path xmlDocName:(NSString*)docName
+{
+    return YES;
+}
+
 - (NSString *)temporaryFilePath
 {
     NSString *guid = [[NSProcessInfo processInfo] globallyUniqueString];
     return [NSTemporaryDirectory() stringByAppendingPathComponent:guid];
 }
 
+/* Start download of the database xml from the URL stored in user defaults
+   When the XmlFetcher is done (fail or succeed) it will call databaseCheckAndUpdate2
+ */
+- (void) databaseCheckAndUpdate:(BOOL)force
+{
+    NSInteger minVer = [[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_MIN_VERSION];
+    currentVersion = [CCPDatabase dbVersion];
+    
+    if( !force && (currentVersion >= minVer) )
+    {
+        dispatch_async(dispatch_get_main_queue(),^{
+            NSNotification *not = [NSNotification notificationWithName:NOTE_DATABASE_BUILD_COMPLETE object:self];
+            [[NSNotificationCenter defaultCenter] postNotification:not];
+        });
+        return;
+    }
+    
+    NSString *url = [NSString stringWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_DB_UPDATE_URL]];
+    
+    remoteFetcher = [[XmlFetcher alloc] initWithDelegate:self];
+    NSString *tempXMLPath = [[self temporaryFilePath] stringByAppendingPathExtension:@"xml"];
+    [remoteFetcher saveXmlDocument:url docName:UPDATE_FILE savePath:tempXMLPath];
+}
+
 /*
- Check three different versions and compare to min version
- 1) current version
+ Check two different versions and compare to min version
  2) db included in application
  3) db at URL in preferences
  */
-- (void) databaseCheckAndUpdate
+- (void) databaseCheckAndUpdate2
 {
     NSInteger minVer = [[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_MIN_VERSION];
-    NSInteger currentVer = [CCPDatabase dbVersion];
-
-    // I'm not sure if we should skip all of this if we are 'good enough'
-    if( YES || (currentVer < minVer) )
+    NSString *remoteXMLPath = [[[remoteFetcher savePath] retain] autorelease];
+    
+    // make sure this goes away. Or we could keep it around if it can be used multiple times.
+    [remoteFetcher autorelease];
+    remoteFetcher = nil;
+    
+    NSInteger includedVer = [self parseDBXmlVersion:[[NSBundle mainBundle] pathForResource:@"database" ofType:@"xml" inDirectory:@"Database"] versionOnly:YES];
+    NSInteger remoteVer = [self parseDBXmlVersion:remoteXMLPath versionOnly:YES];
+    
+    NSLog( @"Database check min/current/included/external: %ld/%ld/%ld/%ld", (long)minVer, (long)currentVersion, (long)includedVer, (long)remoteVer );
+    
+    if( (includedVer >= remoteVer) && (includedVer > currentVersion) )
     {
-        NSInteger includedVer = [self parseDBXmlVersion:[[NSBundle mainBundle] pathForResource:@"database" ofType:@"xml" inDirectory:@"Database"] versionOnly:YES];
-        NSInteger remoteVer;
-        
-        NSString *url = [NSString stringWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_DB_UPDATE_URL]];
-        
-        XmlFetcher *fetcher = [[XmlFetcher alloc] initWithDelegate:self];
-        NSString *tempXMLPath = [[self temporaryFilePath] stringByAppendingPathExtension:@"xml"];
-        [fetcher saveXmlDocument:url savePath:tempXMLPath withTimeout:10.0];
-        remoteVer = [self parseDBXmlVersion:tempXMLPath versionOnly:YES];
-        [fetcher release];
-        
-        NSLog( @"Database check min/current/included/external: %ld/%ld/%ld/%ld", (long)minVer, (long)currentVer, (long)includedVer, (long)remoteVer );
-        
-        if( (includedVer >= remoteVer) && (includedVer > currentVer) )
+        if( [self checkIncludedDB] )
         {
-            if( [self checkIncludedDB] )
-            {
-                [self buildDatabase];
-                return; // notification will be sent when the DB is built
-            }
+            [self buildDatabase];
+            return; // notification will be sent when the DB is built
         }
-        if( (remoteVer > includedVer) && (remoteVer > currentVer) )
+    }
+    if( (remoteVer > includedVer) && (remoteVer > currentVersion) )
+    {
+        // install remoteVer
+        BOOL failed = NO;
+        NSString *path = [Config buildPathSingle:DBUPDATE_DEFN];
+        NSError *error = nil;
+        // can't copy over existing file, so remove any older version first
+        if( [[NSFileManager defaultManager] fileExistsAtPath:path]
+           && ![[NSFileManager defaultManager] removeItemAtPath:path error:&error] )
         {
-            // install remoteVer
-            BOOL failed = NO;
-            NSString *path = [Config buildPathSingle:DBUPDATE_DEFN];
-            NSError *error = nil;
-            // can't copy over existing file, so remove any older version first
-            if( [[NSFileManager defaultManager] fileExistsAtPath:path]
-               && ![[NSFileManager defaultManager] removeItemAtPath:path error:&error] )
-            {
-                NSLog( @"Unable to remove older database XML file." );
-                failed = YES;
-            }
+            NSLog( @"Unable to remove older database XML file." );
+            failed = YES;
+        }
+        
+        if( ![[NSFileManager defaultManager] moveItemAtPath:remoteXMLPath toPath:path error:&error] )
+        {
+            NSLog( @"Unable to move temporary database XML file." );
+            failed = YES;
+        }
+        if( !failed )
+        {
+            [self parseDBXmlVersion:path versionOnly:NO];
             
-            if( ![[NSFileManager defaultManager] moveItemAtPath:tempXMLPath toPath:path error:&error] )
-            {
-                NSLog( @"Unable to move temporary database XML file." );
-                failed = YES;
-            }
-            if( !failed )
-            {
-                [self parseDBXmlVersion:path versionOnly:NO];
-                
-                if( [self downloadDatabase] )
-                    return; // notification will be sent when the DB is built
-            }
+            if( [self downloadDatabase] )
+                return; // notification will be sent when the DB is built
         }
     }
     
@@ -706,5 +707,4 @@ _finish_cleanup:
         [[NSNotificationCenter defaultCenter] postNotification:not];
     });
 }
-
 @end

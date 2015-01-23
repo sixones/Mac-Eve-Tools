@@ -20,6 +20,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class DBManager;
+@class XmlFetcher;
 
 @protocol DBManagerDelegate
 
@@ -34,8 +35,9 @@
 
 @interface DBManager : NSWindowController <NSURLDownloadDelegate>
 {
+    NSInteger currentVersion;
 	NSInteger availableVersion;
-	
+    
 	NSString *sha1_bzip;
 	NSString *sha1_dec;
 	NSString *sha1_database;
@@ -51,9 +53,11 @@
 	
 	NSURLResponse *downloadResponse;
 	long long bytesReceived;
+    
+    XmlFetcher *remoteFetcher;
 }
 
-- (void) databaseCheckAndUpdate;
+- (void) databaseCheckAndUpdate:(BOOL)force; ///< If force is true, then check included and remote databases even if our current version is greater than or equal to the minimum version
 
 -(void) setDelegate:(id<DBManagerDelegate>)del;
 -(id<DBManagerDelegate>) delegate;
