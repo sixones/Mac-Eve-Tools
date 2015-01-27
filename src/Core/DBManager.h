@@ -57,6 +57,8 @@
     
     XmlFetcher *remoteFetcher;
     
+    NSTask *buildDBTask;
+    
     BOOL cancelling;
 }
 

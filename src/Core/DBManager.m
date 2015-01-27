@@ -119,9 +119,13 @@
 {
     cancelling = YES;
     [remoteFetcher cancel];
-    [dbDownload cancel];
-    // cancelling an NSURLDownload doesn't provide any feedback so we have to do it ourselves
-    [self download:dbDownload didFailWithError:[NSError errorWithDomain:@"User Cancelled" code:1 userInfo:nil]];
+    if( dbDownload )
+    {
+        [dbDownload cancel];
+        // cancelling an NSURLDownload doesn't provide any feedback so we have to do it ourselves
+        [self download:dbDownload didFailWithError:[NSError errorWithDomain:@"User Cancelled" code:1 userInfo:nil]];
+    }
+    [buildDBTask terminate];
 }
 
 -(void) progressThread:(double)currentProgress
@@ -246,22 +250,24 @@
 
 #pragma mark NSURLDownload delegate methods
 
-/*
- these delegates are called from within the main thread, so there is no need for
- performSelectorOnMainThread
- */
 -(void) downloadFinished:(NSURLDownload*)download
 {
-    [dbDownload release];
-    dbDownload = nil;
-    
-	[downloadResponse release];
-	downloadResponse = nil;
-	 
-	NSNotification *not = [NSNotification notificationWithName:NOTE_DATABASE_DOWNLOAD_COMPLETE object:self];
-	[[NSNotificationCenter defaultCenter]postNotification:not];
-	
-    [self buildDatabase];
+    @synchronized(self)
+    {
+        if( dbDownload )
+        {
+            [dbDownload release];
+            dbDownload = nil;
+            
+            [downloadResponse release];
+            downloadResponse = nil;
+            
+            NSNotification *not = [NSNotification notificationWithName:NOTE_DATABASE_DOWNLOAD_COMPLETE object:self];
+            [[NSNotificationCenter defaultCenter]postNotification:not];
+            
+            [self buildDatabase];
+        }
+    }
 }
 
 - (void)download:(NSURLDownload *)download didReceiveResponse:(NSURLResponse *)response
@@ -348,8 +354,8 @@
 	
 	buffer = malloc(MEGABYTE);
 	
-	if(buffer == NULL){
-		/*yeah, right*/
+	if( cancelling || (buffer == NULL) )
+    {
 		fclose(fin);
 		goto _finish_cleanup;
 	}
@@ -365,10 +371,14 @@
 	
 	b64_ntop(sha_digest,SHA_DIGEST_LENGTH,(char*)buffer,MEGABYTE);
 	
-	if(![sha1_bzip isEqualToString:[NSString stringWithUTF8String:(const char*)buffer]]){
-		/*SHA1 Digest failed!*/
-		NSLog(@"SHA1 bz2 hashing failed ('%@' != '%s')",sha1_bzip,buffer);
-		[self logProgressThread:@"Tarball verification failed"];
+	if( cancelling || ![sha1_bzip isEqualToString:[NSString stringWithUTF8String:(const char*)buffer]] )
+    {
+        if( !cancelling )
+        {
+            /*SHA1 Digest failed!*/
+            NSLog(@"SHA1 bz2 hashing failed ('%@' != '%s')",sha1_bzip,buffer);
+            [self logProgressThread:@"Tarball verification failed"];
+        }
 		fclose(fin);
 		free(buffer);
 		goto _finish_cleanup;
@@ -381,11 +391,13 @@
 	
 	str = [Config buildPathSingle:DATABASE_SQL];
 	fout = fopen([str fileSystemRepresentation],"w+");
-	if(fout == NULL){
+	if( cancelling || (fout == NULL) )
+    {
+        if( !cancelling )
+            NSLog(@"Couldn't open output file");
 		fclose(fin);
 		fclose(fout);
 		free(buffer);
-		NSLog(@"Couldn't open output file");
 		goto _finish_cleanup;
 	}
 	
@@ -394,9 +406,13 @@
 	
 	
 	BZFILE *compress = BZ2_bzReadOpen(&bzerror,fin,0,0,NULL,0);
-	if(bzerror != BZ_OK){
-		[self logProgressThread:@"Decompression error"];
-		NSLog(@"Bzip2 error!");
+	if( cancelling || (bzerror != BZ_OK) )
+    {
+        if( !cancelling )
+        {
+            [self logProgressThread:@"Decompression error"];
+            NSLog(@"Bzip2 error!");
+        }
 		free(buffer);
 		fclose(fin);
 		fclose(fout);
@@ -419,13 +435,16 @@
 		
 	b64_ntop(sha_digest,SHA_DIGEST_LENGTH,(char*)buffer,MEGABYTE);
 	
-	if(![sha1_dec isEqualToString:[NSString stringWithUTF8String:(char*)buffer]]){
-		/*SHA1 Digest failed!*/
-		NSLog(@"SHA1 sql hashing failed ('%@' != '%s')",sha1_dec,buffer);
-		[self logProgressThread:@"SQL verification failed"];
+	if( cancelling || ![sha1_dec isEqualToString:[NSString stringWithUTF8String:(char*)buffer]] )
+    {
+        if( !cancelling )
+        {
+            /*SHA1 Digest failed!*/
+            NSLog(@"SHA1 sql hashing failed ('%@' != '%s')",sha1_dec,buffer);
+            [self logProgressThread:@"SQL verification failed"];
+        }
 		fclose(fin);
 		free(buffer);
-		//[delegate newDatabaseBuilt:self status:NO];
 		goto _finish_cleanup;
 	}
 	
@@ -434,74 +453,69 @@
 	BZ2_bzReadClose(&bzerror,compress);
 	fclose(fin);
 	
-	[self logProgressThread:
-	 NSLocalizedString(@"Tarball extracted and verified",)
-	 ];
+	[self logProgressThread:NSLocalizedString(@"Tarball extracted and verified",)];
 	[self progressThread:4.0];
 	
 	str = [Config buildPathSingle:DATABASE_SQLITE_TMP];
 	
-	[[NSFileManager defaultManager] 
-	 removeItemAtPath:str error:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:str error:nil];
 	
 	[self logProgressThread:NSLocalizedString(@"Building Database",)];
 	[self progressThread:5.0];
 
+    if( cancelling )
+    {
+        goto _finish_cleanup;
+    }
+    
 	/*
 	 fork and exec sqlite to build the database.
 	 the old approach used C code to read the file and manually
 	 read the queries and build the DB, which was slow and crap.
 	 */
-	NSTask *task = [[NSTask alloc]init];
-	[task setLaunchPath:@"/usr/bin/sqlite3"];
-
-	NSArray *args = [NSArray arrayWithObjects:
-					 @"-init",
-					 [Config buildPathSingle:DATABASE_SQL],
-					 str,
-					 @".quit",nil];
-	
-	[task setArguments:args];
-	[task launch];
-	[task waitUntilExit];
-	[task release];
-	
+    NSArray *args = [NSArray arrayWithObjects:
+                     @"-init",
+                     [Config buildPathSingle:DATABASE_SQL],
+                     str,
+                     @".quit",nil];
+    buildDBTask = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/sqlite3" arguments:args];
+	[buildDBTask waitUntilExit];
+    if( NSTaskTerminationReasonUncaughtSignal == [buildDBTask terminationReason] )
+    {
+        if( !cancelling )
+        {
+            NSLog( @"Failed to build database" );
+        }
+        goto _finish_cleanup;
+    }
+    buildDBTask = nil;
+    
 	[self progressThread:7.0];
 	
 	NSLog(@"Database successfully built!");
 	
 	/*remove the old database*/
 	str = [Config buildPathSingle:DATABASE_SQLITE];
-	[[NSFileManager defaultManager] 
-	 removeItemAtPath:str error:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:str error:nil];
 	
 	/*rename the file*/
 	str = [Config buildPathSingle:DATABASE_SQLITE_TMP];
 	NSString *str2 = [Config buildPathSingle:DATABASE_SQLITE];
-	[[NSFileManager defaultManager]
-	 moveItemAtPath:str
-	 toPath:str2 
-	 error:NULL];
+	[[NSFileManager defaultManager] moveItemAtPath:str toPath:str2 error:NULL];
 	
-	[self logProgressThread:NSLocalizedString(@"All done!  Please Restart.",
-											  @"Database construction complete")
-	 ];
+	[self logProgressThread:NSLocalizedString(@"All done!  Please Restart.", @"Database construction complete")];
 		
 	status = YES;
 	
 _finish_cleanup:
 	/*remove xml defn*/
-	str = [Config buildPathSingle:DBUPDATE_DEFN];
-	[[NSFileManager defaultManager]
-	 removeItemAtPath:str error:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:[Config buildPathSingle:DBUPDATE_DEFN] error:nil];
+    
 	/*remove sql*/
-	str = [Config buildPathSingle:DATABASE_SQL];
-	[[NSFileManager defaultManager] 
-	 removeItemAtPath:str error:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:[Config buildPathSingle:DATABASE_SQL] error:nil];
+    
 	/*remove bzip sql*/
-	str = [Config buildPathSingle:DATABASE_SQL_BZ2];
-	[[NSFileManager defaultManager] 
-	 removeItemAtPath:str error:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:[Config buildPathSingle:DATABASE_SQL_BZ2] error:nil];
 	
 	return status;
 }

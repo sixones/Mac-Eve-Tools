@@ -525,7 +525,7 @@
 	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.xml" forKey:UD_DB_UPDATE_URL];
 	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.sql.bz2" forKey:UD_DB_SQL_URL];
 	
-	[prefDefaults setObject:[NSNumber numberWithInt:19] forKey:UD_DATABASE_MIN_VERSION];
+	[prefDefaults setObject:[NSNumber numberWithInt:20] forKey:UD_DATABASE_MIN_VERSION];
 	 	
 	[[NSUserDefaults standardUserDefaults] registerDefaults:prefDefaults];
 	[prefDefaults release];
