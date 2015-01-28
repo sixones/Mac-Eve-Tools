@@ -232,7 +232,7 @@
 	
 	if( (rc != SQLITE_OK) || (rows != 1) )
     {
-		NSLog(@"Database does not exist");
+		NSLog(@"Character Database does not exist");
 		return NO;
 	}
 		

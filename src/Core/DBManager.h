@@ -20,6 +20,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class DBManager;
+@class XmlFetcher;
 
 @protocol DBManagerDelegate
 
@@ -34,8 +35,9 @@
 
 @interface DBManager : NSWindowController <NSURLDownloadDelegate>
 {
+    NSInteger currentVersion;
 	NSInteger availableVersion;
-	
+    
 	NSString *sha1_bzip;
 	NSString *sha1_dec;
 	NSString *sha1_database;
@@ -49,48 +51,22 @@
 	IBOutlet NSProgressIndicator *progressIndicator;
 	IBOutlet NSTextField *title;
 	
-	NSURLResponse *downloadResponse;
+    NSURLDownload *dbDownload;
+    NSURLResponse *downloadResponse;
 	long long bytesReceived;
-	
-	SEL appStartSelector;
-	id appStartObject;
+    
+    XmlFetcher *remoteFetcher;
+    
+    NSTask *buildDBTask;
+    
+    BOOL cancelling;
 }
 
--(NSInteger) currentVersion;
--(NSInteger) availableVersion;
-
-//----blocking methods to use on startup----//
-//Perform a blocking check to see if the DB exists.
-//-(BOOL) dbFileExists;
-
-//Perform a check to see if the version is correct
--(BOOL) dbVersionCheck:(NSInteger)minVersion;
-
-//----end----//
-
-
-/*
- display the modal window and build the database*
- 
- */
--(void)buildDatabase2:(SEL)callBackFunc obj:(id)object;
-/*returns immediately, signals when done*/
--(void)checkForUpdate2;
-
-
-/*returns YES if there is a new database waiting to be installed.*/
--(BOOL) databaseReadyToBuild;
-
-
-
-/*kick off a database version check*/
--(void) checkForUpdate;
-
-/*download the update*/
-//-(void) downloadDatabase:(id)object;
+- (void) databaseCheckAndUpdate:(BOOL)force; ///< If force is true, then check included and remote databases even if our current version is greater than or equal to the minimum version
 
 -(void) setDelegate:(id<DBManagerDelegate>)del;
 -(id<DBManagerDelegate>) delegate;
--(IBAction) closeSheet:(id)sender;
+
+-(IBAction)cancel:(id)sender; ///< Cancel any download or build that is in progress
 
 @end

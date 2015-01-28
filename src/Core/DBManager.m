@@ -42,150 +42,157 @@
 #define DATABASE_SQLITE_TMP @"database.sqlite.tmp"
 
 
-@interface DBManager  (DBManagerPrivate) <XmlFetcherDelegate>
+@interface DBManager() <XmlFetcherDelegate>
 
 -(void) xmlDocumentFinished:(BOOL)status xmlPath:(NSString*)path xmlDocName:(NSString*)docName;
 
--(void) parseDBXmlVersion:(NSString*)file;
-
-/*
- the fooThread messages are called if you are NOT operating from within the main thread
+/* Read the XML file and return the db version number.
+ If versionOnly is true then don't set any member variables
+ otherwise set availableVersion, sha1_bzip, sha1_dec, sha1_database and file;
  */
+-(NSInteger) parseDBXmlVersion:(NSString*)file versionOnly:(BOOL)versionOnly;
 
-/*for a progress indicator, can be null*/
--(void) progress:(NSNumber*)currentProgress;
 -(void) progressThread:(double)currentProgress;
 /*a message to display to the user about the current progress*/
--(void) logProgress:(NSString*)progressMessage;
 -(void) logProgressThread:(NSString*)progressMessage;
 
 -(void) closeWindow:(id)object;
--(void) showCloseButton:(id)object;
 
 - (BOOL)checkIncludedDB;
+
+/*
+ display the modal window and build the database
+ returns immediately, signals when done
+ */
+-(void)buildDatabase;
+
 @end
 
-@implementation DBManager (DBManagerPrivate)
+@implementation DBManager
 
+-(DBManager*) init
+{
+    if(self = [super initWithWindowNibName:@"DatabaseUpdate"]){
+        availableVersion = -1;
+    }
+    return self;
+}
+
+-(void) dealloc
+{
+    [sha1_dec release];
+    [sha1_bzip release];
+    [file release];
+    [sha1_database release];
+    [super dealloc];
+}
+
+-(void) awakeFromNib
+{
+    [progressIndicator setIndeterminate:NO];
+    [progressIndicator setUsesThreadedAnimation:YES];
+    [progressIndicator setDoubleValue:0.0];
+    [progressIndicator setStyle:NSProgressIndicatorBarStyle];
+}
+
+-(NSInteger) availableVersion
+{
+    return availableVersion;
+}
+
+-(void) setDelegate:(id)del
+{
+    delegate = del;
+}
+
+-(id) delegate
+{
+    return delegate;
+}
 
 -(void) closeWindow:(id)object
 {
 	[[self window]close];
 }
 
-/*allow the user to close the window*/
--(void) showCloseButton:(id)object
+-(IBAction)cancel:(id)sender
 {
-	[closeButton setEnabled:YES];
+    cancelling = YES;
+    [remoteFetcher cancel];
+    if( dbDownload )
+    {
+        [dbDownload cancel];
+        // cancelling an NSURLDownload doesn't provide any feedback so we have to do it ourselves
+        [self download:dbDownload didFailWithError:[NSError errorWithDomain:@"User Cancelled" code:1 userInfo:nil]];
+    }
+    [buildDBTask terminate];
 }
 
-#pragma mark Main thread messages
-/*ONLY call these methods from within the main thread*/
--(void) progress:(NSNumber*)currentProgress
-{
-	[progressIndicator setDoubleValue:[currentProgress doubleValue]];
-}
-
--(void) logProgress:(NSString*)progressMessage
-{
-    if( !progressMessage )
-        progressMessage = @"Unknown Download Error";
-	[textField setStringValue:progressMessage];
-}
-
-#pragma mark Threaded method wrappers
-/*call these from within another thread*/
 -(void) progressThread:(double)currentProgress
 {
-	[self performSelectorOnMainThread:@selector(progress:) 
-						   withObject:[NSNumber numberWithDouble:currentProgress] 
-						waitUntilDone:NO];
+    dispatch_async(dispatch_get_main_queue(),^{
+        [progressIndicator setDoubleValue:currentProgress];
+    });
 }
 
 -(void) logProgressThread:(NSString*)progressMessage
 {
-	[self performSelectorOnMainThread:@selector(logProgress:)
-							   withObject:progressMessage
-							waitUntilDone:NO];
+    dispatch_async(dispatch_get_main_queue(),^{
+        [textField setStringValue:progressMessage?progressMessage:@"Unknown Download Error"];
+    });
 }
 
--(void) xmlDocumentFinished:(BOOL)status 
-					xmlPath:(NSString*)path 
-				 xmlDocName:(NSString*)docName
+-(NSInteger) parseDBXmlVersion:(NSString*)xmlPath versionOnly:(BOOL)versionOnly
 {
-	if([docName isEqualToString:UPDATE_FILE]){
-		/*parse the file, determine if there is a new version available*/
-		[self parseDBXmlVersion:path];
-		BOOL update = (availableVersion > [self currentVersion]);
-        if( !update )
-        {
-            // check to see if there is a new version included in the app bundle
-            if( [self checkIncludedDB] )
-            {
-                update = YES;
-            }
-        }
-		if(delegate != nil){
-			[delegate newDatabaseAvailable:self status:update];
-		}
-	}
-}
-
--(void) xmlDidFailWithError:(NSError*)xmlErrorMessage 
-					xmlPath:(NSString*)path 
-				 xmlDocName:(NSString*)docName
-{
-	NSLog(@"Connection failed! (%@)",[xmlErrorMessage localizedDescription]);
-	
-	NSRunAlertPanel(@"Error Account XML", @"%@",@"Close",nil,nil, [xmlErrorMessage localizedDescription]);
-}
-
--(BOOL) xmlValidateData:(NSData*)xmlData xmlPath:(NSString*)path xmlDocName:(NSString*)docName
-{
-	return YES;
-}
-
--(void) parseDBXmlVersion:(NSString*)xmlPath
-{
+    NSInteger ver = -1;
+    
+    if( !xmlPath )
+        return ver;
+    
 	xmlDoc *doc = xmlReadFile([xmlPath fileSystemRepresentation], 0,0);
 	if(doc == NULL){
-		return;
+		return ver;
 	}
 	
 	xmlNode *node = xmlDocGetRootElement(doc);
 	if(node == NULL){
 		xmlFreeDoc(doc);
-		return;
+		return ver;
 	}
 	
-	NSString *ver = findAttribute(node,(xmlChar*)"version");
-	
-	availableVersion = [ver integerValue];
-	
-	for(xmlNode *cur_node = node->children;
-		cur_node != NULL;
-		cur_node = cur_node->next)
-	{
-		if(cur_node->type != XML_ELEMENT_NODE){
-			continue;
-		}
-		
-		if(xmlStrcmp(cur_node->name,(xmlChar*)"file") == 0){
-			file = getNodeText(cur_node);
-			[file retain];
-		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"sha1_bzip") == 0){
-			sha1_bzip = getNodeText(cur_node);
-			[sha1_bzip retain];
-		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"sha1_dec") == 0){
-			sha1_dec = getNodeText(cur_node);
-			[sha1_dec retain];
-		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"sha1_built") == 0){
-			sha1_database = getNodeText(cur_node);
-			[sha1_database retain];
-		}
-	}
+	NSString *verStr = findAttribute(node,(xmlChar*)"version");
+    ver = [verStr integerValue];
+    
+    if( !versionOnly )
+    {
+        availableVersion = ver;
+        
+        for(xmlNode *cur_node = node->children;
+            cur_node != NULL;
+            cur_node = cur_node->next)
+        {
+            if(cur_node->type != XML_ELEMENT_NODE){
+                continue;
+            }
+            
+            if(xmlStrcmp(cur_node->name,(xmlChar*)"file") == 0){
+                file = getNodeText(cur_node);
+                [file retain];
+            }else if(xmlStrcmp(cur_node->name,(xmlChar*)"sha1_bzip") == 0){
+                sha1_bzip = getNodeText(cur_node);
+                [sha1_bzip retain];
+            }else if(xmlStrcmp(cur_node->name,(xmlChar*)"sha1_dec") == 0){
+                sha1_dec = getNodeText(cur_node);
+                [sha1_dec retain];
+            }else if(xmlStrcmp(cur_node->name,(xmlChar*)"sha1_built") == 0){
+                sha1_database = getNodeText(cur_node);
+                [sha1_database retain];
+            }
+        }
+    }
 	
 	xmlFreeDoc(doc);
+    return ver;
 }
 
 /* If a newer version of the Database is included in the app bundle, then
@@ -193,12 +200,15 @@
  */
 - (BOOL)checkIncludedDB
 {
+    if( ![self checkAndCreateRootDirectory] )
+        return NO;
+
     NSString *includedDBXML = [[NSBundle mainBundle] pathForResource:@"database" ofType:@"xml" inDirectory:@"Database"];
     
     if( [[NSFileManager defaultManager] fileExistsAtPath:includedDBXML] )
     {
-        [self parseDBXmlVersion:includedDBXML];
-		BOOL update = (availableVersion > [self currentVersion]);
+        [self parseDBXmlVersion:includedDBXML versionOnly:NO];
+		BOOL update = (availableVersion > [CCPDatabase dbVersion]);
         if( update )
         {
             NSError *error = nil;
@@ -209,15 +219,27 @@
             // can't copy over existing file, so remove any older version first
             if( [[NSFileManager defaultManager] fileExistsAtPath:dbXml]
                && ![[NSFileManager defaultManager] removeItemAtPath:dbXml error:&error] )
+            {
+                NSLog( @"Unable to remove older database XML file." );
                 return NO;
+            }
             if( [[NSFileManager defaultManager] fileExistsAtPath:dbTarball]
                && ![[NSFileManager defaultManager] removeItemAtPath:dbTarball error:&error] )
-                return NO;
+            {
+                NSLog( @"Unable to remove older database bz2 file." );
+               return NO;
+            }
 
             if( ![[NSFileManager defaultManager] copyItemAtPath:includedDBXML toPath:dbXml error:&error] )
+            {
+                NSLog( @"Unable to copy included database XML file." );
                 return NO;
+            }
             if( ![[NSFileManager defaultManager] copyItemAtPath:includedDB toPath:dbTarball error:&error] )
+            {
+                NSLog( @"Unable to copy included database zip file." );
                 return NO; // should delete the copied over xml file at this point
+            }
             
             return YES;
         }
@@ -225,159 +247,27 @@
     
     return NO;
 }
-@end
-
-
-@implementation DBManager
-
--(DBManager*) init
-{
-	if(self = [super initWithWindowNibName:@"DatabaseUpdate"]){
-		availableVersion = -1;
-	}
-	return self;
-}
-
--(void) dealloc
-{
-	if(sha1_dec != nil){
-		[sha1_dec release];
-	}
-	if(sha1_bzip != nil){
-		[sha1_bzip release];
-	}
-	if(file != nil){
-		[file release];
-	}
-	if(sha1_database != nil){
-		[sha1_database release];
-	}
-	[super dealloc];
-}
-
--(NSInteger) currentVersion
-{
-	sqlite3 *db;	
-	char **results;
-	NSInteger currentVersion = -1;
-	int rc;
-	int rows,cols;
-	NSString *path = [Config buildPathSingle:DATABASE_SQLITE];
-	
-	rc = sqlite3_open([path fileSystemRepresentation],&db);
-	if(rc != SQLITE_OK){
-		sqlite3_close(db);
-		return -1;
-	}
-	
-	rc = sqlite3_get_table(db,"SELECT versionNum FROM version;",&results,&rows,&cols,NULL);
-	if(rc != SQLITE_OK){
-		if(results != NULL){
-			sqlite3_free_table(results);
-		}
-		sqlite3_close(db);
-		return -1;
-	}
-	if(cols == 1 && rows == 1){
-		currentVersion = strtol(results[1],NULL,10);
-	}
-	
-	NSLog(@"Database current version: %ld", (long)currentVersion);
-	
-	sqlite3_free_table(results);
-	sqlite3_close(db);
-	
-	return currentVersion;
-}
-
--(NSInteger) availableVersion
-{
-	return availableVersion;
-}
-
-/*
-	Check to see if a database update exists.
-	Call the delegate if one does exist.
- */
--(void) checkForUpdate
-{
-	//Config *cfg = [Config sharedInstance];
-	NSString *url = [NSString stringWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_DB_UPDATE_URL]];
-	
-	XmlFetcher *fetcher = [[XmlFetcher alloc]initWithDelegate:self];
-	NSString *path = [Config buildPathSingle:DBUPDATE_DEFN];
-	[fetcher saveXmlDocument:url docName:UPDATE_FILE savePath:path];
-	[fetcher release];
-}
-
--(void) downloadUpdate
-{
-	//Config *cfg = [Config sharedInstance];
-	NSString *url = [NSString stringWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_DB_SQL_URL]];
-	
-	XmlFetcher *fetcher = [[XmlFetcher alloc]initWithDelegate:self];
-	NSString *path = [Config buildPathSingle:DATABASE_SQL_BZ2];
-	[fetcher saveXmlDocument:url docName:@"database.sql.bz2" savePath:path];
-	[fetcher release];
-}
-
-
--(BOOL) databaseReadyToBuild
-{
-	NSString *dbTarball = [Config buildPathSingle:DATABASE_SQL_BZ2];
-	NSString *dbXml = [Config buildPathSingle:DBUPDATE_DEFN];
-	if([[NSFileManager defaultManager]
-		fileExistsAtPath:dbTarball])
-	{
-		if([[NSFileManager defaultManager]
-			fileExistsAtPath:dbXml])
-		{
-			return YES;			
-		}
-	}
-	return NO;
-}
-
--(void) setDelegate:(id)del
-{
-	delegate = del;
-}
--(id) delegate
-{
-	return delegate;
-}
-
--(void) awakeFromNib
-{
-	[progressIndicator setIndeterminate:NO];
-	[progressIndicator setUsesThreadedAnimation:YES];
-	[progressIndicator setDoubleValue:0.0];
-	[progressIndicator setStyle:NSProgressIndicatorBarStyle];
-}
-
--(IBAction) closeSheet:(id)sender
-{
-	[NSApp endSheet:progressPanel];
-	[progressPanel orderOut:sender];
-}
 
 #pragma mark NSURLDownload delegate methods
 
-/*
- these delegates are called from within the main thread, so there is no need for
- performSelectorOnMainThread
- */
 -(void) downloadFinished:(NSURLDownload*)download
 {
-	[downloadResponse release];
-	downloadResponse = nil;
-	[download release];
-	 
-	NSNotification *not = [NSNotification notificationWithName:NOTE_DATABASE_DOWNLOAD_COMPLETE object:nil];
-	[[NSNotificationCenter defaultCenter]postNotification:not];
-	
-	[[self window]close];
-	[self autorelease];
+    @synchronized(self)
+    {
+        if( dbDownload )
+        {
+            [dbDownload release];
+            dbDownload = nil;
+            
+            [downloadResponse release];
+            downloadResponse = nil;
+            
+            NSNotification *not = [NSNotification notificationWithName:NOTE_DATABASE_DOWNLOAD_COMPLETE object:self];
+            [[NSNotificationCenter defaultCenter]postNotification:not];
+            
+            [self buildDatabase];
+        }
+    }
 }
 
 - (void)download:(NSURLDownload *)download didReceiveResponse:(NSURLResponse *)response
@@ -389,12 +279,12 @@
 
 -(void) downloadDidBegin:(NSURLDownload *)download
 {
-	[self logProgress:@"Downloading Eve Database"];
+	[self logProgressThread:@"Downloading Eve Database"];
 }
 
 - (void)downloadDidFinish:(NSURLDownload *)download
 {
-	[self logProgress:@"Download finished - Please restart to apply the new database"];
+	[self logProgressThread:@"Download finished - Please restart to apply the new database"];
 	[self downloadFinished:download];
 }
 
@@ -408,13 +298,14 @@
 		double percentComplete = (bytesReceived / (double)expectedLength) * (double)100.0;
 		[self progressThread:percentComplete];
 	}else{
-		[self logProgress:[NSString stringWithFormat:@"Received %lu bytes", (unsigned long)length]];
+		[self logProgressThread:[NSString stringWithFormat:@"Received %lu bytes", (unsigned long)length]];
 	}
 }
 
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error
 {
-	[self logProgress:[error localizedFailureReason]];
+    NSLog( @"Database download failed: %@", [error localizedDescription] );
+	[self logProgressThread:[error localizedFailureReason]];
 	[self downloadFinished:download];
 }
 
@@ -444,7 +335,7 @@
 	
 	/*read the SHA1 hashes*/
 	str = [Config buildPathSingle:DBUPDATE_DEFN];
-	[self parseDBXmlVersion:str];
+	[self parseDBXmlVersion:str versionOnly:NO];
 	
 	
 	str = [Config buildPathSingle:DATABASE_SQL_BZ2];
@@ -463,8 +354,8 @@
 	
 	buffer = malloc(MEGABYTE);
 	
-	if(buffer == NULL){
-		/*yeah, right*/
+	if( cancelling || (buffer == NULL) )
+    {
 		fclose(fin);
 		goto _finish_cleanup;
 	}
@@ -480,10 +371,14 @@
 	
 	b64_ntop(sha_digest,SHA_DIGEST_LENGTH,(char*)buffer,MEGABYTE);
 	
-	if(![sha1_bzip isEqualToString:[NSString stringWithUTF8String:(const char*)buffer]]){
-		/*SHA1 Digest failed!*/
-		NSLog(@"SHA1 bz2 hashing failed ('%@' != '%s')",sha1_bzip,buffer);
-		[self logProgressThread:@"Tarball verification failed"];
+	if( cancelling || ![sha1_bzip isEqualToString:[NSString stringWithUTF8String:(const char*)buffer]] )
+    {
+        if( !cancelling )
+        {
+            /*SHA1 Digest failed!*/
+            NSLog(@"SHA1 bz2 hashing failed ('%@' != '%s')",sha1_bzip,buffer);
+            [self logProgressThread:@"Tarball verification failed"];
+        }
 		fclose(fin);
 		free(buffer);
 		goto _finish_cleanup;
@@ -496,11 +391,13 @@
 	
 	str = [Config buildPathSingle:DATABASE_SQL];
 	fout = fopen([str fileSystemRepresentation],"w+");
-	if(fout == NULL){
+	if( cancelling || (fout == NULL) )
+    {
+        if( !cancelling )
+            NSLog(@"Couldn't open output file");
 		fclose(fin);
 		fclose(fout);
 		free(buffer);
-		NSLog(@"Couldn't open output file");
 		goto _finish_cleanup;
 	}
 	
@@ -509,9 +406,13 @@
 	
 	
 	BZFILE *compress = BZ2_bzReadOpen(&bzerror,fin,0,0,NULL,0);
-	if(bzerror != BZ_OK){
-		[self logProgressThread:@"Decompression error"];
-		NSLog(@"Bzip2 error!");
+	if( cancelling || (bzerror != BZ_OK) )
+    {
+        if( !cancelling )
+        {
+            [self logProgressThread:@"Decompression error"];
+            NSLog(@"Bzip2 error!");
+        }
 		free(buffer);
 		fclose(fin);
 		fclose(fout);
@@ -534,13 +435,16 @@
 		
 	b64_ntop(sha_digest,SHA_DIGEST_LENGTH,(char*)buffer,MEGABYTE);
 	
-	if(![sha1_dec isEqualToString:[NSString stringWithUTF8String:(char*)buffer]]){
-		/*SHA1 Digest failed!*/
-		NSLog(@"SHA1 sql hashing failed ('%@' != '%s')",sha1_dec,buffer);
-		[self logProgressThread:@"SQL verification failed"];
+	if( cancelling || ![sha1_dec isEqualToString:[NSString stringWithUTF8String:(char*)buffer]] )
+    {
+        if( !cancelling )
+        {
+            /*SHA1 Digest failed!*/
+            NSLog(@"SHA1 sql hashing failed ('%@' != '%s')",sha1_dec,buffer);
+            [self logProgressThread:@"SQL verification failed"];
+        }
 		fclose(fin);
 		free(buffer);
-		//[delegate newDatabaseBuilt:self status:NO];
 		goto _finish_cleanup;
 	}
 	
@@ -549,74 +453,69 @@
 	BZ2_bzReadClose(&bzerror,compress);
 	fclose(fin);
 	
-	[self logProgressThread:
-	 NSLocalizedString(@"Tarball extracted and verified",)
-	 ];
+	[self logProgressThread:NSLocalizedString(@"Tarball extracted and verified",)];
 	[self progressThread:4.0];
 	
 	str = [Config buildPathSingle:DATABASE_SQLITE_TMP];
 	
-	[[NSFileManager defaultManager] 
-	 removeItemAtPath:str error:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:str error:nil];
 	
 	[self logProgressThread:NSLocalizedString(@"Building Database",)];
 	[self progressThread:5.0];
 
+    if( cancelling )
+    {
+        goto _finish_cleanup;
+    }
+    
 	/*
 	 fork and exec sqlite to build the database.
 	 the old approach used C code to read the file and manually
 	 read the queries and build the DB, which was slow and crap.
 	 */
-	NSTask *task = [[NSTask alloc]init];
-	[task setLaunchPath:@"/usr/bin/sqlite3"];
-
-	NSArray *args = [NSArray arrayWithObjects:
-					 @"-init",
-					 [Config buildPathSingle:DATABASE_SQL],
-					 str,
-					 @".quit",nil];
-	
-	[task setArguments:args];
-	[task launch];
-	[task waitUntilExit];
-	[task release];
-	
+    NSArray *args = [NSArray arrayWithObjects:
+                     @"-init",
+                     [Config buildPathSingle:DATABASE_SQL],
+                     str,
+                     @".quit",nil];
+    buildDBTask = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/sqlite3" arguments:args];
+	[buildDBTask waitUntilExit];
+    if( NSTaskTerminationReasonUncaughtSignal == [buildDBTask terminationReason] )
+    {
+        if( !cancelling )
+        {
+            NSLog( @"Failed to build database" );
+        }
+        goto _finish_cleanup;
+    }
+    buildDBTask = nil;
+    
 	[self progressThread:7.0];
 	
 	NSLog(@"Database successfully built!");
 	
 	/*remove the old database*/
 	str = [Config buildPathSingle:DATABASE_SQLITE];
-	[[NSFileManager defaultManager] 
-	 removeItemAtPath:str error:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:str error:nil];
 	
 	/*rename the file*/
 	str = [Config buildPathSingle:DATABASE_SQLITE_TMP];
 	NSString *str2 = [Config buildPathSingle:DATABASE_SQLITE];
-	[[NSFileManager defaultManager]
-	 moveItemAtPath:str
-	 toPath:str2 
-	 error:NULL];
+	[[NSFileManager defaultManager] moveItemAtPath:str toPath:str2 error:NULL];
 	
-	[self logProgressThread:NSLocalizedString(@"All done!  Please Restart.",
-											  @"Database construction complete")
-	 ];
+	[self logProgressThread:NSLocalizedString(@"All done!  Please Restart.", @"Database construction complete")];
 		
 	status = YES;
 	
 _finish_cleanup:
 	/*remove xml defn*/
-	str = [Config buildPathSingle:DBUPDATE_DEFN];
-	[[NSFileManager defaultManager]
-	 removeItemAtPath:str error:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:[Config buildPathSingle:DBUPDATE_DEFN] error:nil];
+    
 	/*remove sql*/
-	str = [Config buildPathSingle:DATABASE_SQL];
-	[[NSFileManager defaultManager] 
-	 removeItemAtPath:str error:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:[Config buildPathSingle:DATABASE_SQL] error:nil];
+    
 	/*remove bzip sql*/
-	str = [Config buildPathSingle:DATABASE_SQL_BZ2];
-	[[NSFileManager defaultManager] 
-	 removeItemAtPath:str error:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:[Config buildPathSingle:DATABASE_SQL_BZ2] error:nil];
 	
 	return status;
 }
@@ -624,7 +523,6 @@ _finish_cleanup:
 -(void) threadBuildDatabase:(NSCondition*)sig
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc]init];
-	//NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
 	
 	[self privateBuildDatabase];
 		
@@ -635,106 +533,203 @@ _finish_cleanup:
 						waitUntilDone:YES];
 	
 	//Notifiy the app it may continue its next stage of execution.
-	
+    dispatch_async(dispatch_get_main_queue(),^{
+        NSNotification *not = [NSNotification notificationWithName:NOTE_DATABASE_BUILD_COMPLETE object:self];
+        [[NSNotificationCenter defaultCenter] postNotification:not];
+    });
+
 	[pool drain];
-	
-	[appStartObject performSelectorOnMainThread:appStartSelector
-									 withObject:nil
-								  waitUntilDone:NO];
-	
-	[appStartObject release];
-	appStartObject = nil;
-	
-	[self release]; //destroy object.
 }
 
--(void)buildDatabase2:(SEL)callBackFunc obj:(id)object
+-(void)buildDatabase
 {
-	[[self window]makeKeyAndOrderFront:nil];
+	[[self window] makeKeyAndOrderFront:nil];
 
-	// Perform on main thread.
 	[progressIndicator setMinValue:0.0];
 	[progressIndicator setMaxValue:7.0];
 	[progressIndicator setDoubleValue:0.0];
-	[title setStringValue:NSLocalizedString(@"Building Database",
-											@"database constuction start")];
-		
-	// open window on main thread.
-	
-	[self retain]; //retain object. thread function will release it.
-	
-	appStartSelector = callBackFunc;
-	appStartObject = [object retain];
-	
+	[title setStringValue:NSLocalizedString(@"Building Database", @"database constuction start")];
+    
 	[NSThread detachNewThreadSelector:@selector(threadBuildDatabase:) 
 							 toTarget:self 
 						   withObject:nil];
 	
 }
 
--(void) downloadDatabase
+/* Return YES if it exists or if we create it. */
+-(BOOL) checkAndCreateRootDirectory
 {
-    // TODO
-	NSString *savePath = [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH];
-	if(![[NSFileManager defaultManager] fileExistsAtPath:savePath]){
-		
-		/*Directory does not exist. create it.*/
-		[[NSFileManager defaultManager]
-		 createDirectoryAtPath:savePath 
-		 withIntermediateDirectories:YES
-		 attributes:nil 
-		 error:NULL];
-		
-	}
-	
-	[self checkForUpdate];
-	
+    NSString *savePath = [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH];
+    if(![[NSFileManager defaultManager] fileExistsAtPath:savePath])
+    {
+        NSError *error = nil;
+        // Directory does not exist. create it.
+        if( ![[NSFileManager defaultManager] createDirectoryAtPath:savePath
+                                       withIntermediateDirectories:YES
+                                                        attributes:nil
+                                                             error:&error] )
+        {
+            NSLog( @"Unable to create root directory: %@", [error debugDescription] );
+            return NO;
+        }
+    }
+    return YES;
+}
+
+-(BOOL) downloadDatabase
+{
+    if( ![self checkAndCreateRootDirectory] )
+        return NO;
+    
+    [progressIndicator setMinValue:0.0];
+    [progressIndicator setMaxValue:100.0];
+    [progressIndicator setDoubleValue:0.0];
+    [title setStringValue:NSLocalizedString(@"Downloading database",@"download new database export")];
+    
+    [[self window] makeKeyAndOrderFront:nil];
+
 	NSURL *url = [NSURL URLWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_DB_SQL_URL]];
     METURLRequest *request = [METURLRequest requestWithURL:url];
-	NSURLDownload *download = [[NSURLDownload alloc]initWithRequest:request delegate:self];
+	dbDownload = [[NSURLDownload alloc]initWithRequest:request delegate:self];
 	
-	if(download == nil){
-		[self logProgress:@"Error creating connection!"];
-		[self showCloseButton:nil];
+	if(dbDownload == nil){
+		[self logProgressThread:@"Error creating connection!"];
+        return NO;
 	}else{
 		NSString *dest = [Config filePath:DATABASE_SQL_BZ2,nil];
-		[download setDestination:dest allowOverwrite:YES];
-		[download setDeletesFileUponFailure:YES];
+		[dbDownload setDestination:dest allowOverwrite:YES];
+		[dbDownload setDeletesFileUponFailure:YES];
 	}
+    return YES;
 }
 
-
--(void)checkForUpdate2
+-(void) xmlDocumentFinished:(BOOL)status
+                    xmlPath:(NSString*)path
+                 xmlDocName:(NSString*)docName
 {
-	/*call from main thread*/	
-	[progressIndicator setMinValue:0.0];
-	[progressIndicator setMaxValue:100.0];
-	[progressIndicator setDoubleValue:0.0];
-	[title setStringValue:NSLocalizedString(@"Downloading database",@"download new database export")];
-
-	[[self window]makeKeyAndOrderFront:nil];
-	
-	[self retain];
-	
-	[self downloadDatabase];
+    if( [docName isEqualToString:UPDATE_FILE] )
+    {
+        [self databaseCheckAndUpdate2];
+    }
 }
 
--(BOOL) dbVersionCheck:(NSInteger)minVersion
+-(void) xmlDidFailWithError:(NSError*)xmlErrorMessage
+                    xmlPath:(NSString*)path
+                 xmlDocName:(NSString*)docName
 {
-	NSString *path = [[NSUserDefaults standardUserDefaults] stringForKey:UD_ITEM_DB_PATH];
-	
-	if(![[NSFileManager defaultManager]fileExistsAtPath:path]){
-		NSLog(@"Database does not exist!");
-		return NO;
-	}
-	
-	CCPDatabase *db = [[CCPDatabase alloc]initWithPath:path];
-	
-	BOOL status = [db dbVersion] >= minVersion;
-	
-	[db release];
-	
-	return status;
+    NSLog(@"Database XML connection failed! (%@)",[xmlErrorMessage localizedDescription]);
 }
 
+-(BOOL) xmlValidateData:(NSData*)xmlData xmlPath:(NSString*)path xmlDocName:(NSString*)docName
+{
+    return YES;
+}
+
+- (NSString *)temporaryFilePath
+{
+    NSString *guid = [[NSProcessInfo processInfo] globallyUniqueString];
+    return [NSTemporaryDirectory() stringByAppendingPathComponent:guid];
+}
+
+/* Start download of the database xml from the URL stored in user defaults
+   When the XmlFetcher is done (fail or succeed) it will call databaseCheckAndUpdate2
+ */
+- (void) databaseCheckAndUpdate:(BOOL)force
+{
+    cancelling = NO;
+    
+    NSInteger minVer = [[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_MIN_VERSION];
+    currentVersion = [CCPDatabase dbVersion];
+    
+    if( !force && (currentVersion >= minVer) )
+    {
+        dispatch_async(dispatch_get_main_queue(),^{
+            NSNotification *not = [NSNotification notificationWithName:NOTE_DATABASE_BUILD_COMPLETE object:self];
+            [[NSNotificationCenter defaultCenter] postNotification:not];
+        });
+        return;
+    }
+    
+    [[self window] makeKeyAndOrderFront:nil];
+    [title setStringValue:NSLocalizedString(@"Checking Database Versions",@"checking database versions")];    
+    [self logProgressThread:NSLocalizedString(@"Checking remote version",)];
+
+    NSString *url = [NSString stringWithString:[[NSUserDefaults standardUserDefaults] stringForKey:UD_DB_UPDATE_URL]];
+    
+    remoteFetcher = [[XmlFetcher alloc] initWithDelegate:self];
+    NSString *tempXMLPath = [[self temporaryFilePath] stringByAppendingPathExtension:@"xml"];
+    [remoteFetcher saveXmlDocument:url docName:UPDATE_FILE savePath:tempXMLPath];
+}
+
+/*
+ Check two different versions and compare to min version
+ 2) db included in application
+ 3) db at URL in preferences
+ */
+- (void) databaseCheckAndUpdate2
+{
+    NSInteger minVer = [[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_MIN_VERSION];
+    NSString *remoteXMLPath = [[[remoteFetcher savePath] retain] autorelease];
+    
+    // make sure this goes away. Or we could keep it around if it can be used multiple times.
+    [remoteFetcher autorelease];
+    remoteFetcher = nil;
+    
+    NSInteger includedVer = [self parseDBXmlVersion:[[NSBundle mainBundle] pathForResource:@"database" ofType:@"xml" inDirectory:@"Database"] versionOnly:YES];
+    NSInteger remoteVer = [self parseDBXmlVersion:remoteXMLPath versionOnly:YES];
+    
+    NSLog( @"Database check min/current/included/external: %ld/%ld/%ld/%ld", (long)minVer, (long)currentVersion, (long)includedVer, (long)remoteVer );
+    [self logProgressThread:NSLocalizedString(@"Comparing versions",)];
+
+    if( (includedVer >= remoteVer) && (includedVer > currentVersion) )
+    {
+        [title setStringValue:NSLocalizedString(@"Building Database", @"database constuction start")];
+        [self logProgressThread:NSLocalizedString(@"Using built-in database",)];
+        if( [self checkIncludedDB] )
+        {
+            [self buildDatabase];
+            return; // notification will be sent when the DB is built
+        }
+    }
+    if( (remoteVer > includedVer) && (remoteVer > currentVersion) )
+    {
+        // install remoteVer
+        BOOL failed = NO;
+        NSString *path = [Config buildPathSingle:DBUPDATE_DEFN];
+        NSError *error = nil;
+        
+        if( ![self checkAndCreateRootDirectory] )
+            failed = YES;
+
+        // can't copy over existing file, so remove any older version first
+        if( [[NSFileManager defaultManager] fileExistsAtPath:path]
+           && ![[NSFileManager defaultManager] removeItemAtPath:path error:&error] )
+        {
+            NSLog( @"Unable to remove older database XML file." );
+            failed = YES;
+        }
+        
+        if( ![[NSFileManager defaultManager] moveItemAtPath:remoteXMLPath toPath:path error:&error] )
+        {
+            NSLog( @"Unable to move temporary database XML file: %@", [error localizedDescription] );
+            failed = YES;
+        }
+        if( !failed )
+        {
+            [self parseDBXmlVersion:path versionOnly:NO];
+            
+            if( [self downloadDatabase] )
+                return; // notification will be sent when the DB is built
+        }
+    }
+    
+    [self closeWindow:self];
+    
+    // If we got here either we're up-to-date, or we failed.
+    // Either way the main controller needs to know to proceed.
+    dispatch_async(dispatch_get_main_queue(),^{
+        NSNotification *not = [NSNotification notificationWithName:NOTE_DATABASE_BUILD_COMPLETE object:self];
+        [[NSNotificationCenter defaultCenter] postNotification:not];
+    });
+}
 @end

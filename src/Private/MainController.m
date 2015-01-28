@@ -274,66 +274,32 @@
 }
 
 
-/*
- check to see if the current database is the right version,
- Download a new version if required.
- */
--(void) databaseReadyToCheck:(NSNotification *)notification
+-(void) databaseFinishedBuilding:(NSNotification *)notification
 {
-	DBManager *manager = [[DBManager alloc] init]; // Need to figure out how to deallocate this when we're done with it
-    
-	if(![manager dbVersionCheck:[[NSUserDefaults standardUserDefaults] integerForKey:UD_DATABASE_MIN_VERSION]]){
-		[manager checkForUpdate2];
-		[[NSNotificationCenter defaultCenter]addObserver:self 
-												selector:@selector(databaseReadyToBuild:)
-													name:NOTE_DATABASE_DOWNLOAD_COMPLETE
-												  object:nil];
-	}else{
-		/*database version is current - launch app normally*/
-		[self performSelector:@selector(launchAppFinal:) withObject:nil];
-	}	
-}
-
-/*
- check to see if there is a database ready to be built.
- this should be called automaticlly by the databaseReadyToCheck notification.
- */
--(void) databaseReadyToBuild:(NSNotification*)notification
-{
-	[[NSNotificationCenter defaultCenter]removeObserver:self
-												   name:NOTE_DATABASE_DOWNLOAD_COMPLETE
-												 object:nil];
-	
-	DBManager *manager = [[[DBManager alloc]init]autorelease];
-
-	//check to see if there is a new database ready to be built
-	if([manager databaseReadyToBuild]){
-		//Yes there is.  Build it.
-		[manager buildDatabase2:@selector(launchAppFinal:) obj:self];
-	}else{
-		/*this shouldn't happen*/
-		[self performSelector:@selector(launchAppFinal:) withObject:nil];
-	}
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NOTE_DATABASE_BUILD_COMPLETE
+                                                  object:nil];
+    [self launchAppFinal:nil];
 }
 
 /*called once the program has finished loading, but before the window appears.*/
 -(void) appIsActive:(NSNotification*)notification
 {
-	/*event will not happen again, no need to listen for it*/
-	[[NSNotificationCenter defaultCenter]
-		removeObserver:self
-		name:NSApplicationDidBecomeActiveNotification
-	 object:NSApp];
-	
-	xmlInitParser(); //Init libxml2
-
-	/*
-	 The 'Requisite Files' thing no longer applies.
-	 The Database is now a mandatory download
-	 Mac Eve Tools cannot function without it.
-	 */
-	
-	[self databaseReadyToCheck:nil];
+    /*event will not happen again, no need to listen for it*/
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSApplicationDidBecomeActiveNotification
+                                                  object:NSApp];
+    
+    xmlInitParser(); //Init libxml2
+    
+    /* check to see if the current database is the right version,
+     Download a new version if required.
+     */
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(databaseFinishedBuilding:)
+                                                 name:NOTE_DATABASE_BUILD_COMPLETE
+                                               object:nil];
+    [dbManager databaseCheckAndUpdate:NO];
 }
 
 /*
@@ -505,6 +471,7 @@
     [[NSStatusBar systemStatusBar] removeStatusItem: statusItem];
     
 	[viewControllers release];
+    [dbManager release];
     
 	[super dealloc];
 }
@@ -513,7 +480,8 @@
 {
 	if((self = [super initWithWindowNibName:@"MainMenu"])){
 		viewControllers = [[NSMutableArray alloc]init];
-				
+        dbManager = [[DBManager alloc] init];
+
 		/*Some notifications that we want to listen to*/
 		[[NSNotificationCenter defaultCenter]
 		 addObserver:self 
@@ -563,7 +531,7 @@
 	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.xml" forKey:UD_DB_UPDATE_URL];
 	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.sql.bz2" forKey:UD_DB_SQL_URL];
 	
-	[prefDefaults setObject:[NSNumber numberWithInt:19] forKey:UD_DATABASE_MIN_VERSION];
+	[prefDefaults setObject:[NSNumber numberWithInt:20] forKey:UD_DATABASE_MIN_VERSION];
 	 	
 	[[NSUserDefaults standardUserDefaults] registerDefaults:prefDefaults];
 	[prefDefaults release];
@@ -825,15 +793,24 @@
 -(IBAction) checkForUpdates:(id)sender
 {
 #ifdef HAVE_SPARKLE
-	SUUpdater *updater = [SUUpdater sharedUpdater];
-	[updater checkForUpdates:[self window]];
+    SUUpdater *updater = [SUUpdater sharedUpdater];
+    [updater checkForUpdates:[self window]];
 #endif
     
-    DBManager *manager = [[DBManager alloc] init];
-    
-    [manager checkForUpdate];
-    [manager release];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(databaseFinishedBuilding2:)
+                                                 name:NOTE_DATABASE_BUILD_COMPLETE
+                                               object:nil];
+    [dbManager databaseCheckAndUpdate:YES];
 }
+
+-(void) databaseFinishedBuilding2:(NSNotification *)notification
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NOTE_DATABASE_BUILD_COMPLETE
+                                                  object:nil];
+}
+
 
 -(void) newDatabaseAvailable:(DBManager*)manager status:(BOOL)status
 {

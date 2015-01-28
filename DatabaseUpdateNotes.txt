@@ -1,0 +1,60 @@
+===== Current state =====
+
+MainController::appIsActive
+MainController::databaseReadyToCheck
+	DBManager::dbVersionCheck (returns NO)
+	Observe notification: NOTE_DATABASE_DOWNLOAD_COMPLETE with selector: databaseReadyToBuild
+	DBManager::checkForUpdate2
+		DBManager::downloadDatabase
+			DBManager::checkForUpdate
+				XmlFetcher::saveXmlDocument (threaded)
+					DBManager::xmlValidateData (returns YES)
+					XmlFetcher::writeData
+					DBManager::xmlDocumentFinished
+						DBManager::parseDBXmlVersion
+						DBManager::checkIncludedDB (if availableVersion <= currentVersion
+							copy XML and bz2 files into App Support
+						MainController::newDatabaseAvailable
+			NSURLDownload (threaded, with DBManager as the delegate)
+				download:didFailWithError: and downloadDidFinish: both call
+					downloadFinished
+						postNotification: NOTE_DATABASE_DOWNLOAD_COMPLETE
+MainController::databaseReadyToBuild
+	DBManager::databaseReadyToBuild if yes
+		DBManager::buildDatabase2:@selector(launchAppFinal:) obj:self
+			DBManager::threadBuildDatabase (on another thread)
+				DBManager::privateBuildDatabase
+					Sha1 check of tar ball
+					extract tarball
+					Sha1 check of sql file
+					NSTask: sqlite3 -init <sql>
+					delete old db
+					rename new db
+					cleanup (remove intermediate files)
+				MainController::launchAppFinal
+
+
+
+
+
+===== TODO =====
+
+create a DBManager in MainController’s init method, release it in dealloc
+	remove all other DBManager memory management
+
+Is database good enough? currentVersion >= minimumVersion
+If not
+	check all available sources
+	When all sources are checked
+	download whichever has the highest version
+	install
+	notify MainController to continue app launch
+If so
+	start a background process to check all available sources
+	when all sources are checked
+	if there’s a newer version available
+		notify the user
+		if the user says yes
+		download whichever has the highest version
+		install
+		restart app

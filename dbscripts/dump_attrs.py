@@ -29,9 +29,14 @@ def dumpAttribute(conn,query,attrNum):
         else:
             row2 = row[2]
 
+        if row[3] == None:
+            row3 = ""
+        else:
+            row3 = row[3]
+
         try:
             insertQuery = u"INSERT INTO metAttributeTypes VALUES (" + unicode(row[0]) + u"," + unicode(row1) + u"," \
-                + unicode(row2) + u",\"" + unicode(row[3]) + u"\",\"" + unicode(row[4]) + u"\"," + unicode(attrNum) + u");"
+                + unicode(row2) + u",\"" + unicode(row3) + u"\",\"" + unicode(row[4]) + u"\"," + unicode(attrNum) + u");"
         except Exception as e:
             print row
             print "%s" % e
@@ -122,7 +127,9 @@ if __name__ == "__main__":
         FROM dgmAttributeTypes WHERE attributeID NOT IN
         (SELECT attributeID FROM metAttributeTypes);""";
     dumpAttribute(conn,otherQuery,8)
-    
+
+    conn.query("UPDATE metAttributeTypes SET displayName = NULL WHERE displayName = '';")
+
     dquery = "SELECT attributeID, unitID, iconID, displayName, attributeName, typeGroupID FROM metAttributeTypes;"
     dump_table.dumpTable("metAttributeTypes",dquery,options.file);
 
