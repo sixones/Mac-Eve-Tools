@@ -21,6 +21,7 @@
     METMail *mail;
 }
 
-- (BOOL)saveMailMessages:(NSArray *)messages;
+- (BOOL)saveMailMessages:(NSArray *)messages; // Insert each message into the database
+- (BOOL)saveMailBodies:(NSArray *)messages; // This will update each row in the database with the message body
 
 @end

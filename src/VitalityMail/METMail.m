@@ -32,7 +32,6 @@
 @implementation METMail
 
 @synthesize character = _character;
-@synthesize messages;
 @synthesize xmlPath;
 @synthesize cachedUntil;
 @synthesize delegate;
@@ -42,6 +41,7 @@
     if( self = [super init] )
     {
         messages = [[NSMutableArray alloc] init];
+        messagesByID = [[NSMutableDictionary alloc] init];
         cachedUntil = [[NSDate distantPast] retain];
     }
     return self;
@@ -50,6 +50,7 @@
 - (void)dealloc
 {
     [messages release];
+    [messagesByID release];
     [cachedUntil release];
     [super dealloc];
 }
@@ -65,9 +66,14 @@
     {
         [_character release];
         _character = [character retain];
-        [[self messages] removeAllObjects];
+        [messages removeAllObjects];
         [self setCachedUntil:[NSDate distantPast]];
     }
+}
+
+- (NSArray *)messages
+{
+    return [[messages copy] autorelease];
 }
 
 - (void)sortUsingDescriptors:(NSArray *)descriptors
@@ -91,19 +97,7 @@
         return;
     }
     
-    CharacterTemplate *template = nil;
-    NSUInteger chID = [[self character] characterId];
-    
-    for( CharacterTemplate *charTemplate in [[Config sharedInstance] activeCharacters] )
-    {
-        NSUInteger tempID = [[charTemplate characterId] integerValue];
-        if( tempID == chID )
-        {
-            template = charTemplate;
-            break;
-        }
-    }
-    
+    CharacterTemplate *template = [[self character] template];
     
     NSString *docPath = @"/char/MailMessages.xml.aspx";
     NSString *apiUrl = [Config getApiUrl:docPath
@@ -216,7 +210,7 @@
 		return NO;
 	}
 
-    [messages removeAllObjects];
+//    [messages removeAllObjects];
     
 	for( xmlNode *cur_node = rowset->children;
 		 NULL != cur_node;
@@ -283,8 +277,11 @@
                 }
             }
             [messages addObject:message];
+            [messagesByID setObject:message forKey:[NSNumber numberWithInteger:[message messageID]]];
         }
 	}
+    
+    NSLog( @"Found %lu mail messages", (unsigned long)[messages count] );
     
     // Should also grab the "cachedUntil" node so we don't re-request data until after that time.
     // 2013-05-22 22:32:5
@@ -301,44 +298,31 @@
     {
         [delegate performSelector:@selector(mailFinishedUpdating)];
     }
-	return YES;
+
+    [self loadMessageBodies:[messagesByID allKeys]];
+    
+    return YES;
 }
 
-- (IBAction)loadMessageBodies:(id)sender
+// https://neweden-dev.com/Char/MailBodies
+- (void)loadMessageBodies:(NSArray *)messageIDs
 {
     if( ![self character] )
         return;
     
-    if( [cachedUntil isGreaterThan:[NSDate date]] )
-    {
-        NSLog( @"Skipping download of Mail because of Cached Until date: %@", cachedUntil );
-        // Turn off the spinning download indicator
-        if( [delegate respondsToSelector:@selector(mailSkippedUpdating)] )
-        {
-            [delegate performSelector:@selector(mailSkippedUpdating)];
-        }
+    if( 0 == [messageIDs count] )
         return;
-    }
+
+    // we should filter the array to remove any messages that have already had the body downloaded
     
-    CharacterTemplate *template = nil;
-    NSUInteger chID = [[self character] characterId];
+    CharacterTemplate *template = [[self character] template];
     
-    for( CharacterTemplate *charTemplate in [[Config sharedInstance] activeCharacters] )
-    {
-        NSUInteger tempID = [[charTemplate characterId] integerValue];
-        if( tempID == chID )
-        {
-            template = charTemplate;
-            break;
-        }
-    }
-    
-    
-    NSString *docPath = @"/char/MailMessages.xml.aspx";
+    NSString *docPath = @"/char/MailBodies.xml.aspx";
     NSString *apiUrl = [Config getApiUrl:docPath
                                    keyID:[template accountId]
                         verificationCode:[template verificationCode]
                                   charId:[template characterId]];
+    apiUrl = [apiUrl stringByAppendingFormat:@"&ids=%@", [messageIDs componentsJoinedByString:@","]];
     
     NSString *characterDir = [Config charDirectoryPath:[template accountId]
                                              character:[template characterId]];
@@ -450,31 +434,23 @@
             
             for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )
             {
-                NSString *value = [NSString stringWithUTF8String:(const char*) attr->children->content];
+                NSString *messageID = [NSString stringWithUTF8String:(const char*) attr->children->content];
                 if( xmlStrcmp(attr->name, (xmlChar *)"messageID") == 0 )
                 {
-                    message = nil; // Find the message with this messageID
+                    message = [messagesByID objectForKey:[NSNumber numberWithInteger:[messageID integerValue]]]; // Find the message with this messageID
                 }
             }
             // now get the content of this row (a CDATA node) and set it as the body of the message
+            NSString *body = [NSString stringWithUTF8String:(const char*) cur_node->children->content];
+            if( body )
+                [message setBody:body];
         }
     }
     
-    // Should also grab the "cachedUntil" node so we don't re-request data until after that time.
-    // 2013-05-22 22:32:5
-    xmlNode *cached = findChildNode( root_node, (xmlChar *)"cachedUntil" );
-    if( NULL != cached )
-    {
-        NSString *dtString = getNodeText( cached );
-        NSDate *cacheDate = [NSDate dateWithNaturalLanguageString:dtString];
-        [self setCachedUntil:cacheDate];
-        
-    }
-    
     // change this to a different callback so we know to update mail bodies in the database
-    if( [delegate respondsToSelector:@selector(mailFinishedUpdating)] )
+    if( [delegate respondsToSelector:@selector(mailBodiesFinishedUpdating)] )
     {
-        [delegate performSelector:@selector(mailFinishedUpdating)];
+        [delegate performSelector:@selector(mailBodiesFinishedUpdating)];
     }
     return YES;
 }

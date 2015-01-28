@@ -14,16 +14,18 @@
 {
     Character *_character;
     NSMutableArray *messages;
+    NSMutableDictionary *messagesByID;
     NSString *xmlPath;
     NSDate *cachedUntil;
     id delegate;
 }
 
 @property (retain) Character *character;
-@property (retain) NSMutableArray *messages;
 @property (readonly,retain) NSString *xmlPath;
 @property (readonly,retain) NSDate *cachedUntil;
 @property (readwrite,assign) id delegate;
+
+- (NSArray *)messages;
 
 - (IBAction)reload:(id)sender;
 - (void)sortUsingDescriptors:(NSArray *)descriptors;
