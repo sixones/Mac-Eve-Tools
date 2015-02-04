@@ -75,6 +75,7 @@
 		A10C36A119E5F71000A0EB2B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A10C369F19E5F71000A0EB2B /* InfoPlist.strings */; };
 		A10C36A519E5F71000A0EB2B /* VitalityMail.m in Sources */ = {isa = PBXBuildFile; fileRef = A10C36A419E5F71000A0EB2B /* VitalityMail.m */; };
 		A112AD5E18E48D80001AF74B /* MetTableHeaderMenuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A112AD5D18E48D80001AF74B /* MetTableHeaderMenuManager.m */; };
+		A11DFF241A8181690047D5F5 /* METPair.m in Sources */ = {isa = PBXBuildFile; fileRef = A11DFF231A8181690047D5F5 /* METPair.m */; };
 		A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */ = {isa = PBXBuildFile; fileRef = A12EE8D3197D98E000ED6478 /* METTrait.m */; };
 		A12FC60417EA0C0D0053DC23 /* ContractsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A12FC60017EA0C0D0053DC23 /* ContractsView.xib */; };
 		A12FC60517EA0C0D0053DC23 /* ContractsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */; };
@@ -91,6 +92,7 @@
 		A1C0A7B41761077F00A3A743 /* MarketOrders.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7B21761077F00A3A743 /* MarketOrders.m */; };
 		A1C0A7C117610CDA00A3A743 /* MarketView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C0A7BE17610CDA00A3A743 /* MarketView.xib */; };
 		A1C0A7C217610CDA00A3A743 /* MarketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7C017610CDA00A3A743 /* MarketViewController.m */; };
+		A1C44C681A24EEC100443AE2 /* METURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C44C671A24EEC100443AE2 /* METURLRequest.m */; };
 		A1C44C6C1A36697200443AE2 /* VitalityMail.m in Sources */ = {isa = PBXBuildFile; fileRef = A10C36A419E5F71000A0EB2B /* VitalityMail.m */; };
 		A1C44C711A366AC600443AE2 /* METMail.h in Headers */ = {isa = PBXBuildFile; fileRef = A1C44C6D1A366AC600443AE2 /* METMail.h */; };
 		A1C44C721A366AC600443AE2 /* METMail.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C44C6E1A366AC600443AE2 /* METMail.m */; };
@@ -100,7 +102,6 @@
 		A1C44C761A366AC600443AE2 /* METMailMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C44C701A366AC600443AE2 /* METMailMessage.m */; };
 		A1C44C791A3A5ABC00443AE2 /* MailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C44C771A3A5ABC00443AE2 /* MailView.xib */; };
 		A1C44C7A1A3A5ABC00443AE2 /* MailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C44C771A3A5ABC00443AE2 /* MailView.xib */; };
-		A1C44C681A24EEC100443AE2 /* METURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C44C671A24EEC100443AE2 /* METURLRequest.m */; };
 		A1E4374A1A23C05200B19A34 /* CCPImplant.m in Sources */ = {isa = PBXBuildFile; fileRef = A1E437491A23C05200B19A34 /* CCPImplant.m */; };
 		A1FCD0501822DED500A6655A /* ContractItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD04F1822DED500A6655A /* ContractItem.m */; };
 		A1FCD0561829881600A6655A /* METIDtoName.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD0551829881600A6655A /* METIDtoName.m */; };
@@ -287,6 +288,8 @@
 		A112AD5B18E37F67001AF74B /* SkillView2Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkillView2Delegate.h; sourceTree = "<group>"; };
 		A112AD5C18E48D80001AF74B /* MetTableHeaderMenuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetTableHeaderMenuManager.h; sourceTree = "<group>"; };
 		A112AD5D18E48D80001AF74B /* MetTableHeaderMenuManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetTableHeaderMenuManager.m; sourceTree = "<group>"; };
+		A11DFF221A8181690047D5F5 /* METPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METPair.h; sourceTree = "<group>"; };
+		A11DFF231A8181690047D5F5 /* METPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METPair.m; sourceTree = "<group>"; };
 		A12EE8D2197D98E000ED6478 /* METTrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METTrait.h; sourceTree = "<group>"; };
 		A12EE8D3197D98E000ED6478 /* METTrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METTrait.m; sourceTree = "<group>"; };
 		A12FC60117EA0C0D0053DC23 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ContractsView.xib; sourceTree = "<group>"; };
@@ -315,13 +318,13 @@
 		A1C0A7BD17610CDA00A3A743 /* MarketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarketViewController.h; sourceTree = "<group>"; };
 		A1C0A7BF17610CDA00A3A743 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MarketView.xib; sourceTree = "<group>"; };
 		A1C0A7C017610CDA00A3A743 /* MarketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarketViewController.m; sourceTree = "<group>"; };
+		A1C44C661A24EEC100443AE2 /* METURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METURLRequest.h; sourceTree = "<group>"; };
+		A1C44C671A24EEC100443AE2 /* METURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METURLRequest.m; sourceTree = "<group>"; };
 		A1C44C6D1A366AC600443AE2 /* METMail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METMail.h; sourceTree = "<group>"; };
 		A1C44C6E1A366AC600443AE2 /* METMail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METMail.m; sourceTree = "<group>"; };
 		A1C44C6F1A366AC600443AE2 /* METMailMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METMailMessage.h; sourceTree = "<group>"; };
 		A1C44C701A366AC600443AE2 /* METMailMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METMailMessage.m; sourceTree = "<group>"; };
 		A1C44C781A3A5ABC00443AE2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MailView.xib; sourceTree = "<group>"; };
-		A1C44C661A24EEC100443AE2 /* METURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METURLRequest.h; sourceTree = "<group>"; };
-		A1C44C671A24EEC100443AE2 /* METURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METURLRequest.m; sourceTree = "<group>"; };
 		A1E437481A23C05200B19A34 /* CCPImplant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPImplant.h; sourceTree = "<group>"; };
 		A1E437491A23C05200B19A34 /* CCPImplant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPImplant.m; sourceTree = "<group>"; };
 		A1FCD04E1822DED500A6655A /* ContractItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractItem.h; sourceTree = "<group>"; };
@@ -900,6 +903,8 @@
 				A112AD5D18E48D80001AF74B /* MetTableHeaderMenuManager.m */,
 				A1C44C661A24EEC100443AE2 /* METURLRequest.h */,
 				A1C44C671A24EEC100443AE2 /* METURLRequest.m */,
+				A11DFF221A8181690047D5F5 /* METPair.h */,
+				A11DFF231A8181690047D5F5 /* METPair.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1351,6 +1356,7 @@
 				A1E4374A1A23C05200B19A34 /* CCPImplant.m in Sources */,
 				C9FF47AA10550BA60044BBAC /* CCPType.m in Sources */,
 				C9FF47AB10550BA60044BBAC /* METSubGroup.m in Sources */,
+				A11DFF241A8181690047D5F5 /* METPair.m in Sources */,
 				C9FF47AC10550BA60044BBAC /* CharacterDatabase.m in Sources */,
 				C9FF47AD10550BA60044BBAC /* CharacterDatabasePrivate.m in Sources */,
 				C9FF47AE10550BA60044BBAC /* SqliteDatabase.m in Sources */,

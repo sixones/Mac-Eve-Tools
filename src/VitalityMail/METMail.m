@@ -81,6 +81,67 @@
     [messages sortUsingDescriptors:descriptors];
 }
 
+- (BOOL)startMailDownloadToPath:(NSString *)docPath args:(NSString *)args delegate:(id)del callback:(SEL)selector
+{
+    if( ![self character] )
+        return NO;
+    
+    CharacterTemplate *template = [[self character] template];
+    NSString *apiUrl = [Config getApiUrl:docPath
+                                   keyID:[template accountId]
+                        verificationCode:[template verificationCode]
+                                  charId:[template characterId]];
+    if( [args length] > 0 )
+    {
+        NSString *separator = ('&' == [args characterAtIndex:0])?@"":@"&"; // if the caller already included the ampersand, don't include it ourselves
+        apiUrl = [apiUrl stringByAppendingFormat:@"%@%@", separator, args];
+    }
+    NSString *characterDir = [Config charDirectoryPath:[template accountId]
+                                             character:[template characterId]];
+    NSString *pendingDir = [characterDir stringByAppendingString:@"/pending"];
+    
+    [self setXmlPath:[characterDir stringByAppendingPathComponent:[docPath lastPathComponent]]];
+    
+    //create the output directory, the XMLParseOperation will clean it up
+    // TODO move this to an operations sub-class and have all of the download operations depend on it
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if( ![fm fileExistsAtPath:pendingDir isDirectory:nil] )
+    {
+        if( ![fm createDirectoryAtPath: pendingDir withIntermediateDirectories:YES attributes:nil error:nil] )
+        {
+            //NSLog(@"Could not create directory %@",pendingDir);
+            return NO;
+        }
+    }
+    
+    XMLDownloadOperation *op = [[[XMLDownloadOperation alloc] init] autorelease];
+    [op setXmlDocUrl:apiUrl];
+    [op setCharacterDirectory:characterDir];
+    [op setXmlDoc:docPath];
+    
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [queue setMaxConcurrentOperationCount:3];
+    
+    //This object will call the delegate function.
+    
+    XMLParseOperation *opParse = [[XMLParseOperation alloc] init];
+    
+    [opParse setDelegate:del];
+    [opParse setCallback:selector];
+    [opParse setObject:nil];
+    
+    [opParse addDependency:op]; //THIS MUST BE THE FIRST DEPENDENCY.
+    [opParse addCharacterDir:characterDir forSheet:docPath];
+    
+    [queue addOperation:op];
+    [queue addOperation:opParse];
+    
+    [opParse release];
+    [queue release];
+    
+    return YES;
+}
+
 - (IBAction)reload:(id)sender
 {
     if( ![self character] )
@@ -97,57 +158,7 @@
         return;
     }
     
-    CharacterTemplate *template = [[self character] template];
-    
-    NSString *docPath = @"/char/MailMessages.xml.aspx";
-    NSString *apiUrl = [Config getApiUrl:docPath
-                                   keyID:[template accountId]
-                        verificationCode:[template verificationCode]
-                                  charId:[template characterId]];
-    
-	NSString *characterDir = [Config charDirectoryPath:[template accountId]
-											 character:[template characterId]];
-    NSString *pendingDir = [characterDir stringByAppendingString:@"/pending"];
-    
-    [self setXmlPath:[characterDir stringByAppendingPathComponent:[docPath lastPathComponent]]];
-    
-	//create the output directory, the XMLParseOperation will clean it up
-    // TODO move this to an operations sub-class and have all of the download operations depend on it
-	NSFileManager *fm = [NSFileManager defaultManager];
-	if( ![fm fileExistsAtPath:pendingDir isDirectory:nil] )
-    {
-		if( ![fm createDirectoryAtPath: pendingDir withIntermediateDirectories:YES attributes:nil error:nil] )
-        {
-			//NSLog(@"Could not create directory %@",pendingDir);
-			return;
-		}
-	}
-
-	XMLDownloadOperation *op = [[[XMLDownloadOperation alloc] init] autorelease];
-	[op setXmlDocUrl:apiUrl];
-	[op setCharacterDirectory:characterDir];
-	[op setXmlDoc:docPath];
-    
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-	[queue setMaxConcurrentOperationCount:3];
-    
-	//This object will call the delegate function.
-    
-	XMLParseOperation *opParse = [[XMLParseOperation alloc] init];
-    
-	[opParse setDelegate:self];
-	[opParse setCallback:@selector(parserOperationDone:errors:)];
-	[opParse setObject:nil];
-    
-	[opParse addDependency:op]; //THIS MUST BE THE FIRST DEPENDENCY.
-	[opParse addCharacterDir:characterDir forSheet:docPath];
-    
-	[queue addOperation:op];
-	[queue addOperation:opParse];
-    
-	[opParse release];
-	[queue release];
-
+    [self startMailDownloadToPath:@"/char/MailMessages.xml.aspx" args:nil delegate:self callback:@selector(parserOperationDone:errors:)];
 }
 
 - (void) parserOperationDone:(id)ignore errors:(NSArray *)errors
@@ -315,58 +326,8 @@
 
     // we should filter the array to remove any messages that have already had the body downloaded
     
-    CharacterTemplate *template = [[self character] template];
-    
-    NSString *docPath = @"/char/MailBodies.xml.aspx";
-    NSString *apiUrl = [Config getApiUrl:docPath
-                                   keyID:[template accountId]
-                        verificationCode:[template verificationCode]
-                                  charId:[template characterId]];
-    apiUrl = [apiUrl stringByAppendingFormat:@"&ids=%@", [messageIDs componentsJoinedByString:@","]];
-    
-    NSString *characterDir = [Config charDirectoryPath:[template accountId]
-                                             character:[template characterId]];
-    NSString *pendingDir = [characterDir stringByAppendingString:@"/pending"];
-    
-    [self setXmlPath:[characterDir stringByAppendingPathComponent:[docPath lastPathComponent]]];
-    
-    //create the output directory, the XMLParseOperation will clean it up
-    // TODO move this to an operations sub-class and have all of the download operations depend on it
-    NSFileManager *fm = [NSFileManager defaultManager];
-    if( ![fm fileExistsAtPath:pendingDir isDirectory:nil] )
-    {
-        if( ![fm createDirectoryAtPath: pendingDir withIntermediateDirectories:YES attributes:nil error:nil] )
-        {
-            //NSLog(@"Could not create directory %@",pendingDir);
-            return;
-        }
-    }
-    
-    XMLDownloadOperation *op = [[[XMLDownloadOperation alloc] init] autorelease];
-    [op setXmlDocUrl:apiUrl];
-    [op setCharacterDirectory:characterDir];
-    [op setXmlDoc:docPath];
-    
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-    [queue setMaxConcurrentOperationCount:3];
-    
-    //This object will call the delegate function.
-    
-    XMLParseOperation *opParse = [[XMLParseOperation alloc] init];
-    
-    [opParse setDelegate:self];
-    [opParse setCallback:@selector(parseMailBodiesOperationDone:errors:)];
-    [opParse setObject:nil];
-    
-    [opParse addDependency:op]; //THIS MUST BE THE FIRST DEPENDENCY.
-    [opParse addCharacterDir:characterDir forSheet:docPath];
-    
-    [queue addOperation:op];
-    [queue addOperation:opParse];
-    
-    [opParse release];
-    [queue release];
-    
+    NSString *messageIDString = [NSString stringWithFormat:@"ids=%@", [messageIDs componentsJoinedByString:@","]];
+    [self startMailDownloadToPath:@"/char/MailBodies.xml.aspx" args:messageIDString delegate:self callback:@selector(parseMailBodiesOperationDone:errors:)];
 }
 
 - (void) parseMailBodiesOperationDone:(id)ignore errors:(NSArray *)errors

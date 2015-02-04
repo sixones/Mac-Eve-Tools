@@ -84,12 +84,6 @@
 
 - (void)namesForIDs:(NSSet *)IDs
 {
-    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
-    {
-        NSLog( @"Skipping download of Names from IDs because of Cached Until date" );
-        return;
-    }
-    
     IDs = [self validateIDs:IDs];
     
     if( 0 == [IDs count] )
@@ -99,6 +93,12 @@
         {
             [[self delegate] namesFromIDs:cachedNames];
         }
+        return;
+    }
+    
+    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
+    {
+        NSLog( @"Skipping download of Names from IDs because of Cached Until date" );
         return;
     }
     

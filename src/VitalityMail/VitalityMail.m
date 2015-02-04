@@ -13,6 +13,7 @@
 
 #import "METMail.h"
 #import "METMailMessage.h"
+#import "METPair.h"
 
 @implementation VitalityMail
 
@@ -22,6 +23,12 @@
     {
         mail = [[METMail alloc] init];
         [mail setDelegate:self];
+        namesByID = [[NSMutableDictionary alloc] init];
+        [namesByID setObject:@"Inbox" forKey:[NSNumber numberWithInt:0]];
+        nameGetter = [[METIDtoName alloc] init];
+        [nameGetter setDelegate:self];
+        
+        mailboxPairs = [[NSMutableArray alloc] init];
     }
     
     return self;
@@ -86,6 +93,9 @@
 {
     [character release];
     [mail release];
+    [nameGetter release];
+    [namesByID release];
+    [mailboxPairs release];
     [super dealloc];
 }
 
@@ -98,8 +108,10 @@
         [self createMailTables];
         [mail setCharacter:character];
         [mail reload:self];
+        [self getAllMailboxNames];
         [app setToolbarMessage:NSLocalizedString(@"Getting Mail…",@"Getting Mail status line")];
         [app startLoadingAnimation];
+        [self reload];
     }
 }
 
@@ -124,7 +136,6 @@
 {
     [app setToolbarMessage:NSLocalizedString(@"Getting Mail…",@"Getting Mail status line")];
     [app startLoadingAnimation];
-    [mail reload:self];
 }
 
 -(void) setInstance:(id<METInstance>)instance
@@ -141,6 +152,43 @@
     return nil;
 }
 
+- (void)namesFromIDs:(NSDictionary *)names
+{
+    if( [names count] > 0 )
+    {
+        [namesByID addEntriesFromDictionary:names];
+        
+        NSMutableArray *newPairs = [NSMutableArray array];
+        for( METPair *aPair in mailboxPairs )
+        {
+            if( [[aPair second] length] > 0 )
+            {
+                [newPairs addObject:aPair];
+            }
+            else
+            {
+                NSString *name = [namesByID objectForKey:[aPair first]];
+                if( [name length] > 0 )
+                {
+                    METPair *newPair = [METPair pairWithFirst:[aPair first] second:name];
+                    [newPairs addObject:newPair];
+                }
+                else
+                {
+                    [newPairs addObject:aPair];
+                }
+            }
+        }
+        [mailboxPairs autorelease];
+        mailboxPairs = [newPairs retain];
+    }
+}
+
+- (void)reload
+{
+    [mailboxView reloadData];
+}
+
 - (void)mailFinishedUpdating
 {
 //    NSArray *newDescriptors = [contractsTable sortDescriptors];
@@ -149,18 +197,21 @@
     [self saveMailMessages:[mail messages]];
     [app setToolbarMessage:NSLocalizedString(@"Finished Updating Mail Headers…",@"Finished Updating Mail status line") time:5];
     [app stopLoadingAnimation];
+    [self reload];
 }
 
 - (void)mailSkippedUpdating
 {
     [app setToolbarMessage:NSLocalizedString(@"Using Cached Mail…",@"Using Cached Mail status line") time:5];
     [app stopLoadingAnimation];
+    [self reload];
 }
 
 - (void)mailBodiesFinishedUpdating
 {
     // update all messages in the database, saving any mail bodies we just downloaded
     [self saveMailBodies:[mail messages]];
+    [self reload];
 }
 
 /*
@@ -273,9 +324,8 @@
         sqlite3_bind_nsint( insert_mail_stmt, 2, [message messageID] );
         
         rc = sqlite3_step(insert_mail_stmt);
-        if( (rc != SQLITE_DONE) && (rc != SQLITE_CONSTRAINT) )
+        if( rc != SQLITE_DONE )
         {
-            // constraint violation probably means that this message ID is already in the database
             NSLog(@"Error updating mail body: %ld (code: %d)", (unsigned long)[message messageID], rc );
             success = NO;
         }
@@ -284,6 +334,80 @@
     
     sqlite3_finalize(insert_mail_stmt);
     return success;
+}
+
+- (void)getAllMailboxNames
+{
+    sqlite3_stmt *read_stmt;
+    int rc;
+    const char getCorpOrAlliance[] = "SELECT DISTINCT toCorpOrAllianceID FROM mail;";
+    sqlite3 *db = [[character database] openDatabase];
+    
+    rc = sqlite3_prepare_v2(db,getCorpOrAlliance,(int)sizeof(getCorpOrAlliance),&read_stmt,NULL);
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return;
+    }
+    
+    [mailboxPairs removeAllObjects];
+    NSMutableSet *missingNames = [NSMutableSet set];
+    
+    while( sqlite3_step(read_stmt) == SQLITE_ROW )
+    {
+        NSNumber *toID = [NSNumber numberWithInteger:sqlite3_column_nsint(read_stmt,0)];
+        NSString *name = [namesByID objectForKey:toID];
+        if( 0 == [name length] )
+        {
+            [missingNames addObject:toID];
+        }
+        METPair *pair = [METPair pairWithFirst:toID second:name];
+        [mailboxPairs addObject:pair];
+    }
+    
+    if( [missingNames count] > 0 )
+        [nameGetter namesForIDs:missingNames];
+    
+    sqlite3_finalize(read_stmt);
+}
+
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+{
+    if( !item )
+    {
+        // how many 'mailboxes' are there?
+        return [mailboxPairs count];
+    }
+    return 0;
+}
+
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
+{
+    if( !item )
+    {
+        METPair *pair = [mailboxPairs objectAtIndex:index];
+        return pair;
+    }
+    return nil;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
+{
+    if( [item isKindOfClass:[METPair class]] )
+        return YES;
+    return NO;
+}
+
+- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+    //NSLog(@"%@",[tableColumn identifier] );
+    
+    if( [item isKindOfClass:[METPair class]] )
+    {
+        METPair *pair = (METPair *)item;
+        return [pair second];
+    }
+    //NSLog(@"id: %@ class %@",[tableColumn identifier],[item class]);
+    return nil;
 }
 
 @end

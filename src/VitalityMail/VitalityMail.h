@@ -8,17 +8,24 @@
 
 #import <Cocoa/Cocoa.h>
 #import "METPluggableView.h"
+#import "METIDtoName.h"
 
 @class Character;
 @class METInstance;
 @class METMail;
 
-@interface VitalityMail : NSViewController <METPluggableView,NSTableViewDataSource>
+@interface VitalityMail : NSViewController <METPluggableView,NSTableViewDataSource,NSOutlineViewDataSource,METIDtoNameDelegate>
 {
     Character *character;
     id<METInstance> app;
+    METIDtoName *nameGetter;
     
     METMail *mail;
+    
+    NSMutableDictionary *namesByID;
+    NSMutableArray *mailboxPairs;
+    
+    IBOutlet NSOutlineView *mailboxView;
 }
 
 - (BOOL)saveMailMessages:(NSArray *)messages; // Insert each message into the database

@@ -188,6 +188,15 @@
                 return str;
             }
         }
+        else if( [@"1=True 0=False" isEqualToString:unit] )
+        {
+            NSInteger typeInt = [item valueInt];
+            if( NSIntegerMax == typeInt )
+                typeInt = [item valueFloat];
+            [str appendString:typeInt?@"True":@"False"];
+            return str;
+        }
+        
 		if([item valueInt] != NSIntegerMax){
 			[str appendFormat:@"%ld", (long)[item valueInt]];
 		}
