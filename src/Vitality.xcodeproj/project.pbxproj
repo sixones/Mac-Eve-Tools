@@ -76,6 +76,9 @@
 		A10C36A519E5F71000A0EB2B /* VitalityMail.m in Sources */ = {isa = PBXBuildFile; fileRef = A10C36A419E5F71000A0EB2B /* VitalityMail.m */; };
 		A112AD5E18E48D80001AF74B /* MetTableHeaderMenuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A112AD5D18E48D80001AF74B /* MetTableHeaderMenuManager.m */; };
 		A11DFF241A8181690047D5F5 /* METPair.m in Sources */ = {isa = PBXBuildFile; fileRef = A11DFF231A8181690047D5F5 /* METPair.m */; };
+		A11DFF271A82D77F0047D5F5 /* METMailHeaderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A11DFF251A82D77F0047D5F5 /* METMailHeaderCell.h */; };
+		A11DFF281A82D77F0047D5F5 /* METMailHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A11DFF261A82D77F0047D5F5 /* METMailHeaderCell.m */; };
+		A11DFF291A82D77F0047D5F5 /* METMailHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A11DFF261A82D77F0047D5F5 /* METMailHeaderCell.m */; };
 		A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */ = {isa = PBXBuildFile; fileRef = A12EE8D3197D98E000ED6478 /* METTrait.m */; };
 		A12FC60417EA0C0D0053DC23 /* ContractsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A12FC60017EA0C0D0053DC23 /* ContractsView.xib */; };
 		A12FC60517EA0C0D0053DC23 /* ContractsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */; };
@@ -290,6 +293,8 @@
 		A112AD5D18E48D80001AF74B /* MetTableHeaderMenuManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetTableHeaderMenuManager.m; sourceTree = "<group>"; };
 		A11DFF221A8181690047D5F5 /* METPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METPair.h; sourceTree = "<group>"; };
 		A11DFF231A8181690047D5F5 /* METPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METPair.m; sourceTree = "<group>"; };
+		A11DFF251A82D77F0047D5F5 /* METMailHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METMailHeaderCell.h; sourceTree = "<group>"; };
+		A11DFF261A82D77F0047D5F5 /* METMailHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METMailHeaderCell.m; sourceTree = "<group>"; };
 		A12EE8D2197D98E000ED6478 /* METTrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METTrait.h; sourceTree = "<group>"; };
 		A12EE8D3197D98E000ED6478 /* METTrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METTrait.m; sourceTree = "<group>"; };
 		A12FC60117EA0C0D0053DC23 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ContractsView.xib; sourceTree = "<group>"; };
@@ -677,6 +682,8 @@
 				A1C44C6E1A366AC600443AE2 /* METMail.m */,
 				A1C44C6F1A366AC600443AE2 /* METMailMessage.h */,
 				A1C44C701A366AC600443AE2 /* METMailMessage.m */,
+				A11DFF251A82D77F0047D5F5 /* METMailHeaderCell.h */,
+				A11DFF261A82D77F0047D5F5 /* METMailHeaderCell.m */,
 				A1C44C771A3A5ABC00443AE2 /* MailView.xib */,
 				A10C369D19E5F71000A0EB2B /* Supporting Files */,
 			);
@@ -1138,6 +1145,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A11DFF271A82D77F0047D5F5 /* METMailHeaderCell.h in Headers */,
 				A1C44C741A366AC600443AE2 /* METMailMessage.h in Headers */,
 				A1C44C711A366AC600443AE2 /* METMail.h in Headers */,
 			);
@@ -1319,6 +1327,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A11DFF281A82D77F0047D5F5 /* METMailHeaderCell.m in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				C9FF478310550BA60044BBAC /* Account.m in Sources */,
 				C9FF478410550BA60044BBAC /* bsd-base64.c in Sources */,
@@ -1441,6 +1450,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A11DFF291A82D77F0047D5F5 /* METMailHeaderCell.m in Sources */,
 				A10C36A519E5F71000A0EB2B /* VitalityMail.m in Sources */,
 				A1C44C731A366AC600443AE2 /* METMail.m in Sources */,
 				A1C44C761A366AC600443AE2 /* METMailMessage.m in Sources */,

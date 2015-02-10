@@ -10,10 +10,12 @@
 #import "CharacterDatabase.h"
 #import "Character.h"
 #import <sqlite3.h>
+#import "Helpers.h"
 
 #import "METMail.h"
 #import "METMailMessage.h"
 #import "METPair.h"
+#import "METMailHeaderCell.h"
 
 @implementation VitalityMail
 
@@ -29,6 +31,7 @@
         [nameGetter setDelegate:self];
         
         mailboxPairs = [[NSMutableArray alloc] init];
+        currentMessages = [[NSMutableArray alloc] init];
     }
     
     return self;
@@ -96,6 +99,7 @@
     [nameGetter release];
     [namesByID release];
     [mailboxPairs release];
+    [currentMessages release];
     [super dealloc];
 }
 
@@ -181,6 +185,7 @@
         }
         [mailboxPairs autorelease];
         mailboxPairs = [newPairs retain];
+        [mailboxPairs sortUsingSelector:@selector(compare:)];
     }
 }
 
@@ -247,7 +252,7 @@
         sqlite3_bind_nsint( insert_mail_stmt, 1, [message messageID] );
         sqlite3_bind_nsint( insert_mail_stmt, 2, [message senderID] );
         sqlite3_bind_text( insert_mail_stmt, 3, [[message senderName] UTF8String], -1, NULL );
-        sqlite3_bind_nsint( insert_mail_stmt, 4, [message sentDate] );
+        sqlite3_bind_nsint( insert_mail_stmt, 4, [[message sentDate] timeIntervalSince1970] ); // truncating fractions of a second
         sqlite3_bind_text( insert_mail_stmt, 5, [[message subject] UTF8String], -1, NULL );
         sqlite3_bind_text( insert_mail_stmt, 6, [[message body] UTF8String], -1, NULL );
         sqlite3_bind_nsint( insert_mail_stmt, 7, [message toCorpOrAllianceID] );
@@ -364,50 +369,129 @@
         [mailboxPairs addObject:pair];
     }
     
+    // Need to do this again but for mailing lists
+    
     if( [missingNames count] > 0 )
         [nameGetter namesForIDs:missingNames];
+    
+    [mailboxPairs sortUsingSelector:@selector(compare:)];
     
     sqlite3_finalize(read_stmt);
 }
 
-- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+- (NSArray *)messagesInMailbox:(NSInteger)toID
 {
-    if( !item )
+    sqlite3_stmt *read_stmt;
+    int rc;
+    const char getMessages[] = "SELECT * FROM mail WHERE toCorpOrAllianceID = ?;";
+    sqlite3 *db = [[character database] openDatabase];
+    
+    rc = sqlite3_prepare_v2(db,getMessages,(int)sizeof(getMessages),&read_stmt,NULL);
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return nil;
+    }
+    
+    sqlite3_bind_nsint( read_stmt, 1, toID );
+
+    NSMutableArray *messages = [NSMutableArray array];
+    NSMutableSet *missingNames = [NSMutableSet set];
+
+//    CREATE TABLE mail (messageID INTEGER PRIMARY KEY, senderID INTEGER, senderName VARCHAR(255), sentDate DATETIME, subject VARCHAR(255), body TEXT, toCorpOrAllianceID INTEGER, senderTypeID INTEGER, toCharacterIDs TEXT, toListID INTEGER );
+
+    while( sqlite3_step(read_stmt) == SQLITE_ROW )
     {
-        // how many 'mailboxes' are there?
+        METMailMessage *message = [[METMailMessage alloc] init];
+        [message setMessageID:sqlite3_column_nsint(read_stmt,0)];
+        [message setSenderID:sqlite3_column_nsint(read_stmt,1)];
+        [message setSenderName:sqlite3_column_nsstr( read_stmt, 2 )];
+        [message setSentDate:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,3)]];
+        [message setSubject:sqlite3_column_nsstr( read_stmt, 4 )];
+        [message setBody:sqlite3_column_nsstr( read_stmt, 5 )];
+        [message setToCorpOrAllianceID:sqlite3_column_nsint(read_stmt,6)];
+        [message setSenderTypeID:sqlite3_column_nsint(read_stmt,7)];
+        [message setToCharacterIDs:[sqlite3_column_nsstr( read_stmt, 8 ) componentsSeparatedByString:@","]];
+        [message setToListID:sqlite3_column_nsint(read_stmt,9)];
+
+//        NSString *name = [namesByID objectForKey:toID];
+//        if( 0 == [name length] )
+//        {
+//            [missingNames addObject:toID];
+//        }
+        [messages addObject:message];
+    }
+    
+    if( [missingNames count] > 0 )
+        [nameGetter namesForIDs:missingNames];
+    
+    sqlite3_finalize(read_stmt);
+    
+    return messages;
+}
+
+- (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    return NO;
+}
+
+- (void)tableViewSelectionDidChange:(NSNotification *)notification
+{
+    if( [notification object] == mailboxView )
+    {
+        NSIndexSet *rows = [mailboxView selectedRowIndexes];
+        [currentMessages removeAllObjects];
+        for( NSUInteger currentIndex = [rows firstIndex]; currentIndex != NSNotFound; currentIndex = [rows indexGreaterThanIndex:currentIndex] )
+        {
+            NSArray *messages = [self messagesInMailbox:[[[mailboxPairs objectAtIndex:currentIndex] first] integerValue]];
+            [currentMessages addObjectsFromArray:messages];
+        }
+        [mailHeadersView reloadData];
+    }
+}
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+{
+    if( tableView == mailboxView )
+    {
         return [mailboxPairs count];
+    }
+    else if( tableView == mailHeadersView )
+    {
+        return [currentMessages count];
     }
     return 0;
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    if( !item )
+    if( tableView == mailboxView )
     {
-        METPair *pair = [mailboxPairs objectAtIndex:index];
-        return pair;
-    }
-    return nil;
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
-{
-    if( [item isKindOfClass:[METPair class]] )
-        return YES;
-    return NO;
-}
-
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
-{
-    //NSLog(@"%@",[tableColumn identifier] );
-    
-    if( [item isKindOfClass:[METPair class]] )
-    {
-        METPair *pair = (METPair *)item;
+        METPair *pair = [mailboxPairs objectAtIndex:row];
         return [pair second];
     }
-    //NSLog(@"id: %@ class %@",[tableColumn identifier],[item class]);
+    else if( tableView == mailHeadersView )
+    {
+//        METMailMessage *message = [currentMessages objectAtIndex:row];
+//        return message;
+//        if( [[tableColumn identifier] isEqualToString:@"SENDER_NAME"] )
+//        {
+//            return [message senderName];
+//        }
+//        else if( [[tableColumn identifier] isEqualToString:@"SENT_DATE"] )
+//        {
+//            return [message sentDate];
+//        }
+    }
     return nil;
+}
+
+- (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    if( tableView == mailHeadersView )
+    {
+        if( [cell isKindOfClass:[METMailHeaderCell class]] )
+            [cell setMessage:[currentMessages objectAtIndex:row]];
+    }
 }
 
 @end

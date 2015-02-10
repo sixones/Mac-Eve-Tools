@@ -14,7 +14,7 @@
 @class METInstance;
 @class METMail;
 
-@interface VitalityMail : NSViewController <METPluggableView,NSTableViewDataSource,NSOutlineViewDataSource,METIDtoNameDelegate>
+@interface VitalityMail : NSViewController <METPluggableView,NSTableViewDataSource,NSTableViewDataSource,METIDtoNameDelegate>
 {
     Character *character;
     id<METInstance> app;
@@ -24,8 +24,11 @@
     
     NSMutableDictionary *namesByID;
     NSMutableArray *mailboxPairs;
+    NSMutableArray *currentMessages; // messages in the currently selected mailbox(es)
     
-    IBOutlet NSOutlineView *mailboxView;
+    IBOutlet NSTableView *mailboxView;
+    IBOutlet NSTableView *mailHeadersView;
+    IBOutlet NSTableView *mailDetailView;
 }
 
 - (BOOL)saveMailMessages:(NSArray *)messages; // Insert each message into the database
