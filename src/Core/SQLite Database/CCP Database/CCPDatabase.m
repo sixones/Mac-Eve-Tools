@@ -1559,7 +1559,9 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
 	sqlite3_bind_nsint( insert_attr_stmt, 1, characterID );
     sqlite3_bind_text( insert_attr_stmt, 2, [name UTF8String], (int)[name length], NULL );
     
-    if( (rc = sqlite3_step(insert_attr_stmt)) != SQLITE_DONE )
+    // this should not be an error if the ID is already in the table, but possibly should be updated?
+    rc = sqlite3_step(insert_attr_stmt);
+    if( (rc != SQLITE_DONE) && (rc != SQLITE_CONSTRAINT) )
     {
         NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
     }

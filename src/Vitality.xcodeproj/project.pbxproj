@@ -79,6 +79,11 @@
 		A11DFF271A82D77F0047D5F5 /* METMailHeaderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A11DFF251A82D77F0047D5F5 /* METMailHeaderCell.h */; };
 		A11DFF281A82D77F0047D5F5 /* METMailHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A11DFF261A82D77F0047D5F5 /* METMailHeaderCell.m */; };
 		A11DFF291A82D77F0047D5F5 /* METMailHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A11DFF261A82D77F0047D5F5 /* METMailHeaderCell.m */; };
+		A11DFF2C1A8D2F0F0047D5F5 /* METMessageViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A11DFF2A1A8D2F0F0047D5F5 /* METMessageViewController.h */; };
+		A11DFF2D1A8D2F0F0047D5F5 /* METMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11DFF2B1A8D2F0F0047D5F5 /* METMessageViewController.m */; };
+		A11DFF2E1A8D2F0F0047D5F5 /* METMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11DFF2B1A8D2F0F0047D5F5 /* METMessageViewController.m */; };
+		A11DFF301A8D2F720047D5F5 /* METMessageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11DFF2F1A8D2F720047D5F5 /* METMessageView.xib */; };
+		A11DFF311A8D2F720047D5F5 /* METMessageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11DFF2F1A8D2F720047D5F5 /* METMessageView.xib */; };
 		A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */ = {isa = PBXBuildFile; fileRef = A12EE8D3197D98E000ED6478 /* METTrait.m */; };
 		A12FC60417EA0C0D0053DC23 /* ContractsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A12FC60017EA0C0D0053DC23 /* ContractsView.xib */; };
 		A12FC60517EA0C0D0053DC23 /* ContractsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */; };
@@ -295,6 +300,9 @@
 		A11DFF231A8181690047D5F5 /* METPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METPair.m; sourceTree = "<group>"; };
 		A11DFF251A82D77F0047D5F5 /* METMailHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METMailHeaderCell.h; sourceTree = "<group>"; };
 		A11DFF261A82D77F0047D5F5 /* METMailHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METMailHeaderCell.m; sourceTree = "<group>"; };
+		A11DFF2A1A8D2F0F0047D5F5 /* METMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METMessageViewController.h; sourceTree = "<group>"; };
+		A11DFF2B1A8D2F0F0047D5F5 /* METMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METMessageViewController.m; sourceTree = "<group>"; };
+		A11DFF2F1A8D2F720047D5F5 /* METMessageView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = METMessageView.xib; sourceTree = "<group>"; };
 		A12EE8D2197D98E000ED6478 /* METTrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METTrait.h; sourceTree = "<group>"; };
 		A12EE8D3197D98E000ED6478 /* METTrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METTrait.m; sourceTree = "<group>"; };
 		A12FC60117EA0C0D0053DC23 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ContractsView.xib; sourceTree = "<group>"; };
@@ -684,7 +692,10 @@
 				A1C44C701A366AC600443AE2 /* METMailMessage.m */,
 				A11DFF251A82D77F0047D5F5 /* METMailHeaderCell.h */,
 				A11DFF261A82D77F0047D5F5 /* METMailHeaderCell.m */,
+				A11DFF2A1A8D2F0F0047D5F5 /* METMessageViewController.h */,
+				A11DFF2B1A8D2F0F0047D5F5 /* METMessageViewController.m */,
 				A1C44C771A3A5ABC00443AE2 /* MailView.xib */,
+				A11DFF2F1A8D2F720047D5F5 /* METMessageView.xib */,
 				A10C369D19E5F71000A0EB2B /* Supporting Files */,
 			);
 			path = VitalityMail;
@@ -1147,6 +1158,7 @@
 			files = (
 				A11DFF271A82D77F0047D5F5 /* METMailHeaderCell.h in Headers */,
 				A1C44C741A366AC600443AE2 /* METMailMessage.h in Headers */,
+				A11DFF2C1A8D2F0F0047D5F5 /* METMessageViewController.h in Headers */,
 				A1C44C711A366AC600443AE2 /* METMail.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1234,6 +1246,7 @@
 				C9FF4566105508950044BBAC /* charsheet.png in Resources */,
 				C9FF4567105508950044BBAC /* darkgray.tiff in Resources */,
 				C9FF4568105508950044BBAC /* green.tiff in Resources */,
+				A11DFF301A8D2F720047D5F5 /* METMessageView.xib in Resources */,
 				C9FF4569105508950044BBAC /* icon12_02.png in Resources */,
 				C9FF456A105508950044BBAC /* icon22_41.png in Resources */,
 				C9FF456B105508950044BBAC /* info.png in Resources */,
@@ -1273,6 +1286,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A11DFF311A8D2F720047D5F5 /* METMessageView.xib in Resources */,
 				A10C36A119E5F71000A0EB2B /* InfoPlist.strings in Resources */,
 				A1C44C7A1A3A5ABC00443AE2 /* MailView.xib in Resources */,
 			);
@@ -1388,6 +1402,7 @@
 				C9F514A11056725600654F6D /* CharacterManager.m in Sources */,
 				C9EB4EC9105A0883009192BC /* CharacterTemplate.m in Sources */,
 				C9EB4F50105A16BD009192BC /* GenericDownloadOperation.m in Sources */,
+				A11DFF2D1A8D2F0F0047D5F5 /* METMessageViewController.m in Sources */,
 				C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */,
 				C93815E5109E8FEF002C9B16 /* MTSkillButtonCell.m in Sources */,
 				C964CB2210F42C8D00F735E9 /* CCPTypeAttribute.m in Sources */,
@@ -1453,6 +1468,7 @@
 				A11DFF291A82D77F0047D5F5 /* METMailHeaderCell.m in Sources */,
 				A10C36A519E5F71000A0EB2B /* VitalityMail.m in Sources */,
 				A1C44C731A366AC600443AE2 /* METMail.m in Sources */,
+				A11DFF2E1A8D2F0F0047D5F5 /* METMessageViewController.m in Sources */,
 				A1C44C761A366AC600443AE2 /* METMailMessage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

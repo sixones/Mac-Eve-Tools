@@ -99,7 +99,7 @@
 // Use this to add destructable station and player outpost names to the metStation table
 - (void)insertStationID:(NSUInteger)stationID name:(NSString *)stationName system:(NSUInteger)solarSystemID;
 
-// Store Character (and Corporation) ID's and names for use in contracts, mail, etc.
+// Store Character, Corporation, Alliance and Mailing List ID's and names for use in contracts, mail, etc.
 - (void)insertCharacterID:(NSUInteger)characterID name:(NSString *)name;
 - (NSString *)characterNameForID:(NSInteger)characterID;
 

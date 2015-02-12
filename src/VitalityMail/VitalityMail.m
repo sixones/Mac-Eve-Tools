@@ -16,6 +16,7 @@
 #import "METMailMessage.h"
 #import "METPair.h"
 #import "METMailHeaderCell.h"
+#import "METMessageViewController.h"
 
 @implementation VitalityMail
 
@@ -32,6 +33,10 @@
         
         mailboxPairs = [[NSMutableArray alloc] init];
         currentMessages = [[NSMutableArray alloc] init];
+        
+        messageController = [[METMessageViewController alloc] initWithNibName:@"METMessageView" bundle:nil];
+        
+        minimumPaneWidths = [[NSArray alloc] initWithObjects: @200.0f, @300.0f, @340.0f, nil];
     }
     
     return self;
@@ -100,7 +105,17 @@
     [namesByID release];
     [mailboxPairs release];
     [currentMessages release];
+    [messageController release];
     [super dealloc];
+}
+
+- (void)awakeFromNib
+{
+    NSRect detailFrame = [placeHolder frame];
+    [splitView setDelegate:self];
+    [placeHolder removeFromSuperview];
+    [splitView addSubview:[messageController view]];
+    [[messageController view] setFrame:detailFrame];
 }
 
 - (void)setCharacter:(Character *)_character
@@ -368,31 +383,61 @@
         METPair *pair = [METPair pairWithFirst:toID second:name];
         [mailboxPairs addObject:pair];
     }
+    sqlite3_finalize(read_stmt);
     
     // Need to do this again but for mailing lists
+    const char getMailingLists[] = "SELECT DISTINCT toListID FROM mail WHERE toListID <> 0;";
     
+    rc = sqlite3_prepare_v2(db,getMailingLists,(int)sizeof(getMailingLists),&read_stmt,NULL);
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return;
+    }
+    
+    while( sqlite3_step(read_stmt) == SQLITE_ROW )
+    {
+        NSNumber *toID = [NSNumber numberWithInteger:sqlite3_column_nsint(read_stmt,0)];
+        NSString *name = [namesByID objectForKey:toID];
+        if( 0 == [name length] )
+        {
+            [missingNames addObject:toID];
+        }
+        METPair *pair = [METPair pairWithFirst:toID second:name];
+        [mailboxPairs addObject:pair];
+    }
+    sqlite3_finalize(read_stmt);
+
     if( [missingNames count] > 0 )
         [nameGetter namesForIDs:missingNames];
     
+    [mailboxPairs addObject:[METPair pairWithFirst:[NSNumber numberWithUnsignedInteger:[character characterId]] second:@"Sent"]];
+
     [mailboxPairs sortUsingSelector:@selector(compare:)];
-    
-    sqlite3_finalize(read_stmt);
 }
 
-- (NSArray *)messagesInMailbox:(NSInteger)toID
+- (NSArray *)messagesInMailbox:(NSInteger)boxID
 {
     sqlite3_stmt *read_stmt;
     int rc;
-    const char getMessages[] = "SELECT * FROM mail WHERE toCorpOrAllianceID = ?;";
+    const char getMessages[] = "SELECT * FROM mail WHERE toCorpOrAllianceID = ? OR toListID = ?;";
+    const char getInboxMessages[] = "SELECT * FROM mail WHERE toCorpOrAllianceID = ? AND toListID = ?;";
+    const char getSentMessages[] = "SELECT * FROM mail WHERE senderID = ?;";
     sqlite3 *db = [[character database] openDatabase];
     
-    rc = sqlite3_prepare_v2(db,getMessages,(int)sizeof(getMessages),&read_stmt,NULL);
+    if( boxID == [character characterId] )
+        rc = sqlite3_prepare_v2(db,getSentMessages,(int)sizeof(getSentMessages),&read_stmt,NULL);
+    else if( 0 == boxID )
+        rc = sqlite3_prepare_v2(db,getInboxMessages,(int)sizeof(getInboxMessages),&read_stmt,NULL);
+    else
+        rc = sqlite3_prepare_v2(db,getMessages,(int)sizeof(getMessages),&read_stmt,NULL);
     if(rc != SQLITE_OK){
         NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
         return nil;
     }
     
-    sqlite3_bind_nsint( read_stmt, 1, toID );
+    sqlite3_bind_nsint( read_stmt, 1, boxID );
+    if( boxID != [character characterId] )
+        sqlite3_bind_nsint( read_stmt, 2, boxID );
 
     NSMutableArray *messages = [NSMutableArray array];
     NSMutableSet *missingNames = [NSMutableSet set];
@@ -447,6 +492,10 @@
         }
         [mailHeadersView reloadData];
     }
+    else if( [notification object] == mailHeadersView )
+    {
+        [messageController setMessage:[currentMessages objectAtIndex:[mailHeadersView selectedRow]]];
+    }
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
@@ -494,4 +543,52 @@
     }
 }
 
+#pragma mark SplitView delegate methods
+- (CGFloat)splitView:(NSSplitView *)_splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)dividerIndex {
+    // When the divider is dragged left only the pane immediately to the
+    // divider's left is resized. So the way this works is that we first
+    // calculate the width of all panes up to but *not* including that pane.
+    CGFloat widthUpToSubview = 0;
+    NSArray *subviews = [_splitView subviews];
+    for (NSUInteger i = 0; i < dividerIndex; i++) {
+        NSView *pane = [subviews objectAtIndex:i];
+        CGFloat paneWidth = [pane frame].size.width;
+        widthUpToSubview += paneWidth;
+    }
+    
+    // Now when we add the pane's minimum width we get the, in absolute terms,
+    // the minimum width for the width constraints to be met.
+    CGFloat minAllowedWidth = widthUpToSubview + [[minimumPaneWidths objectAtIndex:dividerIndex] floatValue];
+    
+    // Finally we accept the proposed width only if it doesn't undercut the
+    // minimum allowed width
+    return proposedMin < minAllowedWidth ? minAllowedWidth : proposedMin;
+}
+
+- (CGFloat)splitView:(NSSplitView *)_splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)dividerIndex{
+    
+    // This works similar to how we work out the minimum constrained width. When
+    // the divider is dragged right, only the pane immediately to the divider's
+    // right is resized. Thus we first calculate the width consumed by all panes
+    // after that pane.
+    CGFloat widthDownToSubview = 0;
+    NSArray *subviews = [_splitView subviews];
+    for (NSUInteger i = [subviews count] - 1; i > dividerIndex + 1; i--) {
+        NSView *pane = [subviews objectAtIndex:i];
+        CGFloat paneWidth = [pane frame].size.width;
+        widthDownToSubview += paneWidth;
+    }
+    
+    // Now when we add the pane's minimum width on top of the consumed width
+    // after it, we get the maximum width allowed for the constraints to be met.
+    // But we need a position from the left of the split view, so we translate
+    // that by deducting it from the split view's total width.
+    CGFloat splitViewWidth = [_splitView frame].size.width;
+    CGFloat minPaneWidth = [[minimumPaneWidths objectAtIndex:dividerIndex+1] floatValue];
+    CGFloat maxAllowedWidth = splitViewWidth - (widthDownToSubview + minPaneWidth);
+    
+    // This is the converse of the minimum constraint method: accept the proposed
+    // maximum only if it doesn't exced the maximum allowed width
+    return proposedMax > maxAllowedWidth ? maxAllowedWidth : proposedMax;
+}
 @end

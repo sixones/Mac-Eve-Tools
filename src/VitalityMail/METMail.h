@@ -29,4 +29,6 @@
 
 - (IBAction)reload:(id)sender;
 - (void)sortUsingDescriptors:(NSArray *)descriptors;
+
+- (void)loadMailingListNames;
 @end

@@ -10,6 +10,7 @@
 
 #import "Config.h"
 #import "GlobalData.h"
+#import "CCPDatabase.h"
 #import "XmlHelpers.h"
 #import "Character.h"
 #import "CharacterTemplate.h"
@@ -68,6 +69,7 @@
         _character = [character retain];
         [messages removeAllObjects];
         [self setCachedUntil:[NSDate distantPast]];
+        [self loadMailingListNames];
     }
 }
 
@@ -128,7 +130,7 @@
     
     [opParse setDelegate:del];
     [opParse setCallback:selector];
-    [opParse setObject:nil];
+    [opParse setObject:[[characterDir stringByAppendingPathComponent:[docPath lastPathComponent]] retain]];
     
     [opParse addDependency:op]; //THIS MUST BE THE FIRST DEPENDENCY.
     [opParse addCharacterDir:characterDir forSheet:docPath];
@@ -161,14 +163,16 @@
     [self startMailDownloadToPath:@"/char/MailMessages.xml.aspx" args:nil delegate:self callback:@selector(parserOperationDone:errors:)];
 }
 
-- (void) parserOperationDone:(id)ignore errors:(NSArray *)errors
+- (void) parserOperationDone:(NSString *)path errors:(NSArray *)errors
 {
-    xmlDoc *doc = xmlReadFile( [xmlPath fileSystemRepresentation], NULL, 0 );
+    xmlDoc *doc = xmlReadFile( [path fileSystemRepresentation], NULL, 0 );
 	if( doc == NULL )
     {
-		NSLog(@"Failed to read %@",xmlPath);
+		NSLog(@"Failed to read %@",path);
+        [path release];
 		return;
 	}
+    [path release];
 	[self parseXmlMailMessages:doc];
 	xmlFreeDoc(doc);
 }
@@ -330,14 +334,16 @@
     [self startMailDownloadToPath:@"/char/MailBodies.xml.aspx" args:messageIDString delegate:self callback:@selector(parseMailBodiesOperationDone:errors:)];
 }
 
-- (void) parseMailBodiesOperationDone:(id)ignore errors:(NSArray *)errors
+- (void) parseMailBodiesOperationDone:(NSString *)path errors:(NSArray *)errors
 {
-    xmlDoc *doc = xmlReadFile( [xmlPath fileSystemRepresentation], NULL, 0 );
+    xmlDoc *doc = xmlReadFile( [path fileSystemRepresentation], NULL, 0 );
     if( doc == NULL )
     {
-        NSLog(@"Failed to read %@",xmlPath);
+        NSLog(@"Failed to read %@",path);
+        [path release];
         return;
     }
+    [path release];
     [self parseXmlMailBodies:doc];
     xmlFreeDoc(doc);
 }
@@ -413,6 +419,124 @@
     {
         [delegate performSelector:@selector(mailBodiesFinishedUpdating)];
     }
+    return YES;
+}
+
+
+// https://neweden-dev.com/Char/MailingLists
+- (void)loadMailingListNames
+{
+    if( ![self character] )
+        return;
+    
+    // we should filter the array to remove any messages that have already had the body downloaded
+    
+    [self startMailDownloadToPath:XMLAPI_CHAR_MAILLISTS args:nil delegate:self callback:@selector(parseMailingListOperationDone:errors:)];
+}
+
+- (void) parseMailingListOperationDone:(NSString *)path errors:(NSArray *)errors
+{
+    xmlDoc *doc = xmlReadFile( [path fileSystemRepresentation], NULL, 0 );
+    if( doc == NULL )
+    {
+        NSLog(@"Failed to read %@",path);
+        [path release];
+        return;
+    }
+    [path release];
+    [self parseXmlMailingLists:doc];
+    xmlFreeDoc(doc);
+}
+
+/*
+ <?xml version='1.0' encoding='UTF-8'?>
+ <eveapi version="2">
+ <currentTime>2009-12-02 06:29:32</currentTime>
+ <result>
+ <rowset name="mailingLists" key="listID" columns="listID,displayName">
+ <row listID="128250439" displayName="EVETycoonMail" />
+ <row listID="128783669" displayName="EveMarketScanner" />
+ <row listID="141157801" displayName="Exploration Wormholes" />
+ </rowset>
+ </result>
+ <cachedUntil>2009-12-02 12:29:32</cachedUntil>
+ </eveapi>
+*/
+-(BOOL) parseXmlMailingLists:(xmlDoc*)document
+{
+    xmlNode *root_node;
+    xmlNode *result;
+    xmlNode *rowset;
+    
+    root_node = xmlDocGetRootElement(document);
+    
+    result = findChildNode(root_node,(xmlChar*)"result");
+    if( NULL == result )
+    {
+        NSLog(@"Could not get result tag in parseXmlMailBodies");
+        
+        xmlNode *xmlErrorMessage = findChildNode(root_node,(xmlChar*)"error");
+        if( NULL != xmlErrorMessage )
+        {
+            NSLog( @"%@", [NSString stringWithString:getNodeText(xmlErrorMessage)] );
+        }
+        return NO;
+    }
+    
+    rowset = findChildNode(result,(xmlChar*)"rowset");
+    if( NULL == result )
+    {
+        NSLog(@"Could not get rowset tag in parseXmlMailBodies");
+        
+        xmlNode *xmlErrorMessage = findChildNode(root_node,(xmlChar*)"error");
+        if( NULL != xmlErrorMessage )
+        {
+            NSLog( @"%@", [NSString stringWithString:getNodeText(xmlErrorMessage)] );
+        }
+        return NO;
+    }
+    
+    CCPDatabase *db = [[GlobalData sharedInstance] database];
+
+    for( xmlNode *cur_node = rowset->children;
+        NULL != cur_node;
+        cur_node = cur_node->next)
+    {
+        if( XML_ELEMENT_NODE != cur_node->type )
+        {
+            continue;
+        }
+        
+        /*
+         <row listID="141157801" displayName="Exploration Wormholes" />
+         */
+        if( xmlStrcmp(cur_node->name,(xmlChar*)"row") == 0 )
+        {
+            NSInteger listID = -1;
+            NSString *listName = nil;
+            
+            for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )
+            {
+                NSString *value = [NSString stringWithUTF8String:(const char*) attr->children->content];
+                if( xmlStrcmp(attr->name, (xmlChar *)"listID") == 0 )
+                {
+                    listID = [value integerValue];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"displayName") == 0 )
+                {
+                    listName = value;
+                }
+            }
+            
+            if( (-1 != listID) && ([listName length] > 0) )
+                [db insertCharacterID:listID name:listName];
+        }
+    }
+    
+//    if( [delegate respondsToSelector:@selector(mailBodiesFinishedUpdating)] )
+//    {
+//        [delegate performSelector:@selector(mailBodiesFinishedUpdating)];
+//    }
     return YES;
 }
 @end
