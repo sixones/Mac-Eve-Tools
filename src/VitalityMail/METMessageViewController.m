@@ -36,15 +36,33 @@
     return [[message retain] autorelease];
 }
 
+- (void)clearFields
+{
+    [from setStringValue:@""];
+    [sentDate setStringValue:@""];
+    [to setStringValue:@""];
+    [subject setStringValue:@""];
+    
+    NSAttributedString *emptyString = [[NSAttributedString alloc] init];
+    [[body textStorage] setAttributedString:emptyString];
+    [emptyString release];
+}
+
 - (void)loadFields
 {
-    // if no message, hide fields?
+    if( nil == message )
+    {
+        [self clearFields];
+        return;
+    }
+    
     [from setStringValue:[message senderName]];
     [sentDate setObjectValue:[message sentDate]];
-    [to setIntegerValue:[message toCorpOrAllianceID]];
+    [to setStringValue:[message toDisplayName]];
     [subject setStringValue:[message subject]];
     
     NSAttributedString *bodyString = [[NSAttributedString alloc] initWithHTML:[[message body] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES] options:nil documentAttributes:nil];
     [[body textStorage] setAttributedString:bodyString];
+    [bodyString release];
 }
 @end

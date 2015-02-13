@@ -240,16 +240,18 @@
 		}
 	}
 	
-	for(XMLParsePair *pair in xmlFiles){
-		//Remove all the pending directories, and their contents.
-		NSError *error = nil;
-		NSString *pendingDir = [[pair characterDir] stringByAppendingString:@"/pending"];
-		if([manager fileExistsAtPath:pendingDir]){
-			if(![manager removeItemAtPath:pendingDir error:&error]){
-				NSLog(@"Failed to delete '%@' (%@)",pendingDir,[error localizedDescription]);
-			}
-		}
-	}
+    // Deleting the pending directory was causing problems if two or more xml operations were happening at the same time
+    // and I can't see any harm in leaving the directory there
+//	for(XMLParsePair *pair in xmlFiles){
+//		//Remove all the pending directories, and their contents.
+//		NSError *error = nil;
+//		NSString *pendingDir = [[pair characterDir] stringByAppendingString:@"/pending"];
+//		if([manager fileExistsAtPath:pendingDir]){
+//			if(![manager removeItemAtPath:pendingDir error:&error]){
+//				NSLog(@"Failed to delete '%@' (%@)",pendingDir,[error localizedDescription]);
+//			}
+//		}
+//	}
 	
 	/*
 	 All update operations are complete, notifiy the delegate that operations are done and

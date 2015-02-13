@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#import "METIDtoName.h"
-
 /*
  <row
  messageID="343465359"
@@ -30,13 +28,11 @@
 @end
 
 @class Character;
-@class METIDtoName;
 
-@interface METMailMessage : NSObject<METIDtoNameDelegate>
+@interface METMailMessage : NSObject
 {
 @private
     Character *character;
-    NSString *xmlPath;
     id<MailMessageDelegate> delegate;
 
     NSUInteger messageID;
@@ -49,15 +45,9 @@
     NSUInteger senderTypeID;
     NSArray *toCharacterIDs;
     NSUInteger toListID;
-
-    NSDate *cachedUntil;
-    BOOL loading;
-    
-    METIDtoName *nameFetcher;
 }
 
 @property (retain) Character *character;
-@property (readonly,retain) NSString *xmlPath;
 @property (readwrite,assign) id<MailMessageDelegate> delegate;
 
 @property (assign) NSUInteger messageID;
@@ -71,8 +61,9 @@
 @property (assign) NSUInteger toListID;
 @property (readwrite,retain) NSString *body;
 
-@property (readonly,retain) NSDate *cachedUntil; // For contained items, not the contract itself
+- (NSString *)toDisplayName; ///< A string version of the 'To' field, suitable for display
 
-// Get names associated with IDs in this contract
-- (void)preloadNames;
+- (NSSet *)allIDs; ///< NSNumbers for all ID's in the message: from, toCharacterIDs, etc
+
+-(NSComparisonResult) compareByDate:(METMailMessage *)rhs;
 @end

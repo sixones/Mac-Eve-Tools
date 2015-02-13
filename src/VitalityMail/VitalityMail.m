@@ -173,34 +173,35 @@
 
 - (void)namesFromIDs:(NSDictionary *)names
 {
+    NSLog( @"Possible new names" );
     if( [names count] > 0 )
     {
         [namesByID addEntriesFromDictionary:names];
         
-        NSMutableArray *newPairs = [NSMutableArray array];
-        for( METPair *aPair in mailboxPairs )
-        {
-            if( [[aPair second] length] > 0 )
-            {
-                [newPairs addObject:aPair];
-            }
-            else
-            {
-                NSString *name = [namesByID objectForKey:[aPair first]];
-                if( [name length] > 0 )
-                {
-                    METPair *newPair = [METPair pairWithFirst:[aPair first] second:name];
-                    [newPairs addObject:newPair];
-                }
-                else
-                {
-                    [newPairs addObject:aPair];
-                }
-            }
-        }
-        [mailboxPairs autorelease];
-        mailboxPairs = [newPairs retain];
-        [mailboxPairs sortUsingSelector:@selector(compare:)];
+//        NSMutableArray *newPairs = [NSMutableArray array];
+//        for( METPair *aPair in mailboxPairs )
+//        {
+//            if( [[aPair second] length] > 0 )
+//            {
+//                [newPairs addObject:aPair];
+//            }
+//            else
+//            {
+//                NSString *name = [namesByID objectForKey:[aPair first]];
+//                if( [name length] > 0 )
+//                {
+//                    METPair *newPair = [METPair pairWithFirst:[aPair first] second:name];
+//                    [newPairs addObject:newPair];
+//                }
+//                else
+//                {
+//                    [newPairs addObject:aPair];
+//                }
+//            }
+//        }
+//        [mailboxPairs autorelease];
+//        mailboxPairs = [newPairs retain];
+//        [mailboxPairs sortUsingSelector:@selector(compare:)];
     }
 }
 
@@ -262,6 +263,8 @@
         return NO;
     }
     
+    NSMutableSet *allIDs = [NSMutableSet set];
+    
     for( METMailMessage *message in messages )
     {
         sqlite3_bind_nsint( insert_mail_stmt, 1, [message messageID] );
@@ -284,8 +287,12 @@
             success = NO;
         }
         sqlite3_reset(insert_mail_stmt);
+        
+        [allIDs unionSet:[message allIDs]];
     }
     
+    [nameGetter namesForIDs:allIDs];
+
     sqlite3_finalize(insert_mail_stmt);
     return success;
 }
@@ -442,8 +449,6 @@
     NSMutableArray *messages = [NSMutableArray array];
     NSMutableSet *missingNames = [NSMutableSet set];
 
-//    CREATE TABLE mail (messageID INTEGER PRIMARY KEY, senderID INTEGER, senderName VARCHAR(255), sentDate DATETIME, subject VARCHAR(255), body TEXT, toCorpOrAllianceID INTEGER, senderTypeID INTEGER, toCharacterIDs TEXT, toListID INTEGER );
-
     while( sqlite3_step(read_stmt) == SQLITE_ROW )
     {
         METMailMessage *message = [[METMailMessage alloc] init];
@@ -455,15 +460,13 @@
         [message setBody:sqlite3_column_nsstr( read_stmt, 5 )];
         [message setToCorpOrAllianceID:sqlite3_column_nsint(read_stmt,6)];
         [message setSenderTypeID:sqlite3_column_nsint(read_stmt,7)];
-        [message setToCharacterIDs:[sqlite3_column_nsstr( read_stmt, 8 ) componentsSeparatedByString:@","]];
+        NSString *toCharIDs = sqlite3_column_nsstr( read_stmt, 8 );
+        if( [toCharIDs length] > 0 )
+            [message setToCharacterIDs:[toCharIDs componentsSeparatedByString:@","]];
         [message setToListID:sqlite3_column_nsint(read_stmt,9)];
 
-//        NSString *name = [namesByID objectForKey:toID];
-//        if( 0 == [name length] )
-//        {
-//            [missingNames addObject:toID];
-//        }
         [messages addObject:message];
+        [missingNames unionSet:[message allIDs]];
     }
     
     if( [missingNames count] > 0 )
@@ -487,14 +490,30 @@
         [currentMessages removeAllObjects];
         for( NSUInteger currentIndex = [rows firstIndex]; currentIndex != NSNotFound; currentIndex = [rows indexGreaterThanIndex:currentIndex] )
         {
-            NSArray *messages = [self messagesInMailbox:[[[mailboxPairs objectAtIndex:currentIndex] first] integerValue]];
-            [currentMessages addObjectsFromArray:messages];
+            if( currentIndex < [mailboxPairs count] )
+            {
+                NSArray *messages = [self messagesInMailbox:[[[mailboxPairs objectAtIndex:currentIndex] first] integerValue]];
+                [currentMessages addObjectsFromArray:messages];
+            }
         }
+        
+        // sort messages with newest ones at the top
+        [currentMessages sortUsingComparator:^( METMailMessage *lhs, METMailMessage *rhs )
+         {
+             return [[rhs sentDate] compare:[lhs sentDate]];
+         }];
+        
         [mailHeadersView reloadData];
+        [mailHeadersView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
+        if( [currentMessages count] > 0 )
+            [messageController setMessage:[currentMessages objectAtIndex:0]];
+        else
+            [messageController setMessage:nil];
     }
     else if( [notification object] == mailHeadersView )
     {
-        [messageController setMessage:[currentMessages objectAtIndex:[mailHeadersView selectedRow]]];
+        if( [mailHeadersView selectedRow] < [currentMessages count] )
+            [messageController setMessage:[currentMessages objectAtIndex:[mailHeadersView selectedRow]]];
     }
 }
 
@@ -516,6 +535,16 @@
     if( tableView == mailboxView )
     {
         METPair *pair = [mailboxPairs objectAtIndex:row];
+        if( 0 == [[pair second] length] )
+        {
+            NSString *name = [namesByID objectForKey:[pair first]];
+            if( [name length] > 0 )
+            {
+                METPair *newPair = [METPair pairWithFirst:[pair first] second:name];
+                [mailboxPairs replaceObjectAtIndex:row withObject:newPair];
+                pair = newPair;
+            }
+        }
         return [pair second];
     }
     else if( tableView == mailHeadersView )
@@ -538,7 +567,7 @@
 {
     if( tableView == mailHeadersView )
     {
-        if( [cell isKindOfClass:[METMailHeaderCell class]] )
+        if( [cell isKindOfClass:[METMailHeaderCell class]] && ([currentMessages count] > row) )
             [cell setMessage:[currentMessages objectAtIndex:row]];
     }
 }

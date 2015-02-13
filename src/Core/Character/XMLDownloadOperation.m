@@ -55,11 +55,12 @@
 -(BOOL) writeXmlDocument:(NSString*)savePath
 {
 	//NSFileManager *fm = [NSFileManager defaultManager];
-	
-	BOOL rc = [xmlData writeToFile:savePath atomically:NO];
-	
+    NSError *error = nil;
+    
+	BOOL rc = [xmlData writeToFile:savePath options:0 error:&error];
+// NSDataWritingAtomic
 	if(!rc){
-		NSLog(@"Failed to write XML document %@",savePath);
+		NSLog(@"Failed to write XML document %@\n%@",savePath, [error localizedDescription]);
 	}
 	
 	return rc;

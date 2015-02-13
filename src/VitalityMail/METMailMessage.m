@@ -23,16 +23,9 @@
 #include <libxml/parser.h>
 
 
-@interface METMailMessage()
-@property (readwrite,retain) NSDate *cachedUntil;
-@property (readwrite,retain) NSString *xmlPath;
-@property (readwrite,assign) BOOL loading;
-@end
-
 @implementation METMailMessage
 
 @synthesize character;
-@synthesize xmlPath;
 @synthesize delegate;
 @synthesize messageID;
 @synthesize senderID;
@@ -44,16 +37,11 @@
 @synthesize senderTypeID;
 @synthesize toCharacterIDs;
 @synthesize toListID;
-@synthesize cachedUntil;
-@synthesize loading;
 
 - (id)init
 {
     if( self = [super init] )
     {
-        nameFetcher = [[METIDtoName alloc] init];
-        [nameFetcher setDelegate:self];
-        [self setLoading:NO];
     }
     return self;
 }
@@ -62,45 +50,52 @@
 {
     [super dealloc];
     [character release];
-    [xmlPath release];
-    [nameFetcher release];
 }
 
-- (void)preloadNames
+- (NSSet *)allIDs
 {
     NSMutableSet *ids = [NSMutableSet set];
+    [ids addObject:[NSNumber numberWithInteger:[self toCorpOrAllianceID]]];
+    [ids addObject:[NSNumber numberWithInteger:[self toListID]]];
+    [ids addObject:[NSNumber numberWithInteger:[self senderID]]];
     
-//    if( nil == [self issuerName] )
-//        [ids addObject:[NSNumber numberWithInteger:[self issuerID]]];
-//    if( nil == [self issuerCorpName] )
-//        [ids addObject:[NSNumber numberWithInteger:[self issuerCorpID]]];
-//    if( nil == [self assigneeName] && (0 != [self assigneeID]) )
-//        [ids addObject:[NSNumber numberWithInteger:[self assigneeID]]];
-//    if( nil == [self acceptorName] && (0 != [self acceptorID]) )
-//        [ids addObject:[NSNumber numberWithInteger:[self acceptorID]]];
-    
-    if( [ids count] )
+    for( NSString *anID in [self toCharacterIDs] )
     {
-        [nameFetcher namesForIDs:ids];
+        [ids addObject:[NSNumber numberWithInteger:[anID integerValue]]];
     }
+    return ids;
 }
 
-- (void)namesFromIDs:(NSDictionary *)names
+- (NSString *)toDisplayName
 {
-//    NSString *name = nil;
-//    BOOL changed = NO;
+    NSMutableArray *ids = [NSMutableArray arrayWithArray:[self toCharacterIDs]];
+    if( 0 != [self toCorpOrAllianceID] )
+        [ids addObject:[[NSNumber numberWithInteger:[self toCorpOrAllianceID]] stringValue]];
+    if( 0 != [self toListID] )
+        [ids addObject:[[NSNumber numberWithInteger:[self toListID]] stringValue]];
     
-//    name = [names objectForKey:[NSNumber numberWithInteger:[self issuerID]]];
-//    if( name )
-//    {
-//        [self setIssuerName:name];
-//        changed = YES;
-//    }
+    CCPDatabase *db = [[GlobalData sharedInstance] database];
+    NSMutableArray *names = [NSMutableArray array];
     
-//    if( changed && [delegate conformsToProtocol:@protocol(ContractDelegate)] )
-//    {
-//        [delegate contractNamesFinishedUpdating];
-//    }
+    for( NSString *anID in ids )
+    {
+        NSString *aName = [db characterNameForID:[anID integerValue]];
+        if( aName )
+        {
+            [names addObject:aName];
+        }
+        else
+        {
+            [names addObject:anID];
+        }
+    }
+    
+    return [names componentsJoinedByString:@", "];
+}
+
+-(NSComparisonResult) compareByDate:(METMailMessage *)rhs
+{
+    return [[self sentDate] compare:[rhs sentDate]];
 }
 
 @end
