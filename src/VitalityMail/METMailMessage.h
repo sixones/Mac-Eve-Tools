@@ -45,6 +45,7 @@
     NSUInteger senderTypeID;
     NSArray *toCharacterIDs;
     NSUInteger toListID;
+    BOOL read;
 }
 
 @property (retain) Character *character;
@@ -60,6 +61,7 @@
 @property (readwrite,retain) NSArray *toCharacterIDs;
 @property (assign) NSUInteger toListID;
 @property (readwrite,retain) NSString *body;
+@property (assign) BOOL read;
 
 - (NSString *)toDisplayName; ///< A string version of the 'To' field, suitable for display
 

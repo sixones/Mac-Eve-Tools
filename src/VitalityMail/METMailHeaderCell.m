@@ -23,10 +23,20 @@
     return area;
 }
 
+- (void)makeBold:(NSMutableAttributedString *)str
+{
+    [str beginEditing];
+    [str applyFontTraits:NSBoldFontMask
+                   range:NSMakeRange(0, [str length])];
+    [str endEditing];
+}
+
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView
 {
     NSString *from = [[self message] senderName];
     NSMutableAttributedString *astr = [[[NSMutableAttributedString alloc] initWithString:from] autorelease];
+    if( ![[self message] read] )
+        [self makeBold:astr];
     [astr drawInRect:cellFrame];
     
     NSPoint right = NSMakePoint(NSMaxX(cellFrame),NSMinY(cellFrame));
@@ -35,6 +45,8 @@
     [self drawStringEndingAtPoint:&right text:astr];
 
     astr = [[[NSMutableAttributedString alloc] initWithString:[[self message] subject]] autorelease];
+    if( ![[self message] read] )
+        [self makeBold:astr];
     cellFrame.origin.x += 32;
     cellFrame.origin.y += [astr size].height;
     cellFrame.size.width -= 32;

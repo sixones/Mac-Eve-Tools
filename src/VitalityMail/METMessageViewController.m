@@ -61,6 +61,8 @@
     [to setStringValue:[message toDisplayName]];
     [subject setStringValue:[message subject]];
     
+    // TODO: Convert in-game-browser links to something useful
+    // e.g. "showinfo:5/<systemID>" to a dotlan link
     NSAttributedString *bodyString = [[NSAttributedString alloc] initWithHTML:[[message body] dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES] options:nil documentAttributes:nil];
     [[body textStorage] setAttributedString:bodyString];
     [bodyString release];

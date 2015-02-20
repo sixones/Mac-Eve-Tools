@@ -37,6 +37,7 @@
 @synthesize senderTypeID;
 @synthesize toCharacterIDs;
 @synthesize toListID;
+@synthesize read;
 
 - (id)init
 {

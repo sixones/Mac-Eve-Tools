@@ -68,7 +68,8 @@
         "toCorpOrAllianceID INTEGER, "
         "senderTypeID INTEGER, "
         "toCharacterIDs TEXT, "
-        "toListID INTEGER "
+        "toListID INTEGER, "
+        "read BOOLEAN DEFAULT 0"
         ");";
         
         /*
@@ -251,7 +252,7 @@
 {
     CharacterDatabase *charDB = [character database];
     sqlite3 *db = [charDB openDatabase];
-    const char insert_mail[] = "INSERT INTO mail VALUES (?,?,?,?,?,?,?,?,?,?);";
+    const char insert_mail[] = "INSERT INTO mail VALUES (?,?,?,?,?,?,?,?,?,?,0);";
     sqlite3_stmt *insert_mail_stmt;
     BOOL success = YES;
     int rc;
@@ -363,6 +364,50 @@
     return success;
 }
 
+- (BOOL)markMessagesAsRead:(NSArray *)messages
+{
+    CharacterDatabase *charDB = [character database];
+    sqlite3 *db = [charDB openDatabase];
+    const char mail_read[] = "UPDATE mail SET read = 1 WHERE messageID = ?;"; // use this instead: WHERE messageID IN (347551106,347555302,347589651);
+    sqlite3_stmt *mail_read_stmt;
+    BOOL success = YES;
+    int rc;
+    
+    // Filter out any that are already read (premature optimization)
+    NSIndexSet *indexes = [messages indexesOfObjectsPassingTest:^(id obj, NSUInteger idx, BOOL *stop){
+        METMailMessage *message = (METMailMessage *)obj;
+        return (BOOL)([message read] != YES);
+    }];
+    messages = [messages objectsAtIndexes:indexes];
+    
+    if( [messages count] == 0 )
+        return YES;
+    
+    rc = sqlite3_prepare_v2(db,mail_read,(int)sizeof(mail_read),&mail_read_stmt,NULL);
+    if( rc != SQLITE_OK )
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return NO;
+    }
+    
+    for( METMailMessage *message in messages )
+    {
+        sqlite3_bind_nsint( mail_read_stmt, 1, [message messageID] );
+        
+        rc = sqlite3_step(mail_read_stmt);
+        if( rc != SQLITE_DONE )
+        {
+            NSLog(@"Error marking message as read: %ld (code: %d)", (unsigned long)[message messageID], rc );
+            success = NO;
+        }
+        sqlite3_reset(mail_read_stmt);
+        [message setRead:YES];
+    }
+    
+    sqlite3_finalize(mail_read_stmt);
+    return success;
+}
+
 - (void)getAllMailboxNames
 {
     sqlite3_stmt *read_stmt;
@@ -464,6 +509,7 @@
         if( [toCharIDs length] > 0 )
             [message setToCharacterIDs:[toCharIDs componentsSeparatedByString:@","]];
         [message setToListID:sqlite3_column_nsint(read_stmt,9)];
+        [message setRead:sqlite3_column_nsint(read_stmt,10)];
 
         [messages addObject:message];
         [missingNames unionSet:[message allIDs]];
@@ -476,6 +522,45 @@
     
     return messages;
 }
+
+// YES if all messages in the mailbox are have been read
+- (BOOL)mailboxIsRead:(NSInteger)boxID
+{
+    sqlite3_stmt *read_stmt;
+    int rc;
+    const char getMessages[] = "SELECT COUNT(*) FROM mail WHERE (toCorpOrAllianceID = ? OR toListID = ?) AND read = 0;";
+    const char getInboxMessages[] = "SELECT COUNT(*) FROM mail WHERE toCorpOrAllianceID = ? AND toListID = ? AND read = 0;";
+    const char getSentMessages[] = "SELECT COUNT(*) FROM mail WHERE senderID = ? AND read = 0;";
+    sqlite3 *db = [[character database] openDatabase];
+    
+    if( boxID == [character characterId] )
+        rc = sqlite3_prepare_v2(db,getSentMessages,(int)sizeof(getSentMessages),&read_stmt,NULL);
+    else if( 0 == boxID )
+        rc = sqlite3_prepare_v2(db,getInboxMessages,(int)sizeof(getInboxMessages),&read_stmt,NULL);
+    else
+        rc = sqlite3_prepare_v2(db,getMessages,(int)sizeof(getMessages),&read_stmt,NULL);
+    
+    if( rc != SQLITE_OK )
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return NO;
+    }
+    
+    sqlite3_bind_nsint( read_stmt, 1, boxID );
+    if( boxID != [character characterId] )
+        sqlite3_bind_nsint( read_stmt, 2, boxID );
+    
+    NSInteger unreadRows = 1; // default to mailbox being unread
+    while( sqlite3_step(read_stmt) == SQLITE_ROW )
+    {
+        unreadRows = sqlite3_column_nsint(read_stmt, 0);
+    }
+    
+    sqlite3_finalize(read_stmt);
+    
+    return 0 == unreadRows;
+}
+
 
 - (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
@@ -506,14 +591,24 @@
         [mailHeadersView reloadData];
         [mailHeadersView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
         if( [currentMessages count] > 0 )
-            [messageController setMessage:[currentMessages objectAtIndex:0]];
+        {
+            METMailMessage *message = [currentMessages objectAtIndex:0];
+            [messageController setMessage:message];
+            [self markMessagesAsRead:[NSArray arrayWithObject:message]];
+        }
         else
             [messageController setMessage:nil];
     }
     else if( [notification object] == mailHeadersView )
     {
         if( [mailHeadersView selectedRow] < [currentMessages count] )
-            [messageController setMessage:[currentMessages objectAtIndex:[mailHeadersView selectedRow]]];
+        {
+            METMailMessage *message = [currentMessages objectAtIndex:[mailHeadersView selectedRow]];
+            [messageController setMessage:message];
+            [self markMessagesAsRead:[NSArray arrayWithObject:message]];
+            [mailHeadersView reloadDataForRowIndexes:[mailHeadersView selectedRowIndexes] columnIndexes:[NSIndexSet indexSetWithIndex:0]]; // force the current mail header cell to redraw
+            [mailboxView reloadDataForRowIndexes:[mailboxView selectedRowIndexes] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+        }
     }
 }
 
@@ -549,23 +644,27 @@
     }
     else if( tableView == mailHeadersView )
     {
-//        METMailMessage *message = [currentMessages objectAtIndex:row];
-//        return message;
-//        if( [[tableColumn identifier] isEqualToString:@"SENDER_NAME"] )
-//        {
-//            return [message senderName];
-//        }
-//        else if( [[tableColumn identifier] isEqualToString:@"SENT_DATE"] )
-//        {
-//            return [message sentDate];
-//        }
+        // This is all handled in tableView:willDisplayCell:forTableColumn:row
     }
     return nil;
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    if( tableView == mailHeadersView )
+    if( tableView == mailboxView )
+    {
+        METPair *pair = [mailboxPairs objectAtIndex:row];
+        BOOL isRead = [self mailboxIsRead:[[pair first] integerValue]];
+        if( isRead )
+        {
+            [cell setFont:[NSFont systemFontOfSize:12]];
+        }
+        else
+        {
+            [cell setFont:[NSFont boldSystemFontOfSize:12]];
+        }
+    }
+    else if( tableView == mailHeadersView )
     {
         if( [cell isKindOfClass:[METMailHeaderCell class]] && ([currentMessages count] > row) )
             [cell setMessage:[currentMessages objectAtIndex:row]];
