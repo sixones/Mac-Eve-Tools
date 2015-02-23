@@ -39,4 +39,5 @@
 - (BOOL)saveMailMessages:(NSArray *)messages; // Insert each message into the database
 - (BOOL)saveMailBodies:(NSArray *)messages; // This will update each row in the database with the message body
 
+- (NSArray *)messagesWithEmptyBody; ///< Used by METMail to limit extra processing to only messages that are not fully downloaded
 @end

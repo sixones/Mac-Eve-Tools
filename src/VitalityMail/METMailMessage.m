@@ -64,6 +64,9 @@
     {
         [ids addObject:[NSNumber numberWithInteger:[anID integerValue]]];
     }
+    
+    [ids removeObject:[NSNumber numberWithInt:0]];
+    
     return ids;
 }
 

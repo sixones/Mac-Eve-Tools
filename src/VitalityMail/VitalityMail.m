@@ -174,41 +174,49 @@
 
 - (void)namesFromIDs:(NSDictionary *)names
 {
-    NSLog( @"Possible new names" );
     if( [names count] > 0 )
     {
         [namesByID addEntriesFromDictionary:names];
-        
-//        NSMutableArray *newPairs = [NSMutableArray array];
-//        for( METPair *aPair in mailboxPairs )
-//        {
-//            if( [[aPair second] length] > 0 )
-//            {
-//                [newPairs addObject:aPair];
-//            }
-//            else
-//            {
-//                NSString *name = [namesByID objectForKey:[aPair first]];
-//                if( [name length] > 0 )
-//                {
-//                    METPair *newPair = [METPair pairWithFirst:[aPair first] second:name];
-//                    [newPairs addObject:newPair];
-//                }
-//                else
-//                {
-//                    [newPairs addObject:aPair];
-//                }
-//            }
-//        }
-//        [mailboxPairs autorelease];
-//        mailboxPairs = [newPairs retain];
-//        [mailboxPairs sortUsingSelector:@selector(compare:)];
     }
 }
 
 - (void)reload
 {
+    [self getAllMailboxNames];
+    [self reloadCurrentMailboxes];
     [mailboxView reloadData];
+    [mailHeadersView reloadData];
+}
+
+- (void)reloadCurrentMailboxes
+{
+    NSIndexSet *rows = [mailboxView selectedRowIndexes];
+    [currentMessages removeAllObjects];
+    for( NSUInteger currentIndex = [rows firstIndex]; currentIndex != NSNotFound; currentIndex = [rows indexGreaterThanIndex:currentIndex] )
+    {
+        if( currentIndex < [mailboxPairs count] )
+        {
+            NSArray *messages = [self messagesInMailbox:[[[mailboxPairs objectAtIndex:currentIndex] first] integerValue]];
+            [currentMessages addObjectsFromArray:messages];
+        }
+    }
+    
+    // sort messages with newest ones at the top
+    [currentMessages sortUsingComparator:^( METMailMessage *lhs, METMailMessage *rhs )
+     {
+         return [[rhs sentDate] compare:[lhs sentDate]];
+     }];
+    
+    [mailHeadersView reloadData];
+    [mailHeadersView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
+    if( [currentMessages count] > 0 )
+    {
+        METMailMessage *message = [currentMessages objectAtIndex:0];
+        [messageController setMessage:message];
+        [self markMessagesAsRead:[NSArray arrayWithObject:message]];
+    }
+    else
+        [messageController setMessage:nil];
 }
 
 - (void)mailFinishedUpdating
@@ -298,9 +306,6 @@
     return success;
 }
 
-/* Because message bodies can only be downloaded shortly after the matching message header has
- been downloaded, this probably won't be of any use.
- */
 - (NSArray *)messagesWithEmptyBody
 {
     CharacterDatabase *charDB = [character database];
@@ -412,7 +417,7 @@
 {
     sqlite3_stmt *read_stmt;
     int rc;
-    const char getCorpOrAlliance[] = "SELECT DISTINCT toCorpOrAllianceID FROM mail;";
+    const char getCorpOrAlliance[] = "SELECT DISTINCT toCorpOrAllianceID FROM mail WHERE toCorpOrAllianceID <> 0;";
     sqlite3 *db = [[character database] openDatabase];
     
     rc = sqlite3_prepare_v2(db,getCorpOrAlliance,(int)sizeof(getCorpOrAlliance),&read_stmt,NULL);
@@ -462,6 +467,7 @@
     if( [missingNames count] > 0 )
         [nameGetter namesForIDs:missingNames];
     
+    [mailboxPairs addObject:[METPair pairWithFirst:[NSNumber numberWithUnsignedInteger:0] second:@"Inbox"]];
     [mailboxPairs addObject:[METPair pairWithFirst:[NSNumber numberWithUnsignedInteger:[character characterId]] second:@"Sent"]];
 
     [mailboxPairs sortUsingSelector:@selector(compare:)];
@@ -571,33 +577,7 @@
 {
     if( [notification object] == mailboxView )
     {
-        NSIndexSet *rows = [mailboxView selectedRowIndexes];
-        [currentMessages removeAllObjects];
-        for( NSUInteger currentIndex = [rows firstIndex]; currentIndex != NSNotFound; currentIndex = [rows indexGreaterThanIndex:currentIndex] )
-        {
-            if( currentIndex < [mailboxPairs count] )
-            {
-                NSArray *messages = [self messagesInMailbox:[[[mailboxPairs objectAtIndex:currentIndex] first] integerValue]];
-                [currentMessages addObjectsFromArray:messages];
-            }
-        }
-        
-        // sort messages with newest ones at the top
-        [currentMessages sortUsingComparator:^( METMailMessage *lhs, METMailMessage *rhs )
-         {
-             return [[rhs sentDate] compare:[lhs sentDate]];
-         }];
-        
-        [mailHeadersView reloadData];
-        [mailHeadersView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
-        if( [currentMessages count] > 0 )
-        {
-            METMailMessage *message = [currentMessages objectAtIndex:0];
-            [messageController setMessage:message];
-            [self markMessagesAsRead:[NSArray arrayWithObject:message]];
-        }
-        else
-            [messageController setMessage:nil];
+        [self reloadCurrentMailboxes];
     }
     else if( [notification object] == mailHeadersView )
     {

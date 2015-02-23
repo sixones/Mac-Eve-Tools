@@ -328,7 +328,23 @@
     if( 0 == [messageIDs count] )
         return;
 
+    NSArray *emptyMessages = nil;
+    if( [delegate respondsToSelector:@selector(messagesWithEmptyBody)] )
+    {
+        emptyMessages = [delegate performSelector:@selector(messagesWithEmptyBody)];
+    }
+
+    if( 0 == [emptyMessages count] )
+        return;
+    
     // we should filter the array to remove any messages that have already had the body downloaded
+    NSIndexSet *missingBodies = [messageIDs indexesOfObjectsPassingTest:^BOOL(id element,NSUInteger idx,BOOL *stop)
+                                 {
+                                     if( [emptyMessages containsObject:element] )
+                                         return YES;
+                                     return NO;
+                                 }];
+    messageIDs = [messageIDs objectsAtIndexes:missingBodies];
     
     NSString *messageIDString = [NSString stringWithFormat:@"ids=%@", [messageIDs componentsJoinedByString:@","]];
     [self startMailDownloadToPath:@"/char/MailBodies.xml.aspx" args:messageIDString delegate:self callback:@selector(parseMailBodiesOperationDone:errors:)];
