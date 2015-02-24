@@ -322,7 +322,8 @@
     
     NSMutableArray *emptyMessages = [NSMutableArray array];
     
-    if(sqlite3_step(read_stmt) == SQLITE_ROW){
+    while( sqlite3_step(read_stmt) == SQLITE_ROW )
+    {
         NSInteger mID = sqlite3_column_nsint(read_stmt,0);
         [emptyMessages addObject:[NSNumber numberWithInteger:mID]];
     }
@@ -352,17 +353,19 @@
     for( METMailMessage *message in messages )
     {
         // skip any message that already has a body in the database?
-        
-        sqlite3_bind_text( insert_mail_stmt, 1, [[message body] UTF8String], -1, NULL );
-        sqlite3_bind_nsint( insert_mail_stmt, 2, [message messageID] );
-        
-        rc = sqlite3_step(insert_mail_stmt);
-        if( rc != SQLITE_DONE )
+        if( [[message body] length] > 0 )
         {
-            NSLog(@"Error updating mail body: %ld (code: %d)", (unsigned long)[message messageID], rc );
-            success = NO;
+            sqlite3_bind_text( insert_mail_stmt, 1, [[message body] UTF8String], -1, NULL );
+            sqlite3_bind_nsint( insert_mail_stmt, 2, [message messageID] );
+            
+            rc = sqlite3_step(insert_mail_stmt);
+            if( rc != SQLITE_DONE )
+            {
+                NSLog(@"Error updating mail body: %ld (code: %d)", (unsigned long)[message messageID], rc );
+                success = NO;
+            }
+            sqlite3_reset(insert_mail_stmt);
         }
-        sqlite3_reset(insert_mail_stmt);
     }
     
     sqlite3_finalize(insert_mail_stmt);
