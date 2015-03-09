@@ -56,8 +56,12 @@
 }
 -(void) setCharacter:(Character*)c
 {
-	[character release];
-	character = [c retain];
+    if( character != c )
+    {
+        [character release];
+        character = [c retain];
+        planId = 0;
+    }
 }
 
 -(SkillPlan*) currentPlan
@@ -74,14 +78,14 @@
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-	return [[character skillPlanById:planId] skillCount];
+	return [[self currentPlan] skillCount];
 }
 
 -(id) tableView:(NSTableView *)aTableView 
 objectValueForTableColumn:(NSTableColumn *)aTableColumn 
 			row:(NSInteger)rowIndex
 {
-	SkillPlan *skillPlan = [character skillPlanById:planId];
+	SkillPlan *skillPlan = [self currentPlan];
     SkillPair *sp = [skillPlan skillAtIndex:rowIndex];
 	Skill *s = [masterSkillSet objectForKey:[sp typeID]];
 	
@@ -155,7 +159,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 		return nil;
 	}
 	
-    SkillPlan *skillPlan = [character skillPlanById:planId];
+    SkillPlan *skillPlan = [self currentPlan];
     
     if(skillPlan == nil){
         return nil;
@@ -217,7 +221,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 {
 	if( [[tableColumn identifier] isEqualToString:COL_PLAN_SKILLNAME] )
     {
-        SkillPlan *skillPlan = [character skillPlanById:planId];
+        SkillPlan *skillPlan = [self currentPlan];
 
         // If this skill is missing pre-requisites before it in the skill plan or already trained, then color the text red
         if( ![skillPlan validateSkillAtIndex:rowIndex] )
@@ -234,7 +238,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 -(BOOL) shouldHighlightCell:(NSInteger)rowIndex
 {
 	if([character isTraining]){
-		SkillPlan *plan = [character skillPlanById:planId];
+		SkillPlan *plan = [self currentPlan];
 		SkillPair *sp = [plan skillAtIndex:rowIndex];
 		if([[sp typeID]integerValue] == [character integerForKey:CHAR_TRAINING_TYPEID]){
 			if([sp skillLevel] == [character integerForKey:CHAR_TRAINING_LEVEL]){
@@ -247,7 +251,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
 -(void) addSkillArrayToActivePlan:(NSArray*)skillArray
 {
-    SkillPlan *plan = [character skillPlanById:planId];
+    SkillPlan *plan = [self currentPlan];
     [plan addSkillArrayToPlan:skillArray];
 }
 
@@ -258,7 +262,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
  */
 - (void)writeSkillArray:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard
 {
-    SkillPlan *skillPlan = [character skillPlanById:planId];
+    SkillPlan *skillPlan = [self currentPlan];
     
     if( skillPlan == nil )
     {
@@ -346,7 +350,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 			  row:(NSInteger)row 
 	dropOperation:(NSTableViewDropOperation)operation
 {
-	SkillPlan *plan = [character skillPlanById:planId];
+	SkillPlan *plan = [self currentPlan];
 	
 	if( [info draggingSource] == aTableView )
     {
@@ -406,13 +410,13 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 
 - (void)sortSkillsUsingDescriptors:(NSArray *)descriptors
 {
-	SkillPlan *plan = [character skillPlanById:planId];
+	SkillPlan *plan = [self currentPlan];
     [plan sortUsingDescriptors:descriptors];
 }
 
 -(void) sortPlanByPrerequisites
 {
-	SkillPlan *plan = [character skillPlanById:planId];
+	SkillPlan *plan = [self currentPlan];
     [plan sortPlanByPrerequisites];
 }
 
