@@ -210,6 +210,7 @@
 	[skillSearchView reloadDatasource:skillCharDatasource]; /*datasouce has changed.*/
     
     [skillCertDatasource setCharacter:c];
+    [planOverview tableViewSelectionDidChange:nil];
 }
 
 -(Character*) character;

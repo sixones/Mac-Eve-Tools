@@ -201,6 +201,7 @@
 
 -(void) refreshPlanView
 {
+    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
 	[tableView reloadData];
     [self toobarMessageForPlan:[pvDatasource currentPlan]];
 }
