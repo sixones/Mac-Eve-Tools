@@ -57,7 +57,7 @@
 {
     NSMutableSet *ids = [NSMutableSet set];
     [ids addObject:[NSNumber numberWithInteger:[self toCorpOrAllianceID]]];
-    [ids addObject:[NSNumber numberWithInteger:[self toListID]]];
+//    [ids addObject:[NSNumber numberWithInteger:[self toListID]]];
     [ids addObject:[NSNumber numberWithInteger:[self senderID]]];
     
     for( NSString *anID in [self toCharacterIDs] )

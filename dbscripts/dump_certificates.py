@@ -6,7 +6,7 @@ from yaml import load, dump
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
-    sys.stderr.write( "Failed to import C-yaml. Using Python yaml.\n" )
+    sys.stderr.write( "Warning: Unable to import C-yaml. Using Python yaml.\n" )
     from yaml import Loader, Dumper
 
 

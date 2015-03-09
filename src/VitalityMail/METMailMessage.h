@@ -65,7 +65,7 @@
 
 - (NSString *)toDisplayName; ///< A string version of the 'To' field, suitable for display
 
-- (NSSet *)allIDs; ///< NSNumbers for all ID's in the message: from, toCharacterIDs, etc
+- (NSSet *)allIDs; ///< NSNumbers for all ID's in the message: from, toCharacterIDs, etc. but excluding mailing list ID's since those are handled separately
 
 -(NSComparisonResult) compareByDate:(METMailMessage *)rhs;
 @end
