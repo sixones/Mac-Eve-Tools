@@ -1698,5 +1698,88 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
     return implant;
 }
 
+-(BOOL) preUpdate
+{
+    // sqlite3 database.sqlite ".dump metCharacterNames" > metCharacterNames.sql
+    // that will contain both the table creation and the insert statements inside a transaction
+
+    NSString *library = [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH];
+    NSString *namesSQLPath = [library stringByAppendingPathComponent:@"metCharacterNames.sql"];
+    
+    [[NSFileManager defaultManager] createFileAtPath:namesSQLPath contents:nil attributes:nil];
+    
+    NSFileHandle *output = [NSFileHandle fileHandleForWritingAtPath:namesSQLPath];
+    [output truncateFileAtOffset:0];
+    
+    NSArray *args = [NSArray arrayWithObjects:
+                     databasePath,
+                     @".dump metCharacterNames",
+                     nil];
+    NSTask *dumpNamesTask = [[NSTask alloc] init];
+    [dumpNamesTask setLaunchPath:@"/usr/bin/sqlite3"];
+    [dumpNamesTask setArguments:args];
+    [dumpNamesTask setCurrentDirectoryPath:library]; //
+    [dumpNamesTask setStandardOutput:output];
+    [dumpNamesTask launch];
+    [dumpNamesTask waitUntilExit];
+    if( NSTaskTerminationReasonUncaughtSignal == [dumpNamesTask terminationReason] )
+    {
+        NSLog( @"Failed to dump metCharacterNames table in [CCPDatabase preUpdate]" );
+    }
+    [dumpNamesTask release];
+    dumpNamesTask = nil;
+    
+    return YES;
+}
+
+-(BOOL) postUpdate
+{
+    NSString *library = [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH];
+    NSString *namesSQLPath = [library stringByAppendingPathComponent:@"metCharacterNames.sql"];
+    BOOL isDir = NO;
+    
+    if( [[NSFileManager defaultManager] fileExistsAtPath:namesSQLPath isDirectory:&isDir] && !isDir )
+    {
+        // make sure metCharacterNames is empty
+        // drop the table
+        // load the saved data
+        NSInteger count = [self performCount:"SELECT COUNT(*) FROM metCharacterNames;"];
+        if( count > 0 )
+            NSLog( @"CCPDatabase postUpdate: metCharacterNames table already contains data." );
+        
+        char *errmsg;
+        int rc;
+        rc = sqlite3_exec(db, "DROP TABLE IF EXISTS metCharacterNames;", NULL, NULL, &errmsg);
+        if(rc != SQLITE_OK)
+        {
+            [self logError:errmsg];
+            [self rollbackTransaction];
+            return NO;
+        }
+        
+        // do I need to close the databaes at this point?
+        
+        NSArray *args = [NSArray arrayWithObjects:
+                         databasePath,
+                         @".read metCharacterNames.sql",
+                         nil];
+        NSTask *dumpNamesTask = [[NSTask alloc] init];
+        [dumpNamesTask setLaunchPath:@"/usr/bin/sqlite3"];
+        [dumpNamesTask setArguments:args];
+        [dumpNamesTask setCurrentDirectoryPath:library]; //
+        [dumpNamesTask launch];
+        [dumpNamesTask waitUntilExit];
+        if( NSTaskTerminationReasonUncaughtSignal == [dumpNamesTask terminationReason] )
+        {
+            NSLog( @"Failed to read metCharacterNames.sql in [CCPDatabase postUpdate]" );
+        }
+        [dumpNamesTask release];
+        dumpNamesTask = nil;
+
+        // possibly delete the sql file, or keep it around as backup
+    }
+    return YES;
+}
+
 
 @end

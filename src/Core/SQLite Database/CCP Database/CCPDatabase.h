@@ -50,6 +50,10 @@
 -(NSInteger) dbVersion;
 -(NSString*) dbName;
 
+// Write/read any data that needs to be saved across database updates (which really replace the database)
+-(BOOL) preUpdate;
+-(BOOL) postUpdate;
+
 -(CCPCategory*) category:(NSInteger)categoryID;
 /*return all categories*/
 -(NSArray*) categoriesInDB;

@@ -494,6 +494,12 @@
 	
 	NSLog(@"Database successfully built!");
 	
+    // Tell the current database to prepare to be updated. E.g. dump any local tables
+    NSString *databasePath = [[NSUserDefaults standardUserDefaults] stringForKey:UD_ITEM_DB_PATH];
+    CCPDatabase *oldDB = [[CCPDatabase alloc] initWithPath:databasePath];
+    [oldDB preUpdate];
+    [oldDB release];
+    
 	/*remove the old database*/
 	str = [Config buildPathSingle:DATABASE_SQLITE];
 	[[NSFileManager defaultManager] removeItemAtPath:str error:nil];
@@ -503,6 +509,11 @@
 	NSString *str2 = [Config buildPathSingle:DATABASE_SQLITE];
 	[[NSFileManager defaultManager] moveItemAtPath:str toPath:str2 error:NULL];
 	
+    // TODO: Tell the new database to do any post-update processing
+    CCPDatabase *newDB = [[CCPDatabase alloc] initWithPath:databasePath];
+    [newDB postUpdate];
+    [newDB release];
+
 	[self logProgressThread:NSLocalizedString(@"All done!  Please Restart.", @"Database construction complete")];
 		
 	status = YES;
@@ -599,6 +610,7 @@ _finish_cleanup:
 		NSString *dest = [Config filePath:DATABASE_SQL_BZ2,nil];
 		[dbDownload setDestination:dest allowOverwrite:YES];
 		[dbDownload setDeletesFileUponFailure:YES];
+        // this should end up calling downloadFinished:(NSURLDownload*)download if everything goes well
 	}
     return YES;
 }
