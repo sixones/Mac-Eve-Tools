@@ -2,9 +2,31 @@
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"  xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>Vitality</title>
-    <link>http://labs.sixones.com/vitality/appcast3.xml</link>
+    <link>http://sixones.github.io/vitality/appcast3.xml</link>
     <description>Most recent changes.</description>
     <language>en</language>
+     <item>
+        <title>Version 0.3.2b</title>
+        <pubDate>Jan 27, 2015 00:00:00 +0000</pubDate>
+        <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.2b/Vitality.zip" sparkle:version="0.3.2" length="4399135" type="application/octet-stream" />
+		<description>
+			<![CDATA[
+<strong>0.3.2b</strong>
+<ul>
+	<li>Proteus support.</li>
+	<li>Database updating improvements.</li>
+	<li>Removed clone grades.</li>
+</ul>
+<p>How Vitality handles updating the database has been significantly simplified. On startup we only check if the current version is greater than or equal to the minimum version (hard coded in the app). If so, we do nothing. Otherwise we check both the included DB (if any) and the one pointed to by the database preference URL's. If the user chooses the 'Check for updates' menu option, Vitality will check both included and remote databases. In either case if there's a newer version available it will be used to update the database.</p>
+
+<p>The included database is now up-to-date with the Proteus release.</p>
+<p>The Database update window now has a cancel button.</p>
+
+<p>Fixed a number of display issues with the skill, ship and module detail windows.</p>
+<p>Removed all display references to clone grades.</p>
+			]]>
+		</description>
+      </item>
      <item>
         <title>Version 0.2.10</title>
         <pubDate>Feb, 1 December 2013 00:00:00 +0000</pubDate>
