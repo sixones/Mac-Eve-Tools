@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Vitality</title>
+    <link>http://labs.sixones.com/vitality/appcast3.xml</link>
+    <description>Most recent changes.</description>
+    <language>en</language>
+     <item>
+        <title>Version 0.2.10</title>
+        <pubDate>Feb, 1 December 2013 00:00:00 +0000</pubDate>
+        <enclosure url="http://labs.sixones.com/vitality/builds/vitality-0.2.10.zip" sparkle:version="0.2.10" length="961944" type="application/octet-stream" sparkle:dsaSignature="MCwCFAwy3xvEMWfgRiuNchllyVdnrakwAhQO2vdz66AmD8OgvflCIzqIyeFS4A==" />
+		<description>
+			<![CDATA[
+<strong>0.2.10</strong>
+<ul>
+	<li>Rubicon support.</li>
+	<li>Market orders and contracts.</li>
+</ul>
+<strong>0.2.9</strong>
+<ul>
+	<li>Odyssey 1.1 support.</li>
+	<li>Fixed a few different bugs.</li>
+</ul>
+<strong>0.2.8</strong>
+<ul>
+	<li>Restored right click context menu on skills, certificates, ships and modules in the skill planner.</li>
+	<li>Updated skill planner to clear the selected row correctly when switching tabs.</li>
+	<li>Fixed issue in the character sheet when hiding / revealing skill groups.</li>
+	<li>Added columns to the skill plan view for Primary and Secondary attributes (disabled by default).</li>
+	<li>Updated icons to use higher resolution versions.</li>
+	<li>Experimental system menu bar for quick look of current characters training queue (disabled by default).</li>
+</ul>
+			]]>
+		</description>
+      </item>
+     <item>
+        <title>Version 0.2.9</title>
+        <pubDate>Tue, 3 July 2013 00:00:00 +0000</pubDate>
+        <enclosure url="http://labs.sixones.com/vitality/builds/vitality-0.2.9.zip" sparkle:version="0.2.9" length="929536" type="application/octet-stream" sparkle:dsaSignature="MCwCFF9yA3LuT3w9K7qjL2J7agG63pXwAhQl0Up4H/860vqc8tvSrtTR+crE1A==" />
+		<description>
+			<![CDATA[
+<strong>0.2.9</strong>
+<ul>
+	<li>Odyssey 1.1 support.</li>
+	<li>Fixed a few different bugs.</li>
+</ul>
+<strong>0.2.8</strong>
+<ul>
+	<li>Restored right click context menu on skills, certificates, ships and modules in the skill planner.</li>
+	<li>Updated skill planner to clear the selected row correctly when switching tabs.</li>
+	<li>Fixed issue in the character sheet when hiding / revealing skill groups.</li>
+	<li>Added columns to the skill plan view for Primary and Secondary attributes (disabled by default).</li>
+	<li>Updated icons to use higher resolution versions.</li>
+	<li>Experimental system menu bar for quick look of current characters training queue (disabled by default).</li>
+</ul>
+			]]>
+		</description>
+      </item>
+     <item>
+        <title>Version 0.2.7</title>
+        <pubDate>Tue, 4 June 2013 00:00:00 +0000</pubDate>
+        <enclosure url="http://labs.sixones.com/vitality/builds/vitality-0.2.7.zip" sparkle:version="0.2.7" length="889037" type="application/octet-stream" sparkle:dsaSignature="MCwCFDsYSOckx9m8ZIR8PBV2AWfDIyU2AhQFq77bQvgVKOtPlIqBuLkL7ViNsw==" />
+		<description>
+			<![CDATA[
+
+<strong>Upgrading from 0.2.5? You will need to download and install manually.</strong>
+
+<p>To update you will need to manually download and overwrite your current copy: <a href="http://labs.sixones.com/vitality/builds/vitality-0.2.7.zip">http://labs.sixones.com/vitality/builds/vitality-0.2.7.zip</a> or see the <a href="https://forums.eveonline.com/default.aspx?g=posts&t=233980>thread</a> on the <a href="https://forums.eveonline.com/default.aspx?g=posts&t=233980>EVE Online forums</a>.</p>
+
+<br />
+
+<ul>
+	<li>Updated database for Odyssey 1.0.0.</li>
+</ul>
+			]]>
+		</description>
+      </item>
+     <item>
+        <title>Version 0.2.6</title>
+        <pubDate>Mon, 3 June 2013 21:42:00 +0000</pubDate>
+        <enclosure url="http://labs.sixones.com/vitality/builds/vitality-0.2.6.zip" sparkle:version="0.2.6" length="889051" type="application/octet-stream" sparkle:dsaSignature="MCwCFDUJhph4AqcXldIlhucrABFXTcc1AhQXQJm9TRbLnGUlZUOdsMMa6vE6iw==" />
+		<description>
+			<![CDATA[
+
+<strong>Once again, I've managed to screw up the update verification - third times a charm!</strong>
+
+<p>To update you will need to manually download and overwrite your current copy: <a href="http://labs.sixones.com/vitality/builds/vitality-0.2.6.zip">http://labs.sixones.com/vitality/builds/vitality-0.2.6.zip</a> or see the <a href="https://forums.eveonline.com/default.aspx?g=posts&t=233980>thread</a> on the <a href="https://forums.eveonline.com/default.aspx?g=posts&t=233980>EVE Online forums</a>.</p>
+
+<br />
+
+<ul>
+	<li>Fixed certificates displaying null names.</li>
+	<li>Added support for exporting to text via the clipboard.</li>
+	<li>Added new plan options menu for importing, exporting and attribute setup.</li>
+	<li>Removed Planner menu from the main system menu.</li>
+</ul>
+			]]>
+		</description>
+      </item>
+     <item>
+        <title>Version 0.2.5</title>
+        <pubDate>Thur, 16 May 2013 00:00:00 +0000</pubDate>
+        <enclosure url="http://labs.sixones.com/vitality/builds/vitality-0.2.5.zip" sparkle:version="0.2.5" length="887038" type="application/octet-stream" sparkle:dsaSignature="MEYCIQChG3Uivqq2NQBxNY8bMUp0gvwPaY0j87AQ/ISX8WJFqgIhALf/DbIoiH6LytGFOmtiYAL51QbuOkDQR4a8Cz2B43oJ" />
+		<description>
+			<![CDATA[
+
+<strong>Sorry all, screwed up the update verification</strong>
+
+<p>To update you will need to manually download and overwrite your current copy: <a href="http://labs.sixones.com/vitality/builds/vitality-0.2.5.zip">http://labs.sixones.com/vitality/builds/vitality-0.2.5.zip</a> or see the <a href="https://forums.eveonline.com/default.aspx?g=posts&t=233980>thread</a> on the <a href="https://forums.eveonline.com/default.aspx?g=posts&t=233980>EVE Online forums</a>.</p>
+
+<br />
+
+<ul>
+	<li>Added error handling around API communication when trying to add an account.</li>
+	<li>Cleaned up compiler warnings in the code.</li>
+	<li>Updated public key to use the Vitality key for verifying updates.</li>
+</ul>
+			]]>
+		</description>
+      </item>
+     <item>
+        <title>Version 0.2.4</title>
+        <pubDate>Tue, 7 May 2013 00:00:00 +0000</pubDate>
+        <enclosure url="http://labs.sixones.com/vitality/builds/vitality-0.2.4.zip" sparkle:version="0.2.4" length="994773" type="application/octet-stream" sparkle:dsaSignature="MEUCICtQ7XSBbUY5hk3dJ+uTYrMESKZOLYI+Ausj6RiuemwcAiEAjLRjoR8zvI2JmgMq+0UoXcpWP36ScMOPQ+Ghgn1esn8=" />
+		<description>
+			<![CDATA[
+<ul>
+	<li>Updated API authentication to use EVE's new format.</li>
+	<li>Updated database structure for latest EVE content database support.</li>
+	<li>Added module listings to skill planner.</li>
+	<li>Removed file icon from displaying in main window.</li>
+	<li>Updated default toolbar layout to place characters on the right.</li>
+	<li>General UI layout improvements.</li>
+	<li>Updated skill, certificate and ship panels to stay open when Vitality loses focus.</li>
+	<li>Moved image hosting to the official EVE image server.</li>
+	<li>Fixed ship and module from displaying raw HTML.</li>
+</ul>
+			]]>
+		</description>
+      </item>
+   </channel>
+</rss>
