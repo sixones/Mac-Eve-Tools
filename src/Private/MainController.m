@@ -527,9 +527,9 @@
 	[prefDefaults setObject:@"http://image.eveonline.com/Character/" forKey:UD_PICTURE_URL];
     [prefDefaults setObject:@"http://image.eveonline.com/" forKey:UD_IMAGE_URL];
 	
-	[prefDefaults setObject:@"http://labs.sixones.com/vitality/appcast3.xml" forKey:UD_UPDATE_FEED_URL];
-	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.xml" forKey:UD_DB_UPDATE_URL];
-	[prefDefaults setObject:@"http://labs.sixones.com/vitality/database.sql.bz2" forKey:UD_DB_SQL_URL];
+	[prefDefaults setObject:@"https://sixones.github.io/vitality/appcast3.xml" forKey:UD_UPDATE_FEED_URL];
+	[prefDefaults setObject:@"https://sixones.github.io/vitality/database.xml" forKey:UD_DB_UPDATE_URL];
+	[prefDefaults setObject:@"https://sixones.github.io/vitality/database.sql.bz2" forKey:UD_DB_SQL_URL];
 	
 	[prefDefaults setObject:[NSNumber numberWithInt:20] forKey:UD_DATABASE_MIN_VERSION];
 	 	

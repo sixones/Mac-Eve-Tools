@@ -509,7 +509,7 @@
 	NSString *str2 = [Config buildPathSingle:DATABASE_SQLITE];
 	[[NSFileManager defaultManager] moveItemAtPath:str toPath:str2 error:NULL];
 	
-    // TODO: Tell the new database to do any post-update processing
+    // Tell the new database to do any post-update processing
     CCPDatabase *newDB = [[CCPDatabase alloc] initWithPath:databasePath];
     [newDB postUpdate];
     [newDB release];
