@@ -6,6 +6,20 @@
     <description>Most recent changes.</description>
     <language>en</language>
      <item>
+        <title>Version 0.3.3b</title>
+        <pubDate>Mar 30, 2015 00:00:00 +0000</pubDate>
+        <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.3b/Vitality_v0.3.3b.zip" sparkle:version="0.3.3b" length="1170791" type="application/octet-stream" />
+		<description>
+			<![CDATA[
+<strong>0.3.3b</strong>
+<ul>
+	<li>Testing Sparkle updater only! Don't use this version!</li>
+</ul>
+<p>Removed all display references to clone grades.</p>
+			]]>
+		</description>
+      </item>
+     <item>
         <title>Version 0.3.2b</title>
         <pubDate>Jan 27, 2015 00:00:00 +0000</pubDate>
         <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.2b/Vitality.zip" sparkle:version="0.3.2b" length="4399135" type="application/octet-stream" />
