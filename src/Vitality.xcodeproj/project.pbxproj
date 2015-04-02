@@ -53,7 +53,6 @@
 		14B6F626173BD089005E8389 /* SkillSearchModuleDatasource.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B6F625173BD089005E8389 /* SkillSearchModuleDatasource.m */; };
 		14B6F636173BE1FD005E8389 /* ModuleDetailsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B6F631173BE1FD005E8389 /* ModuleDetailsWindowController.m */; };
 		14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14B6F637173BE4C8005E8389 /* ModuleDetails.xib */; };
-		14B827A917459A9C002CB096 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 14B827A817459A9C002CB096 /* dsa_pub.pem */; };
 		14F8DAEF1739BF30001C4178 /* vitality.icns in Resources */ = {isa = PBXBuildFile; fileRef = 14F8DAEB1739BF30001C4178 /* vitality.icns */; };
 		14F8DAF11739BF30001C4178 /* vitality.png in Resources */ = {isa = PBXBuildFile; fileRef = 14F8DAEE1739BF30001C4178 /* vitality.png */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -257,7 +256,6 @@
 		14B6F630173BE1FD005E8389 /* ModuleDetailsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModuleDetailsWindowController.h; sourceTree = "<group>"; };
 		14B6F631173BE1FD005E8389 /* ModuleDetailsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModuleDetailsWindowController.m; sourceTree = "<group>"; };
 		14B6F638173BE4C8005E8389 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ModuleDetails.xib; sourceTree = "<group>"; };
-		14B827A817459A9C002CB096 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		14F8DAEB1739BF30001C4178 /* vitality.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = vitality.icns; sourceTree = "<group>"; };
 		14F8DAEC1739BF30001C4178 /* vitality.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vitality.pch; sourceTree = "<group>"; };
 		14F8DAED1739BF30001C4178 /* vitality.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = vitality.plist; sourceTree = "<group>"; };
@@ -636,7 +634,6 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				14B827A817459A9C002CB096 /* dsa_pub.pem */,
 				14F8DAEB1739BF30001C4178 /* vitality.icns */,
 				14F8DAEC1739BF30001C4178 /* vitality.pch */,
 				14F8DAED1739BF30001C4178 /* vitality.plist */,
@@ -1270,7 +1267,6 @@
 				14F8DAEF1739BF30001C4178 /* vitality.icns in Resources */,
 				14F8DAF11739BF30001C4178 /* vitality.png in Resources */,
 				14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */,
-				14B827A917459A9C002CB096 /* dsa_pub.pem in Resources */,
 				A1C0A7C117610CDA00A3A743 /* MarketView.xib in Resources */,
 				140AEBD7176109F500308748 /* status.png in Resources */,
 				140AEBE21763A04B00308748 /* StatusItemView.xib in Resources */,
