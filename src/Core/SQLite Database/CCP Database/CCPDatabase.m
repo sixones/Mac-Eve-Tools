@@ -586,7 +586,7 @@
 -(NSDictionary*) typeAttributesForTypeID:(NSInteger)typeID
 {
 	const char query[] =
-		"SELECT at.attributeID, at.displayName, un.displayName, ta.valueInt, ta.valueFloat "
+		"SELECT at.attributeID, at.displayName, un.displayName, coalesce(ta.valueFloat, ta.valueInt) "
 		"FROM dgmTypeAttributes ta, dgmAttributeTypes at, eveUnits un "
 		"WHERE at.attributeID = ta.attributeID "
 		"AND un.unitID = at.unitID "
@@ -610,20 +610,12 @@
 		NSString *dispName = sqlite3_column_nsstr(read_stmt, 1);
 		NSString *unitDisp = sqlite3_column_nsstr(read_stmt, 2);
 		
-		NSInteger vInt;
+        NSInteger vInt = NSIntegerMax;
+        CGFloat vFloat = CGFLOAT_MAX;
 		
-		if(sqlite3_column_type(read_stmt,3) == SQLITE_NULL){
-			vInt = NSIntegerMax;
-		}else{
-			vInt = sqlite3_column_nsint(read_stmt,3);
-		}
-		
-		CGFloat vFloat;
-		
-		if(sqlite3_column_type(read_stmt, 4) == SQLITE_NULL){
-			vFloat = CGFLOAT_MAX;
-		}else{
-			vFloat = (CGFloat) sqlite3_column_double(read_stmt, 4);
+        if( sqlite3_column_type(read_stmt, 3) != SQLITE_NULL )
+        {
+			vFloat = (CGFloat) sqlite3_column_double(read_stmt, 3);
 		}
 		
 		NSNumber *attrNum = [NSNumber numberWithInteger:attributeID];
@@ -642,19 +634,10 @@
 	return attributes;
 }
 
-/*
--(METShip*) shipForTypeID:(NSInteger)typeID
-{
-	CCPType *shipType = [self type:typeID];
-	NSDictionary *typeAttr = [self typeAttributesForTypeID:typeID];
-}
-*/
-
 -(NSArray*) attributeForType:(NSInteger)typeID groupBy:(enum AttributeTypeGroups)group
 {
 	const char query[] =
-	"SELECT at.displayName, ta.valueInt, "
-		"ta.valueFloat, at.attributeID, un.displayName, at.attributeName "
+	"SELECT at.displayName, coalesce(ta.valueFloat, ta.valueInt), at.attributeID, un.displayName, at.attributeName "
 	"FROM dgmTypeAttributes ta, metAttributeTypes at LEFT OUTER JOIN eveUnits un ON at.unitID = un.unitID "
 	"WHERE at.attributeID = ta.attributeID "
 	"AND typeID = ? "
@@ -676,24 +659,16 @@
 	
 	while(sqlite3_step(read_stmt) == SQLITE_ROW){
 		NSString *displayName = sqlite3_column_nsstr(read_stmt,0);
-		NSInteger attrID = sqlite3_column_nsint(read_stmt,3);
-		NSString *unitDisplay = sqlite3_column_nsstr(read_stmt,4);
-        NSString *attributeName = sqlite3_column_nsstr(read_stmt,5);
+		NSInteger attrID = sqlite3_column_nsint(read_stmt,2);
+		NSString *unitDisplay = sqlite3_column_nsstr(read_stmt,3);
+        NSString *attributeName = sqlite3_column_nsstr(read_stmt,4);
 
-		NSInteger vInt;
+		NSInteger vInt = NSIntegerMax;
+		CGFloat vFloat = CGFLOAT_MAX;
 		
-		if(sqlite3_column_type(read_stmt,1) == SQLITE_NULL){
-			vInt = NSIntegerMax;
-		}else{
-			vInt = sqlite3_column_nsint(read_stmt,1);
-		}
-		
-		CGFloat vFloat;
-		
-		if(sqlite3_column_type(read_stmt, 2) == SQLITE_NULL){
-			vFloat = CGFLOAT_MAX;
-		}else{
-			vFloat = (CGFloat) sqlite3_column_double(read_stmt, 2);
+		if( sqlite3_column_type(read_stmt, 1) != SQLITE_NULL )
+		{
+			vFloat = (CGFloat) sqlite3_column_double(read_stmt, 1);
 		}
 		
         // TODO: This is probably caused by a bug in dump_attrs.py, but I haven't been able to fix that

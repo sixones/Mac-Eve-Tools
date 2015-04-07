@@ -21,7 +21,8 @@
     id<METInstance> app;
     MarketOrders *orders;
     MetTableHeaderMenuManager *headerMenuManager;
+    NSMutableArray *dbOrders; // orders pulled from the database
 }
 @property (readwrite,retain,nonatomic) Character *character;
-
+@property (readonly,retain) NSMutableArray *dbOrders;
 @end

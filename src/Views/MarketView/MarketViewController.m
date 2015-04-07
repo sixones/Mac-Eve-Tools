@@ -10,10 +10,19 @@
 #import "MarketOrders.h"
 #import "MarketOrder.h"
 #import "MetTableHeaderMenuManager.h"
+#import "Character.h"
+#import "CharacterDatabase.h"
+#import <sqlite3.h>
+#import "Helpers.h"
+
+@interface MarketViewController()
+@property (readwrite,retain) NSMutableArray *dbOrders;
+@end
 
 @implementation MarketViewController
 
 @synthesize character;
+@synthesize dbOrders;
 
 -(id) init
 {
@@ -21,8 +30,6 @@
     {
         orders = [[MarketOrders alloc] init];
         [orders setDelegate:self];
-//        NSSortDescriptor *defaultSort = [NSSortDescriptor sortDescriptorWithKey:@"issued" ascending:YES selector:@selector(compare:)];
-//        [orders sortUsingDescriptors:[NSArray arrayWithObject:defaultSort]];
 	}
     
 	return self;
@@ -50,11 +57,60 @@
         [character release];
         character = [_character retain];
         // if view is active we need to reload market orders
+        [self createMarketOrderTables];
         [orders setCharacter:character];
         [orders reload:self];
         [app setToolbarMessage:NSLocalizedString(@"Updating Market Orders…",@"Updating Market Orders")];
         [app startLoadingAnimation];
+        [self setDbOrders:[self loadMarketOrders]];
     }
+}
+
+-(BOOL) createMarketOrderTables
+{
+    if( character )
+    {
+        int rc;
+        char *errmsg;
+        CharacterDatabase *charDB = [[self character] database];
+        sqlite3 *db = [charDB openDatabase];
+        
+        if( [charDB doesTableExist:@"marketOrders"] )
+            return YES;
+        
+        // TODO: also make sure it's the right version
+        
+        [charDB beginTransaction];
+        
+        const char createMailTable[] = "CREATE TABLE marketOrders ("
+        "orderID INTEGER PRIMARY KEY, "
+        "charID INTEGER, "
+        "stationID INTEGER, "
+        "volEntered INTEGER, "
+        "volRemaining INTEGER, "
+        "minVolume INTEGER, "
+        "orderState INTEGER, "
+        "typeID INTEGER, "
+        "range VARCHAR(255), "
+        "accountKey INTEGER, "
+        "duration INTEGER, "
+        "price DOUBLE, "
+        "escrow DOUBLE, "
+        "buy BOOLEAN, "
+        "issued DATETIME "
+        ");";
+        
+        rc = sqlite3_exec(db,createMailTable,NULL,NULL,&errmsg);
+        if(rc != SQLITE_OK){
+            [charDB logError:errmsg];
+            [charDB rollbackTransaction];
+            return NO;
+        }
+        
+        [charDB commitTransaction];
+    }
+    
+    return YES;
 }
 
 //called after the window has become active
@@ -96,8 +152,10 @@
 
 - (void)ordersFinishedUpdating
 {
+    [self saveMarketOrders:[orders orders]];
+    [self setDbOrders:[self loadMarketOrders]]; // TODO: This is wasteful. We could try just adding new market orders to dbOrders (don't allow duplicate orderID's)
     NSArray *newDescriptors = [orderTable sortDescriptors];
-    [orders sortUsingDescriptors:newDescriptors];
+    [[self dbOrders] sortUsingDescriptors:newDescriptors];
     [orderTable reloadData];
     [app setToolbarMessage:NSLocalizedString(@"Finished Updating Market Orders…",@"Finished Updating Market Orders status line") time:5];
     [app stopLoadingAnimation];
@@ -111,17 +169,17 @@
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
-    return [[orders orders] count];
+    return [[self dbOrders] count];
 }
 
 /* This method is required for the "Cell Based" TableView, and is optional for the "View Based" TableView. If implemented in the latter case, the value will be set to the view at a given row/column if the view responds to -setObjectValue: (such as NSControl and NSTableCellView).
  */
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    if( 0 == [[orders orders] count] )
+    if( 0 == [[self dbOrders] count] || row >= [[self dbOrders] count] )
         return nil;
     
-    MarketOrder *order = [[orders orders] objectAtIndex:row];
+    MarketOrder *order = [[self dbOrders] objectAtIndex:row];
     NSString *colID = [tableColumn identifier];
     id value = nil;
     
@@ -184,7 +242,7 @@
 -(void)tableView:(NSTableView *)tableView sortDescriptorsDidChange: (NSArray *)oldDescriptors
 {
     NSArray *newDescriptors = [tableView sortDescriptors];
-    [orders sortUsingDescriptors:newDescriptors];
+    [[self dbOrders] sortUsingDescriptors:newDescriptors];
     [tableView reloadData];
 }
 
@@ -226,5 +284,101 @@
     }
     return YES;
 }
+
+- (NSMutableArray *)loadMarketOrders
+{
+    sqlite3_stmt *read_stmt;
+    int rc;
+    const char getMarketOrders[] = "SELECT * FROM marketOrders;";
+    sqlite3 *db = [[character database] openDatabase];
+    
+    rc = sqlite3_prepare_v2(db,getMarketOrders,(int)sizeof(getMarketOrders),&read_stmt,NULL);
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return nil;
+    }
+    
+    NSMutableArray *messages = [NSMutableArray array];
+    
+    while( sqlite3_step(read_stmt) == SQLITE_ROW )
+    {
+        MarketOrder *order = [[MarketOrder alloc] init];
         
+
+        [order setOrderID:sqlite3_column_nsint(read_stmt,0)];
+        [order setCharID:sqlite3_column_nsint(read_stmt,1)];
+        [order setStationID:sqlite3_column_nsint(read_stmt,2)];
+        [order setVolEntered:sqlite3_column_nsint(read_stmt,3)];
+        [order setVolRemaining:sqlite3_column_nsint(read_stmt,4)];
+        [order setMinVolume:sqlite3_column_nsint(read_stmt,5)];
+        [order setOrderState:(int)sqlite3_column_nsint(read_stmt,6)];
+        [order setTypeID:sqlite3_column_nsint(read_stmt,7)];
+        [order setRange:sqlite3_column_nsstr( read_stmt, 8 )];
+        [order setAccountKey:sqlite3_column_nsint(read_stmt,9)];
+        [order setDuration:sqlite3_column_nsint(read_stmt,10)];
+        [order setPrice:sqlite3_column_double(read_stmt,11)];
+        [order setEscrow:sqlite3_column_double(read_stmt,12)];
+        [order setBuy:sqlite3_column_nsint(read_stmt,13)];
+        [order setIssued:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,14)]];
+        
+        [messages addObject:order];
+    }
+    
+    sqlite3_finalize(read_stmt);
+    
+    return messages;
+}
+
+
+- (BOOL)saveMarketOrders:(NSArray *)newOrders
+{
+    CharacterDatabase *charDB = [character database];
+    sqlite3 *db = [charDB openDatabase];
+    const char insert_mail[] = "INSERT INTO marketOrders VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+    sqlite3_stmt *insert_order_stmt;
+    BOOL success = YES;
+    int rc;
+    
+    rc = sqlite3_prepare_v2(db,insert_mail,(int)sizeof(insert_mail),&insert_order_stmt,NULL);
+    if( rc != SQLITE_OK )
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return NO;
+    }
+    
+    for( MarketOrder *order in newOrders )
+    {
+        sqlite3_bind_nsint( insert_order_stmt, 1, [order orderID] );
+        sqlite3_bind_nsint( insert_order_stmt, 2, [order charID] );
+        sqlite3_bind_nsint( insert_order_stmt, 3, [order stationID] );
+        sqlite3_bind_nsint( insert_order_stmt, 4, [order volEntered] );
+        sqlite3_bind_nsint( insert_order_stmt, 5, [order volRemaining] );
+        sqlite3_bind_nsint( insert_order_stmt, 6, [order minVolume] );
+        sqlite3_bind_nsint( insert_order_stmt, 7, [order orderState] );
+        sqlite3_bind_nsint( insert_order_stmt, 8, [order typeID] );
+        sqlite3_bind_text( insert_order_stmt, 9, [[order range] UTF8String], -1, NULL );
+        sqlite3_bind_nsint( insert_order_stmt, 10, [order accountKey] );
+        sqlite3_bind_nsint( insert_order_stmt, 11, [order duration] );
+        sqlite3_bind_double( insert_order_stmt, 12, [order price] );
+        sqlite3_bind_double( insert_order_stmt, 13, [order escrow] );
+        sqlite3_bind_nsint( insert_order_stmt, 14, [order buy]?1:0 );
+        sqlite3_bind_nsint( insert_order_stmt, 15, [[order issued] timeIntervalSince1970] ); // truncating fractions of a second
+        
+        rc = sqlite3_step(insert_order_stmt);
+        if( SQLITE_CONSTRAINT == rc )
+        {
+            // TODO: We'll have to do an update here, possibly on: volRemaining and orderState
+            NSLog( @"Should be updating market order ID: %ld", (unsigned long)[order orderID] );
+        }
+        else if( rc != SQLITE_DONE )
+        {
+            NSLog(@"Error inserting market order ID: %ld (code: %d)", (unsigned long)[order orderID], rc );
+            success = NO;
+        }
+        sqlite3_reset(insert_order_stmt);
+    }
+    
+    sqlite3_finalize(insert_order_stmt);
+    return success;
+}
 @end

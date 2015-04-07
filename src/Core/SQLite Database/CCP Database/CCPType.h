@@ -89,12 +89,6 @@
 
 -(NSArray*) prereqs;
 
-/*
- return an attribute that belongs to this type. 
- returns NULL if nothing is available for the requested typeAttribute
- */
--(CCPTypeAttribute*) attributeForID:(NSInteger)attrID;
-
 // returns an array of METTrait objects. Will be empty if this type isn't a ship
 -(NSArray *)traits;
 @end

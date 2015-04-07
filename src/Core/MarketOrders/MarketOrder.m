@@ -27,6 +27,7 @@
 @synthesize typeID = _typeID;
 @synthesize range = _range;
 @synthesize accountKey = _accountKey;
+@synthesize duration = _duration;
 @synthesize price = _price;
 @synthesize escrow = _escrow;
 @synthesize buy = _buy;

@@ -153,15 +153,6 @@
 	down = download;
 }
 
--(void) addAttribute:(NSInteger)attr toArray:(NSMutableArray*)ary
-{
-	CCPTypeAttribute *ta = [ship attributeForID:attr];
-	
-	if(ta != nil){
-		[ary addObject:ta];
-	}
-}
-
 -(void) calculateTimeToTrain
 {
 	//Normally skill plans should be created using the character object, but we don't

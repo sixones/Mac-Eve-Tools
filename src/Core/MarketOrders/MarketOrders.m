@@ -306,6 +306,35 @@
                     NSDate *issuedDate = [NSDate dateWithNaturalLanguageString:value];
                     [order setIssued:issuedDate];
                 }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"accountKey") == 0 )
+                {
+                    [order setAccountKey:[value integerValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"duration") == 0 )
+                {
+                    [order setDuration:[value integerValue]];
+                }
+                else if( xmlStrcmp(attr->name, (xmlChar *)"range") == 0 )
+                {
+//                    The range this order is good for. For sell orders, this is always 32767. For buy orders, allowed values are: -1 = station, 0 = solar system, 5/10/20/40 Jumps, 32767 = region.
+                    NSInteger range = [value integerValue];
+                    NSString *rangeString = nil;
+                    switch( range )
+                    {
+                        case 0: rangeString = NSLocalizedString( @"Solar System", @"Market Order Range: Solar System" ); break;
+                        case -1: rangeString = NSLocalizedString( @"Station", @"Market Order Range: Station" ); break;
+                        case 32767: rangeString = NSLocalizedString( @"Region", @"Market Order Range: Region" ); break;
+                        case 5: rangeString = NSLocalizedString( @"5 Jumps", @"Market Order Range: 5 Jumps" ); break;
+                        case 10: rangeString = NSLocalizedString( @"10 Jumps", @"Market Order Range: 10 Jumps" ); break;
+                        case 20: rangeString = NSLocalizedString( @"20 Jumps", @"Market Order Range: 20 Jumps" ); break;
+                        case 40: rangeString = NSLocalizedString( @"40 Jumps", @"Market Order Range: 40 Jumps" ); break;
+                        default:
+                            rangeString = @"Unknown";
+                            NSLog( @"Unknown range when reading market orders: %ld", (long)range );
+                            break;
+                    }
+                    [order setRange:rangeString];
+                }
 
                 
 //                <row orderID="639587440" charID="118406849" stationID="60003760" volEntered="25" volRemaining="4" minVolume="1" orderState="0" typeID="26082" range="32767" accountKey="1000" duration="1" escrow="0.00" price="3399999.98" bid="0" issued="2008-02-03 22:35:54"/>

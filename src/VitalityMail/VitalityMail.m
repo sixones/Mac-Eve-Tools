@@ -221,9 +221,6 @@
 
 - (void)mailFinishedUpdating
 {
-//    NSArray *newDescriptors = [contractsTable sortDescriptors];
-//    [contracts sortUsingDescriptors:newDescriptors];
-//    [contractsTable reloadData];
     [self saveMailMessages:[mail messages]];
     [app setToolbarMessage:NSLocalizedString(@"Finished Updating Mail Headers…",@"Finished Updating Mail status line") time:5];
     [app stopLoadingAnimation];

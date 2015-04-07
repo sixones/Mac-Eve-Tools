@@ -32,6 +32,7 @@ typedef enum {
     NSUInteger _typeID;
     NSString *_range;
     NSUInteger _accountKey;
+    NSUInteger _duration;
     double _price;
     double _escrow;
     BOOL _buy;
@@ -48,6 +49,7 @@ typedef enum {
 @property (assign) NSUInteger typeID;
 @property (retain) NSString *range;
 @property (assign) NSUInteger accountKey;
+@property (assign) NSUInteger duration;
 @property (assign) double price;
 @property (assign) double escrow;
 @property (assign) BOOL buy; // if false = sell order
