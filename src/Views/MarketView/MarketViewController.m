@@ -334,18 +334,28 @@
 {
     CharacterDatabase *charDB = [character database];
     sqlite3 *db = [charDB openDatabase];
-    const char insert_mail[] = "INSERT INTO marketOrders VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+    const char insert_market_order[] = "INSERT INTO marketOrders VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
     sqlite3_stmt *insert_order_stmt;
+    const char update_order[] = "UPDATE marketOrders SET volRemaining = ?, orderState = ?, price = ?, escrow = ? WHERE orderID = ?;";
+    sqlite3_stmt *update_order_stmt;
     BOOL success = YES;
     int rc;
     
-    rc = sqlite3_prepare_v2(db,insert_mail,(int)sizeof(insert_mail),&insert_order_stmt,NULL);
+    rc = sqlite3_prepare_v2(db,insert_market_order,(int)sizeof(insert_market_order),&insert_order_stmt,NULL);
     if( rc != SQLITE_OK )
     {
         NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
         return NO;
     }
     
+    rc = sqlite3_prepare_v2(db,update_order,(int)sizeof(update_order),&update_order_stmt,NULL);
+    if( rc != SQLITE_OK )
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        sqlite3_finalize(insert_order_stmt);
+        return NO;
+    }
+
     for( MarketOrder *order in newOrders )
     {
         sqlite3_bind_nsint( insert_order_stmt, 1, [order orderID] );
@@ -367,8 +377,23 @@
         rc = sqlite3_step(insert_order_stmt);
         if( SQLITE_CONSTRAINT == rc )
         {
-            // TODO: We'll have to do an update here, possibly on: volRemaining and orderState
+            // TODO: We'll have to do an update here, possibly on: volRemaining, orderState, price and escrow?
             NSLog( @"Should be updating market order ID: %ld", (unsigned long)[order orderID] );
+            
+            sqlite3_bind_nsint( update_order_stmt, 1, [order volRemaining] );
+            sqlite3_bind_nsint( update_order_stmt, 2, [order orderState] );
+            sqlite3_bind_double( update_order_stmt, 3, [order price] );
+            sqlite3_bind_double( update_order_stmt, 4, [order escrow] );
+            sqlite3_bind_nsint( update_order_stmt, 5, [order orderID] );
+            
+            if( (rc = sqlite3_step(update_order_stmt)) != SQLITE_DONE )
+            {
+                NSLog( @"Error updating market order ID: %ld", (long)[order orderID] );
+                success = NO;
+            }
+            
+            sqlite3_reset(update_order_stmt);
+            
         }
         else if( rc != SQLITE_DONE )
         {
@@ -379,6 +404,7 @@
     }
     
     sqlite3_finalize(insert_order_stmt);
+    sqlite3_finalize(update_order_stmt);
     return success;
 }
 @end
