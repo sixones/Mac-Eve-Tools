@@ -83,6 +83,10 @@
 		A11DFF2E1A8D2F0F0047D5F5 /* METMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11DFF2B1A8D2F0F0047D5F5 /* METMessageViewController.m */; };
 		A11DFF301A8D2F720047D5F5 /* METMessageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11DFF2F1A8D2F720047D5F5 /* METMessageView.xib */; };
 		A11DFF311A8D2F720047D5F5 /* METMessageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11DFF2F1A8D2F720047D5F5 /* METMessageView.xib */; };
+		A11F72181AD6F84C002E1906 /* MarketView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11F72101AD6F84C002E1906 /* MarketView.xib */; };
+		A11F72191AD6F84C002E1906 /* MarketOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72131AD6F84C002E1906 /* MarketOrder.m */; };
+		A11F721A1AD6F84C002E1906 /* MarketOrders.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72151AD6F84C002E1906 /* MarketOrders.m */; };
+		A11F721B1AD6F84C002E1906 /* MarketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72171AD6F84C002E1906 /* MarketViewController.m */; };
 		A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */ = {isa = PBXBuildFile; fileRef = A12EE8D3197D98E000ED6478 /* METTrait.m */; };
 		A12FC60417EA0C0D0053DC23 /* ContractsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A12FC60017EA0C0D0053DC23 /* ContractsView.xib */; };
 		A12FC60517EA0C0D0053DC23 /* ContractsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */; };
@@ -95,10 +99,6 @@
 		A1B21DAD181EE7E700F07DBE /* ContractDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B21DAB181EE7E700F07DBE /* ContractDetailsController.m */; };
 		A1B21DB0181EE7F200F07DBE /* ContractDetails.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1B21DAE181EE7F200F07DBE /* ContractDetails.xib */; };
 		A1B21DB3181F102200F07DBE /* MTISKFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B21DB2181F102100F07DBE /* MTISKFormatter.m */; };
-		A1C0A7B31761077F00A3A743 /* MarketOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7B01761077F00A3A743 /* MarketOrder.m */; };
-		A1C0A7B41761077F00A3A743 /* MarketOrders.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7B21761077F00A3A743 /* MarketOrders.m */; };
-		A1C0A7C117610CDA00A3A743 /* MarketView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C0A7BE17610CDA00A3A743 /* MarketView.xib */; };
-		A1C0A7C217610CDA00A3A743 /* MarketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C0A7C017610CDA00A3A743 /* MarketViewController.m */; };
 		A1C44C681A24EEC100443AE2 /* METURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C44C671A24EEC100443AE2 /* METURLRequest.m */; };
 		A1C44C6C1A36697200443AE2 /* VitalityMail.m in Sources */ = {isa = PBXBuildFile; fileRef = A10C36A419E5F71000A0EB2B /* VitalityMail.m */; };
 		A1C44C711A366AC600443AE2 /* METMail.h in Headers */ = {isa = PBXBuildFile; fileRef = A1C44C6D1A366AC600443AE2 /* METMail.h */; };
@@ -301,6 +301,13 @@
 		A11DFF2A1A8D2F0F0047D5F5 /* METMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METMessageViewController.h; sourceTree = "<group>"; };
 		A11DFF2B1A8D2F0F0047D5F5 /* METMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METMessageViewController.m; sourceTree = "<group>"; };
 		A11DFF2F1A8D2F720047D5F5 /* METMessageView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = METMessageView.xib; sourceTree = "<group>"; };
+		A11F72111AD6F84C002E1906 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = MarketView.xib; sourceTree = "<group>"; };
+		A11F72121AD6F84C002E1906 /* MarketOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketOrder.h; path = MarketOrders/MarketOrder.h; sourceTree = "<group>"; };
+		A11F72131AD6F84C002E1906 /* MarketOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MarketOrder.m; path = MarketOrders/MarketOrder.m; sourceTree = "<group>"; };
+		A11F72141AD6F84C002E1906 /* MarketOrders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketOrders.h; path = MarketOrders/MarketOrders.h; sourceTree = "<group>"; };
+		A11F72151AD6F84C002E1906 /* MarketOrders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MarketOrders.m; path = MarketOrders/MarketOrders.m; sourceTree = "<group>"; };
+		A11F72161AD6F84C002E1906 /* MarketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketViewController.h; path = MarketOrders/MarketViewController.h; sourceTree = "<group>"; };
+		A11F72171AD6F84C002E1906 /* MarketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MarketViewController.m; path = MarketOrders/MarketViewController.m; sourceTree = "<group>"; };
 		A12EE8D2197D98E000ED6478 /* METTrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METTrait.h; sourceTree = "<group>"; };
 		A12EE8D3197D98E000ED6478 /* METTrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METTrait.m; sourceTree = "<group>"; };
 		A12FC60117EA0C0D0053DC23 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ContractsView.xib; sourceTree = "<group>"; };
@@ -322,13 +329,6 @@
 		A1B21DAF181EE7F200F07DBE /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ContractDetails.xib; sourceTree = "<group>"; };
 		A1B21DB1181F102100F07DBE /* MTISKFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTISKFormatter.h; sourceTree = "<group>"; };
 		A1B21DB2181F102100F07DBE /* MTISKFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTISKFormatter.m; sourceTree = "<group>"; };
-		A1C0A7AF1761077F00A3A743 /* MarketOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketOrder.h; path = MarketOrders/MarketOrder.h; sourceTree = "<group>"; };
-		A1C0A7B01761077F00A3A743 /* MarketOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MarketOrder.m; path = MarketOrders/MarketOrder.m; sourceTree = "<group>"; };
-		A1C0A7B11761077F00A3A743 /* MarketOrders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketOrders.h; path = MarketOrders/MarketOrders.h; sourceTree = "<group>"; };
-		A1C0A7B21761077F00A3A743 /* MarketOrders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MarketOrders.m; path = MarketOrders/MarketOrders.m; sourceTree = "<group>"; };
-		A1C0A7BD17610CDA00A3A743 /* MarketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarketViewController.h; sourceTree = "<group>"; };
-		A1C0A7BF17610CDA00A3A743 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MarketView.xib; sourceTree = "<group>"; };
-		A1C0A7C017610CDA00A3A743 /* MarketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarketViewController.m; sourceTree = "<group>"; };
 		A1C44C661A24EEC100443AE2 /* METURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METURLRequest.h; sourceTree = "<group>"; };
 		A1C44C671A24EEC100443AE2 /* METURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METURLRequest.m; sourceTree = "<group>"; };
 		A1C44C6D1A366AC600443AE2 /* METMail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METMail.h; sourceTree = "<group>"; };
@@ -616,6 +616,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				A11F720E1AD6F5D9002E1906 /* MarketOrders */,
 				A10C369C19E5F70F00A0EB2B /* VitalityMail */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
@@ -708,6 +709,29 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		A11F720E1AD6F5D9002E1906 /* MarketOrders */ = {
+			isa = PBXGroup;
+			children = (
+				A11F720F1AD6F84C002E1906 /* English.lproj */,
+				A11F72121AD6F84C002E1906 /* MarketOrder.h */,
+				A11F72131AD6F84C002E1906 /* MarketOrder.m */,
+				A11F72141AD6F84C002E1906 /* MarketOrders.h */,
+				A11F72151AD6F84C002E1906 /* MarketOrders.m */,
+				A11F72161AD6F84C002E1906 /* MarketViewController.h */,
+				A11F72171AD6F84C002E1906 /* MarketViewController.m */,
+			);
+			name = MarketOrders;
+			sourceTree = "<group>";
+		};
+		A11F720F1AD6F84C002E1906 /* English.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				A11F72101AD6F84C002E1906 /* MarketView.xib */,
+			);
+			name = English.lproj;
+			path = MarketOrders/English.lproj;
+			sourceTree = "<group>";
+		};
 		A12FC5FF17EA0C0D0053DC23 /* Contracts */ = {
 			isa = PBXGroup;
 			children = (
@@ -734,27 +758,6 @@
 				A1FCD04F1822DED500A6655A /* ContractItem.m */,
 			);
 			path = Contracts;
-			sourceTree = "<group>";
-		};
-		A1C0A7AA1761071200A3A743 /* MarketOrders */ = {
-			isa = PBXGroup;
-			children = (
-				A1C0A7AF1761077F00A3A743 /* MarketOrder.h */,
-				A1C0A7B01761077F00A3A743 /* MarketOrder.m */,
-				A1C0A7B11761077F00A3A743 /* MarketOrders.h */,
-				A1C0A7B21761077F00A3A743 /* MarketOrders.m */,
-			);
-			name = MarketOrders;
-			sourceTree = "<group>";
-		};
-		A1C0A7BC17610CD900A3A743 /* MarketView */ = {
-			isa = PBXGroup;
-			children = (
-				A1C0A7BD17610CDA00A3A743 /* MarketViewController.h */,
-				A1C0A7C017610CDA00A3A743 /* MarketViewController.m */,
-				A1C0A7BE17610CDA00A3A743 /* MarketView.xib */,
-			);
-			path = MarketView;
 			sourceTree = "<group>";
 		};
 		C9661A6B110D12EB00FA9B72 /* Certs */ = {
@@ -889,7 +892,6 @@
 				C9FF472210550BA50044BBAC /* Skills */,
 				C9FF473110550BA60044BBAC /* SQLite Database */,
 				C9FF46F110550BA50044BBAC /* Character */,
-				A1C0A7AA1761071200A3A743 /* MarketOrders */,
 				A154A64517C576700076603D /* Contracts */,
 				C9FF46ED10550BA50044BBAC /* Account.h */,
 				C9FF46EE10550BA50044BBAC /* Account.m */,
@@ -1066,7 +1068,6 @@
 			children = (
 				C9FF476E10550BA60044BBAC /* Skill Planner */,
 				C9FF476610550BA60044BBAC /* Character Sheet */,
-				A1C0A7BC17610CD900A3A743 /* MarketView */,
 				A12FC5FF17EA0C0D0053DC23 /* Contracts */,
 				C9FF476C10550BA60044BBAC /* METPluggableView.h */,
 				C90FB55A10644F8600292067 /* METInstance.h */,
@@ -1267,8 +1268,8 @@
 				14F8DAEF1739BF30001C4178 /* vitality.icns in Resources */,
 				14F8DAF11739BF30001C4178 /* vitality.png in Resources */,
 				14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */,
-				A1C0A7C117610CDA00A3A743 /* MarketView.xib in Resources */,
 				140AEBD7176109F500308748 /* status.png in Resources */,
+				A11F72181AD6F84C002E1906 /* MarketView.xib in Resources */,
 				140AEBE21763A04B00308748 /* StatusItemView.xib in Resources */,
 				140AEBE41763CF3F00308748 /* open.png in Resources */,
 				A154A64417A83E090076603D /* Localizable.strings in Resources */,
@@ -1341,6 +1342,7 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				C9FF478310550BA60044BBAC /* Account.m in Sources */,
 				C9FF478410550BA60044BBAC /* bsd-base64.c in Sources */,
+				A11F72191AD6F84C002E1906 /* MarketOrder.m in Sources */,
 				C9FF478510550BA60044BBAC /* Character.m in Sources */,
 				C9FF478610550BA60044BBAC /* CharacterDatasoure.m in Sources */,
 				C9FF478710550BA60044BBAC /* CharacterPrivate.m in Sources */,
@@ -1393,6 +1395,7 @@
 				C9FF47CA10550BA60044BBAC /* SkillDetailsWindowController.m in Sources */,
 				C9FF48D91055151F0044BBAC /* GlobalData.m in Sources */,
 				C9F5143E10566CA200654F6D /* CharacterSheetPlugin.m in Sources */,
+				A11F721A1AD6F84C002E1906 /* MarketOrders.m in Sources */,
 				C9F514951056721300654F6D /* MainController.m in Sources */,
 				C9F514981056721300654F6D /* MTTableViewCategory.m in Sources */,
 				C9F514A11056725600654F6D /* CharacterManager.m in Sources */,
@@ -1433,9 +1436,6 @@
 				9EF3339611E79B1A002A3B7D /* NSTableViewCellExtended.m in Sources */,
 				14B6F626173BD089005E8389 /* SkillSearchModuleDatasource.m in Sources */,
 				14B6F636173BE1FD005E8389 /* ModuleDetailsWindowController.m in Sources */,
-				A1C0A7B31761077F00A3A743 /* MarketOrder.m in Sources */,
-				A1C0A7B41761077F00A3A743 /* MarketOrders.m in Sources */,
-				A1C0A7C217610CDA00A3A743 /* MarketViewController.m in Sources */,
 				140AEBDA17610E3900308748 /* StatusItemView.m in Sources */,
 				140AEBDD176393D400308748 /* StatusItemWindow.m in Sources */,
 				140AEBE017639D4600308748 /* StatusItemViewController.m in Sources */,
@@ -1451,6 +1451,7 @@
 				A1FCD0561829881600A6655A /* METIDtoName.m in Sources */,
 				A1093C97183D7546000D4063 /* CertGroup.m in Sources */,
 				A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */,
+				A11F721B1AD6F84C002E1906 /* MarketViewController.m in Sources */,
 				A1A2DAA918D0CFB40077CD55 /* PlanOverview.m in Sources */,
 				A112AD5E18E48D80001AF74B /* MetTableHeaderMenuManager.m in Sources */,
 				A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */,
@@ -1528,6 +1529,14 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
+		A11F72101AD6F84C002E1906 /* MarketView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A11F72111AD6F84C002E1906 /* English */,
+			);
+			name = MarketView.xib;
+			sourceTree = "<group>";
+		};
 		A12FC60017EA0C0D0053DC23 /* ContractsView.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1550,14 +1559,6 @@
 				A1B21DAF181EE7F200F07DBE /* English */,
 			);
 			name = ContractDetails.xib;
-			sourceTree = "<group>";
-		};
-		A1C0A7BE17610CDA00A3A743 /* MarketView.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A1C0A7BF17610CDA00A3A743 /* English */,
-			);
-			name = MarketView.xib;
 			sourceTree = "<group>";
 		};
 		A1C44C771A3A5ABC00443AE2 /* MailView.xib */ = {

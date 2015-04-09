@@ -377,9 +377,7 @@
         rc = sqlite3_step(insert_order_stmt);
         if( SQLITE_CONSTRAINT == rc )
         {
-            // TODO: We'll have to do an update here, possibly on: volRemaining, orderState, price and escrow?
-            NSLog( @"Should be updating market order ID: %ld", (unsigned long)[order orderID] );
-            
+            // Update the order in case anything has changed: volRemaining, orderState, price and escrow?
             sqlite3_bind_nsint( update_order_stmt, 1, [order volRemaining] );
             sqlite3_bind_nsint( update_order_stmt, 2, [order orderState] );
             sqlite3_bind_double( update_order_stmt, 3, [order price] );
