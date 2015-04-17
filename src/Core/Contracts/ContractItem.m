@@ -18,6 +18,7 @@
 @end
 
 @implementation ContractItem
+@synthesize recordID = _recordID;
 @synthesize typeID = _typeID;
 @synthesize quantity = _quantity;
 @synthesize rawQuantity = _rawQuantity;

@@ -213,6 +213,7 @@ shouldEditTableColumn:(NSTableColumn *)aTableColumn
 
 - (void)contractItemsFinishedUpdating
 {
+    // TODO: Pass this back to the ContractsViewController so it can update the database
     [itemTable reloadData];
 }
 

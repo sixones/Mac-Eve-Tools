@@ -21,6 +21,8 @@
     id<METInstance> app;
     Contracts *contracts;
     MetTableHeaderMenuManager *headerMenuManager;
+    NSMutableArray *dbContracts; // contracts pulled from the database
 }
 @property (readwrite,retain,nonatomic) Character *character;
+@property (readwrite,retain) NSMutableArray *dbContracts;
 @end

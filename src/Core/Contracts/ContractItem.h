@@ -10,6 +10,7 @@
 
 @interface ContractItem : NSObject
 {
+    NSInteger _recordID;
     NSUInteger _typeID;
     long _quantity;
     long _rawQuantity;
@@ -18,6 +19,7 @@
     NSString *_name;
     NSString *_description;
 }
+@property (assign) NSInteger recordID; // unique but otherwise meaningless key
 @property (assign) NSUInteger typeID;
 @property (assign) long quantity;
 @property (assign) long rawQuantity;

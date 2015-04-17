@@ -14,6 +14,7 @@
 #import "Character.h"
 #import "CharacterTemplate.h"
 #import "MarketOrder.h"
+#import "METURLRequest.h"
 
 #import "XMLDownloadOperation.h"
 #import "XMLParseOperation.h"
@@ -42,6 +43,7 @@
     {
         _orders = [[NSMutableArray alloc] init];
         _cachedUntil = [[NSDate distantPast] retain];
+        xmlData = [[NSMutableData alloc] init];
     }
     return self;
 }
@@ -50,6 +52,7 @@
 {
     [_orders release];
     [_cachedUntil release];
+    [xmlData release];
     [super dealloc];
 }
 
@@ -76,6 +79,8 @@
 
 - (IBAction)reload:(id)sender
 {
+    [self requestMarketOrder:nil];
+    return;
     if( ![self character] )
         return;
     
@@ -356,6 +361,87 @@
     }
     
 	return YES;
+}
+
+- (void)requestMarketOrder:(NSNumber *)orderID
+{
+    if( ![self character] )
+        return;
+    
+    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
+    {
+        NSLog( @"Skipping download of Market Order(s) because of Cached Until date" );
+        return;
+    }
+    
+    CharacterTemplate *template = nil;
+    NSUInteger chID = [[self character] characterId];
+    
+    for( CharacterTemplate *charTemplate in [[Config sharedInstance] activeCharacters] )
+    {
+        NSUInteger tempID = [[charTemplate characterId] integerValue];
+        if( tempID == chID )
+        {
+            template = charTemplate;
+            break;
+        }
+    }
+    
+    if( !template )
+        return;
+    
+    NSString *docPath = XMLAPI_CHAR_ORDERS;
+    NSString *apiUrl = [Config getApiUrl:docPath
+                                   keyID:[template accountId]
+                        verificationCode:[template verificationCode]
+                                  charId:[template characterId]];
+    if( orderID )
+        apiUrl = [apiUrl stringByAppendingFormat:@"&orderID=%ld", (unsigned long)[orderID unsignedIntegerValue]];
+    NSURL *url = [NSURL URLWithString:apiUrl];
+    METURLRequest *request = [METURLRequest requestWithURL:url];
+    [NSURLConnection connectionWithRequest:request delegate:self];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+    [xmlData setLength:0];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    [xmlData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    const char *ptr = [xmlData bytes];
+    NSInteger length = [xmlData length];
+    
+    if(length == 0){
+        NSLog(@"Zero bytes returned for Market Order data");
+        return;
+    }
+    
+    xmlDoc *doc = xmlReadMemory(ptr, (int)length, NULL, NULL, 0);
+    if( doc == NULL )
+    {
+        NSLog(@"Failed to read Market Order data");
+        return;
+    }
+    [self parseXmlMarketOrders:doc];
+    xmlFreeDoc(doc);
+    [xmlData setLength:0];
+    
+    if( [[self delegate] respondsToSelector:@selector(ordersFinishedUpdating)] )
+    {
+        [[self delegate] performSelector:@selector(ordersFinishedUpdating)];
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    NSLog(@"Failed to connect for Market Order data");
+    [xmlData setLength:0];
 }
 
 @end

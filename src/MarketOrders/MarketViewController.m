@@ -405,4 +405,38 @@
     sqlite3_finalize(update_order_stmt);
     return success;
 }
+
+- (BOOL)orders:(NSArray *)localOrders containsOrderID:(NSInteger)orderID
+{
+    NSUInteger index = [localOrders indexOfObjectPassingTest:^BOOL (id el, NSUInteger i, BOOL *stop)
+     {
+         BOOL res = [(MarketOrder *)el orderState] == OrderStateActive;
+         if( res )
+             *stop = YES;
+         return res;
+     }];
+    return NSNotFound != index;
+}
+
+// Try to find orders that slipped through the cracks and see if they are closed or expired
+- (BOOL)closeOlderOrders:(NSArray *)newOrders
+{
+    // filter dbOrders for ones that are open
+    // for each, if it is not in newOrders, then request that order specifically from the API
+    NSIndexSet *indexes = [[self dbOrders] indexesOfObjectsPassingTest:^BOOL (id el, NSUInteger i, BOOL *stop)
+    {
+        return [(MarketOrder *)el orderState] == OrderStateActive;
+    }];
+    NSArray *openOrders = [[self dbOrders] objectsAtIndexes:indexes];
+    
+    for( MarketOrder *order in openOrders )
+    {
+        BOOL res = [self orders:newOrders containsOrderID:[order orderID]];
+        if( !res )
+        {
+            // request this market order by id
+        }
+    }
+    return YES;
+}
 @end

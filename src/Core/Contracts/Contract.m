@@ -23,6 +23,9 @@
 #import "XmlHelpers.h"
 #include <libxml/tree.h>
 #include <libxml/parser.h>
+#import "CharacterDatabase.h"
+#import <sqlite3.h>
+#import "Helpers.h"
 
 /* Sample xml of a contract
  <rowset name="contractList" key="contractID"
@@ -196,6 +199,13 @@
     if( [[self type] isEqualToString:@"Courier"] )
         return; // Courier contracts never include items
     
+    NSMutableArray *tempItems = [self loadContractItems];
+    if( [tempItems count] > 0 )
+    {
+        [[self items] addObjectsFromArray:tempItems];
+        return;
+    }
+    
     if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
     {
         NSLog( @"Skipping download of Contract items because of Cached Until date" );
@@ -345,6 +355,10 @@
             for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )
             {
                 NSString *value = [NSString stringWithUTF8String:(const char*) attr->children->content];
+                if( xmlStrcmp(attr->name, (xmlChar *)"recordID") == 0 )
+                {
+                    [item setRecordID:[value integerValue]];
+                }
                 if( xmlStrcmp(attr->name, (xmlChar *)"typeID") == 0 )
                 {
                     [item setTypeID:[value integerValue]];
@@ -380,6 +394,8 @@
         [self setCachedUntil:cacheDate];
         
     }
+    
+    [self saveContractItems:[self items]];
     
     if( [[self delegate] conformsToProtocol:@protocol(ContractDelegate)] )
     {
@@ -536,4 +552,80 @@
     }
     return desc;
 }
+
+- (NSMutableArray *)loadContractItems
+{
+    sqlite3_stmt *read_stmt;
+    int rc;
+    const char getItems[] = "SELECT * FROM contractItems where contractID = ?;";
+    sqlite3 *db = [[[self character] database] openDatabase];
+    
+    rc = sqlite3_prepare_v2(db,getItems,(int)sizeof(getItems),&read_stmt,NULL);
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return nil;
+    }
+    
+    NSMutableArray *tempItems = [NSMutableArray array];
+    sqlite3_bind_nsint( read_stmt, 1, [self contractID] );
+
+    while( sqlite3_step(read_stmt) == SQLITE_ROW )
+    {
+        ContractItem *item = [[ContractItem alloc] init];
+        
+        [item setRecordID:sqlite3_column_nsint( read_stmt, 0 )];
+        [item setTypeID:sqlite3_column_nsint( read_stmt, 2 )];
+        [item setQuantity:sqlite3_column_nsint( read_stmt, 3 )];
+        [item setRawQuantity:sqlite3_column_nsint( read_stmt, 4 )];
+        [item setSingleton:sqlite3_column_nsint( read_stmt, 5 )];
+        [item setIncluded:sqlite3_column_nsint( read_stmt, 6 )];
+
+        [tempItems addObject:item];
+        [item release];
+    }
+    
+    sqlite3_finalize(read_stmt);
+    
+    return tempItems;
+}
+
+- (BOOL)saveContractItems:(NSArray *)newItems
+{
+    CharacterDatabase *charDB = [[self character] database];
+    sqlite3 *db = [charDB openDatabase];
+    const char insert_string[] = "INSERT INTO contractItems VALUES (?,?,?,?,?, ?,?);";
+    sqlite3_stmt *insert_stmt;
+    BOOL success = YES;
+    int rc;
+    
+    rc = sqlite3_prepare_v2(db,insert_string,(int)sizeof(insert_string),&insert_stmt,NULL);
+    if( rc != SQLITE_OK )
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return NO;
+    }
+    
+    for( ContractItem *item in newItems )
+    {
+        sqlite3_bind_nsint( insert_stmt, 1, [item recordID] );
+        sqlite3_bind_nsint( insert_stmt, 2, [self contractID] );
+        sqlite3_bind_nsint( insert_stmt, 3, [item typeID] );
+        sqlite3_bind_nsint( insert_stmt, 4, [item quantity] );
+        sqlite3_bind_nsint( insert_stmt, 5, [item rawQuantity] );
+        sqlite3_bind_nsint( insert_stmt, 6, [item singleton] );
+        sqlite3_bind_nsint( insert_stmt, 7, [item included] );
+        
+        rc = sqlite3_step(insert_stmt);
+        if( (SQLITE_CONSTRAINT != rc) && (SQLITE_DONE != rc) )
+        {
+            NSLog(@"Error inserting item for contract ID: %ld. Record ID: %ld (code: %d)", (unsigned long)[self contractID], (unsigned long)[item recordID], rc );
+            success = NO;
+        }
+        sqlite3_reset(insert_stmt);
+    }
+    
+    sqlite3_finalize(insert_stmt);
+    return success;
+}
+
 @end

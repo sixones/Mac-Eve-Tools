@@ -17,6 +17,8 @@
     NSString *_xmlPath;
     NSDate *_cachedUntil;
     id _delegate;
+    
+    NSMutableData *xmlData;
 }
 @property (retain) Character *character;
 @property (retain) NSMutableArray *orders;
@@ -26,4 +28,6 @@
 
 - (IBAction)reload:(id)sender;
 - (void)sortUsingDescriptors:(NSArray *)descriptors;
+
+- (void)requestMarketOrder:(NSNumber *)orderID;
 @end
