@@ -11,11 +11,14 @@
 
 @implementation METURLRequest
 
+@synthesize data = _data;
+
 - (instancetype)initWithURL:(NSURL *)URL
 {
     if( self = [super initWithURL:URL] )
     {
         [super setValue:[GlobalData userAgent] forHTTPHeaderField:@"User-Agent"];
+        _data = [[NSMutableData alloc] init];
     }
     return self;
 }
@@ -25,8 +28,14 @@
     if( self = [super initWithURL:URL cachePolicy:cachePolicy timeoutInterval:timeoutInterval] )
     {
         [super setValue:[GlobalData userAgent] forHTTPHeaderField:@"User-Agent"];
+        _data = [[NSMutableData alloc] init];
     }
     return self;
 }
 
+- (void)dealloc
+{
+    [_data release];
+    [super dealloc];
+}
 @end

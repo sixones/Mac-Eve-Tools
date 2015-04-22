@@ -79,8 +79,6 @@
 
 - (IBAction)reload:(id)sender
 {
-    [self requestMarketOrder:nil];
-    return;
     if( ![self character] )
         return;
     
@@ -171,13 +169,15 @@
 	}
     else
     {
-        [self parseXmlMarketOrders:doc];
+        NSArray *newOrders = [self parseXmlMarketOrders:doc];
+        [[self orders] removeAllObjects];
+        [[self orders] addObjectsFromArray:newOrders];
         xmlFreeDoc(doc);
     }
 
-    if( [[self delegate] respondsToSelector:@selector(ordersFinishedUpdating)] )
+    if( [[self delegate] respondsToSelector:@selector(ordersFinishedUpdating:)] )
     {
-        [[self delegate] performSelector:@selector(ordersFinishedUpdating)];
+        [[self delegate] performSelector:@selector(ordersFinishedUpdating:) withObject:[self orders]];
     }
 }
 
@@ -194,7 +194,7 @@
     <cachedUntil>2008-02-04 14:28:18</cachedUntil>
  </eveapi>
  */
--(BOOL) parseXmlMarketOrders:(xmlDoc*)document
+-(NSArray *) parseXmlMarketOrders:(xmlDoc*)document
 {
 	xmlNode *root_node;
 	xmlNode *result;
@@ -212,7 +212,7 @@
         {
 			NSLog( @"%@", [NSString stringWithString:getNodeText(xmlErrorMessage)] );
 		}
-		return NO;
+		return nil;
 	}
     
     rowset = findChildNode(result,(xmlChar*)"rowset");
@@ -225,10 +225,10 @@
         {
 			NSLog( @"%@", [NSString stringWithString:getNodeText(xmlErrorMessage)] );
 		}
-		return NO;
+		return nil;
 	}
 
-    [[self orders] removeAllObjects];
+    NSMutableArray *newOrders = [NSMutableArray array];
     
 	for( xmlNode *cur_node = rowset->children;
 		 NULL != cur_node;
@@ -345,7 +345,7 @@
 //                <row orderID="639587440" charID="118406849" stationID="60003760" volEntered="25" volRemaining="4" minVolume="1" orderState="0" typeID="26082" range="32767" accountKey="1000" duration="1" escrow="0.00" price="3399999.98" bid="0" issued="2008-02-03 22:35:54"/>
 
             }
-            [[self orders] addObject:order];
+            [newOrders addObject:order];
         }
 	}
     
@@ -360,7 +360,7 @@
 
     }
     
-	return YES;
+	return newOrders;
 }
 
 - (void)requestMarketOrder:(NSNumber *)orderID
@@ -368,11 +368,11 @@
     if( ![self character] )
         return;
     
-    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
-    {
-        NSLog( @"Skipping download of Market Order(s) because of Cached Until date" );
-        return;
-    }
+//    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
+//    {
+//        NSLog( @"Skipping download of Market Order(s) because of Cached Until date" );
+//        return;
+//    }
     
     CharacterTemplate *template = nil;
     NSUInteger chID = [[self character] characterId];
@@ -404,18 +404,48 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-    [xmlData setLength:0];
+    METURLRequest *request = (METURLRequest *)[connection originalRequest];
+    if( [request isKindOfClass:[METURLRequest class]] )
+    {
+        [[request data] setLength:0];
+    }
+    else
+    {
+        NSLog( @"Error in MarketOrders. Invalid request type." );
+        [xmlData setLength:0];
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-    [xmlData appendData:data];
+    METURLRequest *request = (METURLRequest *)[connection originalRequest];
+    if( [request isKindOfClass:[METURLRequest class]] )
+    {
+        [[request data] appendData:data];
+    }
+    else
+    {
+        NSLog( @"Error in MarketOrders. Invalid request type." );
+        [xmlData appendData:data];
+    }
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    const char *ptr = [xmlData bytes];
-    NSInteger length = [xmlData length];
+    NSMutableData *data = nil;
+    METURLRequest *request = (METURLRequest *)[connection originalRequest];
+    if( [request isKindOfClass:[METURLRequest class]] )
+    {
+        data = [request data];
+    }
+    else
+    {
+        NSLog( @"Error in MarketOrders. Invalid request type." );
+        data = xmlData;
+    }
+
+    const char *ptr = [data bytes];
+    NSInteger length = [data length];
     
     if(length == 0){
         NSLog(@"Zero bytes returned for Market Order data");
@@ -428,20 +458,29 @@
         NSLog(@"Failed to read Market Order data");
         return;
     }
-    [self parseXmlMarketOrders:doc];
+    NSArray *newOrders = [self parseXmlMarketOrders:doc];
     xmlFreeDoc(doc);
-    [xmlData setLength:0];
+    [data setLength:0];
     
-    if( [[self delegate] respondsToSelector:@selector(ordersFinishedUpdating)] )
+    if( [[self delegate] respondsToSelector:@selector(orderFinishedUpdating:)] )
     {
-        [[self delegate] performSelector:@selector(ordersFinishedUpdating)];
+        [[self delegate] performSelector:@selector(orderFinishedUpdating:) withObject:newOrders];
     }
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     NSLog(@"Failed to connect for Market Order data");
-    [xmlData setLength:0];
+    METURLRequest *request = (METURLRequest *)[connection originalRequest];
+    if( [request isKindOfClass:[METURLRequest class]] )
+    {
+        [[request data] setLength:0];
+    }
+    else
+    {
+        NSLog( @"Error in MarketOrders. Invalid request type." );
+        [xmlData setLength:0];
+    }
 }
 
 @end

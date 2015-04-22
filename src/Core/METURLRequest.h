@@ -13,5 +13,10 @@
  See Also: https://developers.eveonline.com/resource/xml-api
  */
 @interface METURLRequest : NSMutableURLRequest
+{
+    NSMutableData *_data;
+}
+
+@property (retain,readonly) NSMutableData *data;
 
 @end

@@ -131,6 +131,8 @@
         [self getAllMailboxNames];
         [app setToolbarMessage:NSLocalizedString(@"Getting Mail…",@"Getting Mail status line")];
         [app startLoadingAnimation];
+        [mailboxView deselectAll:self];
+        [mailHeadersView deselectAll:self];
         [self reload];
     }
 }

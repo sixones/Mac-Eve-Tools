@@ -150,15 +150,29 @@
     return nil;
 }
 
-- (void)ordersFinishedUpdating
+- (void)updateOrders:(NSArray *)newOrders andClose:(BOOL)close
 {
-    [self saveMarketOrders:[orders orders]];
+    [self saveMarketOrders:newOrders];
     [self setDbOrders:[self loadMarketOrders]]; // TODO: This is wasteful. We could try just adding new market orders to dbOrders (don't allow duplicate orderID's)
-    NSArray *newDescriptors = [orderTable sortDescriptors];
-    [[self dbOrders] sortUsingDescriptors:newDescriptors];
+    [[self dbOrders] sortUsingDescriptors:[orderTable sortDescriptors]];
+    if( close )
+        [self closeOlderOrders:newOrders];
     [orderTable reloadData];
     [app setToolbarMessage:NSLocalizedString(@"Finished Updating Market Orders…",@"Finished Updating Market Orders status line") time:5];
     [app stopLoadingAnimation];
+}
+
+
+// The default market order API call finished updating, so all open or recent market orders should be in newOrders
+- (void)ordersFinishedUpdating:(NSArray *)newOrders
+{
+    [self updateOrders:newOrders andClose:YES];
+}
+
+// A single market order was updated
+- (void)orderFinishedUpdating:(NSArray *)newOrders
+{
+    [self updateOrders:newOrders andClose:NO];
 }
 
 - (void)ordersSkippedUpdating
@@ -410,7 +424,7 @@
 {
     NSUInteger index = [localOrders indexOfObjectPassingTest:^BOOL (id el, NSUInteger i, BOOL *stop)
      {
-         BOOL res = [(MarketOrder *)el orderState] == OrderStateActive;
+         BOOL res = [(MarketOrder *)el orderID] == orderID;
          if( res )
              *stop = YES;
          return res;
@@ -421,6 +435,7 @@
 // Try to find orders that slipped through the cracks and see if they are closed or expired
 - (BOOL)closeOlderOrders:(NSArray *)newOrders
 {
+    NSMutableArray *changes = [NSMutableArray array];
     // filter dbOrders for ones that are open
     // for each, if it is not in newOrders, then request that order specifically from the API
     NSIndexSet *indexes = [[self dbOrders] indexesOfObjectsPassingTest:^BOOL (id el, NSUInteger i, BOOL *stop)
@@ -435,8 +450,15 @@
         if( !res )
         {
             // request this market order by id
+            [order setOrderState:OrderStateUnknown]; // for now just set it to unknown
+            [orders requestMarketOrder:[NSNumber numberWithInteger:[order orderID]]];
+            [changes addObject:order];
         }
     }
+    
+//    if( [changes count] > 0 )
+//        [self saveMarketOrders:changes];
+    
     return YES;
 }
 @end
