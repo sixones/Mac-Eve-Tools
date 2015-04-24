@@ -16,9 +16,7 @@
     NSMutableArray *_orders;
     NSString *_xmlPath;
     NSDate *_cachedUntil;
-    id _delegate;
-    
-    NSMutableData *xmlData;
+    id _delegate;    
 }
 @property (retain) Character *character;
 @property (retain) NSMutableArray *orders;

@@ -43,7 +43,6 @@
     {
         _orders = [[NSMutableArray alloc] init];
         _cachedUntil = [[NSDate distantPast] retain];
-        xmlData = [[NSMutableData alloc] init];
     }
     return self;
 }
@@ -52,7 +51,6 @@
 {
     [_orders release];
     [_cachedUntil release];
-    [xmlData release];
     [super dealloc];
 }
 
@@ -93,19 +91,9 @@
         return;
     }
     
-    CharacterTemplate *template = nil;
-    NSUInteger chID = [[self character] characterId];
-    
-    for( CharacterTemplate *charTemplate in [[Config sharedInstance] activeCharacters] )
-    {
-        NSUInteger tempID = [[charTemplate characterId] integerValue];
-        if( tempID == chID )
-        {
-            template = charTemplate;
-            break;
-        }
-    }
-    
+    CharacterTemplate *template = [[self character] template];
+    if( !template )
+        return;
     
     NSString *docPath = XMLAPI_CHAR_ORDERS;
     NSString *apiUrl = [Config getApiUrl:docPath
@@ -368,25 +356,7 @@
     if( ![self character] )
         return;
     
-//    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
-//    {
-//        NSLog( @"Skipping download of Market Order(s) because of Cached Until date" );
-//        return;
-//    }
-    
-    CharacterTemplate *template = nil;
-    NSUInteger chID = [[self character] characterId];
-    
-    for( CharacterTemplate *charTemplate in [[Config sharedInstance] activeCharacters] )
-    {
-        NSUInteger tempID = [[charTemplate characterId] integerValue];
-        if( tempID == chID )
-        {
-            template = charTemplate;
-            break;
-        }
-    }
-    
+    CharacterTemplate *template = [[self character] template];
     if( !template )
         return;
     
@@ -399,51 +369,20 @@
         apiUrl = [apiUrl stringByAppendingFormat:@"&orderID=%ld", (unsigned long)[orderID unsignedIntegerValue]];
     NSURL *url = [NSURL URLWithString:apiUrl];
     METURLRequest *request = [METURLRequest requestWithURL:url];
-    [NSURLConnection connectionWithRequest:request delegate:self];
+    [request setDelegate:self];
+    [NSURLConnection connectionWithRequest:request delegate:request];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection withError:(NSError *)error
 {
+    if( error )
+    {
+        NSLog( @"Error requesting a market order: %@", [error localizedDescription] );
+        return;
+    }
+    
     METURLRequest *request = (METURLRequest *)[connection originalRequest];
-    if( [request isKindOfClass:[METURLRequest class]] )
-    {
-        [[request data] setLength:0];
-    }
-    else
-    {
-        NSLog( @"Error in MarketOrders. Invalid request type." );
-        [xmlData setLength:0];
-    }
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    METURLRequest *request = (METURLRequest *)[connection originalRequest];
-    if( [request isKindOfClass:[METURLRequest class]] )
-    {
-        [[request data] appendData:data];
-    }
-    else
-    {
-        NSLog( @"Error in MarketOrders. Invalid request type." );
-        [xmlData appendData:data];
-    }
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    NSMutableData *data = nil;
-    METURLRequest *request = (METURLRequest *)[connection originalRequest];
-    if( [request isKindOfClass:[METURLRequest class]] )
-    {
-        data = [request data];
-    }
-    else
-    {
-        NSLog( @"Error in MarketOrders. Invalid request type." );
-        data = xmlData;
-    }
-
+    NSMutableData *data = [request data];
     const char *ptr = [data bytes];
     NSInteger length = [data length];
     
@@ -460,26 +399,10 @@
     }
     NSArray *newOrders = [self parseXmlMarketOrders:doc];
     xmlFreeDoc(doc);
-    [data setLength:0];
     
     if( [[self delegate] respondsToSelector:@selector(orderFinishedUpdating:)] )
     {
         [[self delegate] performSelector:@selector(orderFinishedUpdating:) withObject:newOrders];
-    }
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    NSLog(@"Failed to connect for Market Order data");
-    METURLRequest *request = (METURLRequest *)[connection originalRequest];
-    if( [request isKindOfClass:[METURLRequest class]] )
-    {
-        [[request data] setLength:0];
-    }
-    else
-    {
-        NSLog( @"Error in MarketOrders. Invalid request type." );
-        [xmlData setLength:0];
     }
 }
 

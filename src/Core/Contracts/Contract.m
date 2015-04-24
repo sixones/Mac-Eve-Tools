@@ -26,6 +26,7 @@
 #import "CharacterDatabase.h"
 #import <sqlite3.h>
 #import "Helpers.h"
+#import "METURLRequest.h"
 
 /* Sample xml of a contract
  <rowset name="contractList" key="contractID"
@@ -121,7 +122,6 @@
 
 - (void)dealloc
 {
-    [super dealloc];
     [_character release];
     [_xmlPath release];
     [_type release];
@@ -137,6 +137,7 @@
     [_startStationName release];
     [_endStationName release];
     [nameFetcher release];
+    [super dealloc];
 }
 
 - (void)setStartStationName:(NSString *)newStationName
@@ -214,76 +215,58 @@
     }
     
     [self setLoading:YES];
+    [self requestContractItems:[NSNumber numberWithInteger:[self contractID]]];
+}
+
+- (void)requestContractItems:(NSNumber *)contractID
+{
+    if( ![self character] )
+        return;
     
     CharacterTemplate *template = [[self character] template];
+    if( !template )
+        return;
     
-    NSString *docPath = XMLAPI_CHAR_CONTRACT_ITEMS;
-    NSString *apiUrl = [Config getApiUrl:docPath
+    NSString *apiUrl = [Config getApiUrl:XMLAPI_CHAR_CONTRACT_ITEMS
                                    keyID:[template accountId]
                         verificationCode:[template verificationCode]
                                   charId:[template characterId]];
-    apiUrl = [apiUrl stringByAppendingFormat:@"&contractID=%ld",(unsigned long)[self contractID]];
-
-	NSString *characterDir = [Config charDirectoryPath:[template accountId]
-											 character:[template characterId]];
-    NSString *pendingDir = [characterDir stringByAppendingString:@"/pending"];
-    
-    NSString *docPathID = [[[docPath stringByDeletingPathExtension] stringByAppendingFormat:@"_%ld", (unsigned long)[self contractID]] stringByAppendingPathExtension:[docPath pathExtension]];
-    [self setXmlPath:[characterDir stringByAppendingPathComponent:[docPathID lastPathComponent]]]; // this won't work. need at least the contract ID.
-    
-	//create the output directory, the XMLParseOperation will clean it up
-    // TODO move this to an operations sub-class and have all of the download operations depend on it
-	NSFileManager *fm = [NSFileManager defaultManager];
-	if( ![fm fileExistsAtPath:pendingDir isDirectory:nil] )
-    {
-		if( ![fm createDirectoryAtPath: pendingDir withIntermediateDirectories:YES attributes:nil error:nil] )
-        {
-			//NSLog(@"Could not create directory %@",pendingDir);
-            [self setLoading:NO];
-			return;
-		}
-	}
-    
-	XMLDownloadOperation *op = [[[XMLDownloadOperation alloc] init] autorelease];
-	[op setXmlDocUrl:apiUrl];
-	[op setCharacterDirectory:characterDir];
-	[op setXmlDoc:docPathID];
-    
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-	[queue setMaxConcurrentOperationCount:3];
-    
-	//This object will call the delegate function.
-    
-	XMLParseOperation *opParse = [[XMLParseOperation alloc] init];
-    
-	[opParse setDelegate:self];
-	[opParse setCallback:@selector(parserOperationDone:errors:)];
-	[opParse setObject:nil];
-    
-	[opParse addDependency:op]; //THIS MUST BE THE FIRST DEPENDENCY.
-	[opParse addCharacterDir:characterDir forSheet:docPathID];
-    
-	[queue addOperation:op];
-	[queue addOperation:opParse];
-    
-	[opParse release];
-	[queue release];
-    
+    apiUrl = [apiUrl stringByAppendingFormat:@"&contractID=%ld", (unsigned long)[contractID unsignedIntegerValue]];
+    NSURL *url = [NSURL URLWithString:apiUrl];
+    METURLRequest *request = [METURLRequest requestWithURL:url];
+    [request setDelegate:self];
+    [NSURLConnection connectionWithRequest:request delegate:request];
 }
 
-- (void) parserOperationDone:(id)ignore errors:(NSArray *)errors
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection withError:(NSError *)error
 {
-    // read data from marketFile and create an xmlDoc
-    // parse it
-    xmlDoc *doc = xmlReadFile( [[self xmlPath] fileSystemRepresentation], NULL, 0 );
-	if( doc == NULL )
+    if( error )
     {
-		NSLog(@"Failed to read %@",[self xmlPath]);
+        NSLog( @"Error requesting contract items: %@", [error localizedDescription] );
         [self setLoading:NO];
-		return;
-	}
-	[self parseXmlContractItems:doc];
-	xmlFreeDoc(doc);
+        return;
+    }
+    
+    METURLRequest *request = (METURLRequest *)[connection originalRequest];
+    NSMutableData *data = [request data];
+    const char *ptr = [data bytes];
+    NSInteger length = [data length];
+    
+    if(length == 0){
+        NSLog(@"Zero bytes returned for Contract item data");
+        [self setLoading:NO];
+        return;
+    }
+    
+    xmlDoc *doc = xmlReadMemory(ptr, (int)length, NULL, NULL, 0);
+    if( doc == NULL )
+    {
+        NSLog(@"Failed to read Contract item data");
+        [self setLoading:NO];
+        return;
+    }
+    [self parseXmlContractItems:doc];
+    xmlFreeDoc(doc);
 }
 
 /* Sample xml for contract items:

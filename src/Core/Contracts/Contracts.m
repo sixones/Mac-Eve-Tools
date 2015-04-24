@@ -89,19 +89,9 @@
         return;
     }
     
-    CharacterTemplate *template = nil;
-    NSUInteger chID = [[self character] characterId];
-    
-    for( CharacterTemplate *charTemplate in [[Config sharedInstance] activeCharacters] )
-    {
-        NSUInteger tempID = [[charTemplate characterId] integerValue];
-        if( tempID == chID )
-        {
-            template = charTemplate;
-            break;
-        }
-    }
-    
+    CharacterTemplate *template = [[self character] template];
+    if( !template )
+        return;
     
     NSString *docPath = XMLAPI_CHAR_CONTRACTS;
     NSString *apiUrl = [Config getApiUrl:docPath

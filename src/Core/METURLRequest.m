@@ -11,6 +11,7 @@
 
 @implementation METURLRequest
 
+@synthesize delegate = _delegate;
 @synthesize data = _data;
 
 - (instancetype)initWithURL:(NSURL *)URL
@@ -38,4 +39,31 @@
     [_data release];
     [super dealloc];
 }
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+    [[self data] setLength:0];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    [[self data] appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    if( [[self delegate] respondsToSelector:@selector(connectionDidFinishLoading:withError:)] )
+    {
+        [[self delegate] performSelector:@selector(connectionDidFinishLoading:withError:) withObject:connection withObject:nil];
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    if( [[self delegate] respondsToSelector:@selector(connectionDidFinishLoading:withError:)] )
+    {
+        [[self delegate] performSelector:@selector(connectionDidFinishLoading:withError:) withObject:connection withObject:error];
+    }
+}
+
 @end
