@@ -87,18 +87,19 @@
 		A11F72191AD6F84C002E1906 /* MarketOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72131AD6F84C002E1906 /* MarketOrder.m */; };
 		A11F721A1AD6F84C002E1906 /* MarketOrders.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72151AD6F84C002E1906 /* MarketOrders.m */; };
 		A11F721B1AD6F84C002E1906 /* MarketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72171AD6F84C002E1906 /* MarketViewController.m */; };
+		A11F722E1AEEE198002E1906 /* Contract.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72201AEEE198002E1906 /* Contract.m */; };
+		A11F722F1AEEE198002E1906 /* ContractDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72221AEEE198002E1906 /* ContractDetailsController.m */; };
+		A11F72301AEEE198002E1906 /* ContractItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72241AEEE198002E1906 /* ContractItem.m */; };
+		A11F72311AEEE198002E1906 /* Contracts.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72261AEEE198002E1906 /* Contracts.m */; };
+		A11F72321AEEE199002E1906 /* ContractsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72281AEEE198002E1906 /* ContractsViewController.m */; };
+		A11F72331AEEE199002E1906 /* ContractDetails.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11F722A1AEEE198002E1906 /* ContractDetails.xib */; };
+		A11F72341AEEE199002E1906 /* ContractsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11F722C1AEEE198002E1906 /* ContractsView.xib */; };
+		A11F72371AEEE1B3002E1906 /* MTISKFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72361AEEE1B3002E1906 /* MTISKFormatter.m */; };
 		A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */ = {isa = PBXBuildFile; fileRef = A12EE8D3197D98E000ED6478 /* METTrait.m */; };
-		A12FC60417EA0C0D0053DC23 /* ContractsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A12FC60017EA0C0D0053DC23 /* ContractsView.xib */; };
-		A12FC60517EA0C0D0053DC23 /* ContractsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */; };
 		A12FC60817EA31420053DC23 /* METConquerableStations.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60717EA31420053DC23 /* METConquerableStations.m */; };
 		A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */ = {isa = PBXBuildFile; fileRef = A147AB39184D4C6B009D2A08 /* MTAPIKey.m */; };
 		A154A64417A83E090076603D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A154A64217A83E090076603D /* Localizable.strings */; };
-		A154A64B17C576700076603D /* Contract.m in Sources */ = {isa = PBXBuildFile; fileRef = A154A64617C576700076603D /* Contract.m */; };
-		A154A64D17C576700076603D /* Contracts.m in Sources */ = {isa = PBXBuildFile; fileRef = A154A64917C576700076603D /* Contracts.m */; };
 		A1A2DAA918D0CFB40077CD55 /* PlanOverview.m in Sources */ = {isa = PBXBuildFile; fileRef = A1A2DAA818D0CFB40077CD55 /* PlanOverview.m */; };
-		A1B21DAD181EE7E700F07DBE /* ContractDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B21DAB181EE7E700F07DBE /* ContractDetailsController.m */; };
-		A1B21DB0181EE7F200F07DBE /* ContractDetails.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1B21DAE181EE7F200F07DBE /* ContractDetails.xib */; };
-		A1B21DB3181F102200F07DBE /* MTISKFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B21DB2181F102100F07DBE /* MTISKFormatter.m */; };
 		A1C44C681A24EEC100443AE2 /* METURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C44C671A24EEC100443AE2 /* METURLRequest.m */; };
 		A1C44C6C1A36697200443AE2 /* VitalityMail.m in Sources */ = {isa = PBXBuildFile; fileRef = A10C36A419E5F71000A0EB2B /* VitalityMail.m */; };
 		A1C44C711A366AC600443AE2 /* METMail.h in Headers */ = {isa = PBXBuildFile; fileRef = A1C44C6D1A366AC600443AE2 /* METMail.h */; };
@@ -110,7 +111,6 @@
 		A1C44C791A3A5ABC00443AE2 /* MailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C44C771A3A5ABC00443AE2 /* MailView.xib */; };
 		A1C44C7A1A3A5ABC00443AE2 /* MailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C44C771A3A5ABC00443AE2 /* MailView.xib */; };
 		A1E4374A1A23C05200B19A34 /* CCPImplant.m in Sources */ = {isa = PBXBuildFile; fileRef = A1E437491A23C05200B19A34 /* CCPImplant.m */; };
-		A1FCD0501822DED500A6655A /* ContractItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD04F1822DED500A6655A /* ContractItem.m */; };
 		A1FCD0561829881600A6655A /* METIDtoName.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD0551829881600A6655A /* METIDtoName.m */; };
 		C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */ = {isa = PBXBuildFile; fileRef = C911FED610782C50000D88E2 /* CharacterParseError.m */; };
 		C92067901161D837001BBE14 /* SkillAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = C920678F1161D837001BBE14 /* SkillAttribute.m */; };
@@ -308,27 +308,29 @@
 		A11F72151AD6F84C002E1906 /* MarketOrders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MarketOrders.m; path = MarketOrders/MarketOrders.m; sourceTree = "<group>"; };
 		A11F72161AD6F84C002E1906 /* MarketViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarketViewController.h; path = MarketOrders/MarketViewController.h; sourceTree = "<group>"; };
 		A11F72171AD6F84C002E1906 /* MarketViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MarketViewController.m; path = MarketOrders/MarketViewController.m; sourceTree = "<group>"; };
+		A11F721F1AEEE198002E1906 /* Contract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contract.h; sourceTree = "<group>"; };
+		A11F72201AEEE198002E1906 /* Contract.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contract.m; sourceTree = "<group>"; };
+		A11F72211AEEE198002E1906 /* ContractDetailsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractDetailsController.h; sourceTree = "<group>"; };
+		A11F72221AEEE198002E1906 /* ContractDetailsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractDetailsController.m; sourceTree = "<group>"; };
+		A11F72231AEEE198002E1906 /* ContractItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractItem.h; sourceTree = "<group>"; };
+		A11F72241AEEE198002E1906 /* ContractItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractItem.m; sourceTree = "<group>"; };
+		A11F72251AEEE198002E1906 /* Contracts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contracts.h; sourceTree = "<group>"; };
+		A11F72261AEEE198002E1906 /* Contracts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contracts.m; sourceTree = "<group>"; };
+		A11F72271AEEE198002E1906 /* ContractsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractsViewController.h; sourceTree = "<group>"; };
+		A11F72281AEEE198002E1906 /* ContractsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractsViewController.m; sourceTree = "<group>"; };
+		A11F722B1AEEE198002E1906 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = ContractDetails.xib; sourceTree = "<group>"; };
+		A11F722D1AEEE198002E1906 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = ContractsView.xib; sourceTree = "<group>"; };
+		A11F72351AEEE1B3002E1906 /* MTISKFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTISKFormatter.h; sourceTree = "<group>"; };
+		A11F72361AEEE1B3002E1906 /* MTISKFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTISKFormatter.m; sourceTree = "<group>"; };
 		A12EE8D2197D98E000ED6478 /* METTrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METTrait.h; sourceTree = "<group>"; };
 		A12EE8D3197D98E000ED6478 /* METTrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METTrait.m; sourceTree = "<group>"; };
-		A12FC60117EA0C0D0053DC23 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ContractsView.xib; sourceTree = "<group>"; };
-		A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractsViewController.m; sourceTree = "<group>"; };
-		A12FC60317EA0C0D0053DC23 /* ContractsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractsViewController.h; sourceTree = "<group>"; };
 		A12FC60617EA31420053DC23 /* METConquerableStations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METConquerableStations.h; sourceTree = "<group>"; };
 		A12FC60717EA31420053DC23 /* METConquerableStations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METConquerableStations.m; sourceTree = "<group>"; };
 		A147AB38184D4C6A009D2A08 /* MTAPIKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTAPIKey.h; sourceTree = "<group>"; };
 		A147AB39184D4C6B009D2A08 /* MTAPIKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTAPIKey.m; sourceTree = "<group>"; };
 		A154A64317A83E090076603D /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
-		A154A64617C576700076603D /* Contract.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contract.m; sourceTree = "<group>"; };
-		A154A64817C576700076603D /* Contracts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contracts.h; sourceTree = "<group>"; };
-		A154A64917C576700076603D /* Contracts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contracts.m; sourceTree = "<group>"; };
-		A154A64A17C576700076603D /* Contract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contract.h; sourceTree = "<group>"; };
 		A1A2DAA718D0CFB40077CD55 /* PlanOverview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlanOverview.h; sourceTree = "<group>"; };
 		A1A2DAA818D0CFB40077CD55 /* PlanOverview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlanOverview.m; sourceTree = "<group>"; };
-		A1B21DAA181EE7E700F07DBE /* ContractDetailsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractDetailsController.h; sourceTree = "<group>"; };
-		A1B21DAB181EE7E700F07DBE /* ContractDetailsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractDetailsController.m; sourceTree = "<group>"; };
-		A1B21DAF181EE7F200F07DBE /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ContractDetails.xib; sourceTree = "<group>"; };
-		A1B21DB1181F102100F07DBE /* MTISKFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTISKFormatter.h; sourceTree = "<group>"; };
-		A1B21DB2181F102100F07DBE /* MTISKFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTISKFormatter.m; sourceTree = "<group>"; };
 		A1C44C661A24EEC100443AE2 /* METURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METURLRequest.h; sourceTree = "<group>"; };
 		A1C44C671A24EEC100443AE2 /* METURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METURLRequest.m; sourceTree = "<group>"; };
 		A1C44C6D1A366AC600443AE2 /* METMail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METMail.h; sourceTree = "<group>"; };
@@ -338,8 +340,6 @@
 		A1C44C781A3A5ABC00443AE2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MailView.xib; sourceTree = "<group>"; };
 		A1E437481A23C05200B19A34 /* CCPImplant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPImplant.h; sourceTree = "<group>"; };
 		A1E437491A23C05200B19A34 /* CCPImplant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPImplant.m; sourceTree = "<group>"; };
-		A1FCD04E1822DED500A6655A /* ContractItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContractItem.h; sourceTree = "<group>"; };
-		A1FCD04F1822DED500A6655A /* ContractItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContractItem.m; sourceTree = "<group>"; };
 		A1FCD05118245DDC00A6655A /* MetLabelValueTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetLabelValueTableCellView.h; path = Core/MetLabelValueTableCellView.h; sourceTree = SOURCE_ROOT; };
 		A1FCD05218245DDC00A6655A /* MetLabelValueTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MetLabelValueTableCellView.m; path = Core/MetLabelValueTableCellView.m; sourceTree = SOURCE_ROOT; };
 		A1FCD0541829881600A6655A /* METIDtoName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METIDtoName.h; sourceTree = "<group>"; };
@@ -616,6 +616,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				A154A64517C576700076603D /* Contracts */,
 				A11F720E1AD6F5D9002E1906 /* MarketOrders */,
 				A10C369C19E5F70F00A0EB2B /* VitalityMail */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -732,30 +733,29 @@
 			path = MarketOrders/English.lproj;
 			sourceTree = "<group>";
 		};
-		A12FC5FF17EA0C0D0053DC23 /* Contracts */ = {
+		A11F72291AEEE198002E1906 /* English.lproj */ = {
 			isa = PBXGroup;
 			children = (
-				A12FC60317EA0C0D0053DC23 /* ContractsViewController.h */,
-				A12FC60217EA0C0D0053DC23 /* ContractsViewController.m */,
-				A12FC60017EA0C0D0053DC23 /* ContractsView.xib */,
-				A1B21DAA181EE7E700F07DBE /* ContractDetailsController.h */,
-				A1B21DAB181EE7E700F07DBE /* ContractDetailsController.m */,
-				A1B21DAE181EE7F200F07DBE /* ContractDetails.xib */,
-				A1B21DB1181F102100F07DBE /* MTISKFormatter.h */,
-				A1B21DB2181F102100F07DBE /* MTISKFormatter.m */,
+				A11F722A1AEEE198002E1906 /* ContractDetails.xib */,
+				A11F722C1AEEE198002E1906 /* ContractsView.xib */,
 			);
-			path = Contracts;
+			path = English.lproj;
 			sourceTree = "<group>";
 		};
 		A154A64517C576700076603D /* Contracts */ = {
 			isa = PBXGroup;
 			children = (
-				A154A64A17C576700076603D /* Contract.h */,
-				A154A64617C576700076603D /* Contract.m */,
-				A154A64817C576700076603D /* Contracts.h */,
-				A154A64917C576700076603D /* Contracts.m */,
-				A1FCD04E1822DED500A6655A /* ContractItem.h */,
-				A1FCD04F1822DED500A6655A /* ContractItem.m */,
+				A11F72251AEEE198002E1906 /* Contracts.h */,
+				A11F72261AEEE198002E1906 /* Contracts.m */,
+				A11F721F1AEEE198002E1906 /* Contract.h */,
+				A11F72201AEEE198002E1906 /* Contract.m */,
+				A11F72231AEEE198002E1906 /* ContractItem.h */,
+				A11F72241AEEE198002E1906 /* ContractItem.m */,
+				A11F72271AEEE198002E1906 /* ContractsViewController.h */,
+				A11F72281AEEE198002E1906 /* ContractsViewController.m */,
+				A11F72211AEEE198002E1906 /* ContractDetailsController.h */,
+				A11F72221AEEE198002E1906 /* ContractDetailsController.m */,
+				A11F72291AEEE198002E1906 /* English.lproj */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -892,7 +892,6 @@
 				C9FF472210550BA50044BBAC /* Skills */,
 				C9FF473110550BA60044BBAC /* SQLite Database */,
 				C9FF46F110550BA50044BBAC /* Character */,
-				A154A64517C576700076603D /* Contracts */,
 				C9FF46ED10550BA50044BBAC /* Account.h */,
 				C9FF46EE10550BA50044BBAC /* Account.m */,
 				C9FF46EF10550BA50044BBAC /* bsd-base64.c */,
@@ -922,6 +921,8 @@
 				A1C44C671A24EEC100443AE2 /* METURLRequest.m */,
 				A11DFF221A8181690047D5F5 /* METPair.h */,
 				A11DFF231A8181690047D5F5 /* METPair.m */,
+				A11F72351AEEE1B3002E1906 /* MTISKFormatter.h */,
+				A11F72361AEEE1B3002E1906 /* MTISKFormatter.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1068,7 +1069,6 @@
 			children = (
 				C9FF476E10550BA60044BBAC /* Skill Planner */,
 				C9FF476610550BA60044BBAC /* Character Sheet */,
-				A12FC5FF17EA0C0D0053DC23 /* Contracts */,
 				C9FF476C10550BA60044BBAC /* METPluggableView.h */,
 				C90FB55A10644F8600292067 /* METInstance.h */,
 			);
@@ -1262,6 +1262,7 @@
 				C9D902D31121194A0047B2C2 /* CertDetails.xib in Resources */,
 				C993CEC51123FA200084BFFD /* DatabaseUpdate.xib in Resources */,
 				9EF3339011E79B1A002A3B7D /* AccountPrefView.xib in Resources */,
+				A11F72331AEEE199002E1906 /* ContractDetails.xib in Resources */,
 				9EF3339111E79B1A002A3B7D /* DatabasePrefView.xib in Resources */,
 				9EF3339211E79B1A002A3B7D /* GeneralPrefView.xib in Resources */,
 				9EF335C811E87875002A3B7D /* databaseIcon.png in Resources */,
@@ -1269,12 +1270,11 @@
 				14F8DAF11739BF30001C4178 /* vitality.png in Resources */,
 				14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */,
 				140AEBD7176109F500308748 /* status.png in Resources */,
+				A11F72341AEEE199002E1906 /* ContractsView.xib in Resources */,
 				A11F72181AD6F84C002E1906 /* MarketView.xib in Resources */,
 				140AEBE21763A04B00308748 /* StatusItemView.xib in Resources */,
 				140AEBE41763CF3F00308748 /* open.png in Resources */,
 				A154A64417A83E090076603D /* Localizable.strings in Resources */,
-				A12FC60417EA0C0D0053DC23 /* ContractsView.xib in Resources */,
-				A1B21DB0181EE7F200F07DBE /* ContractDetails.xib in Resources */,
 				A1C44C791A3A5ABC00443AE2 /* MailView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1348,6 +1348,7 @@
 				C9FF478710550BA60044BBAC /* CharacterPrivate.m in Sources */,
 				C9FF478810550BA60044BBAC /* XMLCharacterOperation.m in Sources */,
 				C9FF478910550BA60044BBAC /* XMLDownloadOperation.m in Sources */,
+				A11F722F1AEEE198002E1906 /* ContractDetailsController.m in Sources */,
 				C9FF478A10550BA60044BBAC /* XMLParseOperation.m in Sources */,
 				C9FF478B10550BA60044BBAC /* Config.m in Sources */,
 				C9FF478C10550BA60044BBAC /* MTCharacterOverviewCell.m in Sources */,
@@ -1360,6 +1361,7 @@
 				C9FF479510550BA60044BBAC /* MTTableView.m in Sources */,
 				C9FF479610550BA60044BBAC /* DBManager.m in Sources */,
 				C9FF479710550BA60044BBAC /* Helpers.m in Sources */,
+				A11F72311AEEE198002E1906 /* Contracts.m in Sources */,
 				C9FF479B10550BA60044BBAC /* ServerMonitor.m in Sources */,
 				C9FF479C10550BA60044BBAC /* EvemonXmlPlanIO.m in Sources */,
 				C9FF479E10550BA60044BBAC /* Skill.m in Sources */,
@@ -1378,6 +1380,7 @@
 				C9FF47AA10550BA60044BBAC /* CCPType.m in Sources */,
 				C9FF47AB10550BA60044BBAC /* METSubGroup.m in Sources */,
 				A11DFF241A8181690047D5F5 /* METPair.m in Sources */,
+				A11F72371AEEE1B3002E1906 /* MTISKFormatter.m in Sources */,
 				C9FF47AC10550BA60044BBAC /* CharacterDatabase.m in Sources */,
 				C9FF47AD10550BA60044BBAC /* CharacterDatabasePrivate.m in Sources */,
 				C9FF47AE10550BA60044BBAC /* SqliteDatabase.m in Sources */,
@@ -1400,6 +1403,7 @@
 				C9F514981056721300654F6D /* MTTableViewCategory.m in Sources */,
 				C9F514A11056725600654F6D /* CharacterManager.m in Sources */,
 				C9EB4EC9105A0883009192BC /* CharacterTemplate.m in Sources */,
+				A11F72301AEEE198002E1906 /* ContractItem.m in Sources */,
 				C9EB4F50105A16BD009192BC /* GenericDownloadOperation.m in Sources */,
 				A11DFF2D1A8D2F0F0047D5F5 /* METMessageViewController.m in Sources */,
 				C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */,
@@ -1429,6 +1433,7 @@
 				C94FAA5E11E04C4B00BDB8A6 /* METDependSkill.m in Sources */,
 				9EF3338C11E79B1A002A3B7D /* AccountPrefDetailController.m in Sources */,
 				9EF3338D11E79B1A002A3B7D /* AccountPrefTableController.m in Sources */,
+				A11F72321AEEE199002E1906 /* ContractsViewController.m in Sources */,
 				9EF3338E11E79B1A002A3B7D /* AccountPrefViewController.m in Sources */,
 				9EF3338F11E79B1A002A3B7D /* DatabasePrefViewController.m in Sources */,
 				9EF3339411E79B1A002A3B7D /* GeneralPrefViewController.m in Sources */,
@@ -1440,18 +1445,13 @@
 				140AEBDD176393D400308748 /* StatusItemWindow.m in Sources */,
 				140AEBE017639D4600308748 /* StatusItemViewController.m in Sources */,
 				A1C44C6C1A36697200443AE2 /* VitalityMail.m in Sources */,
-				A154A64B17C576700076603D /* Contract.m in Sources */,
-				A154A64D17C576700076603D /* Contracts.m in Sources */,
-				A12FC60517EA0C0D0053DC23 /* ContractsViewController.m in Sources */,
 				A12FC60817EA31420053DC23 /* METConquerableStations.m in Sources */,
-				A1B21DAD181EE7E700F07DBE /* ContractDetailsController.m in Sources */,
 				A1C44C721A366AC600443AE2 /* METMail.m in Sources */,
-				A1B21DB3181F102200F07DBE /* MTISKFormatter.m in Sources */,
-				A1FCD0501822DED500A6655A /* ContractItem.m in Sources */,
 				A1FCD0561829881600A6655A /* METIDtoName.m in Sources */,
 				A1093C97183D7546000D4063 /* CertGroup.m in Sources */,
 				A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */,
 				A11F721B1AD6F84C002E1906 /* MarketViewController.m in Sources */,
+				A11F722E1AEEE198002E1906 /* Contract.m in Sources */,
 				A1A2DAA918D0CFB40077CD55 /* PlanOverview.m in Sources */,
 				A112AD5E18E48D80001AF74B /* MetTableHeaderMenuManager.m in Sources */,
 				A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */,
@@ -1537,10 +1537,18 @@
 			name = MarketView.xib;
 			sourceTree = "<group>";
 		};
-		A12FC60017EA0C0D0053DC23 /* ContractsView.xib */ = {
+		A11F722A1AEEE198002E1906 /* ContractDetails.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				A12FC60117EA0C0D0053DC23 /* English */,
+				A11F722B1AEEE198002E1906 /* English */,
+			);
+			name = ContractDetails.xib;
+			sourceTree = "<group>";
+		};
+		A11F722C1AEEE198002E1906 /* ContractsView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A11F722D1AEEE198002E1906 /* English */,
 			);
 			name = ContractsView.xib;
 			sourceTree = "<group>";
@@ -1551,14 +1559,6 @@
 				A154A64317A83E090076603D /* English */,
 			);
 			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		A1B21DAE181EE7F200F07DBE /* ContractDetails.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A1B21DAF181EE7F200F07DBE /* English */,
-			);
-			name = ContractDetails.xib;
 			sourceTree = "<group>";
 		};
 		A1C44C771A3A5ABC00443AE2 /* MailView.xib */ = {
