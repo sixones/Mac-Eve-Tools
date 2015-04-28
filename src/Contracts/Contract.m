@@ -203,6 +203,7 @@
     NSMutableArray *tempItems = [self loadContractItems];
     if( [tempItems count] > 0 )
     {
+        [[self items] removeAllObjects];
         [[self items] addObjectsFromArray:tempItems];
         return;
     }

@@ -177,16 +177,28 @@
     return nil;
 }
 
-- (void)contractsFinishedUpdating
+- (void)updateContracts:(NSArray *)newContracts andClose:(BOOL)close
 {
-    [self saveContracts:[contracts contracts]];
+    [self saveContracts:newContracts];
     [self setDbContracts:[self loadContracts]];
     NSArray *newDescriptors = [contractsTable sortDescriptors];
     [contracts sortUsingDescriptors:newDescriptors];
     [[self dbContracts] sortUsingDescriptors:newDescriptors];
+    if( close )
+        [self closeOlderContracts:newContracts];
     [contractsTable reloadData];
     [app setToolbarMessage:NSLocalizedString(@"Finished Updating Contracts…",@"Finished Updating Contracts status line") time:5];
     [app stopLoadingAnimation];
+}
+
+- (void)contractsFinishedUpdating:(NSArray *)newContracts
+{
+    [self updateContracts:newContracts andClose:YES];
+}
+
+- (void)contractFinishedUpdating:(NSArray *)newContracts
+{
+    [self updateContracts:newContracts andClose:NO];
 }
 
 - (void)contractsSkippedUpdating
@@ -318,10 +330,10 @@
         [aContract setIssuerCorpID:sqlite3_column_nsint( read_stmt, 11 )];
         [aContract setAssigneeID:sqlite3_column_nsint( read_stmt, 12 )];
         [aContract setAcceptorID:sqlite3_column_nsint( read_stmt, 13 )];
-        [aContract setIssued:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,14)]];
-        [aContract setExpired:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,15)]];
-        [aContract setAccepted:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,16)]];
-        [aContract setCompleted:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,17)]];
+        [aContract setIssued:sqlite3_column_nsdate(read_stmt,14)];
+        [aContract setExpired:sqlite3_column_nsdate(read_stmt,15)];
+        [aContract setAccepted:sqlite3_column_nsdate(read_stmt,16)];
+        [aContract setCompleted:sqlite3_column_nsdate(read_stmt,17)];
         [aContract setAvailability:sqlite3_column_nsstr(read_stmt,18)];
         [aContract setTitle:sqlite3_column_nsstr(read_stmt,19)];
         [aContract setDays:sqlite3_column_nsint(read_stmt,20)];
@@ -418,6 +430,48 @@
     sqlite3_finalize(insert_order_stmt);
     sqlite3_finalize(update_order_stmt);
     return success;
+}
+
+- (BOOL)contracts:(NSArray *)localContracts containContractID:(NSInteger)contractID
+{
+    NSUInteger index = [localContracts indexOfObjectPassingTest:^BOOL (id el, NSUInteger i, BOOL *stop)
+                        {
+                            BOOL res = [(Contract *)el contractID] == contractID;
+                            if( res )
+                                *stop = YES;
+                            return res;
+                        }];
+    return NSNotFound != index;
+}
+
+// Try to find orders that slipped through the cracks and see if they are closed or expired
+- (BOOL)closeOlderContracts:(NSArray *)newOrders
+{
+    NSMutableArray *changes = [NSMutableArray array];
+    // filter dbOrders for ones that are open
+    // for each, if it is not in newOrders, then request that order specifically from the API
+    NSIndexSet *indexes = [[self dbContracts] indexesOfObjectsPassingTest:^BOOL (id el, NSUInteger i, BOOL *stop)
+                           {
+                               return [@"Outstanding" isEqualToString:[(Contract *)el status]];
+                           }];
+    NSArray *openOrders = [[self dbContracts] objectsAtIndexes:indexes];
+    
+    for( Contract *aContract in openOrders )
+    {
+        BOOL res = [self contracts:newOrders containContractID:[aContract contractID]];
+        if( !res )
+        {
+            // request this market order by id
+            [aContract setStatus:@"Unknown"]; // for now just set it to unknown
+            [contracts requestContract:[NSNumber numberWithInteger:[aContract contractID]]];
+            [changes addObject:aContract];
+        }
+    }
+    
+    //    if( [changes count] > 0 )
+    //        [self saveMarketOrders:changes];
+    
+    return YES;
 }
 
 @end

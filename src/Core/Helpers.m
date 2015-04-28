@@ -213,6 +213,14 @@ NSString* sqlite3_column_nsstr(void *stmt, int col) {
 	}
 }
 
+NSDate *sqlite3_column_nsdate( void *stmt, int col )
+{
+    NSInteger value = sqlite3_column_nsint( stmt, col );
+    if( 0 == value )
+        return nil;
+    return [NSDate dateWithTimeIntervalSince1970:value];
+}
+
 NSString* languageForId(enum DatabaseLanguage lang) {
 	NSString *str;
 	

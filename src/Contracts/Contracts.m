@@ -17,6 +17,7 @@
 
 #import "XMLDownloadOperation.h"
 #import "XMLParseOperation.h"
+#import "METURLRequest.h"
 
 #include <assert.h>
 
@@ -154,8 +155,14 @@
 		NSLog(@"Failed to read %@",[self xmlPath]);
 		return;
 	}
-	[self parseXmlContracts:doc];
+    [[self contracts] removeAllObjects];
+    [[self contracts] addObjectsFromArray:[self parseXmlContracts:doc]];
 	xmlFreeDoc(doc);
+    
+    if( [[self delegate] respondsToSelector:@selector(contractsFinishedUpdating:)] )
+    {
+        [[self delegate] performSelector:@selector(contractsFinishedUpdating:) withObject:[self contracts]];
+    }
 }
 
 /* Sample xml for contracts:
@@ -172,7 +179,7 @@
  <cachedUntil>2011-07-30 05:44:30</cachedUntil>
  </eveapi>
  */
--(BOOL) parseXmlContracts:(xmlDoc*)document
+-(NSArray *) parseXmlContracts:(xmlDoc*)document
 {
 	xmlNode *root_node;
 	xmlNode *result;
@@ -190,7 +197,7 @@
         {
 			NSLog( @"%@", [NSString stringWithString:getNodeText(xmlErrorMessage)] );
 		}
-		return NO;
+		return nil;
 	}
     
     rowset = findChildNode(result,(xmlChar*)"rowset");
@@ -203,10 +210,10 @@
         {
 			NSLog( @"%@", [NSString stringWithString:getNodeText(xmlErrorMessage)] );
 		}
-		return NO;
+		return nil;
 	}
 
-    [[self contracts] removeAllObjects];
+    NSMutableArray *localContracts = [NSMutableArray array];
     
 	for( xmlNode *cur_node = rowset->children;
 		 NULL != cur_node;
@@ -318,7 +325,7 @@
                     [contract setAcceptorID:[value integerValue]];
                 }
             }
-            [[self contracts] addObject:contract];
+            [localContracts addObject:contract];
         }
 	}
     
@@ -333,11 +340,61 @@
 
     }
     
-    if( [[self delegate] respondsToSelector:@selector(contractsFinishedUpdating)] )
+	return localContracts;
+}
+
+- (void)requestContract:(NSNumber *)contractID
+{
+    if( ![self character] )
+        return;
+    
+    CharacterTemplate *template = [[self character] template];
+    if( !template )
+        return;
+    
+    NSString *apiUrl = [Config getApiUrl:XMLAPI_CHAR_CONTRACTS
+                                   keyID:[template accountId]
+                        verificationCode:[template verificationCode]
+                                  charId:[template characterId]];
+    if( contractID )
+        apiUrl = [apiUrl stringByAppendingFormat:@"&contractID=%ld", (unsigned long)[contractID unsignedIntegerValue]];
+    NSURL *url = [NSURL URLWithString:apiUrl];
+    METURLRequest *request = [METURLRequest requestWithURL:url];
+    [request setDelegate:self];
+    [NSURLConnection connectionWithRequest:request delegate:request];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection withError:(NSError *)error
+{
+    if( error )
     {
-        [[self delegate] performSelector:@selector(contractsFinishedUpdating)];
+        NSLog( @"Error requesting a contract: %@", [error localizedDescription] );
+        return;
     }
-	return YES;
+    
+    METURLRequest *request = (METURLRequest *)[connection originalRequest];
+    NSMutableData *data = [request data];
+    const char *ptr = [data bytes];
+    NSInteger length = [data length];
+    
+    if(length == 0){
+        NSLog(@"Zero bytes returned for contract data");
+        return;
+    }
+    
+    xmlDoc *doc = xmlReadMemory(ptr, (int)length, NULL, NULL, 0);
+    if( doc == NULL )
+    {
+        NSLog(@"Failed to read contract data");
+        return;
+    }
+    NSArray *newContracts = [self parseXmlContracts:doc];
+    xmlFreeDoc(doc);
+    
+    if( [[self delegate] respondsToSelector:@selector(contractFinishedUpdating:)] )
+    {
+        [[self delegate] performSelector:@selector(contractFinishedUpdating:) withObject:newContracts];
+    }
 }
 
 @end

@@ -27,4 +27,5 @@
 
 - (IBAction)reload:(id)sender;
 - (void)sortUsingDescriptors:(NSArray *)descriptors;
+- (void)requestContract:(NSNumber *)contractID;
 @end

@@ -180,6 +180,18 @@ CGFloat skillPercentCompleted(NSInteger startingPoints, NSInteger finishingPoint
 NSString* sqlite3_column_nsstr(void *stmt, int col);
 
 /**
+ Wrapper for `sqlite3_column_nsint` that returns an `NSDate`.
+ 
+ @param stmt The SQLite prepared statement being evaluated.
+ @param col  The index of the text column to return.
+ 
+ @return The contents of a datetime column as a Unix date, returned as an NSDate.
+ 
+ A database value of zero is considered to be NULL and a nil pointer will be returned.
+ */
+NSDate *sqlite3_column_nsdate( void *stmt, int col );
+
+/**
  Returns the language corresponding to a `DatabaseLanguage` member.
  
  @param lang A `DatabaseLanguage` member.
