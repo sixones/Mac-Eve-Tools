@@ -145,4 +145,7 @@
 
 /* Do the minimal amount of sorting needed to make sure that all skills are after their pre-requisites */
 -(void) sortPlanByPrerequisites;
+
+/* The skill plan as a simple list of "<skill> <level>" entries, for use pasting into the EVE client */
+-(NSString *)EVEText;
 @end

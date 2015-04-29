@@ -176,7 +176,7 @@
 
 -(NSString*) description
 {
-	return [skillPlan description];
+    return [NSString stringWithFormat:@"Skill plan %@\n%@", [self planName], [self EVEText]];
 }
 
 -(void) savePlan
@@ -1015,4 +1015,15 @@ static NSDictionary *masterSkillSet = nil;;
     [self resetCache];
 }
 
+-(NSString *)EVEText
+{
+    NSMutableString *planString = [NSMutableString string];
+    
+    for( SkillPair *sp in skillPlan )
+    {
+        [planString appendFormat:@"%@\n", [sp roman]];
+    }
+    
+    return planString;
+}
 @end

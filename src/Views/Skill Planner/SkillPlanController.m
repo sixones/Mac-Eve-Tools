@@ -508,7 +508,7 @@
         if (eveStyle) {
             [planString appendFormat:@"<a href='showinfo:%d'>%@</a>\t L%d\n", (int) [sp typeID], [s skillName], (int) [sp skillLevel]];
         } else {
-            [planString appendFormat:@"%@\t L%d\n", [s skillName], (int) [sp skillLevel]];
+            [planString appendFormat:@"%@\n", [sp roman]];
         }
 	}
     

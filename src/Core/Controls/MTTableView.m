@@ -64,7 +64,9 @@
 	return;
 }
 
-						 
-							 
-
+- (void)copy:(id)sender
+{
+    if( [[self delegate] respondsToSelector:@selector(copy:)] )
+        [[self delegate] copy:self];
+}
 @end

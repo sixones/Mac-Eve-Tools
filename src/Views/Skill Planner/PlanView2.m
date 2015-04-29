@@ -284,6 +284,20 @@
     [SkillDetailsWindowController displayWindowForTypeID:typeID forCharacter:character];
 }
 
+- (void)copy:(id)sender
+{
+    // need to just copy the selected skill pairs
+    NSMutableString *planString = [NSMutableString string];
+    NSIndexSet *rowset = [tableView selectedRowIndexes];
+    [rowset enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop)
+    {
+        SkillPair *pair = [[character skillPlanById:[pvDatasource planId]] skillAtIndex:idx];
+        [planString appendFormat:@"%@\n", [pair roman]];
+    }];
+    [[NSPasteboard generalPasteboard] clearContents];
+    [[NSPasteboard generalPasteboard] setString:planString forType:NSStringPboardType];
+}
+
 -(void) displaySkillWindow:(id)sender
 {
 	Skill *s = [sender representedObject];

@@ -250,6 +250,14 @@
     [tableView setUsesAlternatingRowBackgroundColors:!old];
 }
 
+- (void)copy:(id)sender
+{
+    SkillPlan *currentPlan = [character skillPlanAtIndex:[tableView selectedRow]];
+    NSString *planString = [currentPlan EVEText];
+    [[NSPasteboard generalPasteboard] clearContents];
+    [[NSPasteboard generalPasteboard] setString:planString forType:NSStringPboardType];
+}
+
 #pragma mark TableView Delegate methods
 
 -(BOOL) tableView:(NSTableView*)aTableView keyDownEvent:(NSEvent*)theEvent
