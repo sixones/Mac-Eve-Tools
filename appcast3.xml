@@ -6,6 +6,21 @@
     <description>Most recent changes.</description>
     <language>en</language>
      <item>
+        <title>Version 0.3.4b</title>
+        <pubDate>Apr 29, 2015 00:00:00 +0000</pubDate>
+        <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.4b/Vitality_v0.3.4b.zip" sparkle:version="0.3.4b" length="4329698" type="application/octet-stream" />
+		<description>
+			<![CDATA[
+<div><strong>0.3.4b</strong></div>
+<ul>
+    <li>Includes the Mosaic 1.0 database.</li>
+    <li>The Check for Update feature should now work, with new application and database updates being hosted on GitHub Pages.</li>
+    <li>Contracts and Market Orders are now stored in a local database.</li>
+</ul>
+			]]>
+		</description>
+      </item>
+     <item>
         <title>Version 0.3.3b</title>
         <pubDate>Mar 30, 2015 00:00:00 +0000</pubDate>
         <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.3b/Vitality_v0.3.3b.zip" sparkle:version="0.3.3b" length="1170791" type="application/octet-stream" />
