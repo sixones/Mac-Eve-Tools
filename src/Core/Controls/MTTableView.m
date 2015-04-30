@@ -67,6 +67,6 @@
 - (void)copy:(id)sender
 {
     if( [[self delegate] respondsToSelector:@selector(copy:)] )
-        [[self delegate] copy:self];
+        [[self delegate] performSelector:@selector(copy:) withObject:self];
 }
 @end

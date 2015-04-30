@@ -346,6 +346,9 @@
                                  }];
     messageIDs = [messageIDs objectsAtIndexes:missingBodies];
     
+    if( 0 == [messageIDs count] )
+        return;
+    
     NSString *messageIDString = [NSString stringWithFormat:@"ids=%@", [messageIDs componentsJoinedByString:@","]];
     [self startMailDownloadToPath:@"/char/MailBodies.xml.aspx" args:messageIDString delegate:self callback:@selector(parseMailBodiesOperationDone:errors:)];
 }

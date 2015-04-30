@@ -216,7 +216,8 @@
 	return YES;
 }
 
-- (NSCellHitResult)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
+// In 10.10 and later the return type is NSCellHitResult
+- (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
 	
     NSPoint point = [controlView convertPoint:[event locationInWindow] fromView:nil];
 	

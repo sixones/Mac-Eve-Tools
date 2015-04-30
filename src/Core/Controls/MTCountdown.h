@@ -35,6 +35,7 @@
 -(void) drawRect:(NSRect)rect;
 
 -(void) setInterval:(NSInteger)inter;
+-(NSInteger)interval;
 
 -(void) setVisible:(BOOL)vis;
 

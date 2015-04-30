@@ -47,6 +47,11 @@
 	realInterval = MAX(inter,0);
 }
 
+-(NSInteger)interval
+{
+    return realInterval;
+}
+
 -(void) drawRect:(NSRect)rect
 {	
 	NSRect bounds = [self bounds];

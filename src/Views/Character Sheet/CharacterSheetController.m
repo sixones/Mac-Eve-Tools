@@ -455,6 +455,24 @@
 	[timeRemaining tick];
 	[skillQueueDatasource tick];
 	[skillQueueDisplay setNeedsDisplayInRect:[skillQueueDisplay frameOfCellAtColumn:0 row:0]];
+
+    // TODO: Figure out how to offer notifications on 10.8 and up without breaking 10.6 support
+//    Class testUserNotification = NSClassFromString(@"NSUserNotification");
+//
+//    if( testUserNotification && (0 == [timeRemaining interval]) )
+//    {
+//        SkillPlan *queue = [[self character] trainingQueue];
+//        if( [queue skillCount] > 0 )
+//        {
+//            SkillPair *pair =[queue skillAtIndex:0];
+//
+//            NSUserNotification *notification = [[[NSUserNotification alloc] init] autorelease];
+//            notification.title = @"Skill Training Complete!";
+//            notification.informativeText = [pair roman];
+//            notification.soundName = NSUserNotificationDefaultSoundName;
+//            [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+//        }
+//    }
 }
 
 -(void) deleteCurrentPortrait:(id)notUsed

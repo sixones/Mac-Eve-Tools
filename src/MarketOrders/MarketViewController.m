@@ -63,6 +63,8 @@
         [app setToolbarMessage:NSLocalizedString(@"Updating Market Orders…",@"Updating Market Orders")];
         [app startLoadingAnimation];
         [self setDbOrders:[self loadMarketOrders]];
+        [orderTable reloadData];
+        [orderTable deselectAll:self];
     }
 }
 

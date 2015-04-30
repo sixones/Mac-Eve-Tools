@@ -132,11 +132,14 @@
         character = [_character retain];
         [self createContractTables];
         // if view is active we need to reload contracts
+        [self setDbContracts:nil];
         [contracts setCharacter:character];
         [contracts reload:self];
         [app setToolbarMessage:NSLocalizedString(@"Updating Contracts…",@"Updating Contracts status line")];
         [app startLoadingAnimation];
         [self setDbContracts:[self loadContracts]];
+        [contractsTable reloadData];
+        [contractsTable deselectAll:self];
     }
 }
 
@@ -225,7 +228,10 @@
 {
     if( 0 == [[self dbContracts] count] )
         return nil;
-        
+    
+    if( row >= [[self dbContracts] count] )
+        return nil;
+    
     Contract *contract = [[self dbContracts] objectAtIndex:row];
     NSString *colID = [tableColumn identifier];
     id value = nil;

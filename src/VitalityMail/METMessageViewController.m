@@ -17,7 +17,9 @@
 @implementation METMessageViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
+    // According to the documentation the default implementation of this does nothing, so no need to call it on the super class
+    //    if( [super respondsToSelector:@selector(viewDidLoad)] )
+    //        [super viewDidLoad];
     [self loadFields];
 }
 
