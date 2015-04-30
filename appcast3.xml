@@ -6,6 +6,22 @@
     <description>Most recent changes.</description>
     <language>en</language>
      <item>
+        <title>Version 0.3.5b</title>
+        <pubDate>Apr 30, 2015 00:00:00 +0000</pubDate>
+        <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.5b/Vitality_v0.3.5b.zip" sparkle:version="0.3.5b" length="4483243" type="application/octet-stream" />
+		<description>
+			<![CDATA[
+<div><strong>0.3.5b</strong></div>
+<div>Mostly a bug fix release.</div>
+<ul>
+    <li>Hopefully fixed #47 by making sure all nib files are in the same lproj directory. I can't reproduce the crash, so I can only guess that's the problem.</li>
+    <li>Fixed more issues when switching between characters when the Market Orders or Contracts view are active.</li>
+    <li>Doing a Copy while a skill plan or individual skills in a plan is selected now copies the skills to the clipboard. Both this and choosing the EVE text export from the gear icon produce output that should work when imported into the EVE client's skill queue.</li>
+</ul>
+			]]>
+		</description>
+     </item>
+     <item>
         <title>Version 0.3.4b</title>
         <pubDate>Apr 29, 2015 00:00:00 +0000</pubDate>
         <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.4b/Vitality_v0.3.4b.zip" sparkle:version="0.3.4b" length="4329698" type="application/octet-stream" />
@@ -19,7 +35,7 @@
 </ul>
 			]]>
 		</description>
-      </item>
+     </item>
      <item>
         <title>Version 0.3.3b</title>
         <pubDate>Mar 30, 2015 00:00:00 +0000</pubDate>
