@@ -569,6 +569,47 @@
     return 0 == unreadRows;
 }
 
+- (BOOL)markMailbox:(NSInteger)boxID asRead:(BOOL)read
+{
+    sqlite3_stmt *read_stmt;
+    int rc;
+    const char getMessages[] = "UPDATE mail SET read = ? WHERE toCorpOrAllianceID = ? OR toListID = ?;";
+    const char getInboxMessages[] = "UPDATE mail SET read = ? WHERE toCorpOrAllianceID = ? AND toListID = ?;";
+    const char getSentMessages[] = "UPDATE mail SET read = ? WHERE senderID = ?;";
+    sqlite3 *db = [[character database] openDatabase];
+    BOOL success = YES;
+    
+    if( boxID == [character characterId] )
+        rc = sqlite3_prepare_v2(db,getSentMessages,(int)sizeof(getSentMessages),&read_stmt,NULL);
+    else if( 0 == boxID )
+        rc = sqlite3_prepare_v2(db,getInboxMessages,(int)sizeof(getInboxMessages),&read_stmt,NULL);
+    else
+        rc = sqlite3_prepare_v2(db,getMessages,(int)sizeof(getMessages),&read_stmt,NULL);
+    if( rc != SQLITE_OK )
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return NO;
+    }
+    
+    
+    sqlite3_bind_nsint( read_stmt, 1, read?1:0 );
+    
+    sqlite3_bind_nsint( read_stmt, 2, boxID );
+    if( boxID != [character characterId] )
+        sqlite3_bind_nsint( read_stmt, 3, boxID );
+    
+    
+    rc = sqlite3_step(read_stmt);
+    if( rc != SQLITE_DONE )
+    {
+        NSLog(@"Error marking mailbox as read: %ld (code: %d)", (long int)boxID, rc );
+        success = NO;
+    }
+    
+    sqlite3_finalize( read_stmt );
+
+    return success;
+}
 
 - (BOOL)tableView:(NSTableView *)tableView shouldEditTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
@@ -651,6 +692,73 @@
         if( [cell isKindOfClass:[METMailHeaderCell class]] && ([currentMessages count] > row) )
             [cell setMessage:[currentMessages objectAtIndex:row]];
     }
+}
+
+-(void) markMailboxAsUnread:(id)sender
+{
+    METPair *pair = [sender representedObject];
+    if( pair )
+    {
+        [self markMailbox:[[pair first] integerValue] asRead:NO];
+        [self reload];
+    }
+}
+
+-(void) markMailboxAsRead:(id)sender
+{
+    METPair *pair = [sender representedObject];
+    if( pair )
+    {
+        [self markMailbox:[[pair first] integerValue] asRead:YES];
+        [self reload];
+    }
+}
+
+-(NSMenu*) tableView:(NSTableView*)table
+  menuForTableColumn:(NSTableColumn*)column
+                 row:(NSInteger)row
+{
+    if(row == -1)
+    {
+        return nil;
+    }
+    
+    if( table == mailboxView )
+    {
+        NSMenu *menu = nil;
+        NSMenuItem *item = nil;
+        
+        menu = [[[NSMenu alloc]initWithTitle:@""] autorelease];
+        
+        METPair *pair = [mailboxPairs objectAtIndex:row];
+        BOOL isRead = [self mailboxIsRead:[[pair first] integerValue]];
+        if( isRead )
+        {
+            item = [[NSMenuItem alloc]initWithTitle:NSLocalizedString( @"Mark Mailbox As Unread", @"Mark a mailbox as Unread menu item title" )
+                                             action:@selector(markMailboxAsUnread:)
+                                      keyEquivalent:@""];
+            [item setRepresentedObject:pair];
+            [item setTarget:self];
+            [menu addItem:item];
+            [item release];
+        }
+        else
+        {
+            item = [[NSMenuItem alloc]initWithTitle:NSLocalizedString( @"Mark Mailbox As Read", @"Mark a mailbox as read menu item title" )
+                                             action:@selector(markMailboxAsRead:)
+                                      keyEquivalent:@""];
+            [item setRepresentedObject:pair];
+            [item setTarget:self];
+            [menu addItem:item];
+            [item release];
+        }
+
+//        [menu addItem:[NSMenuItem separatorItem]];
+        
+        return menu;
+    }
+    
+    return nil;
 }
 
 #pragma mark SplitView delegate methods
