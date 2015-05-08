@@ -57,14 +57,19 @@
     [characterName setStringValue:[[self character] characterName]];
     
     NSDate *nextJump = [[self character] jumpCloneDate];
-//    if( nextJump == [nextJump earlierDate:[NSDate date]] )
-//    {
-//        [nextJumpDate setStringValue:NSLocalizedString( @"Now", @"'Now' in reference to clone jump availability" )];
-//    }
-//    else
+    if( nextJump == [nextJump earlierDate:[NSDate date]] )
+    {
+        [nextJumpDate setStringValue:NSLocalizedString( @"Now", @"'Now' in reference to clone jump availability" )];
+    }
+    else
     {
         [nextJumpDate setObjectValue:nextJump];
     }
+}
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+    [self autorelease];
 }
 
 -(NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
