@@ -27,6 +27,7 @@
 #import "CCPType.h"
 #import "CCPDatabase.h"
 #import "CCPImplant.h"
+#import "METJumpClone.h"
 
 #import "XMLDownloadOperation.h"
 
@@ -400,6 +401,7 @@ http://community.eveonline.com/news/dev-blogs/long-distance-travel-changes-inbou
 */
 -(BOOL) parseXmlSheet:(xmlDoc*)document
 {
+    NSMutableDictionary *clones = [NSMutableDictionary dictionary];
 	xmlNode *root_node;
 	xmlNode *result;
 	
@@ -454,7 +456,19 @@ http://community.eveonline.com/news/dev-blogs/long-distance-travel-changes-inbou
 		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"attributes") == 0){
 			/*process attributes here*/
 			[self parseAttributes:cur_node];
-		}else if(xmlStrcmp(cur_node->name,(xmlChar*)"rowset") == 0){
+		}
+        else if( xmlStrcmp(cur_node->name,(xmlChar*)"cloneJumpDate") == 0 )
+        {
+            /*  <cloneJumpDate>2014-10-08 20:54:50</cloneJumpDate> */
+            NSString *cloneJumpString = getNodeText(cur_node);
+            if( cloneJumpString )
+            {
+                NSDate *cloneJumpDate = [NSDate dateWithNaturalLanguageString:cloneJumpString];
+                [self setJumpCloneDate:cloneJumpDate];
+            }
+		}
+        else if(xmlStrcmp(cur_node->name,(xmlChar*)"rowset") == 0)
+        {
 			
 			xmlChar* rowset_name = xmlGetProp(cur_node,(xmlChar*)"name");
 			
@@ -471,26 +485,22 @@ http://community.eveonline.com/news/dev-blogs/long-distance-travel-changes-inbou
             {
                 [self parseImplants:cur_node];
             }
-            /* TODO: Parse and display jump clones
-             <rowset name="jumpClones" key="jumpCloneID" columns="jumpCloneID,typeID,locationID,cloneName">
-             <row jumpCloneID="19933997" typeID="164" locationID="60010825" cloneName="" />
-             <row jumpCloneID="20412514" typeID="164" locationID="60010861" cloneName="" />
-             <row jumpCloneID="20842890" typeID="164" locationID="61000260" cloneName="" />
-             </rowset>
-             <rowset name="jumpCloneImplants" key="jumpCloneID" columns="jumpCloneID,typeID,typeName">
-             <row jumpCloneID="19933997" typeID="9899" typeName="Ocular Filter - Basic" />
-             <row jumpCloneID="19933997" typeID="9941" typeName="Memory Augmentation - Basic" />
-             <row jumpCloneID="19933997" typeID="9942" typeName="Neural Boost - Basic" />
-             <row jumpCloneID="19933997" typeID="9943" typeName="Cybernetic Subprocessor - Basic" />
-             </rowset>
-             */
+            else if(xmlStrcmp(rowset_name,(xmlChar*)"jumpClones") == 0)
+            {
+                [self parseJumpClones:cur_node into:clones];
+            }
+            else if(xmlStrcmp(rowset_name,(xmlChar*)"jumpCloneImplants") == 0)
+            {
+                [self parseJumpCloneImplants:cur_node into:clones];
+            }
 			xmlFree(rowset_name);
 		}
 	}
 	
 	/*sum all the values*/
 	[self processAttributeSkills];
-	
+    [self setJumpClones:clones];
+    
 	/*
 		The Characater must have been completly built up and is ready for use
 	 */
@@ -562,6 +572,101 @@ http://community.eveonline.com/news/dev-blogs/long-distance-travel-changes-inbou
         implantAttributes[ATTR_INTELLIGENCE] += [implant intelligence];
         implantAttributes[ATTR_CHARISMA] += [implant charisma];
 
+    }
+    return YES;
+}
+
+/*
+<rowset name="jumpClones" key="jumpCloneID" columns="jumpCloneID,typeID,locationID,cloneName">
+<row jumpCloneID="19933997" typeID="164" locationID="60010825" cloneName="" />
+<row jumpCloneID="20412514" typeID="164" locationID="60010861" cloneName="" />
+<row jumpCloneID="20842890" typeID="164" locationID="61000260" cloneName="" />
+</rowset>
+*/
+-(BOOL) parseJumpClones:(xmlNode*)attrs into:(NSMutableDictionary *)clones
+{
+    for(xmlNode *attr_node = attrs->children;
+        attr_node != NULL;
+        attr_node = attr_node->next)
+    {
+        if( attr_node->type != XML_ELEMENT_NODE )
+        {
+            continue;
+        }
+        if( xmlStrcmp(attr_node->name,(xmlChar*)"row") != 0 )
+        {
+            continue;
+        }
+
+        xmlChar* cloneIDString = xmlGetProp(attr_node,(xmlChar*)"jumpCloneID");
+        xmlChar* typeIDString = xmlGetProp(attr_node,(xmlChar*)"typeID");
+        xmlChar* locationIDString = xmlGetProp(attr_node,(xmlChar*)"locationID");
+        xmlChar* cloneName = xmlGetProp(attr_node,(xmlChar*)"cloneName");
+        
+        NSInteger cloneID = (NSInteger) [[NSString stringWithUTF8String:(char *)cloneIDString] integerValue];
+        NSInteger typeID = (NSInteger) [[NSString stringWithUTF8String:(char *)typeIDString] integerValue];
+        NSInteger locationID = (NSInteger) [[NSString stringWithUTF8String:(char *)locationIDString] integerValue];
+        NSString *name = [NSString stringWithUTF8String:(char *)cloneName];
+        
+        METJumpClone *clone = [clones objectForKey:[NSNumber numberWithInteger:cloneID]];
+        if( !clone )
+        {
+            clone = [[[METJumpClone alloc] initWithID:cloneID] autorelease];
+            [clones setObject:clone forKey:[NSNumber numberWithInteger:cloneID]];
+        }
+        [clone setTypeID:typeID];
+        [clone setLocationID:locationID];
+        [clone setCloneName:name];
+    }
+    return YES;
+}
+
+/*
+<rowset name="jumpCloneImplants" key="jumpCloneID" columns="jumpCloneID,typeID,typeName">
+<row jumpCloneID="19933997" typeID="9899" typeName="Ocular Filter - Basic" />
+<row jumpCloneID="19933997" typeID="9941" typeName="Memory Augmentation - Basic" />
+<row jumpCloneID="19933997" typeID="9942" typeName="Neural Boost - Basic" />
+<row jumpCloneID="19933997" typeID="9943" typeName="Cybernetic Subprocessor - Basic" />
+</rowset>
+*/
+-(BOOL) parseJumpCloneImplants:(xmlNode*)attrs into:(NSMutableDictionary *)clones
+{
+    CCPDatabase *ccpdb = [[GlobalData sharedInstance] database];
+
+    for(xmlNode *attr_node = attrs->children;
+        attr_node != NULL;
+        attr_node = attr_node->next)
+    {
+        if( attr_node->type != XML_ELEMENT_NODE )
+        {
+            continue;
+        }
+        if( xmlStrcmp(attr_node->name,(xmlChar*)"row") != 0 )
+        {
+            continue;
+        }
+        
+        xmlChar* cloneIDString = xmlGetProp(attr_node,(xmlChar*)"jumpCloneID");
+        xmlChar* typeIDString = xmlGetProp(attr_node,(xmlChar*)"typeID");
+        xmlChar* typeName = xmlGetProp(attr_node,(xmlChar*)"typeName");
+        
+        NSInteger cloneID = (NSInteger) [[NSString stringWithUTF8String:(char *)cloneIDString] integerValue];
+        NSInteger typeID = (NSInteger) [[NSString stringWithUTF8String:(char *)typeIDString] integerValue];
+        
+        METJumpClone *clone = [clones objectForKey:[NSNumber numberWithInteger:cloneID]];
+        if( !clone )
+        {
+            clone = [[[METJumpClone alloc] initWithID:cloneID] autorelease];
+            [clones setObject:clone forKey:[NSNumber numberWithInteger:cloneID]];
+        }
+        
+        CCPImplant *implant = [ccpdb implantWithID:typeID];
+
+        [clone addImplant:implant];
+        
+        NSString *implantName = [NSString stringWithUTF8String:(char *)typeName];
+        if( ![implantName isEqualToString:[implant typeName]] )
+            NSLog( @"Implant names differ: %@   vs   %@", implantName, [implant typeName] );
     }
     return YES;
 }

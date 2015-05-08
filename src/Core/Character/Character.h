@@ -155,6 +155,9 @@
 	 `YES` if this character is currently training a skill; `NO` otherwise.
 	 */
 	BOOL isTraining;
+    
+    NSDate *_jumpCloneDate;
+    NSDictionary *_jumpClones;
 }
 
 /**
@@ -187,6 +190,16 @@
 @property (readonly,nonatomic) SkillPlan* trainingQueue;
 
 @property (readonly,nonatomic) CharacterDatabase *database;
+
+
+@property (retain,readwrite) NSDate *jumpCloneDate; //< Date/time of next available clone jump
+
+/**
+ This character's jump clones.
+ Keys are NSNumber's with the jumpCloneID
+ Objects are METJumpClone's
+ */
+@property (retain, readwrite) NSDictionary *jumpClones;
 
 /**
  @name Initialization

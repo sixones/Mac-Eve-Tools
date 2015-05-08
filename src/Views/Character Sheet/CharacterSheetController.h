@@ -30,8 +30,8 @@
 @class Skill;
 @class SkillQueueDatasource;
 
-@interface CharacterSheetController : NSViewController 
-	<METPluggableView,NSOutlineViewDelegate> {
+@interface CharacterSheetController : NSViewController <METPluggableView,NSOutlineViewDelegate>
+{
 	/*character stuff*/
 	IBOutlet NSOutlineView *skillTree;
 	IBOutlet MTImageView *portrait;
@@ -39,7 +39,9 @@
 	IBOutlet NSTextField *charName;
 	IBOutlet NSTextField *charIsk;
 	IBOutlet NSTextField *charSP;
-	
+    IBOutlet NSTextField *jumpClones;
+    IBOutlet NSButton *jumpCloneInfoButton;
+        
 	IBOutlet NSTextField *charKnownSkills;
 	IBOutlet NSTextField *charTraining;
 	IBOutlet NSTextField *charRace;
@@ -80,6 +82,6 @@
 -(Character*) character;
 -(void) setCharacter:(Character*)c;
 
-
+- (IBAction)jumpCloneInfo:(id)sender;
 
 @end

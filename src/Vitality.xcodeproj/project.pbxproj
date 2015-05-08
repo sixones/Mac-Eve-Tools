@@ -88,6 +88,9 @@
 		A11F72371AEEE1B3002E1906 /* MTISKFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72361AEEE1B3002E1906 /* MTISKFormatter.m */; };
 		A11F724A1AF2CAC1002E1906 /* MailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11F72461AF2CAC1002E1906 /* MailView.xib */; };
 		A11F724B1AF2CAC1002E1906 /* METMessageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11F72481AF2CAC1002E1906 /* METMessageView.xib */; };
+		A11F72571AF97357002E1906 /* METJumpClone.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72561AF97357002E1906 /* METJumpClone.m */; };
+		A11F725B1AFAC6E4002E1906 /* METJumpCloneController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72591AFAC6E4002E1906 /* METJumpCloneController.m */; };
+		A11F725C1AFAC6E4002E1906 /* METJumpClone.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11F725A1AFAC6E4002E1906 /* METJumpClone.xib */; };
 		A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */ = {isa = PBXBuildFile; fileRef = A12EE8D3197D98E000ED6478 /* METTrait.m */; };
 		A12FC60817EA31420053DC23 /* METConquerableStations.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60717EA31420053DC23 /* METConquerableStations.m */; };
 		A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */ = {isa = PBXBuildFile; fileRef = A147AB39184D4C6B009D2A08 /* MTAPIKey.m */; };
@@ -97,6 +100,10 @@
 		A1C44C6C1A36697200443AE2 /* VitalityMail.m in Sources */ = {isa = PBXBuildFile; fileRef = A10C36A419E5F71000A0EB2B /* VitalityMail.m */; };
 		A1C44C721A366AC600443AE2 /* METMail.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C44C6E1A366AC600443AE2 /* METMail.m */; };
 		A1C44C751A366AC600443AE2 /* METMailMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C44C701A366AC600443AE2 /* METMailMessage.m */; };
+		A1D592491AFD5C0500448F17 /* contracts.png in Resources */ = {isa = PBXBuildFile; fileRef = A1D592471AFD5C0500448F17 /* contracts.png */; };
+		A1D5924C1AFD5C5C00448F17 /* evemail.png in Resources */ = {isa = PBXBuildFile; fileRef = A1D5924B1AFD5C5C00448F17 /* evemail.png */; };
+		A1D5924F1AFD5E6600448F17 /* marketorders.png in Resources */ = {isa = PBXBuildFile; fileRef = A1D5924D1AFD5E6600448F17 /* marketorders.png */; };
+		A1D592521AFD632100448F17 /* evemail2.png in Resources */ = {isa = PBXBuildFile; fileRef = A1D592501AFD632100448F17 /* evemail2.png */; };
 		A1E4374A1A23C05200B19A34 /* CCPImplant.m in Sources */ = {isa = PBXBuildFile; fileRef = A1E437491A23C05200B19A34 /* CCPImplant.m */; };
 		A1FCD0561829881600A6655A /* METIDtoName.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD0551829881600A6655A /* METIDtoName.m */; };
 		C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */ = {isa = PBXBuildFile; fileRef = C911FED610782C50000D88E2 /* CharacterParseError.m */; };
@@ -306,6 +313,11 @@
 		A11F72361AEEE1B3002E1906 /* MTISKFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTISKFormatter.m; sourceTree = "<group>"; };
 		A11F72471AF2CAC1002E1906 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MailView.xib; sourceTree = "<group>"; };
 		A11F72491AF2CAC1002E1906 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/METMessageView.xib; sourceTree = "<group>"; };
+		A11F72551AF97357002E1906 /* METJumpClone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METJumpClone.h; sourceTree = "<group>"; };
+		A11F72561AF97357002E1906 /* METJumpClone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METJumpClone.m; sourceTree = "<group>"; };
+		A11F72581AFAC6E4002E1906 /* METJumpCloneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METJumpCloneController.h; sourceTree = "<group>"; };
+		A11F72591AFAC6E4002E1906 /* METJumpCloneController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METJumpCloneController.m; sourceTree = "<group>"; };
+		A11F725A1AFAC6E4002E1906 /* METJumpClone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = METJumpClone.xib; sourceTree = "<group>"; };
 		A12EE8D2197D98E000ED6478 /* METTrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METTrait.h; sourceTree = "<group>"; };
 		A12EE8D3197D98E000ED6478 /* METTrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METTrait.m; sourceTree = "<group>"; };
 		A12FC60617EA31420053DC23 /* METConquerableStations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METConquerableStations.h; sourceTree = "<group>"; };
@@ -321,6 +333,10 @@
 		A1C44C6E1A366AC600443AE2 /* METMail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METMail.m; sourceTree = "<group>"; };
 		A1C44C6F1A366AC600443AE2 /* METMailMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METMailMessage.h; sourceTree = "<group>"; };
 		A1C44C701A366AC600443AE2 /* METMailMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METMailMessage.m; sourceTree = "<group>"; };
+		A1D592481AFD5C0500448F17 /* English */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = English; path = contracts.png; sourceTree = "<group>"; };
+		A1D5924B1AFD5C5C00448F17 /* evemail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = evemail.png; path = English.lproj/evemail.png; sourceTree = "<group>"; };
+		A1D5924E1AFD5E6600448F17 /* English */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = English; path = marketorders.png; sourceTree = "<group>"; };
+		A1D592511AFD632100448F17 /* English */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = English; path = English.lproj/evemail2.png; sourceTree = "<group>"; };
 		A1E437481A23C05200B19A34 /* CCPImplant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPImplant.h; sourceTree = "<group>"; };
 		A1E437491A23C05200B19A34 /* CCPImplant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPImplant.m; sourceTree = "<group>"; };
 		A1FCD05118245DDC00A6655A /* MetLabelValueTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetLabelValueTableCellView.h; path = Core/MetLabelValueTableCellView.h; sourceTree = SOURCE_ROOT; };
@@ -667,8 +683,7 @@
 				A11DFF261A82D77F0047D5F5 /* METMailHeaderCell.m */,
 				A11DFF2A1A8D2F0F0047D5F5 /* METMessageViewController.h */,
 				A11DFF2B1A8D2F0F0047D5F5 /* METMessageViewController.m */,
-				A11F72461AF2CAC1002E1906 /* MailView.xib */,
-				A11F72481AF2CAC1002E1906 /* METMessageView.xib */,
+				A1D5924A1AFD5C4200448F17 /* English.lproj */,
 			);
 			path = VitalityMail;
 			sourceTree = "<group>";
@@ -676,13 +691,13 @@
 		A11F720E1AD6F5D9002E1906 /* MarketOrders */ = {
 			isa = PBXGroup;
 			children = (
-				A11F720F1AD6F84C002E1906 /* English.lproj */,
 				A11F72121AD6F84C002E1906 /* MarketOrder.h */,
 				A11F72131AD6F84C002E1906 /* MarketOrder.m */,
 				A11F72141AD6F84C002E1906 /* MarketOrders.h */,
 				A11F72151AD6F84C002E1906 /* MarketOrders.m */,
 				A11F72161AD6F84C002E1906 /* MarketViewController.h */,
 				A11F72171AD6F84C002E1906 /* MarketViewController.m */,
+				A11F720F1AD6F84C002E1906 /* English.lproj */,
 			);
 			name = MarketOrders;
 			sourceTree = "<group>";
@@ -690,6 +705,7 @@
 		A11F720F1AD6F84C002E1906 /* English.lproj */ = {
 			isa = PBXGroup;
 			children = (
+				A1D5924D1AFD5E6600448F17 /* marketorders.png */,
 				A11F72101AD6F84C002E1906 /* MarketView.xib */,
 			);
 			name = English.lproj;
@@ -701,6 +717,7 @@
 			children = (
 				A11F722A1AEEE198002E1906 /* ContractDetails.xib */,
 				A11F722C1AEEE198002E1906 /* ContractsView.xib */,
+				A1D592471AFD5C0500448F17 /* contracts.png */,
 			);
 			path = English.lproj;
 			sourceTree = "<group>";
@@ -721,6 +738,17 @@
 				A11F72291AEEE198002E1906 /* English.lproj */,
 			);
 			path = Contracts;
+			sourceTree = "<group>";
+		};
+		A1D5924A1AFD5C4200448F17 /* English.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				A1D5924B1AFD5C5C00448F17 /* evemail.png */,
+				A1D592501AFD632100448F17 /* evemail2.png */,
+				A11F72461AF2CAC1002E1906 /* MailView.xib */,
+				A11F72481AF2CAC1002E1906 /* METMessageView.xib */,
+			);
+			name = English.lproj;
 			sourceTree = "<group>";
 		};
 		C9661A6B110D12EB00FA9B72 /* Certs */ = {
@@ -909,6 +937,8 @@
 				C9EB4F4F105A16BD009192BC /* GenericDownloadOperation.m */,
 				C911FED510782C50000D88E2 /* CharacterParseError.h */,
 				C911FED610782C50000D88E2 /* CharacterParseError.m */,
+				A11F72551AF97357002E1906 /* METJumpClone.h */,
+				A11F72561AF97357002E1906 /* METJumpClone.m */,
 			);
 			path = Character;
 			sourceTree = "<group>";
@@ -1106,6 +1136,9 @@
 				C9661E37110FC07200FA9B72 /* CertDetailsWindowController.h */,
 				C9661E38110FC07200FA9B72 /* CertDetailsWindowController.m */,
 				C9D902D21121194A0047B2C2 /* CertDetails.xib */,
+				A11F72581AFAC6E4002E1906 /* METJumpCloneController.h */,
+				A11F72591AFAC6E4002E1906 /* METJumpCloneController.m */,
+				A11F725A1AFAC6E4002E1906 /* METJumpClone.xib */,
 			);
 			path = Windows;
 			sourceTree = "<group>";
@@ -1171,11 +1204,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				A1D5924F1AFD5E6600448F17 /* marketorders.png in Resources */,
 				C9FF4566105508950044BBAC /* charsheet.png in Resources */,
 				C9FF4567105508950044BBAC /* darkgray.tiff in Resources */,
 				C9FF4568105508950044BBAC /* green.tiff in Resources */,
 				C9FF4569105508950044BBAC /* icon12_02.png in Resources */,
 				C9FF456A105508950044BBAC /* icon22_41.png in Resources */,
+				A1D592521AFD632100448F17 /* evemail2.png in Resources */,
 				C9FF456B105508950044BBAC /* info.png in Resources */,
 				C9FF456C105508950044BBAC /* lightgray.tiff in Resources */,
 				C9FF456D105508950044BBAC /* red.tiff in Resources */,
@@ -1195,11 +1230,14 @@
 				A11F724A1AF2CAC1002E1906 /* MailView.xib in Resources */,
 				A11F72331AEEE199002E1906 /* ContractDetails.xib in Resources */,
 				9EF3339111E79B1A002A3B7D /* DatabasePrefView.xib in Resources */,
+				A11F725C1AFAC6E4002E1906 /* METJumpClone.xib in Resources */,
 				9EF3339211E79B1A002A3B7D /* GeneralPrefView.xib in Resources */,
+				A1D5924C1AFD5C5C00448F17 /* evemail.png in Resources */,
 				9EF335C811E87875002A3B7D /* databaseIcon.png in Resources */,
 				14F8DAEF1739BF30001C4178 /* vitality.icns in Resources */,
 				14F8DAF11739BF30001C4178 /* vitality.png in Resources */,
 				14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */,
+				A1D592491AFD5C0500448F17 /* contracts.png in Resources */,
 				140AEBD7176109F500308748 /* status.png in Resources */,
 				A11F72341AEEE199002E1906 /* ContractsView.xib in Resources */,
 				A11F72181AD6F84C002E1906 /* MarketView.xib in Resources */,
@@ -1304,6 +1342,7 @@
 				C9FF47AC10550BA60044BBAC /* CharacterDatabase.m in Sources */,
 				C9FF47AD10550BA60044BBAC /* CharacterDatabasePrivate.m in Sources */,
 				C9FF47AE10550BA60044BBAC /* SqliteDatabase.m in Sources */,
+				A11F725B1AFAC6E4002E1906 /* METJumpCloneController.m in Sources */,
 				C9FF47AF10550BA60044BBAC /* XmlFetcher.m in Sources */,
 				C9FF47B010550BA60044BBAC /* XmlHelpers.m in Sources */,
 				C9FF47BE10550BA60044BBAC /* CharacterSheetController.m in Sources */,
@@ -1328,6 +1367,7 @@
 				A11DFF2D1A8D2F0F0047D5F5 /* METMessageViewController.m in Sources */,
 				C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */,
 				C93815E5109E8FEF002C9B16 /* MTSkillButtonCell.m in Sources */,
+				A11F72571AF97357002E1906 /* METJumpClone.m in Sources */,
 				C964CB2210F42C8D00F735E9 /* CCPTypeAttribute.m in Sources */,
 				C930ED3210F80B2D006753D6 /* ShipAttributeDatasource.m in Sources */,
 				C9661A6F110D12F400FA9B72 /* Cert.m in Sources */,
@@ -1475,6 +1515,30 @@
 				A154A64317A83E090076603D /* English */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		A1D592471AFD5C0500448F17 /* contracts.png */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1D592481AFD5C0500448F17 /* English */,
+			);
+			name = contracts.png;
+			sourceTree = "<group>";
+		};
+		A1D5924D1AFD5E6600448F17 /* marketorders.png */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1D5924E1AFD5E6600448F17 /* English */,
+			);
+			name = marketorders.png;
+			sourceTree = "<group>";
+		};
+		A1D592501AFD632100448F17 /* evemail2.png */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1D592511AFD632100448F17 /* English */,
+			);
+			name = evemail2.png;
 			sourceTree = "<group>";
 		};
 		C9721EE91121291D00035782 /* CharacterSheet.xib */ = {

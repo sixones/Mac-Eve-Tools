@@ -45,6 +45,8 @@
 @synthesize portrait;
 @synthesize trainingQueue;
 @synthesize database;
+@synthesize jumpCloneDate = _jumpCloneDate;
+@synthesize jumpClones = _jumpClones;
 
 -(void) dealloc
 {

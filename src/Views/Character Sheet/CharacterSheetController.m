@@ -30,6 +30,7 @@
 #import "MTEveSkillCell.h"
 #import "MTEveSkillQueueHeader.h"
 #import "SkillQueueDatasource.h"
+#import "METJumpCloneController.h"
 
 #import "SkillPlan.h"
 
@@ -127,6 +128,13 @@
 	[charIsk setObjectValue:[NSDecimalNumber decimalNumberWithString:[character stringForKey:CHAR_BALANCE]]];
 	[charIsk sizeToFit];
 	
+    [jumpClones setObjectValue:[NSNumber numberWithUnsignedInteger:[[character jumpClones] count]]];
+    [jumpClones sizeToFit];
+    // shift the jump clone info button right next to the text field
+    NSPoint orig = [jumpCloneInfoButton frame].origin;
+    orig.x = NSMaxX([jumpClones frame]) + 4;
+    [jumpCloneInfoButton setFrameOrigin:orig];
+    
 	NSInteger charPoints = [character skillPointTotal];
     
 	[charSP setObjectValue:[NSNumber numberWithInteger:charPoints]];
@@ -606,5 +614,9 @@ willDisplayOutlineCell:(id)cell
 	mainApp = instance;
 }
 
+- (IBAction)jumpCloneInfo:(id)sender
+{
+    [METJumpCloneController displayWindowForCharacter:[self character]];
+}
 
 @end
