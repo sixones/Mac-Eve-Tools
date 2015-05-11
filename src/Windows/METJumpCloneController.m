@@ -10,15 +10,19 @@
 #import "Character.h"
 #import "METJumpClone.h"
 #import "CCPImplant.h"
+#import "Skill.h"
+#import "SkillTree.h"
 
 @interface METJumpCloneController ()
 @property (retain,readwrite) NSArray *jumpClones;
+@property (retain,readwrite) NSTimer *jumpDateTimer;
 @end
 
 @implementation METJumpCloneController
 
 @synthesize character = _character;
 @synthesize jumpClones = _jumpClones;
+@synthesize jumpDateTimer = _jumpDateTimer;
 
 +(void) displayWindowForCharacter:(Character*)ch
 {
@@ -44,32 +48,47 @@
 {
     [_character release];
     [_jumpClones release];
+    [_jumpDateTimer invalidate];
+    [_jumpDateTimer release];
     [super dealloc];
 }
 
+// Handle any initialization after window has been loaded from its nib file.
 - (void)windowDidLoad
 {
     [super windowDidLoad];
     
-    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
     [[self window] setTitle:[NSString stringWithFormat:@"%@: Jump Clones",[[self character] characterName]]];
     [portrait setImage:[[self character] portrait]];
     [characterName setStringValue:[[self character] characterName]];
-    
-    NSDate *nextJump = [[self character] jumpCloneDate];
-    if( nextJump == [nextJump earlierDate:[NSDate date]] )
-    {
-        [nextJumpDate setStringValue:NSLocalizedString( @"Now", @"'Now' in reference to clone jump availability" )];
-    }
-    else
-    {
-        [nextJumpDate setObjectValue:nextJump];
-    }
+    [self updateNextJumpCloneDateField:nil];
 }
 
 - (void)windowWillClose:(NSNotification *)notification
 {
     [self autorelease];
+}
+
+- (void)updateNextJumpCloneDateField:(NSTimer *)timer
+{
+    NSDate *jumpDate = [[self character] jumpCloneDate]; // date-time of last clone jump
+    SkillTree *skillTree = [[self character] skillTree];
+    Skill *informorphSynchronizing = [skillTree skillForIdInteger:33399]; // [skillTree skillForName:@"Infomorph Synchronizing"];
+    
+    // add 24 hours to last clone jump date, then subtract 1 hour per level of Infomorph Synchronizing
+    jumpDate = [jumpDate dateByAddingTimeInterval:SEC_DAY-([informorphSynchronizing skillLevel]*SEC_HOUR)];
+    
+    [[self jumpDateTimer] invalidate];
+
+    if( jumpDate == [jumpDate earlierDate:[NSDate date]] )
+    {
+        [nextJumpDate setStringValue:NSLocalizedString( @"Now", @"'Now' in reference to clone jump availability" )];
+    }
+    else
+    {
+        [nextJumpDate setObjectValue:jumpDate];
+        [self setJumpDateTimer:[NSTimer scheduledTimerWithTimeInterval:[jumpDate timeIntervalSinceNow] target:self selector:@selector(updateNextJumpCloneDateField:) userInfo:nil repeats:NO]];
+    }
 }
 
 -(NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item

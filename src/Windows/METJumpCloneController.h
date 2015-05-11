@@ -18,6 +18,8 @@
     IBOutlet NSImageView *portrait;
     IBOutlet NSTextField *characterName;
     IBOutlet NSTextField *nextJumpDate;
+    
+    NSTimer *_jumpDateTimer;
 }
 @property (retain,readwrite) Character *character;
 @property (retain,readonly) NSArray *jumpClones;
