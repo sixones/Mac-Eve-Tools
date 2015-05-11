@@ -16,8 +16,9 @@
     NSArray *_jumpClones; //< We need this so we have a fixed order for the jump clones
     IBOutlet NSOutlineView *jumpCloneView;
     IBOutlet NSImageView *portrait;
-    IBOutlet NSTextField *characterName;
     IBOutlet NSTextField *nextJumpDate;
+    IBOutlet NSTextField *maxClones;
+    IBOutlet NSTextField *jumpDelay;
     
     NSTimer *_jumpDateTimer;
 }

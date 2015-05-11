@@ -7,11 +7,13 @@
 //
 
 #import "METJumpCloneController.h"
+#import "GlobalData.h"
 #import "Character.h"
 #import "METJumpClone.h"
 #import "CCPImplant.h"
 #import "Skill.h"
 #import "SkillTree.h"
+#import "Helpers.h"
 
 @interface METJumpCloneController ()
 @property (retain,readwrite) NSArray *jumpClones;
@@ -60,7 +62,8 @@
     
     [[self window] setTitle:[NSString stringWithFormat:@"%@: Jump Clones",[[self character] characterName]]];
     [portrait setImage:[[self character] portrait]];
-    [characterName setStringValue:[[self character] characterName]];
+    [self updateMaxJumpClonesField];
+    [self updateJumpDelayField];
     [self updateNextJumpCloneDateField:nil];
 }
 
@@ -69,11 +72,43 @@
     [self autorelease];
 }
 
+static const NSInteger infomorphPsychologyID = 24242;
+static const NSInteger advancedInfomorphPsychologyID = 33407;
+static const NSInteger infomorphSynchronizingID = 33399;
+
+- (void)updateMaxJumpClonesField
+{
+    SkillTree *globalSkills = [[GlobalData sharedInstance] skillTree];
+    SkillTree *skillTree = [[self character] skillTree];
+    Skill *infomorphPsychology = [skillTree skillForIdInteger:infomorphPsychologyID];
+    Skill *advanced = [skillTree skillForIdInteger:advancedInfomorphPsychologyID];
+    [maxClones setObjectValue:[NSNumber numberWithInteger:([infomorphPsychology skillLevel] + [advanced skillLevel])]];
+    
+    NSString *name1 = infomorphPsychology?[infomorphPsychology skillName]:[[globalSkills skillForIdInteger:infomorphPsychologyID] skillName];
+    NSString *name2 = advanced?[advanced skillName]:[[globalSkills skillForIdInteger:advancedInfomorphPsychologyID] skillName];
+    NSString *desc = [NSString stringWithFormat:@"%@ %@\n%@ %@", name1, romanForInteger([infomorphPsychology skillLevel]),
+                      name2, romanForInteger([advanced skillLevel])];
+    [maxClones setToolTip:desc];
+}
+
+- (void)updateJumpDelayField
+{
+    SkillTree *globalSkills = [[GlobalData sharedInstance] skillTree];
+    SkillTree *skillTree = [[self character] skillTree];
+    Skill *infomorphSync = [skillTree skillForIdInteger:infomorphSynchronizingID];
+
+    [jumpDelay setStringValue:[NSString stringWithFormat:@"%d %@", (24 - (int)[infomorphSync skillLevel]), NSLocalizedString( @"hours", @"Jump clone delay units" )]];
+    
+    NSString *name1 = infomorphSync?[infomorphSync skillName]:[[globalSkills skillForIdInteger:infomorphSynchronizingID] skillName];
+    NSString *desc = [NSString stringWithFormat:@"%@ %@", name1, romanForInteger([infomorphSync skillLevel])];
+    [jumpDelay setToolTip:desc];
+}
+
 - (void)updateNextJumpCloneDateField:(NSTimer *)timer
 {
     NSDate *jumpDate = [[self character] jumpCloneDate]; // date-time of last clone jump
     SkillTree *skillTree = [[self character] skillTree];
-    Skill *informorphSynchronizing = [skillTree skillForIdInteger:33399]; // [skillTree skillForName:@"Infomorph Synchronizing"];
+    Skill *informorphSynchronizing = [skillTree skillForIdInteger:infomorphSynchronizingID]; // [skillTree skillForName:@"Infomorph Synchronizing"];
     
     // add 24 hours to last clone jump date, then subtract 1 hour per level of Infomorph Synchronizing
     jumpDate = [jumpDate dateByAddingTimeInterval:SEC_DAY-([informorphSynchronizing skillLevel]*SEC_HOUR)];

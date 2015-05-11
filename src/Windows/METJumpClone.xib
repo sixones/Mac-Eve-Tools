@@ -7,8 +7,9 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="METJumpCloneController">
             <connections>
-                <outlet property="characterName" destination="GdR-Vl-a67" id="ffe-hk-8mO"/>
                 <outlet property="jumpCloneView" destination="3SF-xI-D2Q" id="7nC-na-agQ"/>
+                <outlet property="jumpDelay" destination="wsS-Xe-Alx" id="bed-uD-Cs3"/>
+                <outlet property="maxClones" destination="rJw-XC-Okk" id="5gm-Hx-59b"/>
                 <outlet property="nextJumpDate" destination="jYx-oY-Eya" id="02Q-jp-NAT"/>
                 <outlet property="portrait" destination="V0D-Q6-KIx" id="E11-Ex-7FS"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
@@ -92,17 +93,8 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="2dR-bu-Xhb"/>
                     </imageView>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="9cS-hx-Ton">
-                        <rect key="frame" x="154" y="591" width="111" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Jump Clones For:" id="uYJ-dG-ayy">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="FEA-QC-snS">
-                        <rect key="frame" x="154" y="561" width="135" height="17"/>
+                        <rect key="frame" x="154" y="593" width="135" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Next Available Jump:" id="hJX-v4-nfY">
                             <font key="font" metaFont="system"/>
@@ -110,20 +102,47 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="GdR-Vl-a67">
-                        <rect key="frame" x="298" y="591" width="633" height="17"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" placeholderString="Current Character" id="wQU-xQ-CiX">
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Ovm-du-zAP">
+                        <rect key="frame" x="154" y="568" width="152" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Max Number of Clones:" id="HPf-AG-Vzq">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Oxc-Sm-ef6">
+                        <rect key="frame" x="154" y="543" width="120" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Clone Jump Delay:" id="6su-1W-hy9">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="jYx-oY-Eya">
-                        <rect key="frame" x="298" y="561" width="633" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES" heightSizable="YES"/>
+                        <rect key="frame" x="310" y="593" width="621" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" placeholderString="Now" id="e9U-rx-8PD">
                             <dateFormatter key="formatter" dateStyle="long" timeStyle="long" doesRelativeDateFormatting="YES" id="tBq-NM-OHG"/>
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="rJw-XC-Okk">
+                        <rect key="frame" x="310" y="568" width="621" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" placeholderString="5" id="Ms4-JL-L2y">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="wsS-Xe-Alx">
+                        <rect key="frame" x="310" y="543" width="621" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" placeholderString="24 hours" id="ddx-eQ-P0t">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
