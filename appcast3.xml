@@ -6,6 +6,25 @@
     <description>Most recent changes.</description>
     <language>en</language>
      <item>
+        <title>Version 0.3.6b</title>
+        <pubDate>May 13, 2015 00:00:00 +0000</pubDate>
+        <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.6b/Vitality_v0.3.6b.zip" sparkle:version="0.3.6b" length="4384567" type="application/octet-stream" />
+		<description>
+			<![CDATA[
+<div><strong>0.3.6b</strong></div>
+<div>Jump Clones</div>
+<ul>
+    <li>Added an entry in the Character Sheet for number of jump clones, along with an info button which opens a detail window. The detail window shows all jump clones (does not include the in-use clone) along with their implants. It also shows the maximum number a clones the character can have and the delay between clone jumping. Tooltips on those two fields show the relevant skills and levels.</li>
+
+    <li>Icons for the Contracts, Market Orders and Mail views were all changed. I used icons from CCP's Image Export. I also tried to modify the Mail icon to match Vitality's existing icons. All three need a lot of work to fit in properly.</li>
+
+    <li>I added a contextual menu to the Mailbox table for marking all messages in a mailbox as read or unread.</li>
+
+</ul>
+			]]>
+		</description>
+     </item>
+     <item>
         <title>Version 0.3.5b</title>
         <pubDate>Apr 30, 2015 00:00:00 +0000</pubDate>
         <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.5b/Vitality_v0.3.5b.zip" sparkle:version="0.3.5b" length="4483243" type="application/octet-stream" />
