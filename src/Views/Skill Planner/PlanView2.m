@@ -35,7 +35,9 @@
 #import "PlanIO.h"
 #import "EvemonXmlPlanIO.h"
 
-@interface PlanView2 (SkillView2Private)
+@interface PlanView2 ()
+
+@property (retain,readwrite) SkillPlan *currentPlan;
 
 -(void) removeSkillsFromPlan:(NSIndexSet*)skillIndexes;
 -(void) removeSkillsPopupConfirmation:(NSArray*)antiPlan;
@@ -47,9 +49,13 @@
 
 @end
 
-@implementation PlanView2 (SkillView2Private)
 
--(void) removeSkillSheetDidEnd:(NSWindow *)sheet 
+@implementation PlanView2
+
+@synthesize delegate;
+@synthesize currentPlan = _currentPlan;
+
+-(void) removeSkillSheetDidEnd:(NSWindow *)sheet
 					returnCode:(NSInteger)returnCode 
 				   contextInfo:(void *)contextInfo
 {
@@ -170,13 +176,6 @@
 	NSLog(@"Notes button click row %ld", (long)row);
 }
 
-@end
-
-
-@implementation PlanView2
-
-@synthesize delegate;
-
 -(IBAction) displayPlanByPlanId:(NSInteger)tag
 {
     if(tag == currentTag){
@@ -196,6 +195,7 @@
 
 -(void) loadPlan:(SkillPlan*)plan;
 {
+    [self setCurrentPlan:plan];
 	[self displayPlanByPlanId:[plan planId]];
 }
 
@@ -288,7 +288,7 @@
     }
     else if( [sp isKindOfClass:[SkillPlanNote class]] )
     {
-        // TODO: open it in a window for editing
+        [self addNoteToSkillPlan:(SkillPlanNote *)sp];
     }
 }
 
@@ -335,6 +335,49 @@
 	return character;
 }
 
+- (void)addNoteToSkillPlan:(SkillPlanNote *)skillNote
+{
+    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString( @"Create a note", @"Prompt for the dialog box for entering a note for a skill plan" )
+                                     defaultButton:@"OK"
+                                   alternateButton:@"Cancel"
+                                       otherButton:nil
+                         informativeTextWithFormat:@""];
+    
+    NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 300, 24)];
+    if( skillNote )
+        [input setStringValue:[skillNote note]];
+    [alert setAccessoryView:input];
+    [input release];
+    
+    [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:@selector(addNoteAlertDidEnd:returnCode:contextInfo:) contextInfo:skillNote];
+}
+
+- (void)addNoteAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
+{
+    if( returnCode == NSAlertDefaultReturn )
+    {
+        NSTextField *input = (NSTextField *)[alert accessoryView];
+        if( input )
+        {
+            [input validateEditing];
+            SkillPlan *plan = [self currentPlan];
+            SkillPlanNote *spNote = (SkillPlanNote *)contextInfo;
+            if( spNote )
+            {
+                [spNote setNote:[input stringValue]];
+                [plan savePlan];
+                [tableView reloadData];
+            }
+            else
+            {
+                [plan addNote:[input stringValue] atIndex:-1];
+                [tableView reloadData];
+                [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[plan skillCount]-1] byExtendingSelection:NO];
+            }
+        }
+    }
+}
+
 #pragma mark TableView Delegate methods
 
 -(BOOL) tableView:(NSTableView*)aTableView keyDownEvent:(NSEvent*)theEvent
@@ -371,6 +414,12 @@
 	if([[pvDatasource currentPlan]increaseSkillToLevel:pair]){
 		[self refreshPlanView];
 	}
+}
+
+-(void) editSkillPlanNote:(id)sender
+{
+    SkillPlanNote *note = [sender representedObject];
+    [self addNoteToSkillPlan:note];
 }
 
 -(void) addSkillArrayToActivePlan:(NSArray*)skillArray

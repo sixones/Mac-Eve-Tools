@@ -8,10 +8,6 @@
 
 #import "SkillPlanNote.h"
 
-@interface SkillPlanNote()
-@property (retain,readwrite) NSString *note;
-@end
-
 @implementation SkillPlanNote
 
 @synthesize note = _note;

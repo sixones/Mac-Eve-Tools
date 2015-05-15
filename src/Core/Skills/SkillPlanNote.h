@@ -12,7 +12,7 @@
 {
     NSString *_note;
 }
-@property (retain,readonly) NSString *note;
+@property (retain,readwrite) NSString *note;
 
 + (SkillPlanNote *)skillPlanNoteWithString:(NSString *)note;
 

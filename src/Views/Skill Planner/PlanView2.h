@@ -24,6 +24,7 @@
 #import "AttributeModifierController.h"
 
 @class SkillPlan;
+@class SkillPlanNote;
 @class PlanView2Datasource;
 @class Character;
 @class MetTableHeaderMenuManager;
@@ -42,7 +43,8 @@
 	Character *character;
 	
 	NSInteger currentTag;
-	
+    SkillPlan *_currentPlan;
+    
 	id delegate;
     MetTableHeaderMenuManager *headerMenuManager;
 }
@@ -60,5 +62,7 @@
 -(void)loadPlan:(SkillPlan *)plan;
 
 -(void) refreshPlanView;
+
+- (void)addNoteToSkillPlan:(SkillPlanNote *)skillNote; ///< Open a modal alert with a text field. Update skillNote or create a new one if argument is nil
 
 @end

@@ -426,33 +426,8 @@
 }
 
 - (void)addNoteToSkillPlan:(id)sender
-{    
-    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString( @"Create a note", @"Prompt for the dialog box for entering a note for a skill plan" )
-                                     defaultButton:@"OK"
-                                   alternateButton:@"Cancel"
-                                       otherButton:nil
-                         informativeTextWithFormat:@""];
-    
-    NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 300, 24)];
-    [alert setAccessoryView:input];
-    [input release];
-
-    [alert beginSheetModalForWindow:nil modalDelegate:self didEndSelector:@selector(addNoteAlertDidEnd:returnCode:contextInfo:) contextInfo:nil];
-}
-
-- (void)addNoteAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
 {
-    if( returnCode == NSAlertDefaultReturn )
-    {
-        NSTextField *input = (NSTextField *)[alert accessoryView];
-        if( input )
-        {
-            [input validateEditing];
-            SkillPlan *plan = [planOverview currentPlan];
-            [plan addNote:[input stringValue] atIndex:-1];
-            [skillView2 refreshPlanView];
-        }
-    }
+    [skillView2 addNoteToSkillPlan:nil];
 }
 
 -(IBAction) attributeModifierButtonClick:(id)sender

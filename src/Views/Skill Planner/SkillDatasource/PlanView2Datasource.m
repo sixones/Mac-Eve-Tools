@@ -192,6 +192,18 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	NSNumber *planRow = [NSNumber numberWithInteger:row];
 	NSMenu *menu = [[[NSMenu alloc]initWithTitle:@""]autorelease];
     SkillPair *sp = [skillPlan skillAtIndex:row];
+    
+    if( [sp isKindOfClass:[SkillPlanNote class]] )
+    {
+        NSMenuItem *item = [[NSMenuItem alloc]initWithTitle:NSLocalizedString( @"Edit Note", @"Edit Note contextual menu item title" )
+                                                     action:@selector(editSkillPlanNote:)
+                                              keyEquivalent:@""];
+        [item setRepresentedObject:sp];
+        [menu addItem:item];
+        [item release];
+        return menu;
+    }
+    
     Skill *s = [masterSkillSet objectForKey:[sp typeID]];
     
     
