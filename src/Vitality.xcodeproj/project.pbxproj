@@ -104,6 +104,7 @@
 		A1D5924C1AFD5C5C00448F17 /* evemail.png in Resources */ = {isa = PBXBuildFile; fileRef = A1D5924B1AFD5C5C00448F17 /* evemail.png */; };
 		A1D5924F1AFD5E6600448F17 /* marketorders.png in Resources */ = {isa = PBXBuildFile; fileRef = A1D5924D1AFD5E6600448F17 /* marketorders.png */; };
 		A1D592521AFD632100448F17 /* evemail2.png in Resources */ = {isa = PBXBuildFile; fileRef = A1D592501AFD632100448F17 /* evemail2.png */; };
+		A1D592551B05275600448F17 /* SkillPlanNote.m in Sources */ = {isa = PBXBuildFile; fileRef = A1D592541B05275600448F17 /* SkillPlanNote.m */; };
 		A1E4374A1A23C05200B19A34 /* CCPImplant.m in Sources */ = {isa = PBXBuildFile; fileRef = A1E437491A23C05200B19A34 /* CCPImplant.m */; };
 		A1FCD0561829881600A6655A /* METIDtoName.m in Sources */ = {isa = PBXBuildFile; fileRef = A1FCD0551829881600A6655A /* METIDtoName.m */; };
 		C911FED710782C50000D88E2 /* CharacterParseError.m in Sources */ = {isa = PBXBuildFile; fileRef = C911FED610782C50000D88E2 /* CharacterParseError.m */; };
@@ -337,6 +338,8 @@
 		A1D5924B1AFD5C5C00448F17 /* evemail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = evemail.png; path = English.lproj/evemail.png; sourceTree = "<group>"; };
 		A1D5924E1AFD5E6600448F17 /* English */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = English; path = marketorders.png; sourceTree = "<group>"; };
 		A1D592511AFD632100448F17 /* English */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = English; path = English.lproj/evemail2.png; sourceTree = "<group>"; };
+		A1D592531B05275600448F17 /* SkillPlanNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkillPlanNote.h; sourceTree = "<group>"; };
+		A1D592541B05275600448F17 /* SkillPlanNote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SkillPlanNote.m; sourceTree = "<group>"; };
 		A1E437481A23C05200B19A34 /* CCPImplant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPImplant.h; sourceTree = "<group>"; };
 		A1E437491A23C05200B19A34 /* CCPImplant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPImplant.m; sourceTree = "<group>"; };
 		A1FCD05118245DDC00A6655A /* MetLabelValueTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetLabelValueTableCellView.h; path = Core/MetLabelValueTableCellView.h; sourceTree = SOURCE_ROOT; };
@@ -984,6 +987,8 @@
 				C9FF472C10550BA50044BBAC /* SkillPair.m */,
 				C9FF472D10550BA50044BBAC /* SkillPlan.h */,
 				C9FF472E10550BA50044BBAC /* SkillPlan.m */,
+				A1D592531B05275600448F17 /* SkillPlanNote.h */,
+				A1D592541B05275600448F17 /* SkillPlanNote.m */,
 				C9FF472F10550BA60044BBAC /* SkillTree.h */,
 				C9FF473010550BA60044BBAC /* SkillTree.m */,
 				C920678E1161D837001BBE14 /* SkillAttribute.h */,
@@ -1298,6 +1303,7 @@
 			files = (
 				A11DFF281A82D77F0047D5F5 /* METMailHeaderCell.m in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				A1D592551B05275600448F17 /* SkillPlanNote.m in Sources */,
 				C9FF478310550BA60044BBAC /* Account.m in Sources */,
 				C9FF478410550BA60044BBAC /* bsd-base64.c in Sources */,
 				A11F72191AD6F84C002E1906 /* MarketOrder.m in Sources */,

@@ -9,15 +9,17 @@
 #import "CharacterDatabasePrivate.h"
 #import "SkillPair.h"
 #import "SkillPlan.h"
+#import "SkillPlanNote.h"
 #import <sqlite3.h>
 #import "macros.h"
+#import "Helpers.h"
 
 @implementation CharacterDatabase (CharacterDatabasePrivate) 
 
 //Read the skill plan items into the skill plan.
 -(BOOL) readSkillPlanPrivate:(SkillPlan*)plan planId:(sqlite_int64)planId
 {
-	const char select_skill_plan[] = "SELECT type_id, level FROM skill_plan WHERE plan_id = ? ORDER BY type_order;";
+	const char select_skill_plan[] = "SELECT type_id, level, note FROM skill_plan WHERE plan_id = ? ORDER BY type_order;";
 	sqlite3_stmt *read_skill_stmt = NULL;
 	int rc;	
 	
@@ -40,9 +42,21 @@
 	while(sqlite3_step(read_skill_stmt) == SQLITE_ROW){
 		NSInteger type = sqlite3_column_nsint(read_skill_stmt,0);
 		NSInteger level = sqlite3_column_nsint(read_skill_stmt,1);
-		SkillPair *pair = [[SkillPair alloc]initWithSkill:[NSNumber numberWithInteger:type] level:level];
-		[array addObject:pair];
-		[pair release];
+        if( -1 == type )
+        {
+            NSString *noteStr = sqlite3_column_nsstr( read_skill_stmt, 2 );
+            if( noteStr )
+            {
+                SkillPlanNote *note = [SkillPlanNote skillPlanNoteWithString:noteStr];
+                [array addObject:note];
+            }
+        }
+        else
+        {
+            SkillPair *pair = [[SkillPair alloc]initWithSkill:[NSNumber numberWithInteger:type] level:level];
+            [array addObject:pair];
+            [pair release];
+        }
 	}
 	
 	[plan addSkillArrayToPlan:array];
@@ -230,7 +244,7 @@
 
 -(BOOL) writeSkillPlanById:(sqlite_int64)planId forPlan:(SkillPlan*)plan
 {
-	const char insert_skill[] = "INSERT INTO skill_plan VALUES (?,?,?,?);";
+	const char insert_skill[] = "INSERT INTO skill_plan VALUES (?,?,?,?,?,NULL);";
 	sqlite3_stmt *insert_skill_stmt;
 	BOOL success = YES;
 	int rc;
@@ -251,7 +265,19 @@
 		sqlite3_bind_nsint(insert_skill_stmt,2,i);
 		sqlite3_bind_nsint(insert_skill_stmt,3,[[sp typeID]integerValue]);
 		sqlite3_bind_nsint(insert_skill_stmt,4,[sp skillLevel]);
-		
+		if( [sp isKindOfClass:[SkillPlanNote class]] )
+        {
+            NSString *note = [(SkillPlanNote *)sp note];
+            if( note )
+                sqlite3_bind_text( insert_skill_stmt, 5, [note UTF8String], (int)[note length], NULL );
+            else
+                sqlite3_bind_null(insert_skill_stmt, 5);
+        }
+        else
+        {
+            sqlite3_bind_null(insert_skill_stmt, 5);
+        }
+
 		if((rc = sqlite3_step(insert_skill_stmt)) != SQLITE_DONE){
 			NSLog(@"sqlite error inserting skill plan");
 			success = NO;

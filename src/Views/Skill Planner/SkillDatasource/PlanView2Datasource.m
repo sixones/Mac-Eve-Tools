@@ -87,13 +87,29 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 {
 	SkillPlan *skillPlan = [self currentPlan];
     SkillPair *sp = [skillPlan skillAtIndex:rowIndex];
+    
+    if( [sp isKindOfClass:[SkillPlanNote class]] )
+    {
+        if( [[aTableColumn identifier] isEqualToString:COL_PLAN_SKILLNAME] )
+        {
+            return [(SkillPlanNote *)sp note];
+        }
+
+        return nil;
+    }
+    
 	Skill *s = [masterSkillSet objectForKey:[sp typeID]];
 	
-	if([[aTableColumn identifier] isEqualToString:COL_PLAN_SKILLNAME]){
-		return [NSString stringWithFormat:@"%@ %@",[s skillName],romanForInteger([sp skillLevel])];
-	}else if([[aTableColumn identifier] isEqualToString:COL_PLAN_SPHR]){
-		return [skillPlan spHrForSkill:rowIndex];
-	}else if([[aTableColumn identifier] isEqualToString:COL_PLAN_TRAINING_TIME]){
+	if([[aTableColumn identifier] isEqualToString:COL_PLAN_SKILLNAME])
+    {
+		return [sp roman];
+	}
+    else if([[aTableColumn identifier] isEqualToString:COL_PLAN_SPHR])
+    {
+		return [NSNumber numberWithInteger:[sp skillPointsPerHourFor:character]];
+	}
+    else if([[aTableColumn identifier] isEqualToString:COL_PLAN_TRAINING_TIME])
+    {
 		NSInteger trainingTime = (NSInteger)[[skillPlan skillTrainingFinish:rowIndex]
 											 timeIntervalSinceDate:[skillPlan skillTrainingStart:rowIndex]];
 		if(trainingTime == 0){
@@ -101,16 +117,24 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 		}else{
 			return stringTrainingTime(trainingTime);
 		}
-	}else if([[aTableColumn identifier] isEqualToString:COL_PLAN_TRAINING_TTD]){
+	}
+    else if([[aTableColumn identifier] isEqualToString:COL_PLAN_TRAINING_TTD])
+    {
 		NSInteger trainingTime = (NSInteger)[[skillPlan skillTrainingFinish:rowIndex]
 											 timeIntervalSinceDate:[skillPlan skillTrainingStart:0]];
 		return stringTrainingTime(trainingTime);
-	}else if([[aTableColumn identifier] isEqualToString:COL_PLAN_CALSTART]){
+	}
+    else if([[aTableColumn identifier] isEqualToString:COL_PLAN_CALSTART])
+    {
 		/*the date and time that this skill will start training*/
 		return [[GlobalData sharedInstance]formatDate:[skillPlan skillTrainingStart:rowIndex]];
-	}else if([[aTableColumn identifier] isEqualToString:COL_PLAN_CALFINISH]){
+	}
+    else if([[aTableColumn identifier] isEqualToString:COL_PLAN_CALFINISH])
+    {
 		return [[GlobalData sharedInstance]formatDate:[skillPlan skillTrainingFinish:rowIndex]];
-	}else if([[aTableColumn identifier] isEqualToString:COL_PLAN_PERCENT]){
+	}
+    else if([[aTableColumn identifier] isEqualToString:COL_PLAN_PERCENT])
+    {
 		CGFloat percentCompleted = [character percentCompleted:[sp typeID]
 													 fromLevel:[sp skillLevel]-1 
 													   toLevel:[sp skillLevel]];

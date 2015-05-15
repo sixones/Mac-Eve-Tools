@@ -22,6 +22,7 @@
 #import "SkillTree.h"
 #import "SkillPlan.h"
 #import "SkillPair.h"
+#import "SkillPlanNote.h"
 
 #import "Helpers.h"
 #import "Character.h"
@@ -72,7 +73,6 @@
 	dirty = YES;
 	planTrainingTime = 0;
 	[skillDates removeAllObjects];
-	[spHrArray removeAllObjects];
 }
 
 -(void) addSkillToQueue:(NSNumber*)typeID level:(NSInteger)level atFront:(BOOL)front
@@ -199,7 +199,6 @@
 {
 	[skillPlan release];
 	[skillDates release];
-	[spHrArray release];
 	
 	[planName release];
     [manualOrder release];
@@ -217,7 +216,6 @@ static NSDictionary *masterSkillSet = nil;;
 	if(self = [super init]){
 		skillPlan = [[NSMutableArray alloc]init];
 		skillDates = [[NSMutableArray alloc]init];
-		spHrArray = [[NSMutableArray alloc]init];
 		dirty = NO;
 		planTrainingTime = 0;
 		character = nil;
@@ -312,9 +310,18 @@ static NSDictionary *masterSkillSet = nil;;
 -(void) addSkillArrayToPlan:(NSArray*)prereqArray
 {
 	NSInteger skillsAdded = 0;
-	for(SkillPair *p in prereqArray){
+	for(SkillPair *p in prereqArray)
+    {
 		//NSLog(@"Adding %@ to %@",p,planName);
-		skillsAdded += [self privateAddSkillToPlan:[p typeID] level:[p skillLevel]];
+        if( [p isKindOfClass:[SkillPlanNote class]] )
+        {
+            [skillPlan addObject:p];
+            ++skillsAdded;
+        }
+        else
+        {
+            skillsAdded += [self privateAddSkillToPlan:[p typeID] level:[p skillLevel]];
+        }
 	}
 	if(skillsAdded > 0){
 		[self resetCache];
@@ -562,64 +569,57 @@ static NSDictionary *masterSkillSet = nil;;
 	NSMutableArray *antiPlan = [[[NSMutableArray alloc]init]autorelease];
 	
 	[self constructAntiPlan2:[skillToRemove typeID] level:[skillToRemove skillLevel] antiPlan:antiPlan];
-	/*
-	SkillTree *st = [Config GetInstance]->st;
-	NSLog(@"Skills to remove");
-	for(SkillPair *sp in antiPlan){
-		NSLog(@"%@ %ld",[st skillForId:[sp typeID]], [sp skillLevel]);
-	}
-	NSLog(@"Done");
-	*/
+
 	return antiPlan;
 }
 
-/*
- remove multiple indexes from the array. perhaps alter this to take an index set if i use it in any other locations?
- another edge case where the 
- */
--(NSArray*) constructAntiPlan:(NSUInteger*)skillIndex arrayLength:(NSUInteger)arrayLength
+-(NSArray*) constructAntiPlanWithIndexes:(NSIndexSet *)indexes
 {
-	NSMutableArray *antiPlan = [[[NSMutableArray alloc]init]autorelease];
-		
-	for(NSUInteger i = 0; i < arrayLength; i++){
-		SkillPair *skillToRemove = [skillPlan objectAtIndex:skillIndex[i]];
-		[self constructAntiPlan2:[skillToRemove typeID] level:[skillToRemove skillLevel] antiPlan:antiPlan];
-	}
-	return antiPlan;
+    NSMutableArray *antiPlan = [[[NSMutableArray alloc]init]autorelease];
+    
+    [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop)
+     {
+         SkillPair *skillToRemove = [skillPlan objectAtIndex:idx];
+         if( [skillToRemove isKindOfClass:[SkillPlanNote class]] )
+         {
+             [antiPlan addObject:skillToRemove];
+         }
+         else
+         {
+             [self constructAntiPlan2:[skillToRemove typeID] level:[skillToRemove skillLevel] antiPlan:antiPlan];
+         }
+     }];
+    
+    return antiPlan;
 }
 
 /*build up a list of start and finish times for the current plan*/
 -(BOOL) buildTrainingTimeList
 {
 	NSInteger trainingTime = 0;
-	SkillPair *pair;
 	
 	[skillDates removeAllObjects];
-	[spHrArray removeAllObjects];
 	
 	[character resetTempAttrBonus];
 	[character processAttributeSkills];
-	
-	SkillTree *st = [[GlobalData sharedInstance]skillTree];
-	
+		
 	//Starting date (Now)
 	NSDate *date = [[[NSDate alloc]init]autorelease];
 	
-	NSEnumerator *e = [skillPlan objectEnumerator];	
-	while((pair = [e nextObject]) != nil){
+	for( SkillPair *pair in skillPlan )
+    {
 		[skillDates addObject:date];		
 		
-		/*this should take into account amount completed?*/
-		trainingTime = [character trainingTimeInSeconds:[pair typeID] fromLevel:[pair skillLevel]-1 toLevel:[pair skillLevel]];
-		
-		Skill *s = [st skillForId:[pair typeID]];
-
-		NSInteger spPerHour = [character spPerHour:[s primaryAttr] 
-										 secondary:[s secondaryAttr]];
-		
-		[spHrArray addObject:[NSNumber numberWithInteger:spPerHour]];
-		
-		date = [[[NSDate alloc]initWithTimeInterval:trainingTime sinceDate:date]autorelease];
+        // If this is a SkillPlanNote, we want the start and end dats to be the same as
+        // the end date of the previous skill.
+        if( [pair isKindOfClass:[SkillPair class]] )
+        {
+            /*this should take into account amount completed?*/
+            trainingTime = [character trainingTimeInSeconds:[pair typeID] fromLevel:[pair skillLevel]-1 toLevel:[pair skillLevel]];
+            
+            date = [[[NSDate alloc]initWithTimeInterval:trainingTime sinceDate:date]autorelease];
+        }
+        
 		[skillDates addObject:date];
 	}
 	
@@ -765,14 +765,6 @@ static NSDictionary *masterSkillSet = nil;;
 	return level;
 }
 
--(NSNumber*) spHrForSkill:(NSInteger)index
-{
-	if([spHrArray count] == 0){
-		return nil;
-	}
-	return [spHrArray objectAtIndex:index];
-}
-
 -(BOOL) increaseSkillToLevel:(SkillPair*)pair
 {
 	NSInteger curIndex;
@@ -860,6 +852,22 @@ static NSDictionary *masterSkillSet = nil;;
         }
     }
     return NSNotFound;
+}
+
+-(BOOL) addNote:(NSString *)note atIndex:(NSInteger)index
+{
+    SkillPlanNote *skillNote = [SkillPlanNote skillPlanNoteWithString:note];
+    
+    if( (-1 == index) || (index >= [skillPlan count]) )
+        [skillPlan addObject:skillNote];
+    else
+        [skillPlan insertObject:skillNote atIndex:index];
+    
+    [self resetCache];
+    [self savePlan];
+    [self updateManualOrder];
+    
+    return YES;
 }
 
 // start at the top of the plan

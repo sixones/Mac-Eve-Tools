@@ -20,6 +20,7 @@
 #import "SkillPair.h"
 #import "Helpers.h"
 #import "GlobalData.h"
+#import "Character.h"
 
 @implementation SkillPair
 
@@ -103,6 +104,16 @@
 	typeID = [NSNumber numberWithInteger:[decoder decodeIntegerForKey:@"typeID"]];
 	skillLevel = [decoder decodeIntegerForKey:@"skillLevel"];
 	return [self initWithSkill:typeID level:skillLevel];
+}
+
+- (NSInteger)skillPointsPerHourFor:(Character *)character
+{
+    SkillTree *st = [[GlobalData sharedInstance] skillTree];
+    Skill *s = [st skillForId:[self typeID]];
+    NSInteger spPerHour = [character spPerHour:[s primaryAttr]
+                                     secondary:[s secondaryAttr]];
+    
+    return spPerHour;
 }
 
 @end

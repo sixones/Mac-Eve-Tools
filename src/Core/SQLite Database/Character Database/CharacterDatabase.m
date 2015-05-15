@@ -40,7 +40,7 @@
 
 @implementation CharacterDatabase
 
-#define CURRENT_DB_VERSION 4
+#define CURRENT_DB_VERSION 5
 
 -(BOOL) createDatabase
 {
@@ -51,7 +51,7 @@
 	const char createSkillPlanOverviewTable[] = 
 			"CREATE TABLE skill_plan_overview (plan_id INTEGER PRIMARY KEY, plan_name VARCHAR(64), plan_order INTEGER, UNIQUE(plan_name));";
 	const char createSkillPlanTable[] =
-			"CREATE TABLE skill_plan (plan_id INTEGER, type_order INTEGER, type_id INTEGER, level INTEGER);";
+			"CREATE TABLE skill_plan (plan_id INTEGER, type_order INTEGER, type_id INTEGER, level INTEGER, note VARCHAR(1000), attribute_set_id INTEGER DEFAULT 0);";
 	int rc;
 	
 	[self beginTransaction];
@@ -189,6 +189,28 @@
 		NSLog(@"Succesfully upgraded character database from version 2");
     }
 
+    if( (currentVersion < 5) && (toVersion >= 5) )
+    {
+        char *error = nil;
+        int rc;
+        
+        rc = sqlite3_exec(db, "ALTER TABLE skill_plan ADD COLUMN note VARCHAR(1000);", NULL,NULL,&error);
+        if(rc != SQLITE_OK){
+            [self logError:error];
+            [self rollbackTransaction];
+            return NO;
+        }
+        
+        rc = sqlite3_exec(db, "ALTER TABLE skill_plan ADD COLUMN attribute_set_id INTEGER DEFAULT 0;", NULL,NULL,&error);
+        if(rc != SQLITE_OK){
+            [self logError:error];
+            [self rollbackTransaction];
+            return NO;
+        }
+
+        NSLog(@"Succesfully upgraded character database table skill_plan");
+    }
+    
     {
         sqlite3_stmt *update_master;
         const char updateMasterTable[] = "UPDATE master SET version = ? WHERE table_name = 'master';";

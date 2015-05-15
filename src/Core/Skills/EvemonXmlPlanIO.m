@@ -126,6 +126,8 @@
 	
 	[plan addSkillToPlan:[NSNumber numberWithInteger:skillID] level:skillLevel];
 	
+    // TODO: Find any note children and add them as notes
+    
 	return YES;
 }
 
@@ -269,22 +271,39 @@
 	
 	NSInteger counter = [plan skillCount];
 	
-	for(NSInteger i = 0; i < counter; i++){
+	for(NSInteger i = 0; i < counter; i++)
+    {
 		SkillPair *sp = [plan skillAtIndex:i];
-		Skill *s = [st skillForId:[sp typeID]];
-		
-		xmlNode *skillNode = xmlNewChild(root,NULL,(xmlChar*)"entry",NULL);
-		xmlNewProp(skillNode,(xmlChar*)"skillID",(xmlChar*)
-				   [[[sp typeID]descriptionWithLocale:nil]UTF8String]);
-		xmlNewProp(skillNode,(xmlChar*)"skill",(xmlChar*)[[s skillName]UTF8String]);
-		
-		xmlNewProp(skillNode,(xmlChar*)"level",(xmlChar*)
-				   /*this is probably a crap way to do it*/
-				   [[[NSNumber numberWithInteger:[sp skillLevel]]descriptionWithLocale:nil]UTF8String]
-				   );
-		
-		xmlNewProp(skillNode,(xmlChar*)"priority",(xmlChar*)"1");
-		xmlNewProp(skillNode,(xmlChar*)"type",(xmlChar*)"Prerequisite");
+        if( [sp isKindOfClass:[SkillPlanNote class]] )
+        {
+            NSString *note = [(SkillPlanNote *)sp note];
+            if( note )
+            {
+                xmlNode *skillNode = xmlNewChild(root,NULL,(xmlChar*)"entry",NULL);
+                xmlNode *noteNode = xmlNewChild( skillNode, NULL, (xmlChar*)"notes", NULL );
+                xmlNode *node1 = xmlNewText( (xmlChar *)[note UTF8String] );
+                xmlAddChild(noteNode, node1);
+//                xmlNode *comment = xmlNewComment( (xmlChar *)[note UTF8String] );
+//                xmlAddChild( root, comment );
+            }
+        }
+        else
+        {
+            Skill *s = [st skillForId:[sp typeID]];
+            
+            xmlNode *skillNode = xmlNewChild(root,NULL,(xmlChar*)"entry",NULL);
+            xmlNewProp(skillNode,(xmlChar*)"skillID",(xmlChar*)
+                       [[[sp typeID]descriptionWithLocale:nil]UTF8String]);
+            xmlNewProp(skillNode,(xmlChar*)"skill",(xmlChar*)[[s skillName]UTF8String]);
+            
+            xmlNewProp(skillNode,(xmlChar*)"level",(xmlChar*)
+                       /*this is probably a crap way to do it*/
+                       [[[NSNumber numberWithInteger:[sp skillLevel]]descriptionWithLocale:nil]UTF8String]
+                       );
+            
+            xmlNewProp(skillNode,(xmlChar*)"priority",(xmlChar*)"1");
+            xmlNewProp(skillNode,(xmlChar*)"type",(xmlChar*)"Prerequisite"); // probably ought to change this to Planned
+        }
 	}
 	
 	xmlBuffer *buf = xmlBufferCreate();

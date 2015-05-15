@@ -20,7 +20,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "SkillPair.h"
-
+#import "SkillPlanNote.h"
 
 //Some of the comments in this file may or may not be a bit out of date
 
@@ -38,9 +38,8 @@
 	NSMutableArray *skillPlan;
 	/*the start and finish dates of each skill in the plan, use accesor methods to get the dates*/
 	NSMutableArray *skillDates;
-	/*Skill points per hour that the skill will be training at, taking into account modifiers such as learning skills*/
-	NSMutableArray *spHrArray;
-	/*this should be kept somewhere else*/
+
+    /*this should be kept somewhere else*/
 	Character *character; //the character that created this object. NOT RETAINED.
 	
 	NSString *planName;
@@ -94,8 +93,6 @@
 -(SkillPair*) skillAtIndex:(NSInteger)index;
 /*returns the max level this skill is queued to*/
 -(NSInteger) maxLevelForSkill:(NSNumber*)typeId atIndex:(NSInteger*)index;
-/*sp/hr for the skill at index, adjusted for any learning skills that have been added*/
--(NSNumber*) spHrForSkill:(NSInteger)index;
 
 /*supply an array of indexes of skills you want to move, and the location where you want them all inserted*/
 -(BOOL) moveSkill:(NSArray*)fromIndexArray to:(NSInteger)toIndex;
@@ -112,6 +109,8 @@
 
 -(void) removeSkillAtIndex:(NSInteger)index;
 
+-(BOOL) addNote:(NSString *)note atIndex:(NSInteger)index;
+
 /*returns the total training time of the plan in seconds*/
 -(NSInteger) trainingTime;
 -(NSInteger) trainingTime:(BOOL)recalc;
@@ -126,7 +125,7 @@
 
 /*remove the skill at skillIndex, returns an array of skills to be removed.*/
 -(NSArray*) constructAntiPlan:(NSInteger)skillIndex;
--(NSArray*) constructAntiPlan:(NSUInteger*)skillIndex arrayLength:(NSUInteger)arrayLength;
+-(NSArray*) constructAntiPlanWithIndexes:(NSIndexSet *)indexes;
 
 /*returns a start and finish date the indexed skill*/
 -(NSDate*) skillTrainingStart:(NSInteger)skillIndex;

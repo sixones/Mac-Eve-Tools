@@ -19,6 +19,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class Character;
 
 @interface SkillPair : NSObject <NSCoding> {
 	NSNumber *typeID;
@@ -44,5 +45,7 @@
 - (id)initWithCoder:(NSCoder *)decoder;
 
 //-(BOOL)isEqualToSkillPair:(id)other;
+
+- (NSInteger)skillPointsPerHourFor:(Character *)character;
 
 @end

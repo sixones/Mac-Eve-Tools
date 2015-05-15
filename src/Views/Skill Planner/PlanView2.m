@@ -75,9 +75,17 @@
 	
 	NSMutableString *str = [[NSMutableString alloc]init];
 	
-	for(SkillPair *sp in antiPlan){
-		Skill *s = [st skillForId:[sp typeID]];
-		[str appendFormat:@"%@ %@\n",[s skillName],romanForInteger([sp skillLevel])];	
+	for(SkillPair *sp in antiPlan)
+    {
+        if( [sp isKindOfClass:[SkillPlanNote class]] )
+        {
+            [str appendFormat:@"Note: %@\n",[(SkillPlanNote *)sp note]];
+        }
+        else
+        {
+            Skill *s = [st skillForId:[sp typeID]];
+            [str appendFormat:@"%@ %@\n",[s skillName],romanForInteger([sp skillLevel])];
+        }
 	}
 	[planSkillList setStringValue:str];
 	[str release];
@@ -100,15 +108,7 @@
 
 -(void) removeSkillsFromPlan:(NSIndexSet*)rowset
 {
-	NSUInteger rowsetCount = [rowset count];
-	NSUInteger *ary = malloc(sizeof(NSUInteger) * rowsetCount);
-	NSUInteger actual = [rowset getIndexes:ary maxCount:(sizeof(NSUInteger) * rowsetCount) inIndexRange:nil];
-	
-	assert(actual == rowsetCount);
-	
-	NSArray *antiPlan = [[pvDatasource currentPlan] constructAntiPlan:ary arrayLength:rowsetCount];
-	free(ary);
-	
+	NSArray *antiPlan = [[pvDatasource currentPlan] constructAntiPlanWithIndexes:rowset];	
 	[self removeSkillsPopupConfirmation:antiPlan];
 }
 
@@ -280,8 +280,16 @@
 	}
 	
     /* Display a popup window for the clicked skill */
-    NSNumber *typeID = [[[character skillPlanById:[pvDatasource planId]] skillAtIndex:selectedRow] typeID];
-    [SkillDetailsWindowController displayWindowForTypeID:typeID forCharacter:character];
+    SkillPair *sp = [[character skillPlanById:[pvDatasource planId]] skillAtIndex:selectedRow];
+    if( [sp isKindOfClass:[SkillPair class]] )
+    {
+        NSNumber *typeID = [sp typeID];
+        [SkillDetailsWindowController displayWindowForTypeID:typeID forCharacter:character];
+    }
+    else if( [sp isKindOfClass:[SkillPlanNote class]] )
+    {
+        // TODO: open it in a window for editing
+    }
 }
 
 - (void)copy:(id)sender
