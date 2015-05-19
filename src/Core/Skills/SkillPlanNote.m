@@ -36,6 +36,11 @@
     return 0;
 }
 
+-(NSString *)roman
+{
+    return [self note];
+}
+
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
     [encoder encodeObject:[self note] forKey:@"noteString"];

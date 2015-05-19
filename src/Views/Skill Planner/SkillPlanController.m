@@ -414,15 +414,22 @@
 
 -(void) exportEvemonPlan:(id)sender
 {
-	[self performPlanExport:@""];
+    [self exportPlan:[planOverview currentPlan]];
 }
 
--(void) exportPlanToText:(id)sender {
-    [self performTextPlanExportToClipboard: false];
+-(void) exportPlanToText:(id)sender
+{
+    NSString *planString = [[planOverview currentPlan] descriptionPlainText];
+    
+    [[NSPasteboard generalPasteboard] clearContents];
+    [[NSPasteboard generalPasteboard] setString:planString forType:NSStringPboardType];
 }
 
 -(void) exportPlanToEVEText:(id)sender {
-    [self performTextPlanExportToClipboard: true];
+    NSString *planString = [[planOverview currentPlan] descriptionInGame];
+    
+    [[NSPasteboard generalPasteboard] clearContents];
+    [[NSPasteboard generalPasteboard] setString:planString forType:NSStringPboardType];
 }
 
 - (void)addNoteToSkillPlan:(id)sender
@@ -497,34 +504,6 @@
 		modalDelegate:self
 	   didEndSelector:@selector(importSheetDidEnd:returnCode:contextInfo:)
 		  contextInfo:[filePath retain]];
-}
-
--(void) performPlanExport:(NSString*)filePath
-{
-	SkillPlan *plan = [planOverview currentPlan];
-	[self exportPlan:plan];
-}
-
--(void) performTextPlanExportToClipboard:(BOOL) eveStyle {
-	SkillPlan *plan = [planOverview currentPlan];
-        
-    NSMutableString *planString = [NSMutableString string];
-	NSInteger counter = [plan skillCount];
-    
-	for(NSInteger i = 0; i < counter; i++)
-    {
-        SkillPair *sp = [plan skillAtIndex:i];
-		Skill *s = [st skillForId:[sp typeID]];
-        
-        if (eveStyle) {
-            [planString appendFormat:@"<a href='showinfo:%d'>%@</a>\t L%d\n", (int) [sp typeID], [s skillName], (int) [sp skillLevel]];
-        } else {
-            [planString appendFormat:@"%@\n", [sp roman]];
-        }
-	}
-    
-    [[NSPasteboard generalPasteboard] clearContents];
-    [[NSPasteboard generalPasteboard] setString:planString forType:NSStringPboardType];
 }
 
 -(void) exportPlan:(SkillPlan *)plan

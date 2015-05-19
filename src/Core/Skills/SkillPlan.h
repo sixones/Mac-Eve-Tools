@@ -145,6 +145,7 @@
 /* Do the minimal amount of sorting needed to make sure that all skills are after their pre-requisites */
 -(void) sortPlanByPrerequisites;
 
-/* The skill plan as a simple list of "<skill> <level>" entries, for use pasting into the EVE client */
--(NSString *)EVEText;
+
+-(NSString *)descriptionPlainText; ///< The skill plan as a simple list of "<skill> <level>" entries, for use pasting into the EVE client
+-(NSString *)descriptionInGame; ///< E.g. "<a href='showinfo:884791'>Jump Drive Operation</a>	 L5"
 @end

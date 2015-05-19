@@ -176,7 +176,7 @@
 
 -(NSString*) description
 {
-    return [NSString stringWithFormat:@"Skill plan %@\n%@", [self planName], [self EVEText]];
+    return [NSString stringWithFormat:@"Skill plan %@\n%@", [self planName], [self descriptionPlainText]];
 }
 
 -(void) savePlan
@@ -1023,7 +1023,7 @@ static NSDictionary *masterSkillSet = nil;;
     [self resetCache];
 }
 
--(NSString *)EVEText
+-(NSString *)descriptionPlainText
 {
     NSMutableString *planString = [NSMutableString string];
     
@@ -1034,4 +1034,23 @@ static NSDictionary *masterSkillSet = nil;;
     
     return planString;
 }
+
+- (NSString *)descriptionInGame
+{
+    NSMutableString *planString = [NSMutableString string];
+    
+    for( SkillPair *sp in skillPlan )
+    {
+        Skill *s = [[[GlobalData sharedInstance]skillTree] skillForId:[sp typeID]];
+        
+        if( [sp isKindOfClass:[SkillPlanNote class]] )
+            [planString appendFormat:@"<!-- %@ -->\n", [(SkillPlanNote *)sp note]];
+        else
+            [planString appendFormat:@"<a href='showinfo:%d'>%@</a>\t L%d\n", (int) [sp typeID], [s skillName], (int) [sp skillLevel]];
+    }
+    
+    return planString;
+}
+
+
 @end

@@ -253,7 +253,7 @@
 - (void)copy:(id)sender
 {
     SkillPlan *currentPlan = [character skillPlanAtIndex:[tableView selectedRow]];
-    NSString *planString = [currentPlan EVEText];
+    NSString *planString = [currentPlan descriptionPlainText];
     [[NSPasteboard generalPasteboard] clearContents];
     [[NSPasteboard generalPasteboard] setString:planString forType:NSStringPboardType];
 }
