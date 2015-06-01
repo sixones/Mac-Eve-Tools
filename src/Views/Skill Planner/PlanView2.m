@@ -337,7 +337,14 @@
 
 - (void)addNoteToSkillPlan:(SkillPlanNote *)skillNote
 {
-    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString( @"Create a note", @"Prompt for the dialog box for entering a note for a skill plan" )
+    NSString *messageText = nil;
+    
+    if( skillNote )
+        messageText = NSLocalizedString( @"Edit Skill Plan Note", @"Prompt for the dialog box for editing a note for a skill plan" );
+    else
+        messageText = NSLocalizedString( @"Create a note", @"Prompt for the dialog box for creating a note for a skill plan" );
+    
+    NSAlert *alert = [NSAlert alertWithMessageText:messageText
                                      defaultButton:@"OK"
                                    alternateButton:@"Cancel"
                                        otherButton:nil
