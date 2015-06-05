@@ -107,11 +107,17 @@
 	for(NSInteger i = 0; i < planLength; i++){
 		SkillPair *pair = [plan skillAtIndex:i];
 		
-		Skill *s = [st skillForId:[pair typeID]];
-		
-		[self addSkillPoints:[s skillPointsForLevel:[pair skillLevel]]
-				 primaryAttr:[s primaryAttr]
-			   secondaryAttr:[s secondaryAttr]];
+        // pair could be a SkillPlanNote or other object we don't care about here
+        if( [pair isKindOfClass:[SkillPair class]] )
+        {
+            Skill *s = [st skillForId:[pair typeID]];
+            if( s )
+            {
+                [self addSkillPoints:[s skillPointsForLevel:[pair skillLevel]]
+                         primaryAttr:[s primaryAttr]
+                       secondaryAttr:[s secondaryAttr]];
+            }
+        }
 	}
 	
 	[queue sortUsingSelector:@selector(sortBySkillPoints:)];

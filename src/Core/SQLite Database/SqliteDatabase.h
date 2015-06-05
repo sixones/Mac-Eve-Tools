@@ -39,6 +39,7 @@ typedef struct sqlite3 sqlite3;
 -(BOOL) rollbackTransaction;
 
 -(BOOL) doesTableExist:(NSString *)tableName;
+-(BOOL) doesTable:(NSString *)tableName haveColumn:(NSString *)colName;
 -(NSInteger) performCount:(const char*)query;
 
 @end

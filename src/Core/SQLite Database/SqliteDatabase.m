@@ -98,6 +98,9 @@
     char *strbuf = sqlite3_mprintf( checkTable, [tableName UTF8String] );
 
     int rc = sqlite3_prepare_v2( db, strbuf, (int)strlen(strbuf), &checkStatement, NULL );
+
+    sqlite3_free(strbuf);
+
     if(rc != SQLITE_OK){
         
         NSLog(@"Error preparing check table statement\n");
@@ -112,10 +115,41 @@
     {
         NSInteger count = sqlite3_column_nsint(checkStatement,0);
         if( count > 0 )
+        {
+            sqlite3_finalize(checkStatement);
             return YES;
+        }
     }
     
+    sqlite3_finalize(checkStatement);
+
     return NO;
+}
+
+-(BOOL) doesTable:(NSString *)tableName haveColumn:(NSString *)colName
+{
+    const char checkTable[] = "SELECT %q FROM %q LIMIT 1;";
+    sqlite3_stmt *checkStatement = NULL;
+    char *strbuf = sqlite3_mprintf( checkTable, [colName UTF8String], [tableName UTF8String] );
+    
+    int rc = sqlite3_prepare_v2( db, strbuf, (int)strlen(strbuf), &checkStatement, NULL );
+    
+    sqlite3_free(strbuf);
+    
+    if( rc != SQLITE_OK )
+    {
+        if( checkStatement != NULL )
+        {
+            sqlite3_finalize(checkStatement);
+        }
+        NSLog( @"Table %@ does not have column %@", tableName, colName );
+        return NO;
+    }
+    
+    sqlite3_finalize(checkStatement);
+
+    NSLog( @"Table %@ has column %@", tableName, colName );
+    return YES;
 }
 
 -(BOOL) beginTransaction

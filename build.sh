@@ -31,7 +31,7 @@ echo "====> Cloning from git: `date +\"${DATE_FMT}\"`" >> ${BUILD_LOG}
 git clone --quiet https://github.com/sixones/vitality.git >> ${BUILD_LOG}
 
 echo "====> Building app: `date +\"${DATE_FMT}\"`" >> ${BUILD_LOG}
-(cd vitality/src ; xcodebuild >> ${BUILD_LOG})
+(cd vitality/src ; xcodebuild -target Vitality -configuration Release >> ${BUILD_LOG})
 
 SUCC=`tail ${BUILD_LOG} | grep -c " BUILD SUCCEEDED "`
 if [ ${SUCC} -eq 1 ]; then

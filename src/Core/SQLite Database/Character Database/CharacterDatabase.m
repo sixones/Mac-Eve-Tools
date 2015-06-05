@@ -189,23 +189,29 @@
 		NSLog(@"Succesfully upgraded character database from version 2");
     }
 
-    if( (currentVersion < 5) && (toVersion >= 5) )
+    if( toVersion >= 5 )
     {
         char *error = nil;
         int rc;
         
-        rc = sqlite3_exec(db, "ALTER TABLE skill_plan ADD COLUMN note VARCHAR(1000);", NULL,NULL,&error);
-        if(rc != SQLITE_OK){
-            [self logError:error];
-            [self rollbackTransaction];
-            return NO;
+        if( ![self doesTable:@"skill_plan" haveColumn:@"note"] )
+        {
+            rc = sqlite3_exec(db, "ALTER TABLE skill_plan ADD COLUMN note VARCHAR(1000);", NULL,NULL,&error);
+            if(rc != SQLITE_OK){
+                [self logError:error];
+                [self rollbackTransaction];
+                return NO;
+            }
         }
         
-        rc = sqlite3_exec(db, "ALTER TABLE skill_plan ADD COLUMN attribute_set_id INTEGER DEFAULT 0;", NULL,NULL,&error);
-        if(rc != SQLITE_OK){
-            [self logError:error];
-            [self rollbackTransaction];
-            return NO;
+        if( ![self doesTable:@"skill_plan" haveColumn:@"attribute_set_id"] )
+        {
+            rc = sqlite3_exec(db, "ALTER TABLE skill_plan ADD COLUMN attribute_set_id INTEGER DEFAULT 0;", NULL,NULL,&error);
+            if(rc != SQLITE_OK){
+                [self logError:error];
+                [self rollbackTransaction];
+                return NO;
+            }
         }
 
         NSLog(@"Succesfully upgraded character database table skill_plan");
