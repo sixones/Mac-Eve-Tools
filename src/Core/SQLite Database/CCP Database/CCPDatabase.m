@@ -29,6 +29,7 @@
 #import "METShip.h"
 #import "METDependSkill.h"
 #import "METTrait.h"
+#import "METPair.h"
 
 #import "Helpers.h"
 #import "macros.h"
@@ -1488,6 +1489,46 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
 	
 	return staDict;
 }
+
+// @"name", @"stationID" and @"systemID" are the keys in the dictionary
+- (METPair *) namesForSystemID:(NSInteger)systemID;
+{
+    // first make sure the staStation table exists
+    const char query[] =
+    "SELECT solarSystemName, regionName "
+    "FROM mapSolarSystems, mapRegions "
+    "WHERE mapSolarSystems.solarSystemID = ? AND mapRegions.regionID = mapSolarSystems.regionID;";
+
+    sqlite3_stmt *read_stmt;
+    int rc;
+    
+    rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return nil;
+    }
+    
+    METPair *names = nil;
+    
+    sqlite3_bind_nsint(read_stmt,1,systemID);
+    
+    while(sqlite3_step(read_stmt) == SQLITE_ROW)
+    {
+        NSString *systemName = sqlite3_column_nsstr(read_stmt,0);
+        NSString *regionName = sqlite3_column_nsstr(read_stmt,1);
+        if( ([systemName length] > 0)
+           && [regionName length] > 0)
+        {
+            names = [METPair pairWithFirst:systemName second:regionName];
+            break;
+        }
+    }
+    
+    sqlite3_finalize(read_stmt);
+    
+    return names;
+}
+
 
 - (void)createCharacterNameTable
 {

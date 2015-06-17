@@ -22,6 +22,7 @@
 #import "MTCharacterOverviewCell.h"
 #import "Config.h"
 #import "GlobalData.h"
+#import "CCPDatabase.h"
 #import "Character.h"
 #import "Account.h"
 #import "SkillTree.h"
@@ -35,10 +36,17 @@
 #import "MarketViewController.h"
 #import "ContractsViewController.h"
 #import "VitalityMail.h"
+#import "METPair.h"
 
 #import "GeneralPrefViewController.h"
 #import "AccountPrefViewController.h"
 #import "DatabasePrefViewController.h"
+
+#import "CCPType.h"
+#import "CCPGroup.h"
+#import "ShipDetailsWindowController.h"
+#import "ModuleDetailsWindowController.h"
+#import "SkillDetailsWindowController.h"
 
 #import "METConquerableStations.h"
 
@@ -501,6 +509,8 @@
 		 selector:@selector(serverStatusUpdate:) 
 		 name:SERVER_STATUS_NOTIFICATION 
 		 object:monitor];
+        
+        [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 	}
 	
 	return self;
@@ -927,4 +937,122 @@
         [currentController performSelector:@selector(performFindPanelAction:) withObject:sender];
     }
 }
+
+/**
+ URL schemes not yet handled:
+ warreport:430633
+ fitting:29337:2048;1:31011;1:11269;2:31055;2:3025;3:5011;1:6005;1:1978;1:2364;3:11325;1:2488;3:250;3:12822;3:23089;3:32006;35::
+ joinchannel:-58925251//None//None
+ */
+- (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
+{
+    CCPDatabase *ccpdb = [[GlobalData sharedInstance] database];
+    // Get the URL
+    NSString *urlStr = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
+    NSURL *url = [NSURL URLWithString:urlStr];
+    NSString *scheme = [url scheme];
+    NSString *path = [url resourceSpecifier];
+
+    if( [@"showinfo" isEqualToString:scheme] )
+    {
+        NSScanner *scanner = [NSScanner scannerWithString:path];
+        NSInteger infoType = -1;
+        NSInteger typeID = -1;
+        if( [scanner scanInteger:&infoType]
+           && [scanner scanString:@"//" intoString:nil]
+           && [scanner scanInteger:&typeID] )
+        {
+            // handle it
+            NSLog( @"Showinfo URL kind/typeID: %ld/%ld", (long)infoType, (long)typeID );
+            /*
+             5/30004815  (system)
+             1377/91671093 (player)
+             16159/99004252 (Corp)
+             */
+            switch( infoType )
+            {
+                case 5:
+                {
+                    // get system/region names and build a Dotlan URL
+                    METPair *names = [ccpdb namesForSystemID:typeID];
+                    if( names )
+                    {
+                        // System form: http://evemaps.dotlan.net/system/C3-0YD
+                        // NSURL *newURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://evemaps.dotlan.net/system/%@", name]];
+                        
+                        // Region (map) URL form to use: http://evemaps.dotlan.net/map/Tenerifis/C3-0YD
+                        NSURL *newURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://evemaps.dotlan.net/map/%@/%@",
+                                                              [[names second] stringByReplacingOccurrencesOfString:@" " withString:@"_"],
+                                                              [[names first] stringByReplacingOccurrencesOfString:@" " withString:@"_"]]];
+
+                        [[NSWorkspace sharedWorkspace] openURL:newURL];
+                    }
+                    break;
+                }
+            }
+        }
+        else
+        {
+            NSInteger typeID = [path integerValue];
+            CCPType *type = [ccpdb type:typeID];
+
+            if( [[type group] categoryID] == DB_CATEGORY_SHIP )
+            {
+                [ShipDetailsWindowController displayShip:type forCharacter:currentCharacter];
+            }
+            if( [[type group] categoryID] == DB_CATEGORY_MODULE )
+            {
+                [ModuleDetailsWindowController displayModule:type forCharacter:currentCharacter];
+            }
+            if( [[type group] categoryID] == DB_CATEGORY_SKILL )
+            {
+                [SkillDetailsWindowController displayWindowForTypeID:typeID forCharacter:currentCharacter];
+            }
+            else
+            {
+                NSLog( @"Unable to handle Showinfo URL: %@", urlStr );
+            }
+        }
+    }
+    else if( [@"fitting" isEqualToString:scheme] )
+    {
+        // See also: https://wiki.eveonline.com/en/wiki/Ship_DNA
+        NSArray *items = [path componentsSeparatedByString:@":"];
+        for( NSString *item in items )
+        {
+            // This skips the double colon at the end, along with any other empty sections
+            if( [item length] == 0 )
+                continue;
+            
+            NSArray *itemAndCount = [item componentsSeparatedByString:@";"];
+            NSInteger typeID = -1;
+            NSInteger count = 0;
+            if( [itemAndCount count] == 1 )
+            {
+                typeID = [[itemAndCount objectAtIndex:0] integerValue];
+                count = 1;
+            }
+            else if( [itemAndCount count] == 2 )
+            {
+                typeID = [[itemAndCount objectAtIndex:0] integerValue];
+                count = [[itemAndCount objectAtIndex:1] integerValue];
+            }
+            else
+            {
+                NSLog( @"Error parsing fitting DNA: %@", path );
+            }
+            
+            if( typeID > -1 )
+            {
+                NSString *typeName = [ccpdb typeName:typeID];
+                NSLog( @"%ldx %@", (long int)count, typeName?typeName:[NSNumber numberWithInteger:typeID] );
+            }
+        }
+    }
+    else
+    {
+        NSLog( @"Unhandled URL scheme: %@", urlStr );
+    }
+}
+
 @end

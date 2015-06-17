@@ -71,6 +71,7 @@
 	SkillSearchShipDatasource *skillShipDatasource;
 	SkillSearchCertDatasource *skillCertDatasource;
     SkillSearchModuleDatasource *skillItemDatasource;
+    SkillSearchModuleDatasource *skillChargeDatasource;
 	
 	id<METInstance> mainApp;
 }

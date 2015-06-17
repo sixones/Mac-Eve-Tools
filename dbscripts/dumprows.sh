@@ -86,6 +86,14 @@ $PYEXE $SCRIPT -t metStations -f $1 \
 $PYEXE $SCRIPT -t metTypeNames -f $1 \
 -q "SELECT typeID, typeName, description FROM invTypes WHERE published = 1;";
 
+$PYEXE $SCRIPT -t mapSolarSystems -f $1 \
+-q "SELECT * FROM mapSolarSystems;";
+
+$PYEXE $SCRIPT -t mapSolarSystemJumps -f $1 \
+-q "SELECT * FROM mapSolarSystemJumps;";
+
+$PYEXE $SCRIPT -t mapRegions -f $1 \
+-q "SELECT * FROM mapRegions;";
 
 $PYEXE dump_certificates.py certificates.yaml >> $1
 $PYEXE dump_pre.py >> $1

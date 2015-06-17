@@ -248,3 +248,60 @@ CREATE TABLE "metCharacterNames" (
   "updated" TIMESTAMP default CURRENT_TIMESTAMP NOT NULL,
   PRIMARY KEY  ("characterID")
   );
+
+CREATE TABLE "mapSolarSystemJumps" (
+  "fromRegionID" bigint(20) DEFAULT NULL,
+  "fromConstellationID" bigint(20) DEFAULT NULL,
+  "fromSolarSystemID" bigint(20) NOT NULL,
+  "toSolarSystemID" bigint(20) NOT NULL,
+  "toConstellationID" bigint(20) DEFAULT NULL,
+  "toRegionID" bigint(20) DEFAULT NULL,
+  PRIMARY KEY ("fromSolarSystemID","toSolarSystemID")
+);
+
+CREATE TABLE "mapSolarSystems" (
+  "regionID" int(11) DEFAULT NULL,
+  "constellationID" int(11) DEFAULT NULL,
+  "solarSystemID" int(11) NOT NULL,
+  "solarSystemName" longtext,
+  "x" double DEFAULT NULL,
+  "y" double DEFAULT NULL,
+  "z" double DEFAULT NULL,
+  "xMin" double DEFAULT NULL,
+  "xMax" double DEFAULT NULL,
+  "yMin" double DEFAULT NULL,
+  "yMax" double DEFAULT NULL,
+  "zMin" double DEFAULT NULL,
+  "zMax" double DEFAULT NULL,
+  "luminosity" double DEFAULT NULL,
+  "border" tinyint(4) DEFAULT NULL,
+  "fringe" tinyint(4) DEFAULT NULL,
+  "corridor" tinyint(4) DEFAULT NULL,
+  "hub" tinyint(4) DEFAULT NULL,
+  "international" tinyint(4) DEFAULT NULL,
+  "regional" tinyint(4) DEFAULT NULL,
+  "constellation" tinyint(4) DEFAULT NULL,
+  "security" double DEFAULT NULL,
+  "factionID" int(11) DEFAULT NULL,
+  "radius" double DEFAULT NULL,
+  "sunTypeID" int(11) DEFAULT NULL,
+  "securityClass" longtext,
+  PRIMARY KEY ("solarSystemID")
+);
+
+CREATE TABLE "mapRegions" (
+  "regionID" int(11) NOT NULL,
+  "regionName" longtext,
+  "x" double DEFAULT NULL,
+  "y" double DEFAULT NULL,
+  "z" double DEFAULT NULL,
+  "xMin" double DEFAULT NULL,
+  "xMax" double DEFAULT NULL,
+  "yMin" double DEFAULT NULL,
+  "yMax" double DEFAULT NULL,
+  "zMin" double DEFAULT NULL,
+  "zMax" double DEFAULT NULL,
+  "factionID" int(11) DEFAULT NULL,
+  "radius" double DEFAULT NULL,
+  PRIMARY KEY ("regionID")
+);

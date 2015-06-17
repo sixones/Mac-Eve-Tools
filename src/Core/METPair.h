@@ -19,7 +19,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+/**
+ METPair. A simple class to hold two objects.
+ */
 @interface METPair : NSObject <NSCoding>
 {
 	id first;

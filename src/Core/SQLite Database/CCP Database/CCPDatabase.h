@@ -30,6 +30,7 @@
 @class CertTree;
 @class SkillTree;
 @class CCPImplant;
+@class METPair;
 
 @interface CCPDatabase : SqliteDatabase {
 	sqlite3_stmt *tran_stmt; //translation prepared statment
@@ -102,6 +103,9 @@
 
 // Use this to add destructable station and player outpost names to the metStation table
 - (void)insertStationID:(NSUInteger)stationID name:(NSString *)stationName system:(NSUInteger)solarSystemID;
+
+/// Temporary hack for getting solar system and region names from a solar system ID. At some point we may need a full class. First is system name, second is region name.
+- (METPair *) namesForSystemID:(NSInteger)systemID;
 
 // Store Character, Corporation, Alliance and Mailing List ID's and names for use in contracts, mail, etc.
 - (void)insertCharacterID:(NSUInteger)characterID name:(NSString *)name;
