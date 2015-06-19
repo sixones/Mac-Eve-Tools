@@ -289,6 +289,24 @@ CREATE TABLE "mapSolarSystems" (
   PRIMARY KEY ("solarSystemID")
 );
 
+CREATE TABLE "mapConstellations" (
+  "regionID" int(11) DEFAULT NULL,
+  "constellationID" int(11) NOT NULL,
+  "constellationName" longtext,
+  "x" double DEFAULT NULL,
+  "y" double DEFAULT NULL,
+  "z" double DEFAULT NULL,
+  "xMin" double DEFAULT NULL,
+  "xMax" double DEFAULT NULL,
+  "yMin" double DEFAULT NULL,
+  "yMax" double DEFAULT NULL,
+  "zMin" double DEFAULT NULL,
+  "zMax" double DEFAULT NULL,
+  "factionID" int(11) DEFAULT NULL,
+  "radius" double DEFAULT NULL,
+  PRIMARY KEY ("constellationID")
+);
+
 CREATE TABLE "mapRegions" (
   "regionID" int(11) NOT NULL,
   "regionName" longtext,

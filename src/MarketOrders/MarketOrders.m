@@ -312,6 +312,7 @@
 //                    The range this order is good for. For sell orders, this is always 32767. For buy orders, allowed values are: -1 = station, 0 = solar system, 5/10/20/40 Jumps, 32767 = region.
                     NSInteger range = [value integerValue];
                     NSString *rangeString = nil;
+                    // TODO: I think 1, 2 and 3 are also valid values.
                     switch( range )
                     {
                         case 0: rangeString = NSLocalizedString( @"Solar System", @"Market Order Range: Solar System" ); break;

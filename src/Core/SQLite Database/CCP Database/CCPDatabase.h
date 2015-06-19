@@ -106,6 +106,8 @@
 
 /// Temporary hack for getting solar system and region names from a solar system ID. At some point we may need a full class. First is system name, second is region name.
 - (METPair *) namesForSystemID:(NSInteger)systemID;
+- (METPair *) namesForConstellationID:(NSInteger)constellationID; ///< First is constellation name, second is region name
+- (NSString *) nameForRegionID:(NSInteger)regionID;
 
 // Store Character, Corporation, Alliance and Mailing List ID's and names for use in contracts, mail, etc.
 - (void)insertCharacterID:(NSUInteger)characterID name:(NSString *)name;

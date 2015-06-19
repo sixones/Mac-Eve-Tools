@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # cat 20 = implants
-CATEGORIES="6,7,8,16,20"
+# cat 1 = Characters, Corps, Alliances, Factions
+# cat 18 = Drones
+CATEGORIES="1,6,7,8,16,18,20"
 SCRIPT=dump_table.py
 PYEXE=python
 
@@ -13,9 +15,9 @@ $PYEXE $SCRIPT -t invMarketGroups -f $1 \
 
 $PYEXE $SCRIPT -t invCategories -f $1 \
 -q "SELECT categoryID,categoryName,iconID
-FROM invCategories
-WHERE published = 1
-AND categoryID IN ($CATEGORIES);"
+FROM invCategories;"
+#WHERE published = 1
+#AND categoryID IN ($CATEGORIES);"
 
 $PYEXE $SCRIPT -t invGroups -f $1 \
 -q "SELECT groupID,categoryID,groupName,iconID
@@ -91,6 +93,9 @@ $PYEXE $SCRIPT -t mapSolarSystems -f $1 \
 
 $PYEXE $SCRIPT -t mapSolarSystemJumps -f $1 \
 -q "SELECT * FROM mapSolarSystemJumps;";
+
+$PYEXE $SCRIPT -t mapConstellations -f $1 \
+-q "SELECT * FROM mapConstellations;";
 
 $PYEXE $SCRIPT -t mapRegions -f $1 \
 -q "SELECT * FROM mapRegions;";

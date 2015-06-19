@@ -943,6 +943,7 @@
  warreport:430633
  fitting:29337:2048;1:31011;1:11269;2:31055;2:3025;3:5011;1:6005;1:1978;1:2364;3:11325;1:2488;3:250;3:12822;3:23089;3:32006;35::
  joinchannel:-58925251//None//None
+ contract:30003048//86415664
  */
 - (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
@@ -955,6 +956,34 @@
 
     if( [@"showinfo" isEqualToString:scheme] )
     {
+        /*
+         Characters:
+         1377/91671093
+         1375/93347663
+         1385/94798453
+         1378/91794908
+         1386/94916626
+         
+         16159/99005559 (Alliance)
+         2/98160107 (Corp)
+         
+         5/30004815  (system)
+         4/20000207 (Constellation)
+         3/10000016 (Region)
+         
+         2454/1017452634108 (Drone)
+         
+         From: https://wiki.eveonline.com/en/wiki/IGB_Javascript_Methods
+         Some Helpful Type ID Numbers
+         
+         Alliance 16159
+         Character 1377 (see note 1)
+         Corporation 2
+         Constellation 4
+         Region 3
+         Solar System 5
+         Station 3867 (see note 2)
+         */
         NSScanner *scanner = [NSScanner scannerWithString:path];
         NSInteger infoType = -1;
         NSInteger typeID = -1;
@@ -964,31 +993,88 @@
         {
             // handle it
             NSLog( @"Showinfo URL kind/typeID: %ld/%ld", (long)infoType, (long)typeID );
-            /*
-             5/30004815  (system)
-             1377/91671093 (player)
-             16159/99004252 (Corp)
-             */
-            switch( infoType )
+            
+//            CCPType *type = [ccpdb type:infoType];
+            if( (infoType >= 1373) && (infoType <= 1386) )
             {
-                case 5:
+                // All typeID's between 1373 and 1386
+                // This is a character. Open in evewho.com? Or use their API?
+                /*
+                 From: http://evewho.com/faq/
+                 Required parameters: type and id
+                 Optional Parameters: page (default 0)
+                 Defined Parameters: limit of 200 characters per call
+                 
+                 Valid types: corplist, allilist, character, corporation, alliance
+                 
+                 Examples:
+                 Squizz Caphinator: http://evewho.com/api.php?type=character&id=1633218082
+                 Woopatang [--W--]: http://evewho.com/api.php?type=corplist&id=869043665
+                 Woopatang [--W--]: http://evewho.com/api.php?type=corporation&id=869043665
+                 Happy Endings <FONDL>: http://evewho.com/api.php?type=allilist&id=99001433
+                 Happy Endings <FONDL>: http://evewho.com/api.php?type=alliance&id=99001433
+                 */
+                /*  Make this asynchronous once we have a way to display the info
+                NSString *urlString = [NSString stringWithFormat:@"http://evewho.com/api.php?type=character&id=%ld", (long int)typeID];
+                NSURL *url = [NSURL URLWithString:urlString];
+//                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
+//                NSURLResponse* response = nil;
+//                NSData* data = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:nil];
+                NSError *error = nil;
+                NSString *datString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&error];
+                NSLog( @"character data: %@", datString );
+                 */
+            }
+            else if( (3 == infoType)
+                    || (4 == infoType)
+                    || (5 == infoType) )
+            {
+                // System form: http://evemaps.dotlan.net/system/C3-0YD
+                // NSURL *newURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://evemaps.dotlan.net/system/%@", name]];
+                // Region (map) URL form to use: http://evemaps.dotlan.net/map/Tenerifis/C3-0YD
+                // Similar if you want to show a constellation: http://evemaps.dotlan.net/map/Tenerifis/E-IFSA
+                // And this for a region: http://evemaps.dotlan.net/map/Tenerifis
+                NSString *urlString = nil;
+                switch( infoType )
                 {
-                    // get system/region names and build a Dotlan URL
-                    METPair *names = [ccpdb namesForSystemID:typeID];
-                    if( names )
+                    case 5: // A system
                     {
-                        // System form: http://evemaps.dotlan.net/system/C3-0YD
-                        // NSURL *newURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://evemaps.dotlan.net/system/%@", name]];
-                        
-                        // Region (map) URL form to use: http://evemaps.dotlan.net/map/Tenerifis/C3-0YD
-                        NSURL *newURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://evemaps.dotlan.net/map/%@/%@",
-                                                              [[names second] stringByReplacingOccurrencesOfString:@" " withString:@"_"],
-                                                              [[names first] stringByReplacingOccurrencesOfString:@" " withString:@"_"]]];
-
-                        [[NSWorkspace sharedWorkspace] openURL:newURL];
+                        // get system/region names and build a Dotlan URL
+                        METPair *names = [ccpdb namesForSystemID:typeID];
+                        if( names )
+                        {
+                            urlString = [NSString stringWithFormat:@"http://evemaps.dotlan.net/map/%@/%@",
+                                                                  [[names second] stringByReplacingOccurrencesOfString:@" " withString:@"_"],
+                                                                  [[names first] stringByReplacingOccurrencesOfString:@" " withString:@"_"]];
+                            
+                        }
+                        break;
                     }
-                    break;
+                    case 4: // A constellation
+                    {
+                        // get system/region names and build a Dotlan URL
+                        METPair *names = [ccpdb namesForConstellationID:typeID];
+                        if( names )
+                        {
+                            urlString = [NSString stringWithFormat:@"http://evemaps.dotlan.net/map/%@/%@",
+                                         [[names second] stringByReplacingOccurrencesOfString:@" " withString:@"_"],
+                                         [[names first] stringByReplacingOccurrencesOfString:@" " withString:@"_"]];
+                            
+                        }
+                        break;
+                    }
+                    case 3: // A region
+                    {
+                        NSString *regionName = [ccpdb nameForRegionID:typeID];
+                        if( regionName )
+                        {
+                            urlString = [NSString stringWithFormat:@"http://evemaps.dotlan.net/map/%@", regionName];
+                        }
+                        break;
+                    }
                 }
+                if( urlString )
+                    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:urlString]];
             }
         }
         else
@@ -1000,16 +1086,22 @@
             {
                 [ShipDetailsWindowController displayShip:type forCharacter:currentCharacter];
             }
-            if( [[type group] categoryID] == DB_CATEGORY_MODULE )
+            else if( ([[type group] categoryID] == DB_CATEGORY_MODULE)
+               || ([[type group] categoryID] == DB_CATEGORY_CHARGE) )
             {
                 [ModuleDetailsWindowController displayModule:type forCharacter:currentCharacter];
             }
-            if( [[type group] categoryID] == DB_CATEGORY_SKILL )
+            else if( [[type group] categoryID] == DB_CATEGORY_SKILL )
             {
-                [SkillDetailsWindowController displayWindowForTypeID:typeID forCharacter:currentCharacter];
+                [SkillDetailsWindowController displayWindowForTypeID:[NSNumber numberWithInteger:typeID] forCharacter:currentCharacter];
             }
             else
             {
+                // Currently not handling:
+                // T3 subsystems, e.g. 29979
+                // Small Secure Container: 3467
+                // Blueprint: 32867
+
                 NSLog( @"Unable to handle Showinfo URL: %@", urlStr );
             }
         }
