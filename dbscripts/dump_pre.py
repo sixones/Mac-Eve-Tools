@@ -8,7 +8,7 @@ import db_config
 
 
 def dumpPrerequisites():
-    q_type_id = "SELECT typeID FROM invTypes where published = 1 AND groupID IN (SELECT groupID FROM invGroups WHERE categoryID IN (6,7,8,16));"
+    q_type_id = "SELECT typeID FROM invTypes where published = 1 AND groupID IN (SELECT groupID FROM invGroups WHERE categoryID IN (6,7,8,16,18,20,32));"
 
     table_query = """SELECT taSkill.typeID, 
         COALESCE(taSkill.valueInt,FLOOR(taSkill.valueFloat)) as skillTypeID, 

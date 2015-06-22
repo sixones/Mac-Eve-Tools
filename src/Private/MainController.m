@@ -44,9 +44,9 @@
 
 #import "CCPType.h"
 #import "CCPGroup.h"
-#import "ShipDetailsWindowController.h"
-#import "ModuleDetailsWindowController.h"
-#import "SkillDetailsWindowController.h"
+#import "METDetailWindowController.h"
+#import "METFittingController.h"
+#import "METFitting.h"
 
 #import "METConquerableStations.h"
 
@@ -1081,65 +1081,15 @@
         {
             NSInteger typeID = [path integerValue];
             CCPType *type = [ccpdb type:typeID];
+            [METDetailWindowController displayDetailsOfType:type forCharacter:currentCharacter];
 
-            if( [[type group] categoryID] == DB_CATEGORY_SHIP )
-            {
-                [ShipDetailsWindowController displayShip:type forCharacter:currentCharacter];
-            }
-            else if( ([[type group] categoryID] == DB_CATEGORY_MODULE)
-               || ([[type group] categoryID] == DB_CATEGORY_CHARGE) )
-            {
-                [ModuleDetailsWindowController displayModule:type forCharacter:currentCharacter];
-            }
-            else if( [[type group] categoryID] == DB_CATEGORY_SKILL )
-            {
-                [SkillDetailsWindowController displayWindowForTypeID:[NSNumber numberWithInteger:typeID] forCharacter:currentCharacter];
-            }
-            else
-            {
-                // Currently not handling:
-                // T3 subsystems, e.g. 29979
-                // Small Secure Container: 3467
-                // Blueprint: 32867
-
-                NSLog( @"Unable to handle Showinfo URL: %@", urlStr );
-            }
         }
     }
     else if( [@"fitting" isEqualToString:scheme] )
     {
-        // See also: https://wiki.eveonline.com/en/wiki/Ship_DNA
-        NSArray *items = [path componentsSeparatedByString:@":"];
-        for( NSString *item in items )
-        {
-            // This skips the double colon at the end, along with any other empty sections
-            if( [item length] == 0 )
-                continue;
-            
-            NSArray *itemAndCount = [item componentsSeparatedByString:@";"];
-            NSInteger typeID = -1;
-            NSInteger count = 0;
-            if( [itemAndCount count] == 1 )
-            {
-                typeID = [[itemAndCount objectAtIndex:0] integerValue];
-                count = 1;
-            }
-            else if( [itemAndCount count] == 2 )
-            {
-                typeID = [[itemAndCount objectAtIndex:0] integerValue];
-                count = [[itemAndCount objectAtIndex:1] integerValue];
-            }
-            else
-            {
-                NSLog( @"Error parsing fitting DNA: %@", path );
-            }
-            
-            if( typeID > -1 )
-            {
-                NSString *typeName = [ccpdb typeName:typeID];
-                NSLog( @"%ldx %@", (long int)count, typeName?typeName:[NSNumber numberWithInteger:typeID] );
-            }
-        }
+        METFitting *fit = [METFitting fittingFromDNA:path];
+        if( fit )
+            [METFittingController displayFitting:fit forCharacter:currentCharacter];
     }
     else
     {

@@ -206,6 +206,7 @@ enum AttributeType {
 #define DB_CATEGORY_MODULE 7
 #define DB_CATEGORY_CHARGE 8
 #define DB_CATEGORY_SKILL 16
+#define DB_CATEGORY_SUBSYSTEM 32
 
 /* Translation Columns */
 

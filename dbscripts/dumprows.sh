@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# cat 20 = implants
 # cat 1 = Characters, Corps, Alliances, Factions
 # cat 18 = Drones
-CATEGORIES="1,6,7,8,16,18,20"
+# cat 20 = implants
+# cat 32 = T3 subsystems
+CATEGORIES="1,6,7,8,16,18,20,32"
 SCRIPT=dump_table.py
 PYEXE=python
 
