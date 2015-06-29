@@ -999,6 +999,9 @@
             {
                 // All typeID's between 1373 and 1386
                 // This is a character. Open in evewho.com? Or use their API?
+                // Another possibility is something like: https://gate.eveonline.com/Profile/Alcogol%20Hibra
+                // or https://gate.eveonline.com/Alliance/Empyreus
+                // or https://gate.eveonline.com/Corporation/Synapse. (had to convert an underscore to a period to get that to work)
                 /*
                  From: http://evewho.com/faq/
                  Required parameters: type and id

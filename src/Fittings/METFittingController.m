@@ -212,6 +212,43 @@ shouldEditTableColumn:(NSTableColumn *)tableColumn
     return NO;
 }
 
+#pragma mark drag and drop support
+
+- (BOOL)tableView:(NSTableView *)tv
+writeRowsWithIndexes:(NSIndexSet *)rowIndexes
+     toPasteboard:(NSPasteboard*)pboard
+{
+    NSMutableArray *array = [NSMutableArray array];
+        
+    for( CCPType *type in [[fitting items] objectsAtIndexes:rowIndexes] )
+    {
+        if( [type isKindOfClass:[CCPType class]] )
+        {
+            [array addObjectsFromArray:[type prereqs]];
+        }
+        else
+        {
+            return NO;
+        }
+    }
+    
+    [pboard declareTypes:[NSArray arrayWithObject:MTSkillArrayPBoardType] owner:self];
+    
+    NSMutableData *data = [[NSMutableData alloc]init];
+    
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc]initForWritingWithMutableData:data];
+    [archiver setOutputFormat:NSPropertyListBinaryFormat_v1_0];
+    [archiver encodeObject:array];
+    [archiver finishEncoding];
+    
+    [pboard setData:data forType:MTSkillArrayPBoardType];
+    
+    [archiver release];
+    [data release];
+    
+    return YES;
+}
+
 #pragma mark NSURLDownload delegate
 
 -(void) downloadDidFinish:(NSURLDownload *)download

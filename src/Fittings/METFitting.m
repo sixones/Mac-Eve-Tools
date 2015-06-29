@@ -58,10 +58,7 @@
                     [fit setShip:type];
                     [fit setName:[type typeName]];
                 }
-                else
-                {
-                    [fit addCount:count ofType:type];
-                }
+                [fit addCount:count ofType:type];
             }
         }
     }
