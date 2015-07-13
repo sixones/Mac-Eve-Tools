@@ -47,6 +47,7 @@
 #import "METDetailWindowController.h"
 #import "METFittingController.h"
 #import "METFitting.h"
+#import "METOrganizationController.h"
 
 #import "METConquerableStations.h"
 
@@ -995,38 +996,11 @@
             NSLog( @"Showinfo URL kind/typeID: %ld/%ld", (long)infoType, (long)typeID );
             
 //            CCPType *type = [ccpdb type:infoType];
-            if( (infoType >= 1373) && (infoType <= 1386) )
+            if( ((infoType >= 1373) && (infoType <= 1386))
+               || infoType == 2
+               || infoType == 16159 )
             {
-                // All typeID's between 1373 and 1386
-                // This is a character. Open in evewho.com? Or use their API?
-                // Another possibility is something like: https://gate.eveonline.com/Profile/Alcogol%20Hibra
-                // or https://gate.eveonline.com/Alliance/Empyreus
-                // or https://gate.eveonline.com/Corporation/Synapse. (had to convert an underscore to a period to get that to work)
-                /*
-                 From: http://evewho.com/faq/
-                 Required parameters: type and id
-                 Optional Parameters: page (default 0)
-                 Defined Parameters: limit of 200 characters per call
-                 
-                 Valid types: corplist, allilist, character, corporation, alliance
-                 
-                 Examples:
-                 Squizz Caphinator: http://evewho.com/api.php?type=character&id=1633218082
-                 Woopatang [--W--]: http://evewho.com/api.php?type=corplist&id=869043665
-                 Woopatang [--W--]: http://evewho.com/api.php?type=corporation&id=869043665
-                 Happy Endings <FONDL>: http://evewho.com/api.php?type=allilist&id=99001433
-                 Happy Endings <FONDL>: http://evewho.com/api.php?type=alliance&id=99001433
-                 */
-                /*  Make this asynchronous once we have a way to display the info
-                NSString *urlString = [NSString stringWithFormat:@"http://evewho.com/api.php?type=character&id=%ld", (long int)typeID];
-                NSURL *url = [NSURL URLWithString:urlString];
-//                NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
-//                NSURLResponse* response = nil;
-//                NSData* data = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:nil];
-                NSError *error = nil;
-                NSString *datString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&error];
-                NSLog( @"character data: %@", datString );
-                 */
+                [METOrganizationController displayOrganizationWithType:infoType andID:typeID];
             }
             else if( (3 == infoType)
                     || (4 == infoType)

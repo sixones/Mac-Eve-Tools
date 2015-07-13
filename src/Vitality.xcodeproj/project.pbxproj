@@ -97,6 +97,8 @@
 		A137B5011B38AB4800A0C7B1 /* METFittingWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A137B4FF1B38AB4800A0C7B1 /* METFittingWindow.xib */; };
 		A137B5051B38B0CF00A0C7B1 /* METFitting.m in Sources */ = {isa = PBXBuildFile; fileRef = A137B5041B38B0CF00A0C7B1 /* METFitting.m */; };
 		A137B5081B38C30100A0C7B1 /* METDetailWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A137B5071B38C30100A0C7B1 /* METDetailWindowController.m */; };
+		A137B50D1B433DA300A0C7B1 /* METOrganizationController.m in Sources */ = {isa = PBXBuildFile; fileRef = A137B50B1B433DA300A0C7B1 /* METOrganizationController.m */; };
+		A137B50E1B433DA300A0C7B1 /* METOrganizationWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A137B50C1B433DA300A0C7B1 /* METOrganizationWindow.xib */; };
 		A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */ = {isa = PBXBuildFile; fileRef = A147AB39184D4C6B009D2A08 /* MTAPIKey.m */; };
 		A154A64417A83E090076603D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A154A64217A83E090076603D /* Localizable.strings */; };
 		A1A2DAA918D0CFB40077CD55 /* PlanOverview.m in Sources */ = {isa = PBXBuildFile; fileRef = A1A2DAA818D0CFB40077CD55 /* PlanOverview.m */; };
@@ -333,6 +335,9 @@
 		A137B5041B38B0CF00A0C7B1 /* METFitting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = METFitting.m; path = Fittings/METFitting.m; sourceTree = "<group>"; };
 		A137B5061B38C30100A0C7B1 /* METDetailWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METDetailWindowController.h; sourceTree = "<group>"; };
 		A137B5071B38C30100A0C7B1 /* METDetailWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METDetailWindowController.m; sourceTree = "<group>"; };
+		A137B50A1B433DA300A0C7B1 /* METOrganizationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = METOrganizationController.h; path = Organizations/METOrganizationController.h; sourceTree = "<group>"; };
+		A137B50B1B433DA300A0C7B1 /* METOrganizationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = METOrganizationController.m; path = Organizations/METOrganizationController.m; sourceTree = "<group>"; };
+		A137B50C1B433DA300A0C7B1 /* METOrganizationWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = METOrganizationWindow.xib; path = Organizations/METOrganizationWindow.xib; sourceTree = "<group>"; };
 		A147AB38184D4C6A009D2A08 /* MTAPIKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTAPIKey.h; sourceTree = "<group>"; };
 		A147AB39184D4C6B009D2A08 /* MTAPIKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTAPIKey.m; sourceTree = "<group>"; };
 		A154A64317A83E090076603D /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -617,6 +622,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				A137B5091B433D8300A0C7B1 /* Organizations */,
 				A137B5021B38B0AB00A0C7B1 /* Fittings */,
 				A154A64517C576700076603D /* Contracts */,
 				A11F720E1AD6F5D9002E1906 /* MarketOrders */,
@@ -744,6 +750,16 @@
 				A137B4FF1B38AB4800A0C7B1 /* METFittingWindow.xib */,
 			);
 			name = Fittings;
+			sourceTree = "<group>";
+		};
+		A137B5091B433D8300A0C7B1 /* Organizations */ = {
+			isa = PBXGroup;
+			children = (
+				A137B50A1B433DA300A0C7B1 /* METOrganizationController.h */,
+				A137B50B1B433DA300A0C7B1 /* METOrganizationController.m */,
+				A137B50C1B433DA300A0C7B1 /* METOrganizationWindow.xib */,
+			);
+			name = Organizations;
 			sourceTree = "<group>";
 		};
 		A154A64517C576700076603D /* Contracts */ = {
@@ -1237,6 +1253,7 @@
 				C9FF4569105508950044BBAC /* icon12_02.png in Resources */,
 				C9FF456A105508950044BBAC /* icon22_41.png in Resources */,
 				A1D592521AFD632100448F17 /* evemail2.png in Resources */,
+				A137B50E1B433DA300A0C7B1 /* METOrganizationWindow.xib in Resources */,
 				C9FF456B105508950044BBAC /* info.png in Resources */,
 				C9FF456C105508950044BBAC /* lightgray.tiff in Resources */,
 				C9FF456D105508950044BBAC /* red.tiff in Resources */,
@@ -1369,6 +1386,7 @@
 				C9FF47AC10550BA60044BBAC /* CharacterDatabase.m in Sources */,
 				C9FF47AD10550BA60044BBAC /* CharacterDatabasePrivate.m in Sources */,
 				C9FF47AE10550BA60044BBAC /* SqliteDatabase.m in Sources */,
+				A137B50D1B433DA300A0C7B1 /* METOrganizationController.m in Sources */,
 				A11F725B1AFAC6E4002E1906 /* METJumpCloneController.m in Sources */,
 				C9FF47AF10550BA60044BBAC /* XmlFetcher.m in Sources */,
 				C9FF47B010550BA60044BBAC /* XmlHelpers.m in Sources */,
