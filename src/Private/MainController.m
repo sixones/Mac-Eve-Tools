@@ -22,6 +22,7 @@
 #import "MTCharacterOverviewCell.h"
 #import "Config.h"
 #import "GlobalData.h"
+#import "CCPDatabase.h"
 #import "Character.h"
 #import "Account.h"
 #import "SkillTree.h"
@@ -35,10 +36,18 @@
 #import "MarketViewController.h"
 #import "ContractsViewController.h"
 #import "VitalityMail.h"
+#import "METPair.h"
 
 #import "GeneralPrefViewController.h"
 #import "AccountPrefViewController.h"
 #import "DatabasePrefViewController.h"
+
+#import "CCPType.h"
+#import "CCPGroup.h"
+#import "METDetailWindowController.h"
+#import "METFittingController.h"
+#import "METFitting.h"
+#import "METOrganizationController.h"
 
 #import "METConquerableStations.h"
 
@@ -501,6 +510,8 @@
 		 selector:@selector(serverStatusUpdate:) 
 		 name:SERVER_STATUS_NOTIFICATION 
 		 object:monitor];
+        
+        [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 	}
 	
 	return self;
@@ -927,4 +938,140 @@
         [currentController performSelector:@selector(performFindPanelAction:) withObject:sender];
     }
 }
+
+/**
+ URL schemes not yet handled:
+ warreport:430633
+ fitting:29337:2048;1:31011;1:11269;2:31055;2:3025;3:5011;1:6005;1:1978;1:2364;3:11325;1:2488;3:250;3:12822;3:23089;3:32006;35::
+ joinchannel:-58925251//None//None
+ contract:30003048//86415664
+ */
+- (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
+{
+    CCPDatabase *ccpdb = [[GlobalData sharedInstance] database];
+    // Get the URL
+    NSString *urlStr = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
+    NSURL *url = [NSURL URLWithString:urlStr];
+    NSString *scheme = [url scheme];
+    NSString *path = [url resourceSpecifier];
+
+    if( [@"showinfo" isEqualToString:scheme] )
+    {
+        /*
+         Characters:
+         1377/91671093
+         1375/93347663
+         1385/94798453
+         1378/91794908
+         1386/94916626
+         
+         16159/99005559 (Alliance)
+         2/98160107 (Corp)
+         
+         5/30004815  (system)
+         4/20000207 (Constellation)
+         3/10000016 (Region)
+         
+         2454/1017452634108 (Drone)
+         
+         From: https://wiki.eveonline.com/en/wiki/IGB_Javascript_Methods
+         Some Helpful Type ID Numbers
+         
+         Alliance 16159
+         Character 1377 (see note 1)
+         Corporation 2
+         Constellation 4
+         Region 3
+         Solar System 5
+         Station 3867 (see note 2)
+         */
+        NSScanner *scanner = [NSScanner scannerWithString:path];
+        NSInteger infoType = -1;
+        NSInteger typeID = -1;
+        if( [scanner scanInteger:&infoType]
+           && [scanner scanString:@"//" intoString:nil]
+           && [scanner scanInteger:&typeID] )
+        {
+            // handle it
+            NSLog( @"Showinfo URL kind/typeID: %ld/%ld", (long)infoType, (long)typeID );
+            
+//            CCPType *type = [ccpdb type:infoType];
+            if( ((infoType >= 1373) && (infoType <= 1386))
+               || infoType == 2
+               || infoType == 16159 )
+            {
+                [METOrganizationController displayOrganizationWithType:infoType andID:typeID];
+            }
+            else if( (3 == infoType)
+                    || (4 == infoType)
+                    || (5 == infoType) )
+            {
+                // System form: http://evemaps.dotlan.net/system/C3-0YD
+                // NSURL *newURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://evemaps.dotlan.net/system/%@", name]];
+                // Region (map) URL form to use: http://evemaps.dotlan.net/map/Tenerifis/C3-0YD
+                // Similar if you want to show a constellation: http://evemaps.dotlan.net/map/Tenerifis/E-IFSA
+                // And this for a region: http://evemaps.dotlan.net/map/Tenerifis
+                NSString *urlString = nil;
+                switch( infoType )
+                {
+                    case 5: // A system
+                    {
+                        // get system/region names and build a Dotlan URL
+                        METPair *names = [ccpdb namesForSystemID:typeID];
+                        if( names )
+                        {
+                            urlString = [NSString stringWithFormat:@"http://evemaps.dotlan.net/map/%@/%@",
+                                                                  [[names second] stringByReplacingOccurrencesOfString:@" " withString:@"_"],
+                                                                  [[names first] stringByReplacingOccurrencesOfString:@" " withString:@"_"]];
+                            
+                        }
+                        break;
+                    }
+                    case 4: // A constellation
+                    {
+                        // get system/region names and build a Dotlan URL
+                        METPair *names = [ccpdb namesForConstellationID:typeID];
+                        if( names )
+                        {
+                            urlString = [NSString stringWithFormat:@"http://evemaps.dotlan.net/map/%@/%@",
+                                         [[names second] stringByReplacingOccurrencesOfString:@" " withString:@"_"],
+                                         [[names first] stringByReplacingOccurrencesOfString:@" " withString:@"_"]];
+                            
+                        }
+                        break;
+                    }
+                    case 3: // A region
+                    {
+                        NSString *regionName = [ccpdb nameForRegionID:typeID];
+                        if( regionName )
+                        {
+                            urlString = [NSString stringWithFormat:@"http://evemaps.dotlan.net/map/%@", regionName];
+                        }
+                        break;
+                    }
+                }
+                if( urlString )
+                    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:urlString]];
+            }
+        }
+        else
+        {
+            NSInteger typeID = [path integerValue];
+            CCPType *type = [ccpdb type:typeID];
+            [METDetailWindowController displayDetailsOfType:type forCharacter:currentCharacter];
+
+        }
+    }
+    else if( [@"fitting" isEqualToString:scheme] )
+    {
+        METFitting *fit = [METFitting fittingFromDNA:path];
+        if( fit )
+            [METFittingController displayFitting:fit forCharacter:currentCharacter];
+    }
+    else
+    {
+        NSLog( @"Unhandled URL scheme: %@", urlStr );
+    }
+}
+
 @end

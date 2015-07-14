@@ -67,7 +67,7 @@
 {
 	Skill *s;
 	
-	s = [[c skillTree]skillForId:tID];
+	s = [[c skillTree] skillForId:tID];
 	if(s == nil){
 		s = [[[GlobalData sharedInstance]skillTree] skillForId:tID];
 	}		

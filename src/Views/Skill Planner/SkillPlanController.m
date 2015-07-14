@@ -160,20 +160,20 @@
 	[skillSearchView addDatasource: skillCharDatasource];
 	
 	skillCertDatasource = [[SkillSearchCertDatasource alloc]init];
-	if(skillSearchView != nil){
-		[skillSearchView addDatasource: skillCertDatasource];
-	}	
+    [skillSearchView addDatasource: skillCertDatasource];
 	
 	skillShipDatasource = [[SkillSearchShipDatasource alloc]initWithCategory: DB_CATEGORY_SHIP];
-	if(skillShipDatasource != nil){
-		[skillSearchView addDatasource: skillShipDatasource];
-	}
+//    [skillShipDatasource setDisplayName:@"Ships"];
+    [skillSearchView addDatasource: skillShipDatasource];
     
 	skillItemDatasource = [[SkillSearchModuleDatasource alloc]initWithCategory: DB_CATEGORY_MODULE];
-	if (skillItemDatasource != nil){
-		[skillSearchView addDatasource: skillItemDatasource];
-	}
+    [skillItemDatasource setDisplayName:@"Modules"];
+    [skillSearchView addDatasource: skillItemDatasource];
     
+    skillChargeDatasource = [[SkillSearchModuleDatasource alloc]initWithCategory: DB_CATEGORY_CHARGE];
+    [skillChargeDatasource setDisplayName:@"Charges"];
+    [skillSearchView addDatasource: skillChargeDatasource];
+
     [skillSearchView selectDefaultGroup];
     
 	[skillView2 setDelegate:self];

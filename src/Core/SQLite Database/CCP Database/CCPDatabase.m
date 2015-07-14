@@ -29,6 +29,7 @@
 #import "METShip.h"
 #import "METDependSkill.h"
 #import "METTrait.h"
+#import "METPair.h"
 
 #import "Helpers.h"
 #import "macros.h"
@@ -1308,6 +1309,9 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
     return rows;
 }
 
+/*
+ This will always fail since our invTypes table doesn't have a published column. This step is being done when the database is built, anyway.
+ */
 -(void)buildTypePrerequisites
 {
 	int rc;
@@ -1487,6 +1491,115 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
 	sqlite3_finalize(read_stmt);
 	
 	return staDict;
+}
+
+- (METPair *) namesForSystemID:(NSInteger)systemID
+{
+    const char query[] =
+    "SELECT solarSystemName, regionName "
+    "FROM mapSolarSystems, mapRegions "
+    "WHERE mapSolarSystems.solarSystemID = ? AND mapRegions.regionID = mapSolarSystems.regionID;";
+
+    sqlite3_stmt *read_stmt;
+    int rc;
+    
+    rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return nil;
+    }
+    
+    METPair *names = nil;
+    
+    sqlite3_bind_nsint(read_stmt,1,systemID);
+    
+    while(sqlite3_step(read_stmt) == SQLITE_ROW)
+    {
+        NSString *systemName = sqlite3_column_nsstr(read_stmt,0);
+        NSString *regionName = sqlite3_column_nsstr(read_stmt,1);
+        if( ([systemName length] > 0)
+           && [regionName length] > 0)
+        {
+            names = [METPair pairWithFirst:systemName second:regionName];
+            break;
+        }
+    }
+    
+    sqlite3_finalize(read_stmt);
+    
+    return names;
+}
+
+- (METPair *) namesForConstellationID:(NSInteger)constellationID
+{
+    const char query[] =
+    "SELECT constellationName, regionName "
+    "FROM mapConstellations, mapRegions "
+    "WHERE mapConstellations.constellationID = ? AND mapRegions.regionID = mapConstellations.regionID;";
+    
+    sqlite3_stmt *read_stmt;
+    int rc;
+    
+    rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return nil;
+    }
+    
+    METPair *names = nil;
+    
+    sqlite3_bind_nsint(read_stmt,1,constellationID);
+    
+    while(sqlite3_step(read_stmt) == SQLITE_ROW)
+    {
+        NSString *constellationName = sqlite3_column_nsstr(read_stmt,0);
+        NSString *regionName = sqlite3_column_nsstr(read_stmt,1);
+        if( ([constellationName length] > 0)
+           && [regionName length] > 0)
+        {
+            names = [METPair pairWithFirst:constellationName second:regionName];
+            break;
+        }
+    }
+    
+    sqlite3_finalize(read_stmt);
+    
+    return names;
+}
+
+- (NSString *) nameForRegionID:(NSInteger)regionID
+{
+    const char query[] =
+    "SELECT regionName "
+    "FROM mapRegions "
+    "WHERE regionID = ?;";
+    
+    sqlite3_stmt *read_stmt;
+    int rc;
+    
+    rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return nil;
+    }
+    
+    NSString *name = nil;
+    
+    sqlite3_bind_nsint(read_stmt,1,regionID);
+    
+    while(sqlite3_step(read_stmt) == SQLITE_ROW)
+    {
+        NSString *regionName = sqlite3_column_nsstr(read_stmt,0);
+        if( [regionName length] > 0 )
+        {
+            name = regionName;
+            break;
+        }
+    }
+    
+    sqlite3_finalize(read_stmt);
+    
+    return name;
 }
 
 - (void)createCharacterNameTable

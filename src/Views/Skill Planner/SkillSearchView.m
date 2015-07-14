@@ -134,7 +134,8 @@
 
 -(void) addDatasource:(id<SkillSearchDatasource>)anObject;
 {
-	[self addSearchType:anObject];
+    if( anObject )
+        [self addSearchType:anObject];
 }
 
 -(void) removeDatasources

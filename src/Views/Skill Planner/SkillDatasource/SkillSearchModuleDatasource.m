@@ -1,5 +1,6 @@
 #import "SkillSearchModuleDatasource.h"
 
+#import "GlobalData.h"
 #import "CCPDatabase.h"
 #import "CCPType.h"
 #import "CCPCategory.h"
@@ -11,10 +12,15 @@
 #import "macros.h"
 
 @implementation SkillSearchModuleDatasource
+
+@synthesize displayName = _displayName;
+
 -(id)init
 {
-	if(self = [super init]){
-		searchObjects = [[NSMutableArray alloc]init];
+	if(self = [super init])
+    {
+		searchObjects = [[NSMutableArray alloc] init];
+        _displayName = @"Item";
 	}
 	return self;
 }
@@ -25,36 +31,29 @@
 	[category release];
 	[searchObjects release];
 	[searchString release];
+    [_displayName release];
 	[super dealloc];
 }
 
 -(id)initWithCategory:(NSInteger)cat
 {
-	if(self = [self init]){
-		NSString *path = [[NSUserDefaults standardUserDefaults] stringForKey:UD_ITEM_DB_PATH];
-		
-		if(![[NSFileManager defaultManager]
-			 fileExistsAtPath:path])
-		{
+	if( self = [self init] )
+    {
+        database = [[[GlobalData sharedInstance] database] retain];
+		if(database == nil)
+        {
 			[self autorelease];
 			return nil;
 		}
 		
-		database = [[CCPDatabase alloc]initWithPath:path];
-		if(database == nil){
-			/*fall back to user directory*/
-			[self autorelease];
-			return nil;
-		}
-		
-		category = [[database category:cat]retain];
+		category = [[database category:cat] retain];
 	}
 	return self;
 }
 
 -(NSString*) skillSearchName
 {
-	return NSLocalizedString(@"Modules",@"Modules for skill planner.");
+	return NSLocalizedString( [self displayName], @"Modules for skill planner." );
 }
 
 -(void) skillSearchFilter:(id)sender
@@ -156,7 +155,7 @@ menuForTableColumnItem:(NSTableColumn*)column
 	NSMenu *menu = [[[NSMenu alloc]initWithTitle:@"Menu"]autorelease];
 	
 	NSMenuItem *menuItem;
-	menuItem = [[NSMenuItem alloc]initWithTitle: @"View Module Details"
+    menuItem = [[NSMenuItem alloc]initWithTitle: NSLocalizedString( @"View Item Details", @"View Item Details menu item title" )
                                          action:@selector(displaySkillWindow:)
                                   keyEquivalent:@""];
 	[menuItem setRepresentedObject:item];
@@ -167,7 +166,7 @@ menuForTableColumnItem:(NSTableColumn*)column
 	
 	menuItem = [[NSMenuItem alloc]initWithTitle:[NSString stringWithFormat:
 												 NSLocalizedString(@"Add %@ to plan",
-																   @"add a ship to the skill plan"),
+																   @"add an item to the skill plan"),
 												 [item typeName]]
                                          action:@selector(menuAddSkillClick:)
                                   keyEquivalent:@""];

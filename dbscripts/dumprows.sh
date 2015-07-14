@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# cat 1 = Characters, Corps, Alliances, Factions
+# cat 18 = Drones
 # cat 20 = implants
-CATEGORIES="6,7,8,16,20"
+# cat 32 = T3 subsystems
+CATEGORIES="1,6,7,8,16,18,20,32"
 SCRIPT=dump_table.py
 PYEXE=python
 
@@ -13,9 +16,9 @@ $PYEXE $SCRIPT -t invMarketGroups -f $1 \
 
 $PYEXE $SCRIPT -t invCategories -f $1 \
 -q "SELECT categoryID,categoryName,iconID
-FROM invCategories
-WHERE published = 1
-AND categoryID IN ($CATEGORIES);"
+FROM invCategories;"
+#WHERE published = 1
+#AND categoryID IN ($CATEGORIES);"
 
 $PYEXE $SCRIPT -t invGroups -f $1 \
 -q "SELECT groupID,categoryID,groupName,iconID
@@ -86,6 +89,17 @@ $PYEXE $SCRIPT -t metStations -f $1 \
 $PYEXE $SCRIPT -t metTypeNames -f $1 \
 -q "SELECT typeID, typeName, description FROM invTypes WHERE published = 1;";
 
+$PYEXE $SCRIPT -t mapSolarSystems -f $1 \
+-q "SELECT * FROM mapSolarSystems;";
+
+$PYEXE $SCRIPT -t mapSolarSystemJumps -f $1 \
+-q "SELECT * FROM mapSolarSystemJumps;";
+
+$PYEXE $SCRIPT -t mapConstellations -f $1 \
+-q "SELECT * FROM mapConstellations;";
+
+$PYEXE $SCRIPT -t mapRegions -f $1 \
+-q "SELECT * FROM mapRegions;";
 
 $PYEXE dump_certificates.py certificates.yaml >> $1
 $PYEXE dump_pre.py >> $1

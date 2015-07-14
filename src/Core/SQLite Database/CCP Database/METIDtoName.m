@@ -69,7 +69,8 @@
         }
         else
         {
-            [validated addObject:anID];
+            if( [anID integerValue] > 0 )
+                [validated addObject:anID];
         }
     }
     
