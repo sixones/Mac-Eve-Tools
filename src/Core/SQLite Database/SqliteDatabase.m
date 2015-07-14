@@ -142,13 +142,11 @@
         {
             sqlite3_finalize(checkStatement);
         }
-        NSLog( @"Table %@ does not have column %@", tableName, colName );
         return NO;
     }
     
     sqlite3_finalize(checkStatement);
 
-    NSLog( @"Table %@ has column %@", tableName, colName );
     return YES;
 }
 
