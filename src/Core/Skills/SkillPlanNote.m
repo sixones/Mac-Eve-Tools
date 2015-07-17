@@ -26,6 +26,11 @@
     return self;
 }
 
+- (NSString *)name
+{
+    return [self note];
+}
+
 - (NSNumber *)typeID
 {
     return [NSNumber numberWithInt:-1];

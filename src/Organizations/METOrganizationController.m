@@ -458,6 +458,19 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 
          */
         NSDictionary *info = [publicTimeline objectForKey:@"info"];
+        if( ![info isKindOfClass:[NSDictionary class]] )
+        {
+            NSString *orgType = @"unknown";
+            if( [self orgType] == METOrganizationCharacter )
+                orgType = NSLocalizedString( @"character", @"" );
+            else if( [self orgType] == METOrganizationCorporation )
+                orgType = NSLocalizedString( @"corporation", @"" );
+            else if( [self orgType] == METOrganizationAlliance )
+                orgType = NSLocalizedString( @"alliance", @"" );
+            [charName setStringValue:[NSString stringWithFormat:@"Error loading %@ data", orgType]];
+            return;
+        }
+        
         [self setCharID:[info objectForKey:@"character_id"]];
         [self setCorpID:[info objectForKey:@"corporation_id"]];
         [self setAllianceID:[info objectForKey:@"alliance_id"]];
@@ -475,7 +488,11 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
             // history: corporation_id, end_date (can be "<null>"), start_date
             for( NSDictionary *corp in tempHistory )
             {
-                [names addObject:[corp objectForKey:@"corporation_id"]];
+                if( ![corp isKindOfClass:[NSDictionary class]] )
+                    continue;
+                id cid = [corp objectForKey:@"corporation_id"];
+                if( cid )
+                    [names addObject:cid];
             }
         }
         else if( [self orgType] == METOrganizationCorporation )
@@ -500,9 +517,12 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
 
         [[self window] setTitle:[self windowTitleWithName:orgNameStr]];
 
-        [names addObject:[self charID]];
-        [names addObject:[self corpID]];
-        [names addObject:[self allianceID]];
+        if( [self charID] )
+            [names addObject:[self charID]];
+        if( [self corpID] )
+            [names addObject:[self corpID]];
+        if( [self allianceID] )
+            [names addObject:[self allianceID]];
         [nameFetcher namesForIDs:names];
         [itemsTable reloadData];
     }

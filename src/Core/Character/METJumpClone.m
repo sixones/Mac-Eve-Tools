@@ -36,7 +36,8 @@
 
 - (void)addImplant:(CCPImplant *)implant
 {
-    [_implants addObject:implant];
+    if( implant )
+        [_implants addObject:implant];
 }
 
 - (NSArray *)implants
