@@ -77,6 +77,8 @@
 
 */
 
+static const NSInteger orgImageSize = 128;
+
 @interface METOrganizationController ()
 @property (retain,readwrite) NSNumber *charID;
 @property (retain,readwrite) NSNumber *corpID;
@@ -220,7 +222,22 @@
 
 -(BOOL) displayImage
 {
-    NSString *imagePath = [[Config sharedInstance] pathForImageType:[self typeID]];
+    NSString *orgString = nil;
+    
+    if( [self orgType] == METOrganizationCharacter )
+    {
+        orgString = @"Character";
+    }
+    else if( [self orgType] == METOrganizationCorporation )
+    {
+        orgString = @"Corporation";
+    }
+    else if( [self orgType] == METOrganizationAlliance )
+    {
+        orgString = @"Alliance";
+    }
+    
+    NSString *imagePath = [[Config sharedInstance] pathForImageType:[self typeID] ofKind:orgString andSize:orgImageSize];
     
     NSFileManager *fm = [NSFileManager defaultManager];
     
@@ -244,25 +261,54 @@
 }
 
 /*test to see if the image already exists.  fetch it if not*/
+/*
+ Known valid sizes (from: https://github.com/Regner/eveimageserver/blob/master/eveimageserver/main.py ):
+ Character: 32, 64, 128, 256, 512, 1024
+ Corporation: 32, 64, 128, 256
+ Alliance: 32, 64, 128
+ Faction: 32, 64, 128
+ Types: 32, 64, 128, 256, 512
+ */
 -(void) testImage
 {
     if( [self displayImage] )
     {
         return;
     }
+
+    // Return if we're already downloading this image
+    @synchronized(self)
+    {
+        if(down)
+            return;
+    }
     
-//    NSString *imageUrl = [[Config sharedInstance] urlForImageType:[self typeID]] ;
-//    NSString *filePath = [[Config sharedInstance] pathForImageType:[self typeID]];
-//    
-//    NSLog(@"Downloading %@ to %@",imageUrl,filePath);
-//    
-//    /*image does not exist. download it and display it when it's done.*/
-//    NSURL *url = [NSURL URLWithString:imageUrl];
-//    METURLRequest *request = [METURLRequest requestWithURL:url];
-//    NSURLDownload *download = [[NSURLDownload alloc]initWithRequest:request delegate:self];
-//    [download setDestination:filePath allowOverwrite:NO];
-//    
-//    down = download;
+    NSString *orgString = nil;
+    
+    if( [self orgType] == METOrganizationCharacter )
+    {
+        orgString = @"Character";
+    }
+    else if( [self orgType] == METOrganizationCorporation )
+    {
+        orgString = @"Corporation";
+    }
+    else if( [self orgType] == METOrganizationAlliance )
+    {
+        orgString = @"Alliance";
+    }
+
+    NSString *imageUrl = [[Config sharedInstance] urlForImageType:[self typeID] ofKind:orgString andSize:orgImageSize];
+    NSString *filePath = [[Config sharedInstance] pathForImageType:[self typeID] ofKind:orgString andSize:orgImageSize];
+
+    NSLog(@"Downloading %@ to %@",imageUrl,filePath);
+    
+    NSURL *url = [NSURL URLWithString:imageUrl];
+    METURLRequest *request = [METURLRequest requestWithURL:url];
+    NSURLDownload *download = [[NSURLDownload alloc]initWithRequest:request delegate:self];
+    [download setDestination:filePath allowOverwrite:NO];
+    
+    down = download;
 }
 
 #pragma mark Delegates for the items table
@@ -525,6 +571,7 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
             [names addObject:[self allianceID]];
         [nameFetcher namesForIDs:names];
         [itemsTable reloadData];
+        [self testImage];
     }
 }
 

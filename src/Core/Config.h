@@ -189,6 +189,30 @@
 /*functions for ship and icon graphics*/
 
 /**
+ Get the path in local storage for the image corresponding to a specified type/kind/size. Does not retrieve the image from EVE Online if it has not yet been downloaded.
+ 
+ @param typeID An ID.
+ @param kind The kind of object we want. Examples are: Type, Character, Corporation, Alliance
+ @param size The size of the image, in pixels.
+ 
+ @return The path for the image on disk.
+ */
+-(NSString*) pathForImageType:(NSInteger)typeID ofKind:(NSString *)kind andSize:(NSInteger)size;
+
+/**
+ Get the API URL for the image corresponding to a specified kind/type/size.
+ 
+ @param typeID An ID.
+ @param kind The kind of object we want. Examples are: Type, Character, Corporation, Alliance
+ @param size The size of the image, in pixels.
+ 
+ @return The URL of the desired image on the EVE Online server.
+ 
+ Not all combinations of ID/kind/size are valid. E.g. Alliance images only go up to 128 pixels
+ */
+-(NSString*) urlForImageType:(NSInteger)typeID ofKind:(NSString *)kind andSize:(NSInteger)size;
+
+/**
  Get the path in local storage for the image corresponding to a specified inventory type. Does not retrieve the image from EVE Online if it has not yet been downloaded.
  
  @param typeID A typeID from the InvTypes table.

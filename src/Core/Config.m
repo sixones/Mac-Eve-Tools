@@ -412,6 +412,22 @@ static Config *sharedSingletonCfg = nil;
 	return [NSString stringWithFormat:@"%@/Cache/types/%ld_64.png", [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH], (long)typeID];
 }
 
+-(NSString*) pathForImageType:(NSInteger)typeID ofKind:(NSString *)kind andSize:(NSInteger)size
+{
+    return [NSString stringWithFormat:@"%@/Cache/types/%ld_%ld.%@", [[NSUserDefaults standardUserDefaults] stringForKey:UD_ROOT_PATH],
+            (long)typeID, (long)size, ([@"Character" isEqualToString:kind]?@"jpg":@"png")];
+}
+
+-(NSString*) urlForImageType:(NSInteger)typeID ofKind:(NSString *)kind andSize:(NSInteger)size
+{
+    NSMutableString *url = [NSMutableString string];
+    
+    [url appendFormat:@"%@", [[NSUserDefaults standardUserDefaults] stringForKey:UD_IMAGE_URL]];
+    [url appendFormat:@"%@/%ld_%ld.%@", kind, (long)typeID, (long)size, ([@"Character" isEqualToString:kind]?@"jpg":@"png")];
+    
+    return url;
+}
+
 -(NSString*) urlForImageType:(NSInteger)typeID
 {
 	NSMutableString *url = [NSMutableString string];

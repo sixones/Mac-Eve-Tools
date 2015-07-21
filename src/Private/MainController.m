@@ -535,8 +535,8 @@
 	[prefDefaults setObject:[@"~/Library/Application Support/Vitality" stringByExpandingTildeInPath] forKey:UD_ROOT_PATH];
 	[prefDefaults setObject:[[@"~/Library/Application Support/Vitality" stringByExpandingTildeInPath] stringByAppendingFormat:@"/database.sqlite"] forKey:UD_ITEM_DB_PATH];
 	[prefDefaults setObject:@"https://api.eveonline.com" forKey:UD_API_URL];
-	[prefDefaults setObject:@"http://image.eveonline.com/Character/" forKey:UD_PICTURE_URL];
-    [prefDefaults setObject:@"http://image.eveonline.com/" forKey:UD_IMAGE_URL];
+	[prefDefaults setObject:@"https://imageserver.eveonline.com/Character/" forKey:UD_PICTURE_URL];
+    [prefDefaults setObject:@"https://imageserver.eveonline.com/" forKey:UD_IMAGE_URL];
 	
 	[prefDefaults setObject:@"https://sixones.github.io/vitality/appcast3.xml" forKey:UD_UPDATE_FEED_URL];
 	[prefDefaults setObject:@"https://sixones.github.io/vitality/database.xml" forKey:UD_DB_UPDATE_URL];
