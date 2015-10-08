@@ -88,6 +88,8 @@
     IBOutlet NSView *statusWindowView;
     
     DBManager *dbManager;
+    
+    NSUndoManager *undoManager;
 }
 
 - (id) init;

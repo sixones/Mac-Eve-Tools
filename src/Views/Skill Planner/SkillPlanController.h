@@ -80,6 +80,4 @@
 
 -(void) planAddSkillArray:(NSArray*)skills;
 
-
-
 @end

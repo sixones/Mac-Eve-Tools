@@ -247,6 +247,34 @@ static NSDictionary *masterSkillSet = nil;;
 	return self;
 }
 
+- (void)encodeWithCoder:(NSCoder *)encoder
+{
+    [encoder encodeInteger:planId forKey:@"planID"];
+    [encoder encodeInteger:planOrder forKey:@"planOrder"];
+    [encoder encodeObject:planName forKey:@"planName"];
+    [encoder encodeObject:manualOrder forKey:@"planSkills"];
+}
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    planId = [decoder decodeIntegerForKey:@"planID"];
+    planOrder = [decoder decodeIntegerForKey:@"planOrder"];
+    planName = [[decoder decodeObjectForKey:@"planName"] retain];
+    skillPlan = [NSMutableArray arrayWithArray:[decoder decodeObjectForKey:@"planSkill"]];
+    
+    if(masterSkillSet == nil)
+    {
+        masterSkillSet = [[[[GlobalData sharedInstance]skillTree] skillSet]retain];
+    }
+    if(self = [super init]){
+        skillDates = [[NSMutableArray alloc]init];
+        dirty = NO;
+        planTrainingTime = 0;
+        character = nil;
+    }
+
+    return self;
+}
+
 /* 
  Recursive function to build up a skill plan for a given skill.
  

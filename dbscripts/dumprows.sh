@@ -16,21 +16,20 @@ $PYEXE $SCRIPT -t invMarketGroups -f $1 \
 
 $PYEXE $SCRIPT -t invCategories -f $1 \
 -q "SELECT categoryID,categoryName,iconID
-FROM invCategories;"
-#WHERE published = 1
-#AND categoryID IN ($CATEGORIES);"
+FROM invCategories
+WHERE published = 1
+AND categoryID IN ($CATEGORIES);"
 
 $PYEXE $SCRIPT -t invGroups -f $1 \
 -q "SELECT groupID,categoryID,groupName,iconID
 FROM invGroups
-WHERE published = 1
-AND categoryID IN ($CATEGORIES);"
+WHERE categoryID IN ($CATEGORIES);"
 
 $PYEXE $SCRIPT -t invTypes -f $1 \
 -q "SELECT typeID,groupID,typeName,description,mass,volume,capacity,raceID,basePrice,marketGroupID 
 FROM invTypes 
 WHERE published = 1
-AND groupID IN (SELECT groupID FROM invGroups WHERE published = 1 AND categoryID IN ($CATEGORIES));"
+AND groupID IN (SELECT groupID FROM invGroups WHERE categoryID IN ($CATEGORIES));"
 
 $PYEXE $SCRIPT -t invTraits -f $1 \
 -q "SELECT typeID,skillID,bonus,bonusText,unitID FROM invTraits;"

@@ -17,6 +17,12 @@
 -(SkillPlan*) createNewPlan:(NSString*)name;
 
 /*
+ Insert a new skill plan.
+ This method was initially added to support undo/redo in the skill plan overview
+ */
+-(SkillPlan *) insertSkillPlan:(SkillPlan *)newSkillPlan;
+
+/*
  Remove a plan from the queue
  YES on success NO on failure
  */

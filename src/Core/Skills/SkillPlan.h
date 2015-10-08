@@ -33,7 +33,8 @@
 */
 @class Character;
 
-@interface SkillPlan : NSObject {
+@interface SkillPlan : NSObject<NSCoding>
+{
 	/*the array of objects in the skill plan*/
 	NSMutableArray *skillPlan;
 	/*the start and finish dates of each skill in the plan, use accesor methods to get the dates*/

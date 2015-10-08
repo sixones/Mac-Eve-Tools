@@ -9,8 +9,8 @@
 DBEXPORT=database.sql
 
 # This should match what's in the application's user defaults under UD_DATABASE_MIN_VERSION
-DBVERSION=24
-DBEXPANSION="Carnyx 1.0"
+DBVERSION=27
+DBEXPANSION="Vanguard 1.0"
 
 VERQUERY="INSERT INTO version VALUES ($DBVERSION,'$DBEXPANSION');"
 

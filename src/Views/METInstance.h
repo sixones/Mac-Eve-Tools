@@ -29,4 +29,5 @@
 /* Stope the progress indicator to show that we're done downloading something */
 -(void) stopLoadingAnimation;
 
+-(NSUndoManager *) undoManager;
 @end

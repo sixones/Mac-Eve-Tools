@@ -133,7 +133,6 @@
 -(SkillPlanController*) init
 {
 	if((self = [super initWithNibName:@"SkillPlan" bundle:nil])){
-		
 	}
 	return self;
 }
@@ -276,6 +275,11 @@
 
 #pragma mark SkillView2Delegate
 
+-(NSUndoManager *)undoManager
+{
+    return [mainApp undoManager];
+}
+
 -(SkillPlan*) createNewPlan:(NSString*)planName;
 {
 	SkillPlan *plan = [activeCharacter createSkillPlan:planName];
@@ -283,6 +287,19 @@
 	return plan;
 }
 
+
+-(SkillPlan *) insertSkillPlan:(SkillPlan *)newSkillPlan;
+{
+    SkillPlan *plan = [activeCharacter createSkillPlan:[newSkillPlan planName]];
+    for( int i = 0; i < [newSkillPlan skillCount]; ++i ) // SkillPair *pair in newSkillPlan )
+    {
+        SkillPair *pair = [newSkillPlan skillAtIndex:i];
+        [plan addSkillToPlan:[pair typeID] level:[pair skillLevel]];
+    }
+    [activeCharacter updateSkillPlan:plan];
+    
+    return plan;
+}
 
 /*planid is the index in the array of skill plans*/
 -(BOOL) removePlan:(NSInteger)planId

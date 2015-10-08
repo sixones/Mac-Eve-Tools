@@ -481,6 +481,7 @@
     
 	[viewControllers release];
     [dbManager release];
+    [undoManager release];
     
 	[super dealloc];
 }
@@ -490,7 +491,8 @@
 	if((self = [super initWithWindowNibName:@"MainMenu"])){
 		viewControllers = [[NSMutableArray alloc]init];
         dbManager = [[DBManager alloc] init];
-
+        undoManager = [[NSUndoManager alloc] init];
+        
 		/*Some notifications that we want to listen to*/
 		[[NSNotificationCenter defaultCenter]
 		 addObserver:self 
@@ -599,6 +601,7 @@
     if ([[NSUserDefaults standardUserDefaults] boolForKey: UD_ENABLE_MENUBAR] == YES) {
         [self enableStatusBar];
     }
+
 }
 
 - (void) enableStatusBar {
@@ -693,6 +696,15 @@
         }
 	}
 	[self setCurrentCharacter:character];
+}
+
+- (NSUndoManager *) undoManager
+{
+    return undoManager;
+}
+- (NSUndoManager *)windowWillReturnUndoManager:(id)window
+{
+    return undoManager;
 }
 
 #pragma mark Character update delegate
