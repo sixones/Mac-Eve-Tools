@@ -99,6 +99,9 @@
 		A137B5081B38C30100A0C7B1 /* METDetailWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A137B5071B38C30100A0C7B1 /* METDetailWindowController.m */; };
 		A137B50D1B433DA300A0C7B1 /* METOrganizationController.m in Sources */ = {isa = PBXBuildFile; fileRef = A137B50B1B433DA300A0C7B1 /* METOrganizationController.m */; };
 		A137B50E1B433DA300A0C7B1 /* METOrganizationWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A137B50C1B433DA300A0C7B1 /* METOrganizationWindow.xib */; };
+		A13DED291BC6D1A100041A2A /* MTNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED281BC6D1A100041A2A /* MTNotifications.m */; };
+		A13DED2D1BC6EE9B00041A2A /* MTNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED2C1BC6EE9B00041A2A /* MTNotification.m */; };
+		A13DED2F1BC7086E00041A2A /* NotificationTypeIDs.plist in Resources */ = {isa = PBXBuildFile; fileRef = A13DED2E1BC7086E00041A2A /* NotificationTypeIDs.plist */; };
 		A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */ = {isa = PBXBuildFile; fileRef = A147AB39184D4C6B009D2A08 /* MTAPIKey.m */; };
 		A154A64417A83E090076603D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A154A64217A83E090076603D /* Localizable.strings */; };
 		A1A2DAA918D0CFB40077CD55 /* PlanOverview.m in Sources */ = {isa = PBXBuildFile; fileRef = A1A2DAA818D0CFB40077CD55 /* PlanOverview.m */; };
@@ -339,6 +342,11 @@
 		A137B50A1B433DA300A0C7B1 /* METOrganizationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = METOrganizationController.h; path = Organizations/METOrganizationController.h; sourceTree = "<group>"; };
 		A137B50B1B433DA300A0C7B1 /* METOrganizationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = METOrganizationController.m; path = Organizations/METOrganizationController.m; sourceTree = "<group>"; };
 		A137B50C1B433DA300A0C7B1 /* METOrganizationWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = METOrganizationWindow.xib; path = Organizations/METOrganizationWindow.xib; sourceTree = "<group>"; };
+		A13DED281BC6D1A100041A2A /* MTNotifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTNotifications.m; path = EveNotifications/MTNotifications.m; sourceTree = SOURCE_ROOT; };
+		A13DED2A1BC6D1D200041A2A /* MTNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MTNotifications.h; path = EveNotifications/MTNotifications.h; sourceTree = SOURCE_ROOT; };
+		A13DED2B1BC6EE9B00041A2A /* MTNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTNotification.h; path = EveNotifications/MTNotification.h; sourceTree = SOURCE_ROOT; };
+		A13DED2C1BC6EE9B00041A2A /* MTNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTNotification.m; path = EveNotifications/MTNotification.m; sourceTree = SOURCE_ROOT; };
+		A13DED2E1BC7086E00041A2A /* NotificationTypeIDs.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = NotificationTypeIDs.plist; path = EveNotifications/NotificationTypeIDs.plist; sourceTree = SOURCE_ROOT; };
 		A147AB38184D4C6A009D2A08 /* MTAPIKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTAPIKey.h; sourceTree = "<group>"; };
 		A147AB39184D4C6B009D2A08 /* MTAPIKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTAPIKey.m; sourceTree = "<group>"; };
 		A154A64317A83E090076603D /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -630,6 +638,7 @@
 				A154A64517C576700076603D /* Contracts */,
 				A11F720E1AD6F5D9002E1906 /* MarketOrders */,
 				A10C369C19E5F70F00A0EB2B /* VitalityMail */,
+				A13DED271BC6D11C00041A2A /* EveNotifications */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -763,6 +772,19 @@
 				A137B50C1B433DA300A0C7B1 /* METOrganizationWindow.xib */,
 			);
 			name = Organizations;
+			sourceTree = "<group>";
+		};
+		A13DED271BC6D11C00041A2A /* EveNotifications */ = {
+			isa = PBXGroup;
+			children = (
+				A13DED2A1BC6D1D200041A2A /* MTNotifications.h */,
+				A13DED281BC6D1A100041A2A /* MTNotifications.m */,
+				A13DED2B1BC6EE9B00041A2A /* MTNotification.h */,
+				A13DED2C1BC6EE9B00041A2A /* MTNotification.m */,
+				A13DED2E1BC7086E00041A2A /* NotificationTypeIDs.plist */,
+			);
+			name = EveNotifications;
+			path = "Views/Skill Planner";
 			sourceTree = "<group>";
 		};
 		A154A64517C576700076603D /* Contracts */ = {
@@ -1250,6 +1272,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A13DED2F1BC7086E00041A2A /* NotificationTypeIDs.plist in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				A1D5924F1AFD5E6600448F17 /* marketorders.png in Resources */,
 				C9FF4566105508950044BBAC /* charsheet.png in Resources */,
@@ -1358,6 +1381,7 @@
 				C9FF478910550BA60044BBAC /* XMLDownloadOperation.m in Sources */,
 				A11F722F1AEEE198002E1906 /* ContractDetailsController.m in Sources */,
 				C9FF478A10550BA60044BBAC /* XMLParseOperation.m in Sources */,
+				A13DED291BC6D1A100041A2A /* MTNotifications.m in Sources */,
 				C9FF478B10550BA60044BBAC /* Config.m in Sources */,
 				C9FF478C10550BA60044BBAC /* MTCharacterOverviewCell.m in Sources */,
 				C9FF478D10550BA60044BBAC /* MTCountdown.m in Sources */,
@@ -1375,6 +1399,7 @@
 				C9FF479E10550BA60044BBAC /* Skill.m in Sources */,
 				C9FF479F10550BA60044BBAC /* SkillGroup.m in Sources */,
 				C9FF47A010550BA60044BBAC /* SkillPair.m in Sources */,
+				A13DED2D1BC6EE9B00041A2A /* MTNotification.m in Sources */,
 				C9FF47A110550BA60044BBAC /* SkillPlan.m in Sources */,
 				C9FF47A210550BA60044BBAC /* SkillTree.m in Sources */,
 				C9FF47A310550BA60044BBAC /* CCPCategory.m in Sources */,

@@ -52,6 +52,7 @@
 {
     [messages release];
     [messagesByID release];
+    [_character release];
     [cachedUntil release];
     [super dealloc];
 }
