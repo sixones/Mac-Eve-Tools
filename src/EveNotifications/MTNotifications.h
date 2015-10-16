@@ -20,10 +20,19 @@
     NSDate *cachedUntil;
     NSMutableData *xmlData;
     
+    NSTimer *tickerTimer;
+    NSUInteger nextNotification;
+    
     NSMutableArray *notifications;
+    
+    IBOutlet NSTextField *tickerField;
 }
 
 @property (readonly,retain) NSDate *cachedUntil;
+@property (readonly) NSArray *notifications;
 
++ (NSString *)newNotificationName; // name for the cocoa notification that we have new EVE notifications :)
+
+- (IBAction)reload:(id)sender;
 @end
 

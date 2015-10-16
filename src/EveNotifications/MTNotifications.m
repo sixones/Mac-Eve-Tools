@@ -25,34 +25,32 @@
 
 @interface MTNotifications()
 @property (readwrite,retain) NSDate *cachedUntil;
+@property (readwrite,retain) NSArray *notifications;
 @end
 
 @implementation MTNotifications
 
 @synthesize cachedUntil;
+@synthesize notifications;
+
++ (NSString *)newNotificationName
+{
+    return @"MTNewNotificationName";
+}
 
 -(id) init
 {
-    if( (self = [super initWithNibName:@"NotificationView" bundle:nil]) )
+    if( (self = [super initWithNibName:@"MTNotificationTicker" bundle:nil]) )
     {
         xmlData = [[NSMutableData alloc] init];
         nameGetter = [[METIDtoName alloc] init];
         [nameGetter setDelegate:self];        
         cachedUntil = [[NSDate distantPast] retain];
+        notifications = [[NSMutableArray alloc] init];
+        nextNotification = 0;
+        tickerTimer = [[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(tickerTimerFired:) userInfo:nil repeats:YES] retain];
     }
     
-    return self;
-}
-
--(id)initTest
-{
-    if( self = [super initWithNibName:nil bundle:nil] )
-    {
-        xmlData = [[NSMutableData alloc] init];
-        nameGetter = [[METIDtoName alloc] init];
-        [nameGetter setDelegate:self];
-        cachedUntil = [[NSDate distantPast] retain];
-    }
     return self;
 }
 
@@ -61,6 +59,9 @@
     [xmlData release];
     [nameGetter release];
     [cachedUntil release];
+    [notifications release];
+    [tickerTimer invalidate];
+    [tickerTimer release];
     [super dealloc];
 }
 
@@ -115,7 +116,8 @@
         [self createNotificationTables];
         [app setToolbarMessage:NSLocalizedString(@"Getting Notifications…",@"Getting Notifications status line")];
         [app startLoadingAnimation];
-        [self reload];
+        [tickerField setStringValue:@""];
+        [self reload:self];
     }
 }
 
@@ -140,7 +142,7 @@
 {
     [app setToolbarMessage:NSLocalizedString(@"Getting Notifications…",@"Getting Notifications status line")];
     [app startLoadingAnimation];
-    [self reload];
+    [self reload:self];
 }
 
 -(void) setInstance:(id<METInstance>)instance
@@ -161,13 +163,30 @@
 {
     if( [names count] > 0 )
     {
-        [self reload];
+//        [self reload:self];
     }
 }
 
-- (void)reload
+- (IBAction)reload:(id)sender
 {
+    [notifications removeAllObjects];
+    [notifications addObjectsFromArray:[self loadNotifications]];
+ 
+    nextNotification = 0;
+    
     [self getNotifications];
+}
+
+- (void)tickerTimerFired:(NSTimer *)timer
+{
+    MTNotification *notification = nil;
+    if( [[self notifications] count] > 0 )
+    {
+        notification = [[self notifications] objectAtIndex:nextNotification++];
+        if( nextNotification >= [[self notifications] count] )
+            nextNotification = 0;
+    }
+    [tickerField setStringValue:(notification)?[notification tickerDescription]:@""];
 }
 
 - (void)getNotifications
@@ -199,6 +218,9 @@
     const char *ptr = [xmlData bytes];
     NSInteger length = [xmlData length];
     
+    [app setToolbarMessage:@""];
+    [app stopLoadingAnimation];
+    
     if(length == 0){
         NSLog(@"Zero bytes returned for Notifications data");
         return;
@@ -219,6 +241,8 @@
 {
     NSLog(@"Failed to read Notifications data");
     [xmlData setLength:0];
+    [app stopLoadingAnimation];
+    [app setToolbarMessage:NSLocalizedString(@"Failed to download Notifications…",@"Failed to download notifications status line")];
 }
 
 /* http://wiki.eve-id.net/APIv2_Char_Notifications_XML
@@ -263,6 +287,9 @@
         return NO;
     }
     
+    NSMutableArray *newNotes = [NSMutableArray array];
+    NSMutableSet *missingNames = [NSMutableSet set];
+
     for( xmlNode *cur_node = rowset->children;
         NULL != cur_node;
         cur_node = cur_node->next)
@@ -307,7 +334,8 @@
             if( 0 != notificationID )
             {
                 MTNotification *notification = [MTNotification notificationWithID:notificationID typeID:typeID sender:senderID sentDate:sentDate read:read];
-                [self insertNotification:notification];
+                [newNotes addObject:notification];
+                [missingNames addObject:[NSNumber numberWithInteger:senderID]];
                 NSLog( @"Notification: %@ %@ %@", [notification notificationTypeDescription], sentDate, (read?@"Read":@"Unread") );
             }
         }
@@ -321,16 +349,22 @@
         [self setCachedUntil:cacheDate];
     }
     
+    if( [missingNames count] > 0 )
+        [nameGetter namesForIDs:missingNames];
+    
+    [self insertNotifications:newNotes];
+    
     return YES;
 }
 
-- (BOOL)insertNotification:(MTNotification *)notification
+- (BOOL)insertNotifications:(NSMutableArray *)newNotes
 {
     CharacterDatabase *charDB = [character database];
     sqlite3 *db = [charDB openDatabase];
     const char insert_note[] = "INSERT INTO notifications VALUES (?,?,?,?,?);";
     sqlite3_stmt *insert_note_stmt;
     BOOL success = YES;
+    BOOL anyNew = NO;
     int rc;
     
     rc = sqlite3_prepare_v2(db,insert_note,(int)sizeof(insert_note),&insert_note_stmt,NULL);
@@ -340,23 +374,76 @@
         return NO;
     }
 
-    sqlite3_bind_nsint( insert_note_stmt, 1, [notification notificationID] );
-    sqlite3_bind_nsint( insert_note_stmt, 2, [notification typeID] );
-    sqlite3_bind_nsint( insert_note_stmt, 3, [notification senderID] );
-    sqlite3_bind_nsint( insert_note_stmt, 4, [[notification sentDate] timeIntervalSince1970] ); // truncating fractions of a second
-    sqlite3_bind_nsint( insert_note_stmt, 3, [notification read] );
-
-    rc = sqlite3_step(insert_note_stmt);
-    if( (rc != SQLITE_DONE) && (rc != SQLITE_CONSTRAINT) )
+    for( MTNotification *notification in newNotes )
     {
-        // constraint violation probably means that this notification ID is already in the database
-        NSLog(@"Error inserting notification with ID: %ld (code: %d)", (unsigned long)[notification notificationID], rc );
-        success = NO;
+        sqlite3_bind_nsint( insert_note_stmt, 1, [notification notificationID] );
+        sqlite3_bind_nsint( insert_note_stmt, 2, [notification typeID] );
+        sqlite3_bind_nsint( insert_note_stmt, 3, [notification senderID] );
+        sqlite3_bind_nsint( insert_note_stmt, 4, [[notification sentDate] timeIntervalSince1970] ); // truncating fractions of a second
+        sqlite3_bind_nsint( insert_note_stmt, 3, [notification read] );
+        
+        rc = sqlite3_step(insert_note_stmt);
+        if( SQLITE_DONE == rc )
+        {
+            // This should mean that this noticiation was not already in the database
+            [notifications addObject:notification];
+            anyNew = YES;
+            [NSUserNotificationCenter defaultUserNotificationCenter];
+        }
+        else if( (rc != SQLITE_DONE) && (rc != SQLITE_CONSTRAINT) )
+        {
+            // constraint violation probably means that this notification ID is already in the database
+            NSLog(@"Error inserting notification with ID: %ld (code: %d)", (unsigned long)[notification notificationID], rc );
+            success = NO;
+        }
+        sqlite3_reset(insert_note_stmt);
     }
-    sqlite3_reset(insert_note_stmt);
     
     sqlite3_finalize(insert_note_stmt);
+    
+    if( anyNew )
+    {
+        // send out a cocoa notification so any UI elements can update
+        [[NSNotificationCenter defaultCenter] postNotificationName:[[self class] newNotificationName] object:self];
+    }
     return success;
 }
 
+- (NSArray *)loadNotifications
+{
+    sqlite3_stmt *read_stmt;
+    int rc;
+    const char getMessages[] = "SELECT * FROM notifications ORDER BY sentDate DESC;"; // newest notifications first
+    sqlite3 *db = [[character database] openDatabase];
+    
+    rc = sqlite3_prepare_v2(db,getMessages,(int)sizeof(getMessages),&read_stmt,NULL);
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return nil;
+    }
+    
+    NSMutableArray *messages = [NSMutableArray array];
+    NSMutableSet *missingNames = [NSMutableSet set];
+    
+    while( sqlite3_step(read_stmt) == SQLITE_ROW )
+    {
+        NSInteger notificationID = sqlite3_column_nsint(read_stmt,0);
+        NSInteger typeID = sqlite3_column_nsint(read_stmt,1);
+        NSInteger senderID = sqlite3_column_nsint(read_stmt,2);
+        NSDate *sentDate = [NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,3)];
+        BOOL read = sqlite3_column_nsint(read_stmt,2);;
+
+        MTNotification *notification = [MTNotification notificationWithID:notificationID typeID:typeID sender:senderID sentDate:sentDate read:read];
+
+        [messages addObject:notification];
+        [missingNames addObject:[NSNumber numberWithInteger:senderID]];
+    }
+    
+    if( [missingNames count] > 0 )
+        [nameGetter namesForIDs:missingNames];
+    
+    sqlite3_finalize(read_stmt);
+    
+    return messages;
+}
 @end

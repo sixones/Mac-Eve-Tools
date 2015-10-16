@@ -33,7 +33,7 @@
 #import "METJumpCloneController.h"
 
 #import "SkillPlan.h"
-
+#import "MTNotifications.h"
 
 @interface CharacterSheetController (CharacterSheetPrivate)
 
@@ -327,6 +327,8 @@
 	
 	[portrait setImage:[currentCharacter portrait]];
 	[skillTree setDataSource:currentCharacter];
+    
+    [notificationController setCharacter:c];
 }
 
 -(void) viewIsActive
@@ -382,6 +384,7 @@
 	if(currentCharacter != nil){
 		[currentCharacter release];
 	}
+    [notificationController release];
 	[super dealloc];
 }
 
@@ -450,6 +453,9 @@
 	[portrait setMenu:portraitMenu];
 	[portraitMenu release];
 	
+    notificationController = [[MTNotifications alloc] init];
+    [notificationBox setContentView:[notificationController view]];
+    
 	//timeRemaining = nil;
 }
 

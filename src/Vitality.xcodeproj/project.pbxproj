@@ -102,6 +102,7 @@
 		A13DED291BC6D1A100041A2A /* MTNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED281BC6D1A100041A2A /* MTNotifications.m */; };
 		A13DED2D1BC6EE9B00041A2A /* MTNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED2C1BC6EE9B00041A2A /* MTNotification.m */; };
 		A13DED2F1BC7086E00041A2A /* NotificationTypeIDs.plist in Resources */ = {isa = PBXBuildFile; fileRef = A13DED2E1BC7086E00041A2A /* NotificationTypeIDs.plist */; };
+		A13DED341BD05D1D00041A2A /* MTNotificationTicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = A13DED321BD05D1D00041A2A /* MTNotificationTicker.xib */; };
 		A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */ = {isa = PBXBuildFile; fileRef = A147AB39184D4C6B009D2A08 /* MTAPIKey.m */; };
 		A154A64417A83E090076603D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A154A64217A83E090076603D /* Localizable.strings */; };
 		A1A2DAA918D0CFB40077CD55 /* PlanOverview.m in Sources */ = {isa = PBXBuildFile; fileRef = A1A2DAA818D0CFB40077CD55 /* PlanOverview.m */; };
@@ -347,6 +348,7 @@
 		A13DED2B1BC6EE9B00041A2A /* MTNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTNotification.h; path = EveNotifications/MTNotification.h; sourceTree = SOURCE_ROOT; };
 		A13DED2C1BC6EE9B00041A2A /* MTNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTNotification.m; path = EveNotifications/MTNotification.m; sourceTree = SOURCE_ROOT; };
 		A13DED2E1BC7086E00041A2A /* NotificationTypeIDs.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = NotificationTypeIDs.plist; path = EveNotifications/NotificationTypeIDs.plist; sourceTree = SOURCE_ROOT; };
+		A13DED321BD05D1D00041A2A /* MTNotificationTicker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MTNotificationTicker.xib; path = EveNotifications/MTNotificationTicker.xib; sourceTree = SOURCE_ROOT; };
 		A147AB38184D4C6A009D2A08 /* MTAPIKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTAPIKey.h; sourceTree = "<group>"; };
 		A147AB39184D4C6B009D2A08 /* MTAPIKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTAPIKey.m; sourceTree = "<group>"; };
 		A154A64317A83E090076603D /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -782,6 +784,7 @@
 				A13DED2B1BC6EE9B00041A2A /* MTNotification.h */,
 				A13DED2C1BC6EE9B00041A2A /* MTNotification.m */,
 				A13DED2E1BC7086E00041A2A /* NotificationTypeIDs.plist */,
+				A13DED321BD05D1D00041A2A /* MTNotificationTicker.xib */,
 			);
 			name = EveNotifications;
 			path = "Views/Skill Planner";
@@ -1310,6 +1313,7 @@
 				14F8DAF11739BF30001C4178 /* vitality.png in Resources */,
 				14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */,
 				A1D592491AFD5C0500448F17 /* contracts.png in Resources */,
+				A13DED341BD05D1D00041A2A /* MTNotificationTicker.xib in Resources */,
 				140AEBD7176109F500308748 /* status.png in Resources */,
 				A11F72341AEEE199002E1906 /* ContractsView.xib in Resources */,
 				A11F72181AD6F84C002E1906 /* MarketView.xib in Resources */,

@@ -26,4 +26,5 @@
 + (MTNotification *)notificationWithID:(NSInteger)notID typeID:(NSInteger)tID sender:(NSInteger)senderID sentDate:(NSDate *)sentDate read:(BOOL)read;
 
 - (NSString *)notificationTypeDescription;
+- (NSString *)tickerDescription; ///< Type Description and date
 @end

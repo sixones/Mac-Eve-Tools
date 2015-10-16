@@ -29,6 +29,7 @@
 @class Character;
 @class Skill;
 @class SkillQueueDatasource;
+@class MTNotifications;
 
 @interface CharacterSheetController : NSViewController <METPluggableView,NSOutlineViewDelegate>
 {
@@ -68,6 +69,9 @@
 	IBOutlet NSTableView *skillQueueDisplay;
 	SkillQueueDatasource *skillQueueDatasource;
 	
+    IBOutlet NSBox *notificationBox;
+    MTNotifications *notificationController;
+    
 	Character *currentCharacter; /*the character we are displaying*/
 	Skill *trainingSkill;
 	

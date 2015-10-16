@@ -43,4 +43,11 @@ static NSDictionary *idNames = nil;
     return [idNames objectForKey:[[NSNumber numberWithInteger:[self typeID]] stringValue]];
 }
 
+- (NSString *)tickerDescription
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDoesRelativeDateFormatting:YES];
+    [formatter setDateStyle:NSDateFormatterShortStyle];
+    return [NSString stringWithFormat:@"%@: %@", [formatter stringFromDate:[self sentDate]], [self notificationTypeDescription]];
+}
 @end
