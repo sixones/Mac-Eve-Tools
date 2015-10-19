@@ -3,237 +3,237 @@
 <plist version="1.0">
 <dict>
     <key>1</key>
-    <string>Legacy</string>
+    <string>Old Notifications</string>
     <key>2</key>
-    <string>Character deleted</string>
+    <string>Member Biomassed</string>
     <key>3</key>
-    <string>Give medal to character</string>
+    <string>Medal Awarded</string>
     <key>4</key>
-    <string>Alliance maintenance bill</string>
+    <string>Alliance Maintenance Bill</string>
     <key>5</key>
-    <string>Alliance war declared</string>
+    <string>Alliance War Declared</string>
     <key>6</key>
-    <string>Alliance war surrender</string>
+    <string>Alliance War Surrender</string>
     <key>7</key>
-    <string>Alliance war retracted</string>
+    <string>Alliance War Retracted</string>
     <key>8</key>
-    <string>Alliance war invalidated by Concord</string>
+    <string>Alliance War Invalidated</string>
     <key>9</key>
-    <string>Bill issued to a character</string>
+    <string>Pilot Billed</string>
     <key>10</key>
-    <string>Bill issued to corporation or alliance</string>
+    <string>Organization Billed</string>
     <key>11</key>
-    <string>Bill not paid because there's not enough ISK available</string>
+    <string>Insufficient Funds To Pay Bill</string>
     <key>12</key>
-    <string>Bill, issued by a character, paid</string>
+    <string>Bill Paid By Pilot</string>
     <key>13</key>
-    <string>Bill, issued by a corporation or alliance, paid</string>
+    <string>Bill Paid By Organization</string>
     <key>14</key>
-    <string>Bounty claimed</string>
+    <string>Capsuleer Bounty Payment</string>
     <key>15</key>
-    <string>Clone activated</string>
+    <string>Unknown</string>
     <key>16</key>
-    <string>New corp member application</string>
+    <string>New Application To Join Corporation</string>
     <key>17</key>
-    <string>Corp application rejected</string>
+    <string>Your Corporate Application Rejected</string>
     <key>18</key>
-    <string>Corp application accepted</string>
+    <string>Your Corporate Application Accepted</string>
     <key>19</key>
-    <string>Corp tax rate changed</string>
+    <string>Corporation Tax Change</string>
     <key>20</key>
-    <string>Corp news report, typically for shareholders</string>
+    <string>Corporation News</string>
     <key>21</key>
-    <string>Player leaves corp</string>
+    <string>Pilot Left Corporation</string>
     <key>22</key>
-    <string>Corp news, new CEO</string>
+    <string>New Corporation CEO</string>
     <key>23</key>
-    <string>Corp dividend/liquidation, sent to shareholders</string>
+    <string>Corporate Dividend Payout</string>
     <key>24</key>
-    <string>Corp dividend payout, sent to shareholders</string>
+    <string>Corporate Dividend Payout, Sent to Shareholders</string>
     <key>25</key>
-    <string>Corp vote created</string>
+    <string>Corporate Vote Notification</string>
     <key>26</key>
-    <string>Corp CEO votes revoked during voting</string>
+    <string>CEO Roles Revoked During Vote</string>
     <key>27</key>
-    <string>Corp declares war</string>
+    <string>Corporation War Declared</string>
     <key>28</key>
-    <string>Corp war has started</string>
+    <string>Corporation War Fighting</string>
     <key>29</key>
-    <string>Corp surrenders war</string>
+    <string>Corporation War Surrender</string>
     <key>30</key>
-    <string>Corp retracts war</string>
+    <string>Corporation War Retracted</string>
     <key>31</key>
-    <string>Corp war invalidated by Concord</string>
+    <string>Corporation War Invalidated</string>
     <key>32</key>
-    <string>Container password retrieval</string>
+    <string>Container Password</string>
     <key>33</key>
-    <string>Contraband or low standings cause an attack or items being confiscated</string>
+    <string>Customs Notification</string>
     <key>34</key>
-    <string>First ship insurance</string>
+    <string>Rookie Ship Replacement</string>
     <key>35</key>
-    <string>Ship destroyed, insurance payed</string>
+    <string>Insurance Payment</string>
     <key>36</key>
-    <string>Insurance contract invalidated/runs out</string>
+    <string>Insurance Invalidated</string>
     <key>37</key>
-    <string>Sovereignty claim fails (alliance)</string>
+    <string>Alliance Sovereignty Claim Failed</string>
     <key>38</key>
-    <string>Sovereignty claim fails (corporation)</string>
+    <string>Corporate Sovereignty Claim Failed</string>
     <key>39</key>
-    <string>Sovereignty bill late (alliance)</string>
+    <string>Alliance Sovereignty Bill Due</string>
     <key>40</key>
-    <string>Sovereignty bill late (corporation)</string>
+    <string>Corporate Alliance Bill Due</string>
     <key>41</key>
-    <string>Sovereignty claim lost (alliance)</string>
+    <string>Alliance Sovereignty Claim Lost</string>
     <key>42</key>
-    <string>Sovereignty claim lost (corporation)</string>
+    <string>Corporate Sovereignty Claim Lost</string>
     <key>43</key>
-    <string>Sovereignty claim acquired (alliance)</string>
+    <string>Alliance Sovereignty Claim Acquired</string>
     <key>44</key>
-    <string>Sovereignty claim acquired (corporation)</string>
+    <string>Corporate Sovereignty Claim Acquired</string>
     <key>45</key>
-    <string>Alliance anchoring alert</string>
+    <string>Structure Anchoring</string>
     <key>46</key>
-    <string>Alliance structure turns vulnerable</string>
+    <string>Sovereignty Structures Vulnerable</string>
     <key>47</key>
-    <string>Alliance structure turns invulnerable</string>
+    <string>Sovereignty Structures Invulnerable</string>
     <key>48</key>
-    <string>Sovereignty disruptor anchored</string>
+    <string>Sovereignty Blockade Unit Active</string>
     <key>49</key>
-    <string>Structure won/lost</string>
+    <string>Structure Lost</string>
     <key>50</key>
-    <string>Corp office lease expiration notice</string>
+    <string>Office Lease Expiration</string>
     <key>51</key>
-    <string>Clone contract revoked by station manager</string>
+    <string>Clone Contract Revoked 1</string>
     <key>52</key>
-    <string>Corp member clones moved between stations</string>
+    <string>Clone Moved</string>
     <key>53</key>
-    <string>Clone contract revoked by station manager</string>
+    <string>Clone Contract Revoked 2</string>
     <key>54</key>
-    <string>Insurance contract expired</string>
+    <string>Insurance Expired</string>
     <key>55</key>
-    <string>Insurance contract issued</string>
+    <string>Insurance Issued</string>
     <key>56</key>
-    <string>Jump clone destroyed</string>
+    <string>Jump Clone Deleted</string>
     <key>57</key>
-    <string>Jump clone destroyed</string>
+    <string>Jump Clone Destruction</string>
     <key>58</key>
-    <string>Corporation joining factional warfare</string>
+    <string>Corporation Has Joined Faction</string>
     <key>59</key>
-    <string>Corporation leaving factional warfare</string>
+    <string>Corporation Has Left Faction</string>
     <key>60</key>
-    <string>Corporation kicked from factional warfare on startup because of too low standing to the faction</string>
+    <string>Corporation Expelled From Faction</string>
     <key>61</key>
-    <string>Character kicked from factional warfare on startup because of too low standing to the faction</string>
+    <string>Pilot Expelled From Faction</string>
     <key>62</key>
-    <string>Corporation in factional warfare warned on startup because of too low standing to the faction</string>
+    <string>Corporation Faction Standing Warning</string>
     <key>63</key>
-    <string>Character in factional warfare warned on startup because of too low standing to the faction</string>
+    <string>Pilot Faction Standing Warning</string>
     <key>64</key>
-    <string>Character loses factional warfare rank</string>
+    <string>Pilot Loses Faction Rank</string>
     <key>65</key>
-    <string>Character gains factional warfare rank</string>
+    <string>Pilot Gains Faction Rank</string>
     <key>66</key>
-    <string>Agent has moved</string>
+    <string>Agent Moved Notice</string>
     <key>67</key>
-    <string>Mass transaction reversal message</string>
+    <string>Transaction Reversal</string>
     <key>68</key>
-    <string>Reimbursement message</string>
+    <string>Reimbursement</string>
     <key>69</key>
-    <string>Agent locates a character</string>
+    <string>Pilot Located</string>
     <key>70</key>
-    <string>Research mission becomes available from an agent</string>
+    <string>Research Mission Available</string>
     <key>71</key>
-    <string>Agent mission offer expires</string>
+    <string>Mission Offer Expiration</string>
     <key>72</key>
-    <string>Agent mission times out</string>
+    <string>Mission Failure</string>
     <key>73</key>
-    <string>Agent offers a storyline mission</string>
+    <string>Special Mission Available</string>
     <key>74</key>
-    <string>Tutorial message sent on character creation</string>
+    <string>Tutorial Program</string>
     <key>75</key>
-    <string>Tower alert</string>
+    <string>Tower Under Attack Alert</string>
     <key>76</key>
-    <string>Tower resource alert</string>
+    <string>Tower Resource Alert</string>
     <key>77</key>
-    <string>Station service aggression message</string>
+    <string>Station Under Attack</string>
     <key>78</key>
-    <string>Station state change message</string>
+    <string>Station Changed</string>
     <key>79</key>
-    <string>Station conquered message</string>
+    <string>Station Conquered</string>
     <key>80</key>
-    <string>Station aggression message</string>
+    <string>Station Aggression</string>
     <key>81</key>
-    <string>Corporation requests joining factional warfare</string>
+    <string>Corporation Joining Faction</string>
     <key>82</key>
-    <string>Corporation requests leaving factional warfare</string>
+    <string>Corporation Leaving Faction</string>
     <key>83</key>
-    <string>Corporation withdrawing a request to join factional warfare</string>
+    <string>Corporation Join Faction Withdrawn</string>
     <key>84</key>
-    <string>Corporation withdrawing a request to leave factional warfare</string>
+    <string>Corporation Leave Faction Withdrawn</string>
     <key>85</key>
-    <string>Corporation liquidation</string>
+    <string>Corporate Liquidation Settlement</string>
     <key>86</key>
-    <string>Territorial Claim Unit under attack</string>
+    <string>Sovereignty TCU Damage</string>
     <key>87</key>
-    <string>Sovereignty Blockade Unit under attack</string>
+    <string>Sovereignty SBU Damage</string>
     <key>88</key>
-    <string>Infrastructure Hub under attack</string>
+    <string>Sovereignty IHUB Damage</string>
     <key>89</key>
-    <string>Contact add notification</string>
+    <string>Added As Contact</string>
     <key>90</key>
-    <string>Contact edit notification</string>
+    <string>Contact Level Modified</string>
     <key>91</key>
     <string>Incursion Completed</string>
     <key>92</key>
-    <string>Corp Kicked</string>
+    <string>Kicked From Corporation</string>
     <key>93</key>
-    <string>Customs office has been attacked</string>
+    <string>Orbital Structure Attacked</string>
     <key>94</key>
-    <string>Customs office has entered reinforced</string>
+    <string>Orbital Structure Reinforced</string>
     <key>95</key>
-    <string>Customs office has been transferred</string>
+    <string>Structure Ownership Transferred</string>
     <key>96</key>
-    <string>FW Alliance Warning</string>
+    <string>Alliance Faction Standing Warning</string>
     <key>97</key>
-    <string>FW Alliance Kick</string>
+    <string>Alliance Expelled From Faction</string>
     <key>98</key>
-    <string>AllWarCorpJoined Msg</string>
+    <string>Corporation Joined Alliance At War</string>
     <key>99</key>
-    <string>Ally Joined Defender</string>
+    <string>Defender Ally Joins War</string>
     <key>100</key>
-    <string>Ally Has Joined a War Aggressor</string>
+    <string>Aggressor Ally Joins War</string>
     <key>101</key>
-    <string>Ally Joined War Ally</string>
+    <string>Corporation Joins War As Ally</string>
     <key>102</key>
-    <string>New war system: entity is offering assistance in a war.</string>
+    <string>War Ally Offer Received</string>
     <key>103</key>
-    <string>War Surrender Offer</string>
+    <string>Surrender Offer Received</string>
     <key>104</key>
-    <string>War Surrender Declined</string>
+    <string>Surrender Declined</string>
     <key>105</key>
-    <string>FacWar LP Payout Kill</string>
+    <string>Faction Kill Event LP</string>
     <key>106</key>
-    <string>FacWar LP Payout Event</string>
+    <string>Faction Strategic Event LP</string>
     <key>107</key>
-    <string>FacWar LP Disqualified Event</string>
+    <string>Strategic Event LP Disqualification</string>
     <key>108</key>
-    <string>FacWar LP Disqualified Kill</string>
+    <string>Kill Event LP Disqualification</string>
     <key>109</key>
-    <string>Alliance Contract Cancelled</string>
+    <string>War Ally Agreement Cancelled</string>
     <key>110</key>
-    <string>War Ally Declined Offer</string>
+    <string>War Ally Offer Declined</string>
     <key>111</key>
-    <string>Your Bounty Claimed</string>
+    <string>Bounty On You Claimed</string>
     <key>112</key>
-    <string>Bounty Placed (Character)</string>
+    <string>Bounty Placed On You</string>
     <key>113</key>
-    <string>Bounty Placed (Corp)</string>
+    <string>Bounty Placed On Corporation</string>
     <key>114</key>
-    <string>Bounty Placed (Alliance)</string>
+    <string>Bounty Placed On Alliance</string>
     <key>115</key>
     <string>Kill Right Available</string>
     <key>116</key>
-    <string>Kill Right Available Open</string>
+    <string>Kill Right Available To All</string>
     <key>117</key>
     <string>Kill Right Earned</string>
     <key>118</key>
@@ -241,78 +241,110 @@
     <key>119</key>
     <string>Kill Right Unavailable</string>
     <key>120</key>
-    <string>Kill Right Unavailable Open</string>
+    <string>Kill Right Unavailable To All</string>
     <key>121</key>
-    <string>Declare War</string>
+    <string>War Declaration</string>
     <key>122</key>
-    <string>Offered Surrender</string>
+    <string>Surrender Offered</string>
     <key>123</key>
-    <string>Accepted Surrender</string>
+    <string>Surrender Accepted</string>
     <key>124</key>
-    <string>Made War Mutual</string>
+    <string>War Made Mutual</string>
     <key>125</key>
-    <string>Retracts War</string>
+    <string>War Retracted</string>
     <key>126</key>
-    <string>Offered To Ally</string>
+    <string>You Offered War Ally</string>
     <key>127</key>
-    <string>Accepted Ally</string>
+    <string>You Accepted War Ally</string>
     <key>128</key>
-    <string>Character Application Accept Message</string>
+    <string>Mercenary Invitation Accepted</string>
     <key>129</key>
-    <string>Character Application Reject Message</string>
+    <string>Mercenary Invitation Rejected</string>
     <key>130</key>
-    <string>Character Application Withdraw Message</string>
+    <string>Mercenary Application Withdrawn</string>
+    <key>131</key>
+    <string>Mercenary Application Accepted</string>
+    <key>132</key>
+    <string>Corporation District Attacked</string>
+    <key>133</key>
+    <string>Friendly Fire Standings Loss</string>
+    <key>134</key>
+    <string>ESS Pool Taken</string>
+    <key>135</key>
+    <string>ESS Pool Shared</string>
+    <key>136</key>
+    <string>Unknown</string>
     <key>137</key>
-    <string>Team Auction lost</string>
+    <string>Unknown</string>
+    <key>138</key>
+    <string>Clone Activation</string>
+    <key>139</key>
+    <string>You have been invited to join a Corporation</string>
+    <key>140</key>
+    <string>Kill report - Victim</string>
+    <key>141</key>
+    <string>Kill report - Final blow</string>
+    <key>142</key>
+    <string>Your Corporate Application Rejected</string>
+    <key>143</key>
+    <string>Corp Friendly-fire Enable-timer started</string>
+    <key>144</key>
+    <string>Corp Friendly-fire Disable-timer started</string>
+    <key>145</key>
+    <string>Corp Friendly-fire Enable-timer completed</string>
+    <key>146</key>
+    <string>Corp Friendly-fire Disable-timer completed</string>
     <key>147</key>
-    <string>Entosis Link started</string>
+    <string>Sovereignty Structure Capture Started</string>
     <key>148</key>
-    <string>Entosis Link enabled module</string>
+    <string>Sovereignty Service Enabled</string>
     <key>149</key>
-    <string>Entosis Link disabled module</string>
+    <string>Sovereignty Service Disabled</string>
     <key>150</key>
-    <string>Entosis link halfcaptured a module</string>
+    <string>Sovereignty Service Half Captured</string>
+    <key>151</key>
+    <string>Unknown</string>
     <key>152</key>
-    <string>Infrastructure hub bill expiring</string>
+    <string>IHub Bill Expiring</string>
     <key>160</key>
-    <string>Sovereignty structures reinforced</string>
+    <string>Sovereignty Structures Reinforced</string>
     <key>161</key>
-    <string>Command nodes decloaking</string>
+    <string>Command Nodes Decloaking</string>
     <key>162</key>
-    <string>Sovereignty structure destroyed</string>
+    <string>Sovereignty Structure Destroyed</string>
     <key>163</key>
-    <string>Station entered freeport</string>
+    <string>Station Entered Freeport</string>
     <key>164</key>
-    <string>Infrastructure hub destroyed bill</string>
+    <string>IHub Destroyed - Bill</string>
     <key>165</key>
-    <string>Alliance capital changed</string>
-    <key>1000</key>
-    <string>Skill training complete</string>
+    <string>Alliance Capital Changed</string>
     <key>1002</key>
-    <string>Skill queue empty</string>
+    <string>Skill Queue Empty</string>
+    <key>1000</key>
+    <string>Skill Training Complete</string>
     <key>1003</key>
-    <string>Unread email summary</string>
+    <string>Unread Email Summary</string>
     <key>1004</key>
-    <string>New mail received</string>
+    <string>New Mail Recieved</string>
     <key>1005</key>
-    <string>Unused skill points</string>
+    <string>Unused Skill Points </string>
     <key>1006</key>
     <string>Contracts assigned to you</string>
     <key>1007</key>
     <string>Contracts need your attention</string>
     <key>1010</key>
-    <string>Task completed</string>
+    <string>Task Completed</string>
     <key>1011</key>
-    <string>Opportunity completed</string>
+    <string>Opportunity Completed</string>
     <key>1020</key>
-    <string>New redeemable item</string>
+    <string>New Redeemable Item</string>
     <key>1030</key>
-    <string>Plex donation received</string>
+    <string>Plex Donation</string>
     <key>1031</key>
-    <string>Plex donation sent</string>
+    <string>Plex Donation</string>
     <key>2001</key>
-    <string>Watchlist contact online</string>
+    <string>Watched Contact Online</string>
     <key>2002</key>
-    <string>Watchlist contact offline/td></string>
+    <string>Watched Contact Offline</string>
 </dict>
 </plist>

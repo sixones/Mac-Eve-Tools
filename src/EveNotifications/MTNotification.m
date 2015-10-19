@@ -40,7 +40,10 @@ static NSDictionary *idNames = nil;
 
 - (NSString *)notificationTypeDescription
 {
-    return [idNames objectForKey:[[NSNumber numberWithInteger:[self typeID]] stringValue]];
+    NSString *desc = [idNames objectForKey:[[NSNumber numberWithInteger:[self typeID]] stringValue]];
+    if( !desc )
+        NSLog( @"Unknown EVE Notification typeID: %ld", (long)[self typeID] );
+    return desc;
 }
 
 - (NSString *)tickerDescription

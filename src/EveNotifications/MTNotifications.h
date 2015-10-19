@@ -12,6 +12,9 @@
 
 @class Character;
 
+/**
+ TODO: Add an Info button (next to the reload button) that will open up a detail window with a table view of all notifications.
+ */
 @interface MTNotifications : NSViewController <METPluggableView,NSTableViewDataSource,METIDtoNameDelegate>
 {
     Character *character;
