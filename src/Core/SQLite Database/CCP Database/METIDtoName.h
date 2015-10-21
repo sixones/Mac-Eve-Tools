@@ -24,6 +24,8 @@
 @property (readwrite,assign) id delegate;
 @property (readonly,retain) NSDate *cachedUntil;
 
+- (METIDtoName *)initWithDelegate:(id)delegate;
+
 // Check the local database first.
 // If all of the ID's are found, immediately call namesFromIDs: on the delegate
 // If some of the ID's are not found, start an API request

@@ -103,6 +103,9 @@
 		A13DED2D1BC6EE9B00041A2A /* MTNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED2C1BC6EE9B00041A2A /* MTNotification.m */; };
 		A13DED2F1BC7086E00041A2A /* NotificationTypeIDs.plist in Resources */ = {isa = PBXBuildFile; fileRef = A13DED2E1BC7086E00041A2A /* NotificationTypeIDs.plist */; };
 		A13DED341BD05D1D00041A2A /* MTNotificationTicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = A13DED321BD05D1D00041A2A /* MTNotificationTicker.xib */; };
+		A13DED3A1BD590C000041A2A /* METRowsetEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED391BD590C000041A2A /* METRowsetEnumerator.m */; };
+		A13DED3D1BD6B03B00041A2A /* METCharacter_CachedDates.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED3C1BD6B03B00041A2A /* METCharacter_CachedDates.m */; };
+		A13DED401BD80B5E00041A2A /* METXmlNode.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED3F1BD80B5E00041A2A /* METXmlNode.m */; };
 		A147AB3A184D4C6B009D2A08 /* MTAPIKey.m in Sources */ = {isa = PBXBuildFile; fileRef = A147AB39184D4C6B009D2A08 /* MTAPIKey.m */; };
 		A154A64417A83E090076603D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A154A64217A83E090076603D /* Localizable.strings */; };
 		A1A2DAA918D0CFB40077CD55 /* PlanOverview.m in Sources */ = {isa = PBXBuildFile; fileRef = A1A2DAA818D0CFB40077CD55 /* PlanOverview.m */; };
@@ -349,6 +352,12 @@
 		A13DED2C1BC6EE9B00041A2A /* MTNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTNotification.m; path = EveNotifications/MTNotification.m; sourceTree = SOURCE_ROOT; };
 		A13DED2E1BC7086E00041A2A /* NotificationTypeIDs.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = NotificationTypeIDs.plist; path = EveNotifications/NotificationTypeIDs.plist; sourceTree = SOURCE_ROOT; };
 		A13DED321BD05D1D00041A2A /* MTNotificationTicker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MTNotificationTicker.xib; path = EveNotifications/MTNotificationTicker.xib; sourceTree = SOURCE_ROOT; };
+		A13DED381BD590C000041A2A /* METRowsetEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METRowsetEnumerator.h; sourceTree = "<group>"; };
+		A13DED391BD590C000041A2A /* METRowsetEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METRowsetEnumerator.m; sourceTree = "<group>"; };
+		A13DED3B1BD6B03B00041A2A /* METCharacter_CachedDates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METCharacter_CachedDates.h; sourceTree = "<group>"; };
+		A13DED3C1BD6B03B00041A2A /* METCharacter_CachedDates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METCharacter_CachedDates.m; sourceTree = "<group>"; };
+		A13DED3E1BD80B5E00041A2A /* METXmlNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METXmlNode.h; sourceTree = "<group>"; };
+		A13DED3F1BD80B5E00041A2A /* METXmlNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METXmlNode.m; sourceTree = "<group>"; };
 		A147AB38184D4C6A009D2A08 /* MTAPIKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTAPIKey.h; sourceTree = "<group>"; };
 		A147AB39184D4C6B009D2A08 /* MTAPIKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTAPIKey.m; sourceTree = "<group>"; };
 		A154A64317A83E090076603D /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -982,6 +991,10 @@
 				A11DFF231A8181690047D5F5 /* METPair.m */,
 				A11F72351AEEE1B3002E1906 /* MTISKFormatter.h */,
 				A11F72361AEEE1B3002E1906 /* MTISKFormatter.m */,
+				A13DED381BD590C000041A2A /* METRowsetEnumerator.h */,
+				A13DED391BD590C000041A2A /* METRowsetEnumerator.m */,
+				A13DED3E1BD80B5E00041A2A /* METXmlNode.h */,
+				A13DED3F1BD80B5E00041A2A /* METXmlNode.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1007,6 +1020,8 @@
 				C911FED610782C50000D88E2 /* CharacterParseError.m */,
 				A11F72551AF97357002E1906 /* METJumpClone.h */,
 				A11F72561AF97357002E1906 /* METJumpClone.m */,
+				A13DED3B1BD6B03B00041A2A /* METCharacter_CachedDates.h */,
+				A13DED3C1BD6B03B00041A2A /* METCharacter_CachedDates.m */,
 			);
 			path = Character;
 			sourceTree = "<group>";
@@ -1391,6 +1406,7 @@
 				C9FF478D10550BA60044BBAC /* MTCountdown.m in Sources */,
 				C9FF478E10550BA60044BBAC /* MTEveSkillCell.m in Sources */,
 				A1C44C681A24EEC100443AE2 /* METURLRequest.m in Sources */,
+				A13DED3A1BD590C000041A2A /* METRowsetEnumerator.m in Sources */,
 				C9FF478F10550BA60044BBAC /* MTEveSkillQueueCell.m in Sources */,
 				C9FF479010550BA60044BBAC /* MTEveSkillQueueHeader.m in Sources */,
 				C9FF479410550BA60044BBAC /* MTSkillProgressCell.m in Sources */,
@@ -1419,6 +1435,7 @@
 				A11DFF241A8181690047D5F5 /* METPair.m in Sources */,
 				A11F72371AEEE1B3002E1906 /* MTISKFormatter.m in Sources */,
 				C9FF47AC10550BA60044BBAC /* CharacterDatabase.m in Sources */,
+				A13DED3D1BD6B03B00041A2A /* METCharacter_CachedDates.m in Sources */,
 				C9FF47AD10550BA60044BBAC /* CharacterDatabasePrivate.m in Sources */,
 				C9FF47AE10550BA60044BBAC /* SqliteDatabase.m in Sources */,
 				A137B50D1B433DA300A0C7B1 /* METOrganizationController.m in Sources */,
@@ -1475,6 +1492,7 @@
 				9EF3338C11E79B1A002A3B7D /* AccountPrefDetailController.m in Sources */,
 				9EF3338D11E79B1A002A3B7D /* AccountPrefTableController.m in Sources */,
 				A11F72321AEEE199002E1906 /* ContractsViewController.m in Sources */,
+				A13DED401BD80B5E00041A2A /* METXmlNode.m in Sources */,
 				9EF3338E11E79B1A002A3B7D /* AccountPrefViewController.m in Sources */,
 				9EF3338F11E79B1A002A3B7D /* DatabasePrefViewController.m in Sources */,
 				9EF3339411E79B1A002A3B7D /* GeneralPrefViewController.m in Sources */,

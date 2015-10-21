@@ -45,6 +45,16 @@
     return self;
 }
 
+- (METIDtoName *)initWithDelegate:(id)delegate
+{
+    if( self = [self init] )
+    {
+        _delegate = delegate;
+    }
+    
+    return self;
+}
+
 - (void)dealloc
 {
     [xmlData release];

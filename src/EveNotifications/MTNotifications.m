@@ -9,28 +9,23 @@
 #import "MTNotifications.h"
 #import "CharacterDatabase.h"
 #import "Character.h"
-#import "CharacterTemplate.h"
 #import "Helpers.h"
 #import "Config.h"
 #import "GlobalData.h"
-#import "XmlHelpers.h"
 #import "CCPDatabase.h"
-#import "METURLRequest.h"
 #import "MTNotification.h"
 
-#include <assert.h>
-#include <libxml/tree.h>
-#include <libxml/parser.h>
+#import "METRowsetEnumerator.h"
+#import "METXmlNode.h"
+
 #import <sqlite3.h>
 
 @interface MTNotifications()
-@property (readwrite,retain) NSDate *cachedUntil;
 @property (readwrite,retain) NSArray *notifications;
 @end
 
 @implementation MTNotifications
 
-@synthesize cachedUntil;
 @synthesize notifications;
 
 + (NSString *)newNotificationName
@@ -42,13 +37,11 @@
 {
     if( (self = [super initWithNibName:@"MTNotificationTicker" bundle:nil]) )
     {
-        xmlData = [[NSMutableData alloc] init];
-        nameGetter = [[METIDtoName alloc] init];
-        [nameGetter setDelegate:self];        
-        cachedUntil = [[NSDate distantPast] retain];
+        nameGetter = [[METIDtoName alloc] initWithDelegate:self];
         notifications = [[NSMutableArray alloc] init];
         nextNotification = 0;
         tickerTimer = [[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(tickerTimerFired:) userInfo:nil repeats:YES] retain];
+        apiGetter = [[METRowsetEnumerator alloc] initWithCharacter:nil API:XMLAPI_CHAR_NOTIFICATIONS forDelegate:self];
     }
     
     return self;
@@ -56,12 +49,11 @@
 
 - (void)dealloc
 {
-    [xmlData release];
     [nameGetter release];
-    [cachedUntil release];
     [notifications release];
     [tickerTimer invalidate];
     [tickerTimer release];
+    [apiGetter release];
     [super dealloc];
 }
 
@@ -117,6 +109,7 @@
         [app setToolbarMessage:NSLocalizedString(@"Getting Notifications…",@"Getting Notifications status line")];
         [app startLoadingAnimation];
         [tickerField setStringValue:@""];
+        [apiGetter setCharacter:_character];
         [self reload:self];
     }
 }
@@ -174,7 +167,7 @@
  
     nextNotification = 0;
     
-    [self getNotifications];
+    [apiGetter run];
 }
 
 - (void)tickerTimerFired:(NSTimer *)timer
@@ -189,62 +182,6 @@
     [tickerField setStringValue:(notification)?[notification tickerDescription]:@""];
 }
 
-- (void)getNotifications
-{
-    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
-    {
-        NSLog( @"Skipping download of Notifications because of Cached Until date" );
-        return;
-    }
-    
-    CharacterTemplate *template = [[self character] template];
-    NSString *urlPath = [Config getApiUrl:XMLAPI_CHAR_NOTIFICATIONS
-                                   keyID:[template accountId]
-                        verificationCode:[template verificationCode]
-                                  charId:[template characterId]];
-    NSURL *url = [NSURL URLWithString:urlPath];
-    
-    METURLRequest *request = [METURLRequest requestWithURL:url];
-    [NSURLConnection connectionWithRequest:request delegate:self];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    [xmlData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    const char *ptr = [xmlData bytes];
-    NSInteger length = [xmlData length];
-    
-    [app setToolbarMessage:@""];
-    [app stopLoadingAnimation];
-    
-    if(length == 0){
-        NSLog(@"Zero bytes returned for Notifications data");
-        return;
-    }
-    
-    xmlDoc *doc = xmlReadMemory(ptr, (int)length, NULL, NULL, 0);
-    if( doc == NULL )
-    {
-        NSLog(@"Failed to read Notifications data");
-        return;
-    }
-    [self parseXmlNotifications:doc];
-    xmlFreeDoc(doc);
-    [xmlData setLength:0];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    NSLog(@"Failed to read Notifications data");
-    [xmlData setLength:0];
-    [app stopLoadingAnimation];
-    [app setToolbarMessage:NSLocalizedString(@"Failed to download Notifications…",@"Failed to download notifications status line")];
-}
-
 /* http://wiki.eve-id.net/APIv2_Char_Notifications_XML
  <eveapi version="2">
  <currentTime>2010-04-16 20:16:57</currentTime>
@@ -257,105 +194,47 @@
  <cachedUntil>2010-04-16 20:46:57</cachedUntil>
  </eveapi>
  */
--(BOOL) parseXmlNotifications:(xmlDoc *)doc
+- (void)apiDidFinishLoading:(METRowsetEnumerator *)rowset withError:(NSError *)error
 {
-    xmlNode *root_node = xmlDocGetRootElement(doc);
-    
-    xmlNode *result = findChildNode(root_node,(xmlChar*)"result");
-    if( NULL == result )
+    if( error )
     {
-        NSLog(@"Could not get result tag in parseXmlNotifications");
-        
-        xmlNode *xmlErrorMessage = findChildNode(root_node,(xmlChar*)"error");
-        if( NULL != xmlErrorMessage )
-        {
-            NSLog( @"%@", getNodeText(xmlErrorMessage) );
-        }
-        return NO;
-    }
-    
-    xmlNode *rowset = findChildNode(result,(xmlChar*)"rowset");
-    if( NULL == result )
-    {
-        NSLog(@"Could not get rowset tag in parseXmlNotifications");
-        
-        xmlNode *xmlErrorMessage = findChildNode(root_node,(xmlChar*)"error");
-        if( NULL != xmlErrorMessage )
-        {
-            NSLog( @"%@", getNodeText(xmlErrorMessage) );
-        }
-        return NO;
+        if( [error code] == -107 )
+            NSLog( @"Skipping EVE Notifications because of Cached Until date." ); // handle cachedUntil errors differently
+        else
+            NSLog( @"Error requesting EVE Notifications: %@", [error localizedDescription] );
+        [app stopLoadingAnimation];
+        [app setToolbarMessage:NSLocalizedString(@"Failed to download Notifications…",@"Failed to download notifications status line")];
+        return;
     }
     
     NSMutableArray *newNotes = [NSMutableArray array];
     NSMutableSet *missingNames = [NSMutableSet set];
 
-    for( xmlNode *cur_node = rowset->children;
-        NULL != cur_node;
-        cur_node = cur_node->next)
+    for( METXmlNode *row in rowset )
     {
-        if( XML_ELEMENT_NODE != cur_node->type )
+        //  <row notificationID="304084087" typeID="16" senderID="797400947" sentDate="2010-04-12 12:32:00" read="0"/>
+        NSDictionary *properties = [row properties];
+        NSInteger notificationID = [[properties objectForKey:@"notificationID"] integerValue];
+
+        if( 0 != notificationID )
         {
-            continue;
+            NSInteger typeID = [[properties objectForKey:@"typeID"] integerValue];
+            NSInteger senderID = [[properties objectForKey:@"senderID"] integerValue];
+            NSDate *sentDate = [NSDate dateWithNaturalLanguageString:[properties objectForKey:@"sentDate"]];
+            BOOL read = (0 == [[properties objectForKey:@"read"] integerValue]);
+
+            MTNotification *notification = [MTNotification notificationWithID:notificationID typeID:typeID sender:senderID sentDate:sentDate read:read];
+            [newNotes addObject:notification];
+            [missingNames addObject:[NSNumber numberWithInteger:senderID]];
         }
-        
-        if( xmlStrcmp(cur_node->name,(xmlChar*)"row") == 0 )
-        {
-            NSInteger notificationID = 0;
-            NSInteger typeID = 0;
-            NSInteger senderID = 0;
-            NSDate *sentDate = nil;
-            BOOL read = NO;
-            //  <row notificationID="304084087" typeID="16" senderID="797400947" sentDate="2010-04-12 12:32:00" read="0"/>
-            for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )
-            {
-                NSString *value = [NSString stringWithUTF8String:(const char*) attr->children->content];
-                if( xmlStrcmp(attr->name, (xmlChar *)"notificationID") == 0 )
-                {
-                    notificationID = [value integerValue];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"typeID") == 0 )
-                {
-                    typeID = [value integerValue];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"senderID") == 0 )
-                {
-                    senderID = [value integerValue];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"sentDate") == 0 )
-                {
-                    sentDate = [NSDate dateWithNaturalLanguageString:value];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"read") == 0 )
-                {
-                    read = (0 == [value integerValue])?NO:YES;
-                }
-            }
-            if( 0 != notificationID )
-            {
-                MTNotification *notification = [MTNotification notificationWithID:notificationID typeID:typeID sender:senderID sentDate:sentDate read:read];
-                [newNotes addObject:notification];
-                [missingNames addObject:[NSNumber numberWithInteger:senderID]];
-                NSLog( @"Notification: %@ %@ %@", [notification notificationTypeDescription], sentDate, (read?@"Read":@"Unread") );
-            }
-        }
-    }
-    
-    xmlNode *cached = findChildNode( root_node, (xmlChar *)"cachedUntil" );
-    if( NULL != cached )
-    {
-        NSString *dtString = getNodeText( cached );
-        NSDate *cacheDate = [NSDate dateWithNaturalLanguageString:dtString];
-        [self setCachedUntil:cacheDate];
     }
     
     if( [missingNames count] > 0 )
         [nameGetter namesForIDs:missingNames];
     
     [self insertNotifications:newNotes];
-    
-    return YES;
 }
+
 
 - (BOOL)insertNotifications:(NSMutableArray *)newNotes
 {
@@ -387,6 +266,7 @@
         {
             // This should mean that this noticiation was not already in the database
             [notifications addObject:notification];
+            NSLog( @"New Notification: %@ %@ %@", [notification notificationTypeDescription], [notification sentDate], ([notification read]?@"Read":@"Unread") );
             anyNew = YES;
             [NSUserNotificationCenter defaultUserNotificationCenter];
         }

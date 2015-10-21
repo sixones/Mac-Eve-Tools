@@ -11,6 +11,7 @@
 #import "METIDtoName.h"
 
 @class Character;
+@class METRowsetEnumerator;
 
 /**
  TODO: Add an Info button (next to the reload button) that will open up a detail window with a table view of all notifications.
@@ -20,8 +21,7 @@
     Character *character;
     id<METInstance> app;
     METIDtoName *nameGetter;
-    NSDate *cachedUntil;
-    NSMutableData *xmlData;
+    METRowsetEnumerator *apiGetter;
     
     NSTimer *tickerTimer;
     NSUInteger nextNotification;
@@ -31,7 +31,6 @@
     IBOutlet NSTextField *tickerField;
 }
 
-@property (readonly,retain) NSDate *cachedUntil;
 @property (readonly) NSArray *notifications;
 
 + (NSString *)newNotificationName; // name for the cocoa notification that we have new EVE notifications :)
