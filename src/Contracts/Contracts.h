@@ -9,20 +9,19 @@
 #import <Foundation/Foundation.h>
 
 @class Character;
+@class METRowsetEnumerator;
 
 @interface Contracts : NSObject
 {
     Character *_character;
     NSMutableArray *_contracts;
-    NSString *_xmlPath;
-    NSDate *_cachedUntil;
+    METRowsetEnumerator *contractsAPI;
+    METRowsetEnumerator *singleContractAPI; // for updating a single contract
     id _delegate;
 }
 
 @property (retain) Character *character;
 @property (retain) NSMutableArray *contracts;
-@property (readonly,retain) NSString *xmlPath;
-@property (readonly,retain) NSDate *cachedUntil;
 @property (readwrite,assign) id delegate;
 
 - (IBAction)reload:(id)sender;

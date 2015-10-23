@@ -11,6 +11,12 @@
 @class Character;
 @class METXmlNode;
 
+typedef enum
+{
+    METRowsetMissingCharacter = -106,
+    METRowsetCached = -107
+} METRowsetErrors;
+
 /** METRowsetEnumerator
  How to use this class.
  1) Alloc/init with the API path you want to use (character isn't really needed until you call run):
@@ -48,5 +54,7 @@
 - (METRowsetEnumerator *)initWithCharacter:(Character *)_char API:(NSString *)api forDelegate:(id)_del;
 
 - (void)run;
+- (void)runWithURLExtras:(NSString *)extraURLArgs;
+
 - (void)cancel; ///< call cancel on the urlConnection
 @end

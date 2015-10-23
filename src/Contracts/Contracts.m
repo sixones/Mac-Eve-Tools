@@ -8,32 +8,16 @@
 
 #import "Contracts.h"
 
-#import "Config.h"
-#import "GlobalData.h"
-#import "XmlHelpers.h"
 #import "Character.h"
-#import "CharacterTemplate.h"
+#import "macros.h"
 #import "Contract.h"
 
-#import "XMLDownloadOperation.h"
-#import "XMLParseOperation.h"
-#import "METURLRequest.h"
-
-#include <assert.h>
-
-#include <libxml/tree.h>
-#include <libxml/parser.h>
-
-@interface Contracts()
-@property (readwrite,retain) NSString *xmlPath;
-@property (readwrite,retain) NSDate *cachedUntil;
-@end
+#import "METRowsetEnumerator.h"
+#import "METXmlNode.h"
 
 @implementation Contracts
 
 @synthesize contracts = _contracts;
-@synthesize xmlPath = _xmlPath;
-@synthesize cachedUntil = _cachedUntil;
 @synthesize delegate = _delegate;
 
 - (id)init
@@ -41,7 +25,8 @@
     if( self = [super init] )
     {
         _contracts = [[NSMutableArray alloc] init];
-        _cachedUntil = [[NSDate distantPast] retain];
+        contractsAPI = [[METRowsetEnumerator alloc] initWithCharacter:nil API:XMLAPI_CHAR_CONTRACTS forDelegate:self];
+        singleContractAPI = [[METRowsetEnumerator alloc] initWithCharacter:nil API:XMLAPI_CHAR_CONTRACTS forDelegate:self];
     }
     return self;
 }
@@ -49,7 +34,8 @@
 - (void)dealloc
 {
     [_contracts release];
-    [_cachedUntil release];
+    [contractsAPI release];
+    [singleContractAPI release];
     [super dealloc];
 }
 
@@ -65,7 +51,8 @@
         [_character release];
         _character = [character retain];
         [[self contracts] removeAllObjects];
-        [self setCachedUntil:[NSDate distantPast]];
+        [contractsAPI setCharacter:character];
+        [singleContractAPI setCharacter:character];
     }
 }
 
@@ -76,12 +63,24 @@
 
 - (IBAction)reload:(id)sender
 {
-    if( ![self character] )
-        return;
-    
-    if( [[self cachedUntil] isGreaterThan:[NSDate date]] )
+    [contractsAPI run];
+}
+
+- (void)requestContract:(NSNumber *)contractID
+{
+    [singleContractAPI runWithURLExtras:[NSString stringWithFormat:@"&contractID=%ld", (unsigned long)[contractID unsignedIntegerValue]]];
+}
+
+- (void)apiDidFinishLoading:(METRowsetEnumerator *)rowset withError:(NSError *)error
+{
+    if( error )
     {
-        NSLog( @"Skipping download of Contracts because of Cached Until date: %@", [self cachedUntil] );
+        if( [error code] == METRowsetCached )
+            NSLog( @"Skipping download of Contracts because of Cached Until date." ); // handle cachedUntil errors differently
+        else if( [error code] == METRowsetMissingCharacter )
+            ; // don't bother logging an error
+        else
+            NSLog( @"Error requesting Contracts: %@", [error localizedDescription] );
         // Turn off the spinning download indicator
         if( [[self delegate] respondsToSelector:@selector(contractsSkippedUpdating)] )
         {
@@ -90,80 +89,31 @@
         return;
     }
     
-    CharacterTemplate *template = [[self character] template];
-    if( !template )
-        return;
+    NSArray *newContracts = [self contractsFromRowset:rowset];
     
-    NSString *docPath = XMLAPI_CHAR_CONTRACTS;
-    NSString *apiUrl = [Config getApiUrl:docPath
-                                   keyID:[template accountId]
-                        verificationCode:[template verificationCode]
-                                  charId:[template characterId]];
-    
-	NSString *characterDir = [Config charDirectoryPath:[template accountId]
-											 character:[template characterId]];
-    NSString *pendingDir = [characterDir stringByAppendingString:@"/pending"];
-    
-    [self setXmlPath:[characterDir stringByAppendingPathComponent:[XMLAPI_CHAR_CONTRACTS lastPathComponent]]];
-    
-	//create the output directory, the XMLParseOperation will clean it up
-    // TODO move this to an operations sub-class and have all of the download operations depend on it
-	NSFileManager *fm = [NSFileManager defaultManager];
-	if( ![fm fileExistsAtPath:pendingDir isDirectory:nil] )
+    if( rowset == contractsAPI )
     {
-		if( ![fm createDirectoryAtPath: pendingDir withIntermediateDirectories:YES attributes:nil error:nil] )
+        [[self contracts] removeAllObjects];
+        [[self contracts] addObjectsFromArray:newContracts];
+        
+        if( [[self delegate] respondsToSelector:@selector(contractsFinishedUpdating:)] )
         {
-			//NSLog(@"Could not create directory %@",pendingDir);
-			return;
-		}
-	}
-
-	XMLDownloadOperation *op = [[[XMLDownloadOperation alloc] init] autorelease];
-	[op setXmlDocUrl:apiUrl];
-	[op setCharacterDirectory:characterDir];
-	[op setXmlDoc:docPath];
-    
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-	[queue setMaxConcurrentOperationCount:3];
-    
-	//This object will call the delegate function.
-    
-	XMLParseOperation *opParse = [[XMLParseOperation alloc] init];
-    
-	[opParse setDelegate:self];
-	[opParse setCallback:@selector(parserOperationDone:errors:)];
-	[opParse setObject:nil];
-    
-	[opParse addDependency:op]; //THIS MUST BE THE FIRST DEPENDENCY.
-	[opParse addCharacterDir:characterDir forSheet:XMLAPI_CHAR_CONTRACTS];
-    
-	[queue addOperation:op];
-	[queue addOperation:opParse];
-    
-	[opParse release];
-	[queue release];
-
-}
-
-- (void) parserOperationDone:(id)ignore errors:(NSArray *)errors
-{
-    // read data from marketFile and create an xmlDoc
-    // parse it
-    xmlDoc *doc = xmlReadFile( [[self xmlPath] fileSystemRepresentation], NULL, 0 );
-	if( doc == NULL )
+            [[self delegate] performSelector:@selector(contractsFinishedUpdating:) withObject:[self contracts]];
+        }
+    }
+    else if( rowset == singleContractAPI )
     {
-		NSLog(@"Failed to read %@",[self xmlPath]);
-		return;
-	}
-    [[self contracts] removeAllObjects];
-    [[self contracts] addObjectsFromArray:[self parseXmlContracts:doc]];
-	xmlFreeDoc(doc);
-    
-    if( [[self delegate] respondsToSelector:@selector(contractsFinishedUpdating:)] )
+        if( [[self delegate] respondsToSelector:@selector(contractFinishedUpdating:)] )
+        {
+            [[self delegate] performSelector:@selector(contractFinishedUpdating:) withObject:newContracts];
+        }
+    }
+    else
     {
-        [[self delegate] performSelector:@selector(contractsFinishedUpdating:) withObject:[self contracts]];
+        NSLog( @"Invalid rowset in Contracts." );
     }
 }
+
 
 /* Sample xml for contracts:
  <?xml version='1.0' encoding='UTF-8'?>
@@ -179,222 +129,46 @@
  <cachedUntil>2011-07-30 05:44:30</cachedUntil>
  </eveapi>
  */
--(NSArray *) parseXmlContracts:(xmlDoc*)document
+-(NSArray *) contractsFromRowset:(METRowsetEnumerator *)rowset
 {
-	xmlNode *root_node;
-	xmlNode *result;
-    xmlNode *rowset;
-    
-	root_node = xmlDocGetRootElement(document);
-    
-	result = findChildNode(root_node,(xmlChar*)"result");
-	if( NULL == result )
-    {
-		NSLog(@"Could not get result tag in parseXmlContracts");
-		
-		xmlNode *xmlErrorMessage = findChildNode(root_node,(xmlChar*)"error");
-		if( NULL != xmlErrorMessage )
-        {
-			NSLog( @"%@", [NSString stringWithString:getNodeText(xmlErrorMessage)] );
-		}
-		return nil;
-	}
-    
-    rowset = findChildNode(result,(xmlChar*)"rowset");
-	if( NULL == result )
-    {
-		NSLog(@"Could not get rowset tag in parseXmlContracts");
-		
-		xmlNode *xmlErrorMessage = findChildNode(root_node,(xmlChar*)"error");
-		if( NULL != xmlErrorMessage )
-        {
-			NSLog( @"%@", [NSString stringWithString:getNodeText(xmlErrorMessage)] );
-		}
-		return nil;
-	}
-
     NSMutableArray *localContracts = [NSMutableArray array];
     
-	for( xmlNode *cur_node = rowset->children;
-		 NULL != cur_node;
-		 cur_node = cur_node->next)
-	{
-		if( XML_ELEMENT_NODE != cur_node->type )
-        {
-			continue;
-		}
-        
-		if( xmlStrcmp(cur_node->name,(xmlChar*)"row") == 0 )
+    for( METXmlNode *row in rowset )
+    {
+        //  <row notificationID="304084087" typeID="16" senderID="797400947" sentDate="2010-04-12 12:32:00" read="0"/>
+        NSDictionary *properties = [row properties];
+        NSUInteger contractID = [[properties objectForKey:@"contractID"] integerValue];
+        if( 0 != contractID )
         {
             Contract *contract = [[Contract alloc] init];
             [contract setCharacter:[self character]];
-             
-            for( xmlAttr *attr = cur_node->properties; attr; attr = attr->next )
-            {
-                NSString *value = [NSString stringWithUTF8String:(const char*) attr->children->content];
-                if( xmlStrcmp(attr->name, (xmlChar *)"type") == 0 )
-                {
-                    [contract setType:value];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"status") == 0 )
-                {
-                    [contract setStatus:value];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"contractID") == 0 )
-                {
-                    [contract setContractID:[value integerValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"startStationID") == 0 )
-                {
-                    [contract setStartStationID:[value integerValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"endStationID") == 0 )
-                {
-                    [contract setEndStationID:[value integerValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"volume") == 0 )
-                {
-                    [contract setVolume:[value doubleValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"price") == 0 )
-                {
-                    [contract setPrice:[value doubleValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"reward") == 0 )
-                {
-                    [contract setReward:[value doubleValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"collateral") == 0 )
-                {
-                    [contract setCollateral:[value doubleValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"buyout") == 0 )
-                {
-                    [contract setBuyout:[value doubleValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"dateIssued") == 0 )
-                {
-                    NSDate *date = [NSDate dateWithNaturalLanguageString:value];
-                    [contract setIssued:date];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"dateExpired") == 0 )
-                {
-                    NSDate *date = [NSDate dateWithNaturalLanguageString:value];
-                    [contract setExpired:date];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"dateAccepted") == 0 )
-                {
-                    NSDate *date = [NSDate dateWithNaturalLanguageString:value];
-                    [contract setAccepted:date];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"dateCompleted") == 0 )
-                {
-                    NSDate *date = [NSDate dateWithNaturalLanguageString:value];
-                    [contract setCompleted:date];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"availability") == 0 )
-                {
-                    [contract setAvailability:value];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"title") == 0 )
-                {
-                    [contract setTitle:value];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"numDays") == 0 )
-                {
-                    [contract setDays:[value integerValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"forCorp") == 0 )
-                {
-                    [contract setDays:[value integerValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"issuerID") == 0 )
-                {
-                    [contract setIssuerID:[value integerValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"issuerCorpID") == 0 )
-                {
-                    [contract setIssuerCorpID:[value integerValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"assigneeID") == 0 )
-                {
-                    [contract setAssigneeID:[value integerValue]];
-                }
-                else if( xmlStrcmp(attr->name, (xmlChar *)"acceptorID") == 0 )
-                {
-                    [contract setAcceptorID:[value integerValue]];
-                }
-            }
+            [contract setContractID:contractID];
+            [contract setIssued:[NSDate dateWithNaturalLanguageString:[properties objectForKey:@"dateIssued"]]];
+            [contract setExpired:[NSDate dateWithNaturalLanguageString:[properties objectForKey:@"dateExpired"]]];
+            [contract setAccepted:[NSDate dateWithNaturalLanguageString:[properties objectForKey:@"dateAccepted"]]];
+            [contract setCompleted:[NSDate dateWithNaturalLanguageString:[properties objectForKey:@"dateCompleted"]]];
+            [contract setType:[properties objectForKey:@"type"]];
+            [contract setStatus:[properties objectForKey:@"status"]];
+            [contract setStartStationID:[[properties objectForKey:@"startStationID"] integerValue]];
+            [contract setEndStationID:[[properties objectForKey:@"endStationID"] integerValue]];
+            [contract setVolume:[[properties objectForKey:@"volume"] doubleValue]];
+            [contract setPrice:[[properties objectForKey:@"price"] doubleValue]];
+            [contract setReward:[[properties objectForKey:@"reward"] doubleValue]];
+            [contract setCollateral:[[properties objectForKey:@"collateral"] doubleValue]];
+            [contract setBuyout:[[properties objectForKey:@"buyout"] doubleValue]];
+            [contract setAvailability:[properties objectForKey:@"availability"]];
+            [contract setTitle:[properties objectForKey:@"title"]];
+            [contract setDays:[[properties objectForKey:@"numDays"] integerValue]];
+            [contract setDays:[[properties objectForKey:@"forCorp"] integerValue]];
+            [contract setIssuerID:[[properties objectForKey:@"issuerID"] integerValue]];
+            [contract setIssuerCorpID:[[properties objectForKey:@"issuerCorpID"] integerValue]];
+            [contract setAssigneeID:[[properties objectForKey:@"assigneeID"] integerValue]];
+            [contract setAcceptorID:[[properties objectForKey:@"acceptorID"] integerValue]];
             [localContracts addObject:contract];
         }
-	}
-    
-    // Should also grab the "cachedUntil" node so we don't re-request data until after that time.
-    // 2013-05-22 22:32:5
-    xmlNode *cached = findChildNode( root_node, (xmlChar *)"cachedUntil" );
-    if( NULL != cached )
-    {
-        NSString *dtString = getNodeText( cached );
-        NSDate *cacheDate = [NSDate dateWithNaturalLanguageString:dtString];
-        [self setCachedUntil:cacheDate];
-
     }
     
-	return localContracts;
-}
-
-- (void)requestContract:(NSNumber *)contractID
-{
-    if( ![self character] )
-        return;
-    
-    CharacterTemplate *template = [[self character] template];
-    if( !template )
-        return;
-    
-    NSString *apiUrl = [Config getApiUrl:XMLAPI_CHAR_CONTRACTS
-                                   keyID:[template accountId]
-                        verificationCode:[template verificationCode]
-                                  charId:[template characterId]];
-    if( contractID )
-        apiUrl = [apiUrl stringByAppendingFormat:@"&contractID=%ld", (unsigned long)[contractID unsignedIntegerValue]];
-    NSURL *url = [NSURL URLWithString:apiUrl];
-    METURLRequest *request = [METURLRequest requestWithURL:url];
-    [request setDelegate:self];
-    [NSURLConnection connectionWithRequest:request delegate:request];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection withError:(NSError *)error
-{
-    if( error )
-    {
-        NSLog( @"Error requesting a contract: %@", [error localizedDescription] );
-        return;
-    }
-    
-    METURLRequest *request = (METURLRequest *)[connection originalRequest];
-    NSMutableData *data = [request data];
-    const char *ptr = [data bytes];
-    NSInteger length = [data length];
-    
-    if(length == 0){
-        NSLog(@"Zero bytes returned for contract data");
-        return;
-    }
-    
-    xmlDoc *doc = xmlReadMemory(ptr, (int)length, NULL, NULL, 0);
-    if( doc == NULL )
-    {
-        NSLog(@"Failed to read contract data");
-        return;
-    }
-    NSArray *newContracts = [self parseXmlContracts:doc];
-    xmlFreeDoc(doc);
-    
-    if( [[self delegate] respondsToSelector:@selector(contractFinishedUpdating:)] )
-    {
-        [[self delegate] performSelector:@selector(contractFinishedUpdating:) withObject:newContracts];
-    }
+    return localContracts;
 }
 
 @end

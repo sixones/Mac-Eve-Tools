@@ -37,6 +37,8 @@
 
 - (void)dealloc
 {
+    _delegate = nil;
+    [urlConnection cancel];
     [_character release];
     [apiPath release];
     [urlConnection release];
@@ -49,15 +51,28 @@
 
 - (void)run
 {
+    [self runWithURLExtras:nil];
+}
+
+- (void)runWithURLExtras:(NSString *)extraURLArgs
+{
+    // clear out old stuff
+    if( xmlDocument )
+    {
+        xmlFreeDoc((xmlDocPtr)xmlDocument);
+        xmlDocument = nil;
+    }
+    rowsetNode = nil;
+    
     if( ![self character] )
     {
-        [self reportWithError:[self errorWithCode:-106 andMessage:@"Missing character"]];
+        [self reportWithError:[self errorWithCode:METRowsetMissingCharacter andMessage:@"Missing character"]];
         return;
     }
     
     if( [[self character] isCachedForAPI:apiPath] )
     {
-        [self reportWithError:[self errorWithCode:-107 andMessage:@"Skipping API call because of Cached Until date"]];
+        [self reportWithError:[self errorWithCode:METRowsetCached andMessage:@"Skipping API call because of Cached Until date"]];
         return;
     }
     
@@ -66,6 +81,8 @@
                                     keyID:[template accountId]
                          verificationCode:[template verificationCode]
                                    charId:[template characterId]];
+    if( [extraURLArgs length] > 0 )
+        urlPath = [urlPath stringByAppendingString:extraURLArgs];
     NSURL *url = [NSURL URLWithString:urlPath];
     
     METURLRequest *request = [METURLRequest requestWithURL:url];
@@ -184,6 +201,8 @@
         errorMessage = getNodeText(xmlErrorNode);
         if( errorMessage )
         {
+//            NSString *errorNum = findAttribute(xmlErrorNode,(xmlChar*)"code");
+
             [self reportWithError:[self errorWithCode:-103 andMessage:errorMessage]];
             return;
         }
