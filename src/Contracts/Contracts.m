@@ -68,6 +68,7 @@
 
 - (void)requestContract:(NSNumber *)contractID
 {
+    NSAssert( nil != contractID, @"Missing contract ID in [Contracts requestContract]" );
     [singleContractAPI runWithURLExtras:[NSString stringWithFormat:@"&contractID=%ld", (unsigned long)[contractID unsignedIntegerValue]]];
 }
 
@@ -165,6 +166,7 @@
             [contract setAssigneeID:[[properties objectForKey:@"assigneeID"] integerValue]];
             [contract setAcceptorID:[[properties objectForKey:@"acceptorID"] integerValue]];
             [localContracts addObject:contract];
+            [contract release];
         }
     }
     

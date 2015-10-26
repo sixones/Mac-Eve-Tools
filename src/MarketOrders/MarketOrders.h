@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class Character;
+@class METRowsetEnumerator;
 
 @interface MarketOrders : NSObject
 {
@@ -16,6 +17,9 @@
     NSMutableArray *_orders;
     NSString *_xmlPath;
     NSDate *_cachedUntil;
+    METRowsetEnumerator *ordersAPI;
+    METRowsetEnumerator *singleOrderAPI;
+
     id _delegate;    
 }
 @property (retain) Character *character;
