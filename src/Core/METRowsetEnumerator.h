@@ -34,11 +34,17 @@ typedef enum
  6) Loop through the returned rowset rows with fast enumeration:
     for( METXmlNode *row in rowset )
        ...
+ 
+ The checkCachedDate flag defaults to YES and should only be set to NO for very specific API calls.
+ For example, calling the market orders API with a single market order ID (so it's state can be updated)
+   will always fail because it's called immediately after a regular market orders API call, so it will
+   always be before the cached until date. Unless the checkCachedDate flag is set to NO for that particular call.
  */
 @interface METRowsetEnumerator : NSObject<NSFastEnumeration>
 {
     id _delegate;
     Character *_character;
+    BOOL _checkCachedDate;
     NSString *apiPath;
     NSURLConnection *urlConnection;
     NSData *xmlData;
@@ -50,6 +56,7 @@ typedef enum
 
 @property (readonly) id delegate;
 @property (readwrite,retain) Character *character;
+@property (readwrite,assign) BOOL checkCachedDate;
 
 - (METRowsetEnumerator *)initWithCharacter:(Character *)_char API:(NSString *)api forDelegate:(id)_del;
 

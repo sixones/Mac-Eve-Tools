@@ -22,6 +22,7 @@
 
 @synthesize delegate = _delegate;
 @synthesize character = _character;
+@synthesize checkCachedDate = _checkCachedDate;
 
 - (METRowsetEnumerator *)initWithCharacter:(Character *)_char API:(NSString *)api forDelegate:(id)_del
 {
@@ -29,6 +30,7 @@
     {
         _delegate = _del;
         _character = [_char retain];
+        _checkCachedDate = YES;
         apiPath = [api retain];
     }
     
@@ -70,7 +72,7 @@
         return;
     }
     
-    if( [[self character] isCachedForAPI:apiPath] )
+    if( [self checkCachedDate] && [[self character] isCachedForAPI:apiPath] )
     {
         [self reportWithError:[self errorWithCode:METRowsetCached andMessage:@"Skipping API call because of Cached Until date"]];
         return;

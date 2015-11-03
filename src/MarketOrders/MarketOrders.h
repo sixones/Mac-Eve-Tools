@@ -18,7 +18,6 @@
     NSString *_xmlPath;
     NSDate *_cachedUntil;
     METRowsetEnumerator *ordersAPI;
-    METRowsetEnumerator *singleOrderAPI;
 
     id _delegate;    
 }

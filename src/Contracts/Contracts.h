@@ -16,7 +16,6 @@
     Character *_character;
     NSMutableArray *_contracts;
     METRowsetEnumerator *contractsAPI;
-    METRowsetEnumerator *singleContractAPI; // for updating a single contract
     id _delegate;
 }
 

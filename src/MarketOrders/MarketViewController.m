@@ -338,6 +338,11 @@
         [order setIssued:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,14)]];
         
         [messages addObject:order];
+        
+        if( [order orderState] == OrderStateUnknown )
+        {
+            [orders requestMarketOrder:[NSNumber numberWithInteger:[order orderID]]];
+        }
     }
     
     sqlite3_finalize(read_stmt);
@@ -438,11 +443,15 @@
 - (BOOL)closeOlderOrders:(NSArray *)newOrders
 {
     NSMutableArray *changes = [NSMutableArray array];
-    // filter dbOrders for ones that are open
+    // filter dbOrders for ones that have state open or unknown
     // for each, if it is not in newOrders, then request that order specifically from the API
     NSIndexSet *indexes = [[self dbOrders] indexesOfObjectsPassingTest:^BOOL (id el, NSUInteger i, BOOL *stop)
     {
-        return [(MarketOrder *)el orderState] == OrderStateActive;
+        if( [(MarketOrder *)el orderState] == OrderStateActive )
+            return YES;
+        else if( [(MarketOrder *)el orderState] == OrderStateUnknown )
+            return YES;
+        return NO;
     }];
     NSArray *openOrders = [[self dbOrders] objectsAtIndexes:indexes];
     

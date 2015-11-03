@@ -26,7 +26,6 @@
     {
         _contracts = [[NSMutableArray alloc] init];
         contractsAPI = [[METRowsetEnumerator alloc] initWithCharacter:nil API:XMLAPI_CHAR_CONTRACTS forDelegate:self];
-        singleContractAPI = [[METRowsetEnumerator alloc] initWithCharacter:nil API:XMLAPI_CHAR_CONTRACTS forDelegate:self];
     }
     return self;
 }
@@ -35,7 +34,6 @@
 {
     [_contracts release];
     [contractsAPI release];
-    [singleContractAPI release];
     [super dealloc];
 }
 
@@ -52,7 +50,6 @@
         _character = [character retain];
         [[self contracts] removeAllObjects];
         [contractsAPI setCharacter:character];
-        [singleContractAPI setCharacter:character];
     }
 }
 
@@ -69,7 +66,9 @@
 - (void)requestContract:(NSNumber *)contractID
 {
     NSAssert( nil != contractID, @"Missing contract ID in [Contracts requestContract]" );
-    [singleContractAPI runWithURLExtras:[NSString stringWithFormat:@"&contractID=%ld", (unsigned long)[contractID unsignedIntegerValue]]];
+    METRowsetEnumerator *temp = [[METRowsetEnumerator alloc] initWithCharacter:[self character] API:XMLAPI_CHAR_CONTRACTS forDelegate:self];
+    [temp setCheckCachedDate:NO];
+    [temp runWithURLExtras:[NSString stringWithFormat:@"&contractID=%ld", (unsigned long)[contractID unsignedIntegerValue]]];
 }
 
 - (void)apiDidFinishLoading:(METRowsetEnumerator *)rowset withError:(NSError *)error
@@ -87,6 +86,8 @@
         {
             [[self delegate] performSelector:@selector(contractsSkippedUpdating)];
         }
+        if( rowset != contractsAPI )
+            [rowset release];
         return;
     }
     
@@ -102,16 +103,13 @@
             [[self delegate] performSelector:@selector(contractsFinishedUpdating:) withObject:[self contracts]];
         }
     }
-    else if( rowset == singleContractAPI )
+    else
     {
         if( [[self delegate] respondsToSelector:@selector(contractFinishedUpdating:)] )
         {
             [[self delegate] performSelector:@selector(contractFinishedUpdating:) withObject:newContracts];
         }
-    }
-    else
-    {
-        NSLog( @"Invalid rowset in Contracts." );
+        [rowset release];
     }
 }
 

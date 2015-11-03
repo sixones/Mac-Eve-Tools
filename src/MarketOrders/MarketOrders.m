@@ -47,7 +47,6 @@
         _orders = [[NSMutableArray alloc] init];
         _cachedUntil = [[NSDate distantPast] retain];
         ordersAPI = [[METRowsetEnumerator alloc] initWithCharacter:nil API:XMLAPI_CHAR_ORDERS forDelegate:self];
-        singleOrderAPI = [[METRowsetEnumerator alloc] initWithCharacter:nil API:XMLAPI_CHAR_ORDERS forDelegate:self];
     }
     return self;
 }
@@ -57,7 +56,6 @@
     [_orders release];
     [_cachedUntil release];
     [ordersAPI release];
-    [singleOrderAPI release];
     [super dealloc];
 }
 
@@ -91,7 +89,9 @@
 - (void)requestMarketOrder:(NSNumber *)orderID
 {
     NSAssert( nil != orderID, @"Missing order ID in [MarketOrders requestMarketOrder]" );
-    [singleOrderAPI runWithURLExtras:[NSString stringWithFormat:@"&orderID=%ld", (unsigned long)[orderID unsignedIntegerValue]]];
+    METRowsetEnumerator *temp = [[METRowsetEnumerator alloc] initWithCharacter:[self character] API:XMLAPI_CHAR_ORDERS forDelegate:self];
+    [temp setCheckCachedDate:NO];
+    [temp runWithURLExtras:[NSString stringWithFormat:@"&orderID=%ld", (unsigned long)[orderID unsignedIntegerValue]]];
 }
 
 - (void)apiDidFinishLoading:(METRowsetEnumerator *)rowset withError:(NSError *)error
@@ -101,9 +101,17 @@
         if( [error code] == METRowsetCached )
             NSLog( @"Skipping Market Orders because of Cached Until date." ); // handle cachedUntil errors differently
         else if( [error code] == METRowsetMissingCharacter )
-            ; // don't bother logging an error
+            ; // don't bother logging an error but maybe add an assert?
         else
             NSLog( @"Error requesting Market Orders: %@", [error localizedDescription] );
+        
+        if( [[self delegate] respondsToSelector:@selector(ordersSkippedUpdating)] )
+        {
+            [[self delegate] performSelector:@selector(ordersSkippedUpdating)];
+        }
+        
+        if( rowset != ordersAPI )
+            [rowset release];
         return;
     }
     
@@ -119,16 +127,13 @@
             [[self delegate] performSelector:@selector(ordersFinishedUpdating:) withObject:[self orders]];
         }
     }
-    else if( rowset == singleOrderAPI )
+    else
     {
         if( [[self delegate] respondsToSelector:@selector(orderFinishedUpdating:)] )
         {
             [[self delegate] performSelector:@selector(orderFinishedUpdating:) withObject:newOrders];
         }
-    }
-    else
-    {
-        NSLog( @"Invalid rowset in Contracts." );
+        [rowset release];
     }
 }
 
