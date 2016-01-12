@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<EveDatabaseExport version="29">
+<EveDatabaseExport version="30">
 	<file>database.sql.bz2</file>
-	<sha1_bzip>HWJRjhVqo+8ZA3agAFar7RiATXI=</sha1_bzip>
-	<sha1_dec>+H602i9sE7SkNNBImrudPWtsLFs=</sha1_dec>
-	<sha1_built>d7eR0iNyiKLwMZ/vVj2lSBIh82M=</sha1_built>
+	<sha1_bzip>qTGPzoRsooePs9AaCn7AISQsq0A=</sha1_bzip>
+	<sha1_dec>V7lmNBXG+WlcH9ZjzBu0s1Oyf08=</sha1_dec>
+	<sha1_built>KgI0AldgB/yBf2nptlq1RERKUEI=</sha1_built>
 </EveDatabaseExport>
