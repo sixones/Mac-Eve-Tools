@@ -652,6 +652,9 @@
 {
     if( tableView == mailboxView )
     {
+        if( row >= [mailboxPairs count] )
+            return nil;
+        
         METPair *pair = [mailboxPairs objectAtIndex:row];
         if( 0 == [[pair second] length] )
         {

@@ -103,7 +103,7 @@
 
     if(rc != SQLITE_OK){
         
-        NSLog(@"Error preparing check table statement\n");
+        NSLog(@"Error preparing check table statement: (%d) %s",rc,sqlite3_errmsg(db));
         if(checkStatement != NULL){
             sqlite3_finalize(checkStatement);
         }

@@ -86,7 +86,7 @@ $PYEXE $SCRIPT -t metStations -f $1 \
 -q "SELECT stationID, solarSystemID, stationName FROM staStations;";
 
 $PYEXE $SCRIPT -t metTypeNames -f $1 \
--q "SELECT typeID, typeName, description FROM invTypes WHERE published = 1;";
+-q "SELECT typeID, typeName, description FROM invTypes;";
 
 $PYEXE $SCRIPT -t mapSolarSystems -f $1 \
 -q "SELECT * FROM mapSolarSystems;";

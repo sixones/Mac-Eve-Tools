@@ -379,6 +379,9 @@
 
     for( MarketOrder *order in newOrders )
     {
+        if( [order charID] != [[self character] characterId] )
+            continue; // this might happen if we switch characters while an API request is outstanding
+        
         sqlite3_bind_nsint( insert_order_stmt, 1, [order orderID] );
         sqlite3_bind_nsint( insert_order_stmt, 2, [order charID] );
         sqlite3_bind_nsint( insert_order_stmt, 3, [order stationID] );

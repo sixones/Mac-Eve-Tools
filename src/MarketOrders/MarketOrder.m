@@ -43,7 +43,7 @@
         NSString *typeName = [db typeName:self.typeID];
         if( typeName )
             return typeName;
-        NSLog( @"Missing type name in a market order" );
+        NSLog( @"Missing type name in a market order for type: %ld", (unsigned long)self.typeID );
     }
     return [type typeName];
 }

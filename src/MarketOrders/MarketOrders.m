@@ -72,6 +72,7 @@
         _character = [character retain];
         [[self orders] removeAllObjects];
         [self setCachedUntil:[NSDate distantPast]];
+        [ordersAPI cancel];
         [ordersAPI setCharacter:character];
     }
 }
