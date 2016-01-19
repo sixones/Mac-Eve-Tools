@@ -15,6 +15,7 @@
 @synthesize senderID;
 @synthesize sentDate;
 @synthesize read;
+@synthesize body;
 
 static NSDictionary *idNames = nil;
 

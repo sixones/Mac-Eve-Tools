@@ -20,7 +20,7 @@ typedef enum
 /** METRowsetEnumerator
  How to use this class.
  1) Alloc/init with the API path you want to use (character isn't really needed until you call run):
-    apiGetter = [[METRowsetEnumerator alloc] initWithCharacter:nil API:XMLAPI_CHAR_NOTIFICATIONS forDelegate:self];
+    apiGetter = [[METRowsetEnumerator alloc] initWithCharacter:nil API:@"/char/Notifications.xml.aspx" forDelegate:self];
  2) Make sure to set the character any time that changes
     [apiGetter setCharacter:newCharacter];
  3) Run the getter whenever you want to pull new data from the API

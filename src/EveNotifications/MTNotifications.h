@@ -22,6 +22,7 @@
     id<METInstance> app;
     METIDtoName *nameGetter;
     METRowsetEnumerator *apiGetter;
+    METRowsetEnumerator *bodyGetter;
     
     NSTimer *tickerTimer;
     NSUInteger nextNotification;

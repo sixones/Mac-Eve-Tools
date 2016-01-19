@@ -20,4 +20,5 @@
 - (void *)xmlNode;
 
 - (NSDictionary *)properties;
+- (NSString *)content;
 @end

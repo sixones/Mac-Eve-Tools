@@ -18,7 +18,7 @@
  */
 
 
-#import "XmlHelpers.m"
+#import "XmlHelpers.h"
 
 #import <libxml/tree.h>
 #import <libxml/parser.h>

@@ -84,7 +84,11 @@
                          verificationCode:[template verificationCode]
                                    charId:[template characterId]];
     if( [extraURLArgs length] > 0 )
-        urlPath = [urlPath stringByAppendingString:extraURLArgs];
+    {
+        NSString *separator = ('&' == [extraURLArgs characterAtIndex:0])?@"":@"&"; // if the caller already included the ampersand, don't include it ourselves
+        urlPath = [urlPath stringByAppendingFormat:@"%@%@", separator, extraURLArgs];
+    }
+
     NSURL *url = [NSURL URLWithString:urlPath];
     
     METURLRequest *request = [METURLRequest requestWithURL:url];

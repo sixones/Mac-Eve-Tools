@@ -130,7 +130,6 @@ enum AttributeType {
 #define XMLAPI_EVE_NAMES @"/eve/CharacterName.xml.aspx"
 #define XMLAPI_ACCT_KEY @"/account/APIKeyInfo.xml.aspx"
 #define XMLAPI_CHAR_MAILLISTS @"/char/mailinglists.xml.aspx"
-#define XMLAPI_CHAR_NOTIFICATIONS @"/char/Notifications.xml.aspx"
 
 /*the portrait will be saved to this file in the characters directory*/
 #define PORTRAIT @"portrait.jpg"

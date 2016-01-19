@@ -15,6 +15,7 @@
     NSInteger senderID;
     NSDate *sentDate;
     BOOL read;
+    NSString *body;
 }
 
 @property (readwrite,assign) NSInteger notificationID;
@@ -22,6 +23,7 @@
 @property (readwrite,assign) NSInteger senderID;
 @property (readwrite,retain) NSDate *sentDate;
 @property (readwrite,assign) BOOL read;
+@property (readwrite,retain) NSString *body;
 
 + (MTNotification *)notificationWithID:(NSInteger)notID typeID:(NSInteger)tID sender:(NSInteger)senderID sentDate:(NSDate *)sentDate read:(BOOL)read;
 

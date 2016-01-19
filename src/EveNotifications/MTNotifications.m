@@ -41,7 +41,10 @@
         notifications = [[NSMutableArray alloc] init];
         nextNotification = 0;
         tickerTimer = [[NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(tickerTimerFired:) userInfo:nil repeats:YES] retain];
-        apiGetter = [[METRowsetEnumerator alloc] initWithCharacter:nil API:XMLAPI_CHAR_NOTIFICATIONS forDelegate:self];
+        apiGetter = [[METRowsetEnumerator alloc] initWithCharacter:nil API:@"/char/Notifications.xml.aspx" forDelegate:self];
+        bodyGetter = [[METRowsetEnumerator alloc] initWithCharacter:nil API:@"/char/NotificationTexts.xml.aspx" forDelegate:self];
+        // TODO: Get rid of this if/when the NotificationText API starts returning reasonable values in the cachedUntil field
+        [bodyGetter setCheckCachedDate:NO];
     }
     
     return self;
@@ -54,6 +57,7 @@
     [tickerTimer invalidate];
     [tickerTimer release];
     [apiGetter release];
+    [bodyGetter release];
     [super dealloc];
 }
 
@@ -62,14 +66,40 @@
     if( character )
     {
         int rc;
-        char *errmsg;
+        char *errmsg = nil;
         CharacterDatabase *charDB = [character database];
         sqlite3 *db = [charDB openDatabase];
         
         if( [charDB doesTableExist:@"notifications"] )
+        {
+            if( [charDB doesTable:@"notifications" haveColumn:@"body"] )
+                return YES;
+            
+            // older version, needs to be updated
+            // First we have to fix bad data caused by a bug in earlier code
+            // The read/unread data was being stored in the senderID column (that data is lost)
+            int rc = sqlite3_exec( db, "UPDATE notifications SET read = senderID;", NULL, NULL, &errmsg );
+            if(rc != SQLITE_OK)
+            {
+                [charDB logError:errmsg];
+                return NO;
+            }
+
+            rc = sqlite3_exec( db, "UPDATE notifications SET senderID = 0;", NULL, NULL, &errmsg );
+            if(rc != SQLITE_OK)
+            {
+                [charDB logError:errmsg];
+                return NO;
+            }
+
+            rc = sqlite3_exec( db, "ALTER TABLE notifications ADD COLUMN body TEXT;", NULL, NULL, &errmsg );
+            if(rc != SQLITE_OK)
+            {
+                [charDB logError:errmsg];
+                return NO;
+            }
             return YES;
-        
-        // TODO: also make sure it's the right version
+        }
         
         [charDB beginTransaction];
         
@@ -78,7 +108,8 @@
         "typeID INTEGER, "
         "senderID INTEGER, "
         "sentDate DATETIME, "
-        "read BOOLEAN DEFAULT 0"
+        "read BOOLEAN DEFAULT 0,"
+        "body TEXT "
         ");";
         
         rc = sqlite3_exec(db,createMailTable,NULL,NULL,&errmsg);
@@ -110,6 +141,7 @@
         [app startLoadingAnimation];
         [tickerField setStringValue:@""];
         [apiGetter setCharacter:_character];
+        [bodyGetter setCharacter:_character];
         [self reload:self];
     }
 }
@@ -199,7 +231,11 @@
     if( error )
     {
         if( [error code] == -107 )
+        {
             NSLog( @"Skipping EVE Notifications because of Cached Until date." ); // handle cachedUntil errors differently
+            if( rowset == apiGetter )
+                [self getMissingNotificationBodies]; // even if the main api cached out, try getting any empty notification bodies
+        }
         else
             NSLog( @"Error requesting EVE Notifications: %@", [error localizedDescription] );
         [app stopLoadingAnimation];
@@ -207,32 +243,65 @@
         return;
     }
     
-    NSMutableArray *newNotes = [NSMutableArray array];
-    NSMutableSet *missingNames = [NSMutableSet set];
-
-    for( METXmlNode *row in rowset )
+    if( rowset == apiGetter )
     {
-        //  <row notificationID="304084087" typeID="16" senderID="797400947" sentDate="2010-04-12 12:32:00" read="0"/>
-        NSDictionary *properties = [row properties];
-        NSInteger notificationID = [[properties objectForKey:@"notificationID"] integerValue];
-
-        if( 0 != notificationID )
+        NSMutableArray *newNotes = [NSMutableArray array];
+        NSMutableSet *missingNames = [NSMutableSet set];
+        
+        for( METXmlNode *row in rowset )
         {
-            NSInteger typeID = [[properties objectForKey:@"typeID"] integerValue];
-            NSInteger senderID = [[properties objectForKey:@"senderID"] integerValue];
-            NSDate *sentDate = [NSDate dateWithNaturalLanguageString:[properties objectForKey:@"sentDate"]];
-            BOOL read = (0 == [[properties objectForKey:@"read"] integerValue]);
-
-            MTNotification *notification = [MTNotification notificationWithID:notificationID typeID:typeID sender:senderID sentDate:sentDate read:read];
-            [newNotes addObject:notification];
-            [missingNames addObject:[NSNumber numberWithInteger:senderID]];
+            //  <row notificationID="304084087" typeID="16" senderID="797400947" sentDate="2010-04-12 12:32:00" read="0"/>
+            NSDictionary *properties = [row properties];
+            NSInteger notificationID = [[properties objectForKey:@"notificationID"] integerValue];
+            
+            if( 0 != notificationID )
+            {
+                NSInteger typeID = [[properties objectForKey:@"typeID"] integerValue];
+                NSInteger senderID = [[properties objectForKey:@"senderID"] integerValue];
+                NSDate *sentDate = [NSDate dateWithNaturalLanguageString:[properties objectForKey:@"sentDate"]];
+                BOOL read = (0 == [[properties objectForKey:@"read"] integerValue]);
+                
+                MTNotification *notification = [MTNotification notificationWithID:notificationID typeID:typeID sender:senderID sentDate:sentDate read:read];
+                [newNotes addObject:notification];
+                [missingNames addObject:[NSNumber numberWithInteger:senderID]];
+            }
         }
+        
+        if( [missingNames count] > 0 )
+            [nameGetter namesForIDs:missingNames];
+        
+        [self insertNotifications:newNotes];
+        [self getMissingNotificationBodies];
     }
-    
-    if( [missingNames count] > 0 )
-        [nameGetter namesForIDs:missingNames];
-    
-    [self insertNotifications:newNotes];
+    else if( rowset == bodyGetter )
+    {
+        NSMutableArray *newBodies = [NSMutableArray array];
+        for( METXmlNode *row in rowset )
+        {
+            // <row notificationID="545014865"><![CDATA[bounty: 1000000.0 bountyPlacerID: 96143456]]></row>
+            // Possible error condition?: <missingIDs>544904842,544904635</missingIDs>
+            // Add code to METXmlNode to get the name of the node
+            NSDictionary *properties = [row properties];
+            NSInteger notificationID = [[properties objectForKey:@"notificationID"] integerValue];
+            
+            if( 0 != notificationID )
+            {
+                // get the text of the body, update the MTNotification object in memory and update the row in the database
+                NSString *body = [row content];
+                if( [body length] > 0 )
+                {
+                    MTNotification *notification = [self notificationWithID:notificationID];
+                    if( notification )
+                    {
+                        [notification setBody:body];
+                        [newBodies addObject:notification];
+                    }
+                }
+            }
+        }
+        if( [newBodies count] > 0 )
+            [self saveNotificationBodies:newBodies];
+    }
 }
 
 
@@ -240,7 +309,7 @@
 {
     CharacterDatabase *charDB = [character database];
     sqlite3 *db = [charDB openDatabase];
-    const char insert_note[] = "INSERT INTO notifications VALUES (?,?,?,?,?);";
+    const char insert_note[] = "INSERT INTO notifications VALUES (?,?,?,?,?,?);";
     sqlite3_stmt *insert_note_stmt;
     BOOL success = YES;
     BOOL anyNew = NO;
@@ -259,14 +328,14 @@
         sqlite3_bind_nsint( insert_note_stmt, 2, [notification typeID] );
         sqlite3_bind_nsint( insert_note_stmt, 3, [notification senderID] );
         sqlite3_bind_nsint( insert_note_stmt, 4, [[notification sentDate] timeIntervalSince1970] ); // truncating fractions of a second
-        sqlite3_bind_nsint( insert_note_stmt, 3, [notification read] );
-        
+        sqlite3_bind_nsint( insert_note_stmt, 5, [notification read] );
+        sqlite3_bind_text( insert_note_stmt, 6, [[notification body] UTF8String], -1, NULL );
+
         rc = sqlite3_step(insert_note_stmt);
         if( SQLITE_DONE == rc )
         {
             // This should mean that this noticiation was not already in the database
             [notifications addObject:notification];
-            NSLog( @"New Notification: %@ %@ %@", [notification notificationTypeDescription], [notification sentDate], ([notification read]?@"Read":@"Unread") );
             anyNew = YES;
             [NSUserNotificationCenter defaultUserNotificationCenter];
         }
@@ -311,10 +380,12 @@
         NSInteger typeID = sqlite3_column_nsint(read_stmt,1);
         NSInteger senderID = sqlite3_column_nsint(read_stmt,2);
         NSDate *sentDate = [NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,3)];
-        BOOL read = sqlite3_column_nsint(read_stmt,2);;
+        BOOL read = sqlite3_column_nsint(read_stmt,4);;
+        NSString *body = sqlite3_column_nsstr( read_stmt, 5 );
 
         MTNotification *notification = [MTNotification notificationWithID:notificationID typeID:typeID sender:senderID sentDate:sentDate read:read];
-
+        [notification setBody:body];
+        
         [messages addObject:notification];
         [missingNames addObject:[NSNumber numberWithInteger:senderID]];
     }
@@ -325,5 +396,96 @@
     sqlite3_finalize(read_stmt);
     
     return messages;
+}
+
+- (BOOL)saveNotificationBodies:(NSArray *)messages
+{
+    CharacterDatabase *charDB = [character database];
+    sqlite3 *db = [charDB openDatabase];
+    const char insert_mail[] = "UPDATE notifications SET body = ? WHERE notificationID = ?;";
+    sqlite3_stmt *insert_mail_stmt;
+    BOOL success = YES;
+    int rc;
+    
+    rc = sqlite3_prepare_v2(db,insert_mail,(int)sizeof(insert_mail),&insert_mail_stmt,NULL);
+    if( rc != SQLITE_OK )
+    {
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return NO;
+    }
+    
+    for( MTNotification *message in messages )
+    {
+        if( [[message body] length] > 0 )
+        {
+            sqlite3_bind_text( insert_mail_stmt, 1, [[message body] UTF8String], -1, NULL );
+            sqlite3_bind_nsint( insert_mail_stmt, 2, [message notificationID] );
+            
+            rc = sqlite3_step(insert_mail_stmt);
+            if( rc != SQLITE_DONE )
+            {
+                NSLog(@"Error updating notification body: %ld (code: %d)", (unsigned long)[message notificationID], rc );
+                success = NO;
+            }
+            sqlite3_reset(insert_mail_stmt);
+        }
+    }
+    
+    sqlite3_finalize(insert_mail_stmt);
+    return success;
+}
+
+- (NSArray *)notificationsWithEmptyBody
+{
+    CharacterDatabase *charDB = [character database];
+    sqlite3 *db = [charDB openDatabase];
+    const char query[] = "SELECT notificationID FROM notifications WHERE body IS NULL OR body = '' ORDER BY sentDate DESC;";
+    sqlite3_stmt *read_stmt;
+    int rc;
+    
+    rc = sqlite3_prepare_v2(db,query,(int)sizeof(query),&read_stmt,NULL);
+    if(rc != SQLITE_OK){
+        NSLog( @"%s: sqlite error: %s", __func__, sqlite3_errmsg(db) );
+        return nil;
+    }
+    
+    NSMutableArray *emptyMessages = [NSMutableArray array];
+    
+    while( sqlite3_step(read_stmt) == SQLITE_ROW )
+    {
+        NSInteger mID = sqlite3_column_nsint(read_stmt,0);
+        [emptyMessages addObject:[NSNumber numberWithInteger:mID]];
+    }
+    
+    sqlite3_finalize(read_stmt);
+    
+    return emptyMessages;
+}
+
+- (void)getMissingNotificationBodies
+{
+    NSArray *emptyBodies = [self notificationsWithEmptyBody];
+    
+    if( [emptyBodies count] == 0 )
+        return;
+    
+    // Limit it to 50? ids
+    emptyBodies = [emptyBodies subarrayWithRange:NSMakeRange(0, MIN(50, [emptyBodies count]))];
+    NSString *IDString = [NSString stringWithFormat:@"ids=%@", [emptyBodies componentsJoinedByString:@","]];
+    [bodyGetter runWithURLExtras:IDString];
+}
+
+- (MTNotification *)notificationWithID:(NSInteger)notificationID
+{
+    NSUInteger index = [notifications indexOfObjectPassingTest:^BOOL (id el, NSUInteger i, BOOL *stop)
+                        {
+                            BOOL res = [(MTNotification *)el notificationID] == notificationID;
+                            if( res )
+                                *stop = YES;
+                            return res;
+                        }];
+    if( NSNotFound == index )
+        return nil;
+    return [notifications objectAtIndex:index];
 }
 @end

@@ -565,7 +565,7 @@ http://community.eveonline.com/news/dev-blogs/long-distance-travel-changes-inbou
 //        xmlChar* typeName = xmlGetProp(attr_node,(xmlChar*)"typeName");
         
         NSString *typeIDString = [NSString stringWithUTF8String:(const char *)typeID];
-        CCPImplant *implant = [ccpdb implantWithID:[typeIDString integerValue]]; // save these if/when we have some other use for them. E.g. showing the user what implants they have injected
+        CCPImplant *implant = [ccpdb implantWithID:[typeIDString integerValue]]; // TODO: save these if/when we have some other use for them. E.g. showing the user what implants they have injected
         implantAttributes[ATTR_PERCEPTION] += [implant perception];
         implantAttributes[ATTR_MEMORY] += [implant memory];
         implantAttributes[ATTR_WILLPOWER] += [implant willpower];

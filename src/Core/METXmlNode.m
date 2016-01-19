@@ -8,6 +8,7 @@
 
 #import "METXmlNode.h"
 
+#import "XmlHelpers.h"
 #include <libxml/tree.h>
 
 @implementation METXmlNode
@@ -45,4 +46,12 @@
     }
     return props;
 }
+
+- (NSString *)content
+{
+    xmlNode *cur_node = [self xmlNode];
+    NSString *body = getNodeText( cur_node );
+    return body;
+}
+
 @end
