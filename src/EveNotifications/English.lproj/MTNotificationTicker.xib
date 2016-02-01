@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="13F1112" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="13F1134" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
@@ -17,7 +17,7 @@
             <rect key="frame" x="0.0" y="5" width="480" height="26"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
             <subviews>
-                <button horizontalHuggingPriority="750" verticalHuggingPriority="750" id="p0b-as-3uq">
+                <button toolTip="Reload Notifications" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="p0b-as-3uq">
                     <rect key="frame" x="0.0" y="2" width="23" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="bevel" bezelStyle="circular" image="NSRefreshTemplate" imagePosition="only" alignment="left" imageScaling="proportionallyDown" id="MPV-SN-30F">
@@ -29,7 +29,7 @@
                     </connections>
                 </button>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="CDq-vU-MEJ">
-                    <rect key="frame" x="29" y="5" width="453" height="17"/>
+                    <rect key="frame" x="42" y="5" width="440" height="17"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="Y22-Uy-eHI">
                         <font key="font" metaFont="system"/>
@@ -37,11 +37,23 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
+                <button toolTip="Open Notifications window" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="SAd-wj-Zny">
+                    <rect key="frame" x="20" y="5" width="16" height="16"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="bevel" bezelStyle="circular" image="NSInfo" imagePosition="above" alignment="left" controlSize="mini" imageScaling="proportionallyDown" id="Dpu-eT-2kF">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="miniSystem"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="openNotificationsWindow:" target="-2" id="lXN-GK-S2x"/>
+                    </connections>
+                </button>
             </subviews>
             <point key="canvasLocation" x="140" y="31"/>
         </customView>
     </objects>
     <resources>
+        <image name="NSInfo" width="32" height="32"/>
         <image name="NSRefreshTemplate" width="10" height="12"/>
     </resources>
 </document>

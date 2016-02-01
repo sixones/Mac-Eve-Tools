@@ -29,6 +29,13 @@
     
     NSMutableArray *notifications;
     
+    NSLayoutManager *layoutManager; ///< Used to calculate the height of rows in the notifications window table view
+    NSTextStorage *textStorage;
+    NSTextContainer *textContainer;
+
+    IBOutlet NSWindow *notificationsWindow;
+    IBOutlet NSTableView *notificationsTable;
+    
     IBOutlet NSTextField *tickerField;
 }
 
@@ -37,5 +44,6 @@
 + (NSString *)newNotificationName; // name for the cocoa notification that we have new EVE notifications :)
 
 - (IBAction)reload:(id)sender;
+- (IBAction)openNotificationsWindow:(id)sender;
 @end
 

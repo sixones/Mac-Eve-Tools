@@ -91,6 +91,9 @@
 		A11F72571AF97357002E1906 /* METJumpClone.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72561AF97357002E1906 /* METJumpClone.m */; };
 		A11F725B1AFAC6E4002E1906 /* METJumpCloneController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11F72591AFAC6E4002E1906 /* METJumpCloneController.m */; };
 		A11F725C1AFAC6E4002E1906 /* METJumpClone.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11F725A1AFAC6E4002E1906 /* METJumpClone.xib */; };
+		A12813301C518D8000B2B7D1 /* MTNotificationsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A128132F1C518D8000B2B7D1 /* MTNotificationsWindow.xib */; };
+		A12813361C518E3900B2B7D1 /* MTNotificationTicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = A12813341C518E3900B2B7D1 /* MTNotificationTicker.xib */; };
+		A12813391C518F7000B2B7D1 /* MTNotificationCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A12813381C518F7000B2B7D1 /* MTNotificationCellView.m */; };
 		A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */ = {isa = PBXBuildFile; fileRef = A12EE8D3197D98E000ED6478 /* METTrait.m */; };
 		A12FC60817EA31420053DC23 /* METConquerableStations.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60717EA31420053DC23 /* METConquerableStations.m */; };
 		A137B5001B38AB4800A0C7B1 /* METFittingController.m in Sources */ = {isa = PBXBuildFile; fileRef = A137B4FE1B38AB4800A0C7B1 /* METFittingController.m */; };
@@ -102,7 +105,6 @@
 		A13DED291BC6D1A100041A2A /* MTNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED281BC6D1A100041A2A /* MTNotifications.m */; };
 		A13DED2D1BC6EE9B00041A2A /* MTNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED2C1BC6EE9B00041A2A /* MTNotification.m */; };
 		A13DED2F1BC7086E00041A2A /* NotificationTypeIDs.plist in Resources */ = {isa = PBXBuildFile; fileRef = A13DED2E1BC7086E00041A2A /* NotificationTypeIDs.plist */; };
-		A13DED341BD05D1D00041A2A /* MTNotificationTicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = A13DED321BD05D1D00041A2A /* MTNotificationTicker.xib */; };
 		A13DED3A1BD590C000041A2A /* METRowsetEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED391BD590C000041A2A /* METRowsetEnumerator.m */; };
 		A13DED3D1BD6B03B00041A2A /* METCharacter_CachedDates.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED3C1BD6B03B00041A2A /* METCharacter_CachedDates.m */; };
 		A13DED401BD80B5E00041A2A /* METXmlNode.m in Sources */ = {isa = PBXBuildFile; fileRef = A13DED3F1BD80B5E00041A2A /* METXmlNode.m */; };
@@ -332,6 +334,10 @@
 		A11F72581AFAC6E4002E1906 /* METJumpCloneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METJumpCloneController.h; sourceTree = "<group>"; };
 		A11F72591AFAC6E4002E1906 /* METJumpCloneController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METJumpCloneController.m; sourceTree = "<group>"; };
 		A11F725A1AFAC6E4002E1906 /* METJumpClone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = METJumpClone.xib; sourceTree = "<group>"; };
+		A128132F1C518D8000B2B7D1 /* MTNotificationsWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MTNotificationsWindow.xib; path = EveNotifications/English.lproj/MTNotificationsWindow.xib; sourceTree = SOURCE_ROOT; };
+		A12813351C518E3900B2B7D1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = EveNotifications/English.lproj/MTNotificationTicker.xib; sourceTree = SOURCE_ROOT; };
+		A12813371C518F7000B2B7D1 /* MTNotificationCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTNotificationCellView.h; path = EveNotifications/MTNotificationCellView.h; sourceTree = SOURCE_ROOT; };
+		A12813381C518F7000B2B7D1 /* MTNotificationCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTNotificationCellView.m; path = EveNotifications/MTNotificationCellView.m; sourceTree = SOURCE_ROOT; };
 		A12EE8D2197D98E000ED6478 /* METTrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METTrait.h; sourceTree = "<group>"; };
 		A12EE8D3197D98E000ED6478 /* METTrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METTrait.m; sourceTree = "<group>"; };
 		A12FC60617EA31420053DC23 /* METConquerableStations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METConquerableStations.h; sourceTree = "<group>"; };
@@ -351,7 +357,6 @@
 		A13DED2B1BC6EE9B00041A2A /* MTNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTNotification.h; path = EveNotifications/MTNotification.h; sourceTree = SOURCE_ROOT; };
 		A13DED2C1BC6EE9B00041A2A /* MTNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTNotification.m; path = EveNotifications/MTNotification.m; sourceTree = SOURCE_ROOT; };
 		A13DED2E1BC7086E00041A2A /* NotificationTypeIDs.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = NotificationTypeIDs.plist; path = EveNotifications/NotificationTypeIDs.plist; sourceTree = SOURCE_ROOT; };
-		A13DED321BD05D1D00041A2A /* MTNotificationTicker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MTNotificationTicker.xib; path = EveNotifications/MTNotificationTicker.xib; sourceTree = SOURCE_ROOT; };
 		A13DED381BD590C000041A2A /* METRowsetEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METRowsetEnumerator.h; sourceTree = "<group>"; };
 		A13DED391BD590C000041A2A /* METRowsetEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METRowsetEnumerator.m; sourceTree = "<group>"; };
 		A13DED3B1BD6B03B00041A2A /* METCharacter_CachedDates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METCharacter_CachedDates.h; sourceTree = "<group>"; };
@@ -792,8 +797,11 @@
 				A13DED281BC6D1A100041A2A /* MTNotifications.m */,
 				A13DED2B1BC6EE9B00041A2A /* MTNotification.h */,
 				A13DED2C1BC6EE9B00041A2A /* MTNotification.m */,
+				A12813371C518F7000B2B7D1 /* MTNotificationCellView.h */,
+				A12813381C518F7000B2B7D1 /* MTNotificationCellView.m */,
 				A13DED2E1BC7086E00041A2A /* NotificationTypeIDs.plist */,
-				A13DED321BD05D1D00041A2A /* MTNotificationTicker.xib */,
+				A12813341C518E3900B2B7D1 /* MTNotificationTicker.xib */,
+				A128132F1C518D8000B2B7D1 /* MTNotificationsWindow.xib */,
 			);
 			name = EveNotifications;
 			path = "Views/Skill Planner";
@@ -1293,6 +1301,7 @@
 				A13DED2F1BC7086E00041A2A /* NotificationTypeIDs.plist in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				A1D5924F1AFD5E6600448F17 /* marketorders.png in Resources */,
+				A12813301C518D8000B2B7D1 /* MTNotificationsWindow.xib in Resources */,
 				C9FF4566105508950044BBAC /* charsheet.png in Resources */,
 				C9FF4567105508950044BBAC /* darkgray.tiff in Resources */,
 				C9FF4568105508950044BBAC /* green.tiff in Resources */,
@@ -1318,6 +1327,7 @@
 				C993CEC51123FA200084BFFD /* DatabaseUpdate.xib in Resources */,
 				9EF3339011E79B1A002A3B7D /* AccountPrefView.xib in Resources */,
 				A11F724A1AF2CAC1002E1906 /* MailView.xib in Resources */,
+				A12813361C518E3900B2B7D1 /* MTNotificationTicker.xib in Resources */,
 				A11F72331AEEE199002E1906 /* ContractDetails.xib in Resources */,
 				9EF3339111E79B1A002A3B7D /* DatabasePrefView.xib in Resources */,
 				A11F725C1AFAC6E4002E1906 /* METJumpClone.xib in Resources */,
@@ -1328,7 +1338,6 @@
 				14F8DAF11739BF30001C4178 /* vitality.png in Resources */,
 				14B6F639173BE4C8005E8389 /* ModuleDetails.xib in Resources */,
 				A1D592491AFD5C0500448F17 /* contracts.png in Resources */,
-				A13DED341BD05D1D00041A2A /* MTNotificationTicker.xib in Resources */,
 				140AEBD7176109F500308748 /* status.png in Resources */,
 				A11F72341AEEE199002E1906 /* ContractsView.xib in Resources */,
 				A11F72181AD6F84C002E1906 /* MarketView.xib in Resources */,
@@ -1433,6 +1442,7 @@
 				C9FF47AA10550BA60044BBAC /* CCPType.m in Sources */,
 				C9FF47AB10550BA60044BBAC /* METSubGroup.m in Sources */,
 				A11DFF241A8181690047D5F5 /* METPair.m in Sources */,
+				A12813391C518F7000B2B7D1 /* MTNotificationCellView.m in Sources */,
 				A11F72371AEEE1B3002E1906 /* MTISKFormatter.m in Sources */,
 				C9FF47AC10550BA60044BBAC /* CharacterDatabase.m in Sources */,
 				A13DED3D1BD6B03B00041A2A /* METCharacter_CachedDates.m in Sources */,
@@ -1608,6 +1618,14 @@
 				A11F72491AF2CAC1002E1906 /* English */,
 			);
 			name = METMessageView.xib;
+			sourceTree = "<group>";
+		};
+		A12813341C518E3900B2B7D1 /* MTNotificationTicker.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A12813351C518E3900B2B7D1 /* English */,
+			);
+			name = MTNotificationTicker.xib;
 			sourceTree = "<group>";
 		};
 		A154A64217A83E090076603D /* Localizable.strings */ = {

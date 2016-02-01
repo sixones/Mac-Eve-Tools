@@ -14,6 +14,7 @@
 #import "GlobalData.h"
 #import "CCPDatabase.h"
 #import "MTNotification.h"
+#import "MTNotificationCellView.h"
 
 #import "METRowsetEnumerator.h"
 #import "METXmlNode.h"
@@ -45,7 +46,15 @@
         bodyGetter = [[METRowsetEnumerator alloc] initWithCharacter:nil API:@"/char/NotificationTexts.xml.aspx" forDelegate:self];
         // TODO: Get rid of this if/when the NotificationText API starts returning reasonable values in the cachedUntil field
         [bodyGetter setCheckCachedDate:NO];
-    }
+        [[NSBundle mainBundle] loadNibNamed:@"MTNotificationsWindow" owner:self topLevelObjects:nil];
+        [notificationsWindow retain];
+
+        textStorage = [[NSTextStorage alloc] initWithString:@""];
+        textContainer = [[NSTextContainer alloc] initWithContainerSize:NSMakeSize([notificationsTable frame].size.width, FLT_MAX)];
+        layoutManager = [[NSLayoutManager alloc] init];
+        [layoutManager addTextContainer:textContainer];
+        [textStorage addLayoutManager:layoutManager];
+}
     
     return self;
 }
@@ -58,7 +67,16 @@
     [tickerTimer release];
     [apiGetter release];
     [bodyGetter release];
+    [notificationsWindow release];
+    [textStorage release];
+    [textContainer release];
+    [layoutManager release];
     [super dealloc];
+}
+
+- (void)awakeFromNib
+{
+    
 }
 
 -(BOOL) createNotificationTables
@@ -200,6 +218,14 @@
     nextNotification = 0;
     
     [apiGetter run];
+    
+    [notificationsTable reloadData];
+}
+
+- (IBAction)openNotificationsWindow:(id)sender
+{
+    [notificationsTable reloadData];
+    [notificationsWindow makeKeyAndOrderFront:self];
 }
 
 - (void)tickerTimerFired:(NSTimer *)timer
@@ -354,6 +380,7 @@
     {
         // send out a cocoa notification so any UI elements can update
         [[NSNotificationCenter defaultCenter] postNotificationName:[[self class] newNotificationName] object:self];
+        [notificationsTable reloadData];
     }
     return success;
 }
@@ -388,6 +415,7 @@
         
         [messages addObject:notification];
         [missingNames addObject:[NSNumber numberWithInteger:senderID]];
+        [missingNames addObjectsFromArray:[notification missingIDs]];
     }
     
     if( [missingNames count] > 0 )
@@ -488,4 +516,58 @@
         return nil;
     return [notifications objectAtIndex:index];
 }
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+{
+    return [notifications count];
+}
+
+- (NSView *)tableView:(NSTableView *)tableView
+   viewForTableColumn:(NSTableColumn *)tableColumn
+                  row:(NSInteger)row
+{
+    
+    // Get an existing cell with my identifier if it exists
+    MTNotificationCellView *result = [tableView makeViewWithIdentifier:@"MTNotificationCellView" owner:self];
+    
+    // There is no existing cell to reuse so create a new one
+    if( nil == result )
+    {
+        
+        // Create the new view with a frame of the {0,0} with the width of the table.
+        // Note that the height of the frame is not really relevant, because the row height will modify the height.
+        result = [[MTNotificationCellView alloc] initWithFrame:NSMakeRect(0.0, 0.0, [notificationsTable frame].size.width, 20.0)];
+        
+        // The identifier of the view instance is set to my identifier.
+        // This allows the cell to be reused.
+        result.identifier = @"MTNotificationCellView";
+    }
+    
+    [result setNotification:[[self notifications] objectAtIndex:row]];
+    
+    return result;
+}
+
+- (CGFloat)heightForString:(NSAttributedString *)myString atWidth:(float)myWidth
+{
+    [textStorage setAttributedString:myString];
+    [textContainer setContainerSize:NSMakeSize(myWidth, FLT_MAX)];
+    [layoutManager glyphRangeForTextContainer:textContainer];
+    return [layoutManager usedRectForTextContainer:textContainer].size.height;
+}
+
+- (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row
+{
+    MTNotification *notification = [[self notifications] objectAtIndex:row];
+    if( notification )
+    {
+//        NSAttributedString *attrStr = [notification attributedBody];
+//        CGFloat width = 300; // whatever your desired width is
+//        CGFloat height = [self heightForString:attrStr atWidth:width];
+//        return height + 20;
+        return ([notification rows] * 20) + 5;
+    }
+    return 50.0;
+}
+
 @end

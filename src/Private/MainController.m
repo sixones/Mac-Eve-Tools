@@ -36,7 +36,6 @@
 #import "MarketViewController.h"
 #import "ContractsViewController.h"
 #import "VitalityMail.h"
-#import "MTNotifications.h"
 #import "METPair.h"
 
 #import "GeneralPrefViewController.h"
