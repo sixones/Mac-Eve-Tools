@@ -560,6 +560,21 @@ static MTISKFormatter *iskFormatter = nil;
             plainString = [NSString stringWithFormat:@"%@ bounty placed on you by %@", priceStr, name];
             break;
         }
+        case 140: // Killmail available
+        {
+            NSString *shipTypeName = [values objectForKey:@"shipTypeName"];
+            plainString = [NSString stringWithFormat:@"Kill Report - Victim\nYou lost a %@", shipTypeName];
+            NSNumber *killID = [values objectForKey:@"killMailID"];
+            if( killID )
+            {
+                NSString *zkillLink = [NSString stringWithFormat:@"https://zkillboard.com/kill/%ld", (long)[killID integerValue]];
+                NSMutableAttributedString *attStr = [[NSMutableAttributedString alloc] initWithString:plainString];
+                [attStr addAttribute:NSLinkAttributeName value:zkillLink range:NSMakeRange(0, 11)];
+                attrString = attStr;
+            }
+            
+            break;
+        }
         case 141: // Killmail available
         {
             NSString *name = [values objectForKey:@"characterName"];
@@ -571,7 +586,8 @@ static MTISKFormatter *iskFormatter = nil;
                 NSString *zkillLink = [NSString stringWithFormat:@"https://zkillboard.com/kill/%ld", (long)[killID integerValue]];
                 NSMutableAttributedString *attStr = [[NSMutableAttributedString alloc] initWithString:plainString];
                 [attStr addAttribute:NSLinkAttributeName value:zkillLink range:NSMakeRange(0, 11)];
-                attrString = attStr;
+                [attStr addAttribute:NSForegroundColorAttributeName value:[NSColor blueColor] range:NSMakeRange(0, 11)];
+                attrString = [attStr autorelease];
             }
             
             break;
@@ -592,6 +608,7 @@ static MTISKFormatter *iskFormatter = nil;
         case 14: rows = 1; break;
         case 34: rows = 1; break;
         case 112: rows = 1; break;
+        case 140: rows = 2; break;
         case 141: rows = 2; break;
     }
     return rows;

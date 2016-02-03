@@ -11,6 +11,13 @@
 
 @implementation MTNotificationCellView
 
+- (void)awakeFromNib
+{
+    // needed to allow users to click on links in notifications
+    [bodyView setAllowsEditingTextAttributes: YES];
+    [bodyView setSelectable: YES];
+}
+
 - (void)dealloc
 {
     [view release];
