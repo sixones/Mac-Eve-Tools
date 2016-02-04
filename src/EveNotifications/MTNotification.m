@@ -423,6 +423,24 @@ static MTISKFormatter *iskFormatter = nil;
  149	Entosis Link disabled a module	solarSystemID: 30000142
  structureTypeID: 28159
  */
+
+- (void)getCharacterPrefix:(NSString *)prefix fromLine:(NSString *)line values:(NSMutableDictionary *)values
+{
+    CCPDatabase *db = [[GlobalData sharedInstance] database];
+    NSNumber *charID = [NSNumber numberWithInteger:[[line substringFromIndex:([prefix length]+2)] integerValue]];
+    if( charID )
+    {
+        [values setObject:charID forKey:@"charID"];
+        NSString *name = [db characterNameForID:[charID integerValue]];
+        if( !name )
+        {
+            name = [NSString stringWithFormat:@"CharID: %@", charID];
+            [missingIDs addObject:charID]; // save it as a missing id, so some higher level can request them
+        }
+        [values setObject:name forKey:@"characterName"];
+    }
+}
+
 - (NSDictionary *)formattedBodyValues
 {
     NSMutableDictionary *values = [NSMutableDictionary dictionary];
@@ -432,50 +450,11 @@ static MTISKFormatter *iskFormatter = nil;
 
     for( NSString *line in lines )
     {
-        if( [line hasPrefix:@"charID:"] )
+        NSString *prefix = [[line componentsSeparatedByString:@":"] objectAtIndex:0];
+        if( [prefix isEqualToString:@"charID"] ||  [prefix isEqualToString:@"victimID"]
+           || [prefix isEqualToString:@"bountyPlacerID"] || [prefix isEqualToString:@"podKillerID"] )
         {
-            NSNumber *charID = [NSNumber numberWithInteger:[[line substringFromIndex:8] integerValue]];
-            if( charID )
-            {
-                [values setObject:charID forKey:@"charID"];
-                NSString *name = [db characterNameForID:[charID integerValue]];
-                if( !name )
-                {
-                    name = [NSString stringWithFormat:@"CharID: %@", charID];
-                    [missingIDs addObject:charID]; // save it as a missing id, so some higher level can request them
-                }
-                [values setObject:name forKey:@"characterName"];
-            }
-        }
-        else if( [line hasPrefix:@"victimID:"] )
-        {
-            NSNumber *charID = [NSNumber numberWithInteger:[[line substringFromIndex:10] integerValue]];
-            if( charID )
-            {
-                [values setObject:charID forKey:@"charID"];
-                NSString *name = [db characterNameForID:[charID integerValue]];
-                if( !name )
-                {
-                    name = [NSString stringWithFormat:@"CharID: %@", charID];
-                    [missingIDs addObject:charID]; // save it as a missing id, so some higher level can request them
-                }
-                [values setObject:name forKey:@"characterName"];
-            }
-        }
-        else if( [line hasPrefix:@"bountyPlacerID:"] )
-        {
-            NSNumber *charID = [NSNumber numberWithInteger:[[line substringFromIndex:16] integerValue]];
-            if( charID )
-            {
-                [values setObject:charID forKey:@"charID"];
-                NSString *name = [db characterNameForID:[charID integerValue]];
-                if( !name )
-                {
-                    name = [NSString stringWithFormat:@"CharID: %@", charID];
-                    [missingIDs addObject:charID]; // save it as a missing id, so some higher level can request them
-                }
-                [values setObject:name forKey:@"characterName"];
-            }
+            [self getCharacterPrefix:prefix fromLine:line values:values];
         }
         else if( [line hasPrefix:@"amount:"] )
         {
@@ -492,6 +471,21 @@ static MTISKFormatter *iskFormatter = nil;
             NSNumber *charID = [NSNumber numberWithInteger:[[line substringFromIndex:12] integerValue]];
             if( charID )
                 [values setObject:charID forKey:@"killMailID"];
+        }
+        else if( [line hasPrefix:@"itemID:"] )
+        {
+            NSNumber *shipID = [NSNumber numberWithInteger:[[line substringFromIndex:8] integerValue]];
+            if( shipID )
+            {
+                [values setObject:shipID forKey:@"itemID"];
+//                NSString *name = [db typeName:[shipID integerValue]];
+//                if( !name )
+//                {
+//                    name = [NSString stringWithFormat:@"itemID: %@", shipID];
+//                    NSLog( @"Missing typeID: %ld", (long)[shipID integerValue] );
+//                }
+//                [values setObject:name forKey:@"itemTypeName"];
+            }
         }
         else if( [line hasPrefix:@"shipTypeID:"] )
         {
@@ -521,6 +515,21 @@ static MTISKFormatter *iskFormatter = nil;
                     NSLog( @"Missing typeID: %ld", (long)[shipID integerValue] );
                 }
                 [values setObject:name forKey:@"shipTypeName"];
+            }
+        }
+        else if( [line hasPrefix:@"cloneStationID:"] )
+        {
+            NSNumber *itemID = [NSNumber numberWithInteger:[[line substringFromIndex:16] integerValue]];
+            if( itemID )
+            {
+                NSDictionary *station = [db stationForID:[itemID integerValue]];
+                NSString *name = [station objectForKey:@"name"];
+                if( !name )
+                {
+                    name = [NSString stringWithFormat:@"StationID: %@", itemID];
+                    NSLog( @"Missing stationID: %ld", (long)[itemID integerValue] );
+                }
+                [values setObject:name forKey:@"stationName"];
             }
         }
     }
@@ -553,11 +562,23 @@ static MTISKFormatter *iskFormatter = nil;
             plainString = [NSString stringWithFormat:@"Free rookie ship: %@", shipTypeName];
             break;
         }
+        case 35: // Insurance payout
+        {
+            NSString *priceStr = [iskFormatter stringFromNumber:[values objectForKey:@"amount"]];
+            plainString = [NSString stringWithFormat:@"%@ insurance payout for losing a ship", priceStr];
+            break;
+        }
         case 112: // Bounty placed on you
         {
             NSString *name = [values objectForKey:@"characterName"];
             NSString *priceStr = [iskFormatter stringFromNumber:[values objectForKey:@"amount"]];
             plainString = [NSString stringWithFormat:@"%@ bounty placed on you by %@", priceStr, name];
+            break;
+        }
+        case 138: // Clone activated
+        {
+            NSString *name = [values objectForKey:@"stationName"];
+            plainString = [NSString stringWithFormat:@"Clone activated at %@", name];
             break;
         }
         case 140: // Killmail available
@@ -570,7 +591,8 @@ static MTISKFormatter *iskFormatter = nil;
                 NSString *zkillLink = [NSString stringWithFormat:@"https://zkillboard.com/kill/%ld", (long)[killID integerValue]];
                 NSMutableAttributedString *attStr = [[NSMutableAttributedString alloc] initWithString:plainString];
                 [attStr addAttribute:NSLinkAttributeName value:zkillLink range:NSMakeRange(0, 11)];
-                attrString = attStr;
+                [attStr addAttribute:NSForegroundColorAttributeName value:[NSColor blueColor] range:NSMakeRange(0, 11)];
+                attrString = [attStr autorelease];
             }
             
             break;
