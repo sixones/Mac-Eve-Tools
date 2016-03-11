@@ -441,6 +441,23 @@ static MTISKFormatter *iskFormatter = nil;
     }
 }
 
+- (void)getTypeIDPrefix:(NSString *)prefix fromLine:(NSString *)line values:(NSMutableDictionary *)values
+{
+    CCPDatabase *db = [[GlobalData sharedInstance] database];
+    NSNumber *tID = [NSNumber numberWithInteger:[[line substringFromIndex:([prefix length]+2)] integerValue]];
+    if( tID )
+    {
+        [values setObject:tID forKey:@"typeID"];
+        NSString *name = [db typeName:[tID integerValue]];
+        if( !name )
+        {
+            name = [NSString stringWithFormat:@"typeID: %@", tID];
+            NSLog( @"Missing typeID: %ld", (long)[tID integerValue] );
+        }
+        [values setObject:name forKey:@"typeName"];
+    }
+}
+
 - (NSDictionary *)formattedBodyValues
 {
     NSMutableDictionary *values = [NSMutableDictionary dictionary];
@@ -451,6 +468,7 @@ static MTISKFormatter *iskFormatter = nil;
     for( NSString *line in lines )
     {
         NSString *prefix = [[line componentsSeparatedByString:@":"] objectAtIndex:0];
+        
         if( [prefix isEqualToString:@"charID"] ||  [prefix isEqualToString:@"victimID"]
            || [prefix isEqualToString:@"bountyPlacerID"] || [prefix isEqualToString:@"podKillerID"] )
         {
@@ -478,44 +496,12 @@ static MTISKFormatter *iskFormatter = nil;
             if( shipID )
             {
                 [values setObject:shipID forKey:@"itemID"];
-//                NSString *name = [db typeName:[shipID integerValue]];
-//                if( !name )
-//                {
-//                    name = [NSString stringWithFormat:@"itemID: %@", shipID];
-//                    NSLog( @"Missing typeID: %ld", (long)[shipID integerValue] );
-//                }
-//                [values setObject:name forKey:@"itemTypeName"];
+                // this is an actual itemID, not a typeID. Not sure how to get more info about it.
             }
         }
-        else if( [line hasPrefix:@"shipTypeID:"] )
+        else if( [prefix isEqualToString:@"shipTypeID"] || [prefix isEqualToString:@"victimShipTypeID"] )
         {
-            NSNumber *shipID = [NSNumber numberWithInteger:[[line substringFromIndex:12] integerValue]];
-            if( shipID )
-            {
-                [values setObject:shipID forKey:@"shipTypeID"];
-                NSString *name = [db typeName:[shipID integerValue]];
-                if( !name )
-                {
-                    name = [NSString stringWithFormat:@"ShipID: %@", shipID];
-                    NSLog( @"Missing typeID: %ld", (long)[shipID integerValue] );
-                }
-                [values setObject:name forKey:@"shipTypeName"];
-            }
-        }
-        else if( [line hasPrefix:@"victimShipTypeID:"] )
-        {
-            NSNumber *shipID = [NSNumber numberWithInteger:[[line substringFromIndex:18] integerValue]];
-            if( shipID )
-            {
-                [values setObject:shipID forKey:@"shipTypeID"];
-                NSString *name = [db typeName:[shipID integerValue]];
-                if( !name )
-                {
-                    name = [NSString stringWithFormat:@"ShipID: %@", shipID];
-                    NSLog( @"Missing typeID: %ld", (long)[shipID integerValue] );
-                }
-                [values setObject:name forKey:@"shipTypeName"];
-            }
+            [self getTypeIDPrefix:prefix fromLine:line values:values];
         }
         else if( [line hasPrefix:@"cloneStationID:"] )
         {
@@ -558,7 +544,7 @@ static MTISKFormatter *iskFormatter = nil;
         }
         case 34: // Free Rookie ship
         {
-            NSString *shipTypeName = [values objectForKey:@"shipTypeName"];
+            NSString *shipTypeName = [values objectForKey:@"typeName"];
             plainString = [NSString stringWithFormat:@"Free rookie ship: %@", shipTypeName];
             break;
         }
@@ -583,7 +569,7 @@ static MTISKFormatter *iskFormatter = nil;
         }
         case 140: // Killmail available
         {
-            NSString *shipTypeName = [values objectForKey:@"shipTypeName"];
+            NSString *shipTypeName = [values objectForKey:@"typeName"];
             plainString = [NSString stringWithFormat:@"Kill Report - Victim\nYou lost a %@", shipTypeName];
             NSNumber *killID = [values objectForKey:@"killMailID"];
             if( killID )
@@ -600,7 +586,7 @@ static MTISKFormatter *iskFormatter = nil;
         case 141: // Killmail available
         {
             NSString *name = [values objectForKey:@"characterName"];
-            NSString *shipTypeName = [values objectForKey:@"shipTypeName"];
+            NSString *shipTypeName = [values objectForKey:@"typeName"];
             plainString = [NSString stringWithFormat:@"Kill Report - Final Blow\n%@ in a %@", name, shipTypeName];
             NSNumber *killID = [values objectForKey:@"killMailID"];
             if( killID )
