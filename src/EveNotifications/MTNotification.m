@@ -10,6 +10,7 @@
 #import "GlobalData.h"
 #import "CCPDatabase.h"
 #import "MTISKFormatter.h"
+#import "METPair.h"
 
 @implementation MTNotification
 
@@ -82,7 +83,10 @@ static MTISKFormatter *iskFormatter = nil;
 {
     NSString *desc = [idNames objectForKey:[[NSNumber numberWithInteger:[self typeID]] stringValue]];
     if( !desc )
-        NSLog( @"Unknown EVE Notification typeID: %ld", (long)[self typeID] );
+    {
+        desc = [NSString stringWithFormat:@"Unknown EVE Notification typeID: %ld", (long)[self typeID]];
+        NSLog( @"%@", desc );
+    }
     return desc;
 }
 
@@ -109,6 +113,8 @@ static MTISKFormatter *iskFormatter = nil;
 
 /*
  Need to handle formatted data in notification bodies: https://eveonline-third-party-documentation.readthedocs.org/en/latest/xmlapi/enumerations/#notification-type
+ See NotificationTypeIDs.plist for a list of all notification type ID's that we currently recognize.
+ 
  TypeID	Description	Structured Data
  1	Legacy	TBD
  2	Character deleted	TBD
@@ -424,20 +430,20 @@ static MTISKFormatter *iskFormatter = nil;
  structureTypeID: 28159
  */
 
-- (void)getCharacterPrefix:(NSString *)prefix fromLine:(NSString *)line values:(NSMutableDictionary *)values
+- (void)getCharacterPrefix:(NSString *)prefix fromLine:(NSString *)line values:(NSMutableDictionary *)values override:(bool)override
 {
     CCPDatabase *db = [[GlobalData sharedInstance] database];
     NSNumber *charID = [NSNumber numberWithInteger:[[line substringFromIndex:([prefix length]+2)] integerValue]];
     if( charID )
     {
-        [values setObject:charID forKey:@"charID"];
+        [values setObject:charID forKey:(override?prefix:@"charID")];
         NSString *name = [db characterNameForID:[charID integerValue]];
         if( !name )
         {
             name = [NSString stringWithFormat:@"CharID: %@", charID];
             [missingIDs addObject:charID]; // save it as a missing id, so some higher level can request them
         }
-        [values setObject:name forKey:@"characterName"];
+        [values setObject:name forKey:(override?[NSString stringWithFormat:@"%@Name",prefix]:@"characterName")];
     }
 }
 
@@ -472,7 +478,7 @@ static MTISKFormatter *iskFormatter = nil;
         if( [prefix isEqualToString:@"charID"] ||  [prefix isEqualToString:@"victimID"]
            || [prefix isEqualToString:@"bountyPlacerID"] || [prefix isEqualToString:@"podKillerID"] )
         {
-            [self getCharacterPrefix:prefix fromLine:line values:values];
+            [self getCharacterPrefix:prefix fromLine:line values:values override:NO];
         }
         else if( [line hasPrefix:@"amount:"] )
         {
@@ -499,7 +505,7 @@ static MTISKFormatter *iskFormatter = nil;
                 // this is an actual itemID, not a typeID. Not sure how to get more info about it.
             }
         }
-        else if( [prefix isEqualToString:@"shipTypeID"] || [prefix isEqualToString:@"victimShipTypeID"] )
+        else if( [prefix isEqualToString:@"shipTypeID"] || [prefix isEqualToString:@"victimShipTypeID"] || [prefix isEqualToString:@"structureTypeID"] )
         {
             [self getTypeIDPrefix:prefix fromLine:line values:values];
         }
@@ -517,6 +523,35 @@ static MTISKFormatter *iskFormatter = nil;
                 }
                 [values setObject:name forKey:@"stationName"];
             }
+        }
+        else if( [line hasPrefix:@"solarSystemID:"] )
+        {
+            NSNumber *itemID = [NSNumber numberWithInteger:[[line substringFromIndex:15] integerValue]];
+            if( itemID )
+            {
+                METPair *system = [db namesForSystemID:[itemID integerValue]];
+                NSString *name = [system first];
+                if( !name )
+                {
+                    name = [NSString stringWithFormat:@"StationID: %@", itemID];
+                    NSLog( @"Missing stationID: %ld", (long)[itemID integerValue] );
+                }
+                [values setObject:name forKey:@"solarSystemName"];
+                if( [system second] )
+                    [values setObject:[system second] forKey:@"regionName"];
+            }
+        }
+        else if( [line hasPrefix:@"corpID:"] )
+        {
+            [self getCharacterPrefix:prefix fromLine:line values:values override:YES];
+        }
+        else if( [line hasPrefix:@"allianceID:"] )
+        {
+            [self getCharacterPrefix:prefix fromLine:line values:values override:YES];
+        }
+        else if( [line hasPrefix:@"invokingCharID:"] )
+        {
+            [self getCharacterPrefix:prefix fromLine:line values:values override:YES];
         }
     }
     return values;
@@ -542,6 +577,12 @@ static MTISKFormatter *iskFormatter = nil;
             plainString = [NSString stringWithFormat:@"%@ bounty payout for killing %@", priceStr, name];
             break;
         }
+        case 18: // Corp application accepted
+        {
+            NSString *name = [values objectForKey:@"corpIDName"];
+            plainString = [NSString stringWithFormat:@"You were accepted to a corporation: %@", name];
+            break;
+        }
         case 34: // Free Rookie ship
         {
             NSString *shipTypeName = [values objectForKey:@"typeName"];
@@ -565,6 +606,13 @@ static MTISKFormatter *iskFormatter = nil;
         {
             NSString *name = [values objectForKey:@"stationName"];
             plainString = [NSString stringWithFormat:@"Clone activated at %@", name];
+            break;
+        }
+        case 139: // Invited to Corp
+        {
+            NSString *name = [values objectForKey:@"corpIDName"];
+            if( [name length] > 0 )
+                plainString = [NSString stringWithFormat:@"You have been invited to join a corporation: %@", name];
             break;
         }
         case 140: // Killmail available
@@ -600,6 +648,27 @@ static MTISKFormatter *iskFormatter = nil;
             
             break;
         }
+        case 147: // Sovereignty structure capture started
+        {
+            attrString = [self sovereigntyStringForSystem:[values objectForKey:@"solarSystemName"] inRegion:[values objectForKey:@"regionName"] structureName:[values objectForKey:@"typeName"] withText:@"capture started in"];
+            break;
+        }
+        case 148: // Sovereignty Service Enabled
+        {
+            attrString = [self sovereigntyStringForSystem:[values objectForKey:@"solarSystemName"] inRegion:[values objectForKey:@"regionName"] structureName:[values objectForKey:@"typeName"] withText:@"enabled in"];
+            break;
+        }
+        case 149: // Sovereignty Service Disabled
+        {
+            attrString = [self sovereigntyStringForSystem:[values objectForKey:@"solarSystemName"] inRegion:[values objectForKey:@"regionName"] structureName:[values objectForKey:@"typeName"] withText:@"disabled in"];
+            break;
+        }
+        case 165: // Alliance Capital Changed
+        {
+            NSString *name = [values objectForKey:@"solarSystemName"];
+            plainString = [NSString stringWithFormat:@"%@ changed alliance capital to %@", [values objectForKey:@"allianceIDName"], name];
+            break;
+        }
     }
     if( !attrString )
     {
@@ -620,5 +689,36 @@ static MTISKFormatter *iskFormatter = nil;
         case 141: rows = 2; break;
     }
     return rows;
+}
+
+- (NSAttributedString *)dotlanLinkForSystem:(NSString *)systemName inRegion:(NSString *)regionName
+{
+    if( systemName && regionName )
+    {
+        NSString *dotlanLink = [NSString stringWithFormat:@"http://evemaps.dotlan.net/map/%@/%@",
+                                [regionName stringByReplacingOccurrencesOfString:@" " withString:@"_"],
+                                [systemName stringByReplacingOccurrencesOfString:@" " withString:@"_"]];
+        NSMutableAttributedString *attStr = [[NSMutableAttributedString alloc] initWithString:systemName];
+        [attStr addAttribute:NSLinkAttributeName value:dotlanLink range:NSMakeRange(0, [attStr length])];
+        [attStr addAttribute:NSForegroundColorAttributeName value:[NSColor blueColor] range:NSMakeRange(0, [attStr length])];
+        return [attStr autorelease];
+    }
+    return nil;
+}
+
+- (NSAttributedString *)sovereigntyStringForSystem:(NSString *)systemName inRegion:(NSString *)regionName structureName:(NSString *)typeName withText:(NSString *)text
+{
+    NSAttributedString *str2 = nil;
+    NSAttributedString *dotlanLink = [self dotlanLinkForSystem:systemName inRegion:regionName];
+    if( dotlanLink )
+    {
+        str2 = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@ ", typeName, text]];
+        [(NSMutableAttributedString *)str2 appendAttributedString:dotlanLink];
+    }
+    else
+    {
+        str2 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@ %@", typeName, text, systemName]];
+    }
+    return [str2 autorelease];
 }
 @end

@@ -480,7 +480,7 @@
     sqlite3_stmt *read_stmt;
     int rc;
     const char getMessages[] = "SELECT * FROM mail WHERE toCorpOrAllianceID = ? OR toListID = ?;";
-    const char getInboxMessages[] = "SELECT * FROM mail WHERE toCorpOrAllianceID = ? AND toListID = ?;";
+    const char getInboxMessages[] = "SELECT * FROM mail WHERE toCorpOrAllianceID = ? AND toListID = ? AND senderID != ?;";
     const char getSentMessages[] = "SELECT * FROM mail WHERE senderID = ?;";
     sqlite3 *db = [[character database] openDatabase];
     
@@ -498,6 +498,8 @@
     sqlite3_bind_nsint( read_stmt, 1, boxID );
     if( boxID != [character characterId] )
         sqlite3_bind_nsint( read_stmt, 2, boxID );
+    if( 0 == boxID )
+        sqlite3_bind_nsint( read_stmt, 3, [character characterId] );
 
     NSMutableArray *messages = [NSMutableArray array];
     NSMutableSet *missingNames = [NSMutableSet set];
@@ -679,6 +681,9 @@
 {
     if( tableView == mailboxView )
     {
+        if( row >= [mailboxPairs count] )
+            return;
+
         METPair *pair = [mailboxPairs objectAtIndex:row];
         BOOL isRead = [self mailboxIsRead:[[pair first] integerValue]];
         if( isRead )
