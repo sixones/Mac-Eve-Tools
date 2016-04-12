@@ -320,6 +320,8 @@
 	<string>Alliance Capital Changed</string>
 	<key>167</key>
 	<string>Sovereignty Structure, Self Destruct Notification</string>
+	<key>168</key>
+	<string>Sovereignty Structure, Unknown Notification 1</string>
 	<key>169</key>
 	<string>Sovereignty Structure, Unknown Notification</string>
 	<key>1002</key>

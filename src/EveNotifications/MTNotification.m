@@ -428,6 +428,20 @@ static MTISKFormatter *iskFormatter = nil;
  structureTypeID: 28159
  149	Entosis Link disabled a module	solarSystemID: 30000142
  structureTypeID: 28159
+ 
+ 167    Self destruct   charID: 90683695
+ corpName: Dreddit
+ destructTime: 131048150327754976
+ solarSystemID: 30000550
+ structureTypeID: 32458
+
+ 168    Unknown        charID: 90683695
+ solarSystemID: 30000548
+ structureTypeID: 32226
+ 
+ 169    Unknown        solarSystemID: 30000585
+ structureTypeID: 32458
+
  */
 
 - (void)getCharacterPrefix:(NSString *)prefix fromLine:(NSString *)line values:(NSMutableDictionary *)values override:(bool)override
@@ -553,6 +567,20 @@ static MTISKFormatter *iskFormatter = nil;
         {
             [self getCharacterPrefix:prefix fromLine:line values:values override:YES];
         }
+        else if( [line hasPrefix:@"againstID:"] )
+        {
+            [self getCharacterPrefix:prefix fromLine:line values:values override:YES];
+        }
+        else if( [line hasPrefix:@"declaredByID:"] )
+        {
+            [self getCharacterPrefix:prefix fromLine:line values:values override:YES];
+        }
+        else if( [line hasPrefix:@"campaignEventType:"] )
+        {
+            NSNumber *etype = [NSNumber numberWithInteger:[[line substringFromIndex:19] integerValue]];
+            if( etype )
+                [values setObject:etype forKey:@"campaignEventType"];
+        }
     }
     return values;
 }
@@ -570,6 +598,20 @@ static MTISKFormatter *iskFormatter = nil;
     
     switch( [self typeID] )
     {
+        case 5: // Alliance War declared
+        {
+            NSString *name = [values objectForKey:@"againstIDName"];
+            NSString *decl = [values objectForKey:@"declaredByIDName"];
+            plainString = [NSString stringWithFormat:@"%@ has declared war against %@.", decl, name];
+            break;
+        }
+        case 8: // Alliance War invalidated
+        {
+            NSString *name = [values objectForKey:@"againstIDName"];
+            NSString *decl = [values objectForKey:@"declaredByIDName"];
+            plainString = [NSString stringWithFormat:@"War by %@ against %@ has been invalidated.", decl, name];
+            break;
+        }
         case 14: // Bounty payout
         {
             NSString *name = [values objectForKey:@"characterName"];
@@ -663,10 +705,61 @@ static MTISKFormatter *iskFormatter = nil;
             attrString = [self sovereigntyStringForSystem:[values objectForKey:@"solarSystemName"] inRegion:[values objectForKey:@"regionName"] structureName:[values objectForKey:@"typeName"] withText:@"disabled in"];
             break;
         }
+        case 160: // Sovereignty Structure reinforced
+        {
+            NSAttributedString *dotlanLink = [self dotlanLinkForSystem:[values objectForKey:@"solarSystemName"] inRegion:[values objectForKey:@"regionName"]];
+            attrString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Sovereignty Structures are being reinforced in "]];
+            // campaignEventType: 3
+            [(NSMutableAttributedString *)attrString appendAttributedString:dotlanLink];
+            [attrString autorelease];
+            break;
+        }
+        case 161: // Command Nodes Decloaking
+        {
+            NSAttributedString *dotlanLink = [self dotlanLinkForSystem:[values objectForKey:@"solarSystemName"] inRegion:[values objectForKey:@"regionName"]];
+            attrString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Command nodes are decloaking in "]];
+            // campaignEventType: 3
+            [(NSMutableAttributedString *)attrString appendAttributedString:dotlanLink];
+            [attrString autorelease];
+            break;
+        }
+        case 162: // Sovereignty Structure Destroyed
+        {
+            attrString = [self sovereigntyStringForSystem:[values objectForKey:@"solarSystemName"] inRegion:[values objectForKey:@"regionName"] structureName:[values objectForKey:@"typeName"] withText:@"was destroyed in"];
+            break;
+        }
+        case 163: // Station entered Freeport
+        {
+            attrString = [self sovereigntyStringForSystem:[values objectForKey:@"solarSystemName"] inRegion:[values objectForKey:@"regionName"] structureName:[values objectForKey:@"typeName"] withText:@"was freeported in"];
+            break;
+        }
         case 165: // Alliance Capital Changed
         {
             NSString *name = [values objectForKey:@"solarSystemName"];
-            plainString = [NSString stringWithFormat:@"%@ changed alliance capital to %@", [values objectForKey:@"allianceIDName"], name];
+            NSAttributedString *dotlanLink = [self dotlanLinkForSystem:name inRegion:[values objectForKey:@"regionName"]];
+            attrString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ changed alliance capital to ", [values objectForKey:@"allianceIDName"]]];
+            [(NSMutableAttributedString *)attrString appendAttributedString:dotlanLink];
+            [attrString autorelease];
+            break;
+        }
+        case 167: // Sovereignty structure self destruct
+        {
+            NSString *name = [values objectForKey:@"solarSystemName"];
+            NSString *structure = [values objectForKey:@"typeName"];
+            NSAttributedString *dotlanLink = [self dotlanLinkForSystem:name inRegion:[values objectForKey:@"regionName"]];
+            attrString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Self destruct has been initiated for %@ in ", structure]];
+            [(NSMutableAttributedString *)attrString appendAttributedString:dotlanLink];
+            [attrString autorelease];
+            break;
+        }
+        case 168: // Sovereignty structure Unknown notification
+        {
+            attrString = [self sovereigntyStringForSystem:[values objectForKey:@"solarSystemName"] inRegion:[values objectForKey:@"regionName"] structureName:[values objectForKey:@"typeName"] withText:@"unknown notification (168) in"];
+            break;
+        }
+        case 169: // Sovereignty structure Unknown notification
+        {
+            attrString = [self sovereigntyStringForSystem:[values objectForKey:@"solarSystemName"] inRegion:[values objectForKey:@"regionName"] structureName:[values objectForKey:@"typeName"] withText:@"unknown notification (169) in"];
             break;
         }
     }
@@ -691,34 +784,32 @@ static MTISKFormatter *iskFormatter = nil;
     return rows;
 }
 
+/** Defaults to the system name as a plain attributed string (no dotlan link), if there is no region name
+ */
 - (NSAttributedString *)dotlanLinkForSystem:(NSString *)systemName inRegion:(NSString *)regionName
 {
+    if( 0 == [systemName length] )
+        systemName = @"Unknown System";
+    
+    NSMutableAttributedString *attStr = [[NSMutableAttributedString alloc] initWithString:systemName];
     if( systemName && regionName )
     {
         NSString *dotlanLink = [NSString stringWithFormat:@"http://evemaps.dotlan.net/map/%@/%@",
                                 [regionName stringByReplacingOccurrencesOfString:@" " withString:@"_"],
                                 [systemName stringByReplacingOccurrencesOfString:@" " withString:@"_"]];
-        NSMutableAttributedString *attStr = [[NSMutableAttributedString alloc] initWithString:systemName];
         [attStr addAttribute:NSLinkAttributeName value:dotlanLink range:NSMakeRange(0, [attStr length])];
         [attStr addAttribute:NSForegroundColorAttributeName value:[NSColor blueColor] range:NSMakeRange(0, [attStr length])];
-        return [attStr autorelease];
     }
-    return nil;
+    return [attStr autorelease];
 }
 
 - (NSAttributedString *)sovereigntyStringForSystem:(NSString *)systemName inRegion:(NSString *)regionName structureName:(NSString *)typeName withText:(NSString *)text
 {
-    NSAttributedString *str2 = nil;
+    if( 0 == [typeName length] )
+        typeName = @"Unknown Structure";
+    NSMutableAttributedString *str2 = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@ ", typeName, text]];
     NSAttributedString *dotlanLink = [self dotlanLinkForSystem:systemName inRegion:regionName];
-    if( dotlanLink )
-    {
-        str2 = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@ ", typeName, text]];
-        [(NSMutableAttributedString *)str2 appendAttributedString:dotlanLink];
-    }
-    else
-    {
-        str2 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@ %@", typeName, text, systemName]];
-    }
+    [str2 appendAttributedString:dotlanLink];
     return [str2 autorelease];
 }
 @end
