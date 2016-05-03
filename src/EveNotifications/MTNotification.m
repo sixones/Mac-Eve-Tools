@@ -111,6 +111,12 @@ static MTISKFormatter *iskFormatter = nil;
     return [[missingIDs retain] autorelease];
 }
 
+- (BOOL)isWarRelated
+{
+    NSArray *warIDs = @[@(5),@(6),@(7),@(8),@(27),@(28),@(29),@(30),@(31),@(98),@(101),@(121),@(125)];
+    return [warIDs containsObject:[NSNumber numberWithInteger:[self typeID]]];
+}
+
 /*
  Need to handle formatted data in notification bodies: https://eveonline-third-party-documentation.readthedocs.org/en/latest/xmlapi/enumerations/#notification-type
  See NotificationTypeIDs.plist for a list of all notification type ID's that we currently recognize.
@@ -519,7 +525,8 @@ static MTISKFormatter *iskFormatter = nil;
                 // this is an actual itemID, not a typeID. Not sure how to get more info about it.
             }
         }
-        else if( [prefix isEqualToString:@"shipTypeID"] || [prefix isEqualToString:@"victimShipTypeID"] || [prefix isEqualToString:@"structureTypeID"] )
+        else if( [prefix isEqualToString:@"shipTypeID"] || [prefix isEqualToString:@"victimShipTypeID"]
+                || [prefix isEqualToString:@"structureTypeID"] || [prefix isEqualToString:@"typeID"] )
         {
             [self getTypeIDPrefix:prefix fromLine:line values:values];
         }
@@ -605,6 +612,13 @@ static MTISKFormatter *iskFormatter = nil;
             plainString = [NSString stringWithFormat:@"%@ has declared war against %@.", decl, name];
             break;
         }
+        case 7: // Alliance War retracted
+        {
+            NSString *name = [values objectForKey:@"againstIDName"];
+            NSString *decl = [values objectForKey:@"declaredByIDName"];
+            plainString = [NSString stringWithFormat:@"War by %@ against %@ has been retracted.", decl, name];
+            break;
+        }
         case 8: // Alliance War invalidated
         {
             NSString *name = [values objectForKey:@"againstIDName"];
@@ -635,6 +649,17 @@ static MTISKFormatter *iskFormatter = nil;
         {
             NSString *priceStr = [iskFormatter stringFromNumber:[values objectForKey:@"amount"]];
             plainString = [NSString stringWithFormat:@"%@ insurance payout for losing a ship", priceStr];
+            break;
+        }
+        case 55: // Insurance policy taken out
+        {
+            // level: 99.99999999999999 = Platinum
+            plainString = [NSString stringWithFormat:@"Your %@ was insured", [values objectForKey:@"typeName"]];
+            break;
+        }
+        case 93: // Orbital Structure Attacked
+        {
+            attrString = [self sovereigntyStringForSystem:[values objectForKey:@"solarSystemName"] inRegion:[values objectForKey:@"regionName"] structureName:[values objectForKey:@"typeName"] withText:@"attacked in"];
             break;
         }
         case 112: // Bounty placed on you

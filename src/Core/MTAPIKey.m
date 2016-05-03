@@ -29,16 +29,14 @@
  Download the API key creation page and run the following shell script to extract all of the masks:
  */
  // grep apiEndPointControl APIKeyMasks.html | cut -d'<' -f3- | sed -e 's/ class="apiEndPointControl">/ /' | sed -e 's/a mask="\([0-9]*\)" \([^<]*\).*/\2 \1/' > masks.txt
-
 /*
- === Character Masks ===
- Account and Market:
+ Updated May 3, 2016
+ 
  WalletTransactions 4194304
  WalletJournal 2097152
  MarketOrders 4096
  AccountBalance 1
- 
- Communications:
+ ChatChannels 536870912
  NotificationTexts 32768
  Notifications 16384
  MailMessages 2048
@@ -46,8 +44,9 @@
  MailBodies 512
  ContactNotifications 32
  ContactList 16
- 
- Private Information:
+ Clones 2147483648
+ Skills 1073741824
+ Bookmarks 268435456
  Locations 134217728
  Contracts 67108864
  AccountStatus 33554432
@@ -58,60 +57,41 @@
  CharacterSheet 8
  CalendarEventAttendees 4
  AssetList 2
- 
- Public Information:
  CharacterInfo 8388608
  Standings 524288
  Medals 8192
  KillLog 256
  FacWarStats 64
- 
- Science and Industry:
  Research 65536
  IndustryJobs 128
- 
- 
- === Coporation Masks ===
- 
- Account and Market:
  WalletTransactions 2097152
  WalletJournal 1048576
  Shareholders 65536
  MarketOrders 4096
  AccountBalance 1
- 
- Communications:
  ContactList 16
- 
- Corporation Members:
  MemberTrackingExtended 33554432
  Titles 4194304
  MemberTrackingLimited 2048
  MemberSecurityLog 1024
  MemberSecurity 512
  MemberMedals 4
- 
- Outposts and Starbases:
  StarbaseList 524288
  StarbaseDetail 131072
  OutpostServiceDetail 32768
  OutpostList 16384
- 
- Private Information:
+ Bookmarks 67108864
  Locations 16777216
  Contracts 8388608
  ContainerLog 32
  CorporationSheet 8
  AssetList 2
- 
- Public Information:
  Standings 262144
  Medals 8192
  KillLog 256
  FacWarStats 64
- 
- Science and Industry:
  IndustryJobs 128
+
 
  */
 

@@ -1256,7 +1256,7 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
     
     if( 0 == cnt )
     {
-        rc = sqlite3_exec(db, "CREATE TABLE metAttributeTypes (attributeID INTEGER, unitID INTEGER, iconID INTEGER, displayName VARCHAR(100), attributeName VARCHAR(100), typeGroupID INTEGER);", NULL, NULL, &errmsg);
+        rc = sqlite3_exec(db, "CREATE TABLE metAttributeTypes (attributeID INTEGER, unitID INTEGER, iconID INTEGER, displayName VARCHAR(150), attributeName VARCHAR(100), typeGroupID INTEGER);", NULL, NULL, &errmsg);
         if(rc != SQLITE_OK)
         {
             [self logError:errmsg];

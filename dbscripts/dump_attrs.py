@@ -89,7 +89,7 @@ if __name__ == "__main__":
             attributeID INTEGER ,
             unitID INTEGER ,
             iconID INTEGER ,
-            displayName VARCHAR(100),
+            displayName VARCHAR(150),
             attributeName VARCHAR(100),
             typeGroupID INTEGER);"""
 

@@ -226,6 +226,7 @@
 {
     [notificationsTable reloadData];
     [notificationsWindow makeKeyAndOrderFront:self];
+    //[self activeWars];
 }
 
 - (void)tickerTimerFired:(NSTimer *)timer
@@ -238,6 +239,17 @@
             nextNotification = 0;
     }
     [tickerField setStringValue:(notification)?[notification tickerDescription]:@""];
+}
+
+- (void)activeWars
+{
+    // select * from notifications WHERE typeID in (5,6,7,8,27,28,29,30,31) order by sentDate;
+    NSIndexSet *warIndexes = [notifications indexesOfObjectsPassingTest:^BOOL (id el, NSUInteger i, BOOL *stop)
+                              {
+                                  return [(MTNotification *)el isWarRelated];
+                              }];
+    NSArray *warNotes = [notifications objectsAtIndexes:warIndexes];
+    NSLog( @"Wars: %@", warNotes );
 }
 
 /* http://wiki.eve-id.net/APIv2_Char_Notifications_XML

@@ -128,8 +128,8 @@ CREATE TABLE "metAttributeTypes" (
 	"attributeID" smallint(6) NOT NULL,
 	"unitID" tinyint(3),
 	"graphicID" smallint(6),
-	"displayName" varchar(32),
-	"attributeName" varchar(32),
+	"displayName" varchar(150),
+	"attributeName" varchar(100),
 	"displayType" smallint(6),
 	PRIMARY KEY ("attributeID")
 );

@@ -38,4 +38,6 @@
 - (NSInteger)rows; ///< How many rows of text in the body. Used to estimate table row height.
 
 - (NSArray *)missingIDs; ///< Used for calling METIDtoName to get missing names
+
+- (BOOL)isWarRelated;
 @end
