@@ -6,6 +6,24 @@
     <description>Most recent changes.</description>
     <language>en</language>
      <item>
+        <title>Version 0.3.7b</title>
+        <pubDate>May 3, 2016 00:00:00 +0000</pubDate>
+        <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.7b/Vitality_v0.3.7b.zip" sparkle:version="0.3.7b" length="5637161" type="application/octet-stream" />
+		<description>
+			<![CDATA[
+<div><strong>0.3.7b</strong></div>
+<div>Notifications</div>
+<ul>
+    <li>Character notifications show up in a ticker at the bottom of the main character view. An info button will open a window with a list of all notifications that have been read by Vitality.</li>
+    <li>Notes can be added to skill plans.</li>
+    <li>System, Constellation and Region links in mail messages now open in Dotlan.</li>
+    <li>A very basic ship fitting window opens when you click a link for a ship fit in a mail message.</li>
+    <li>Character, Corporation and Alliance links in mail messages open a window with some basic information.</li>
+</ul>
+			]]>
+		</description>
+     </item>
+     <item>
         <title>Version 0.3.6b</title>
         <pubDate>May 13, 2015 00:00:00 +0000</pubDate>
         <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.6b_2/Vitality_v0.3.6b.zip" sparkle:version="0.3.6b" length="4384567" type="application/octet-stream" />
