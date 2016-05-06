@@ -51,6 +51,11 @@
     [super dealloc];
 }
 
+- (NSData *)xmlData
+{
+    return xmlData;
+}
+
 - (void)run
 {
     [self runWithURLExtras:nil];
@@ -65,6 +70,8 @@
         xmlDocument = nil;
     }
     rowsetNode = nil;
+    [xmlData release];
+    xmlData = nil;
     
     if( ![self character] )
     {

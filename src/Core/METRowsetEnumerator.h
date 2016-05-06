@@ -64,4 +64,6 @@ typedef enum
 - (void)runWithURLExtras:(NSString *)extraURLArgs;
 
 - (void)cancel; ///< call cancel on the urlConnection
+
+- (NSData *)xmlData;
 @end

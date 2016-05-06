@@ -313,6 +313,7 @@
     }
     else if( rowset == bodyGetter )
     {
+        //[[bodyGetter xmlData] writeToFile:@"/tmp/notifications.xml" atomically:NO];
         NSMutableArray *newBodies = [NSMutableArray array];
         for( METXmlNode *row in rowset )
         {
