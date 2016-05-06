@@ -3,7 +3,7 @@
 #import "MainController.h"
 
 @interface StatusItemView : NSView {
-    __weak MainController *controller;
+    MainController *controller;
     
     BOOL opened;
 }

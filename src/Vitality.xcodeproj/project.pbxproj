@@ -1743,7 +1743,7 @@
 				PER_ARCH_CFLAGS_i386 = "";
 				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -1768,7 +1768,7 @@
 				PER_ARCH_CFLAGS_i386 = "";
 				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -1785,7 +1785,10 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /usr/include/libxml2;
+				HEADER_SEARCH_PATHS = (
+					/usr/include/libxml2,
+					/usr/local/include,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -1815,8 +1818,12 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /usr/include/libxml2;
+				HEADER_SEARCH_PATHS = (
+					/usr/include/libxml2,
+					/usr/local/include,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-lxml2",
 					"-lcrypto",
@@ -1843,8 +1850,12 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /usr/include/libxml2;
+				HEADER_SEARCH_PATHS = (
+					/usr/include/libxml2,
+					/usr/local/include,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-lxml2",
 					"-lcrypto",
@@ -1881,7 +1892,7 @@
 				PER_ARCH_CFLAGS_i386 = "";
 				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 			};
 			name = "Test Release";
 		};
