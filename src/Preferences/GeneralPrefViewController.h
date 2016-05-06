@@ -11,7 +11,7 @@
 #import "MainController.h"
 
 @interface GeneralPrefViewController : NSViewController <MBPreferencesModule> {
-    __weak MainController* _mainController;
+    MainController* _mainController;
 }
 
 - (NSString *)title;
