@@ -28,7 +28,7 @@
 #import <libxml/tree.h>
 #import <bzlib.h>
 #import <sqlite3.h>
-#import <openssl/sha.h>
+#import </usr/local/include/openssl/sha.h>
 
 #import "CCPDatabase.h"
 
