@@ -7,9 +7,9 @@
 
 @interface StatusItemWindow : NSWindow {
     @private
-    __weak StatusItemViewController* _controller;
-    __weak MainController* _mainController;
-    __weak NSView *_view;
+    StatusItemViewController* _controller;
+    MainController* _mainController;
+    NSView *_view;
     NSPoint _point;
 }
 

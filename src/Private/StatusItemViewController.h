@@ -24,7 +24,7 @@
     Skill *currentTrainingSkill;
     
     @private
-    __weak MainController *_mainController;
+    MainController *_mainController;
 }
 
 -(Character*) getCharacter;
