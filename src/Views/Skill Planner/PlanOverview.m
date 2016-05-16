@@ -62,15 +62,15 @@
 
 -(void) insertSkillPlan:(SkillPlan *)plan
 {
-    [[self delegate] insertSkillPlan:plan];
     [[(NSResponder *)[self delegate] undoManager] registerUndoWithTarget:self selector:@selector(deleteOneSkillPlan:) object:plan];
+    [[self delegate] insertSkillPlan:plan];
     [self refreshPlanView];
 }
 
 -(void) deleteOneSkillPlan:(SkillPlan *)plan
 {
-    [character removeSkillPlan:plan];
     [[(NSResponder *)[self delegate] undoManager] registerUndoWithTarget:self selector:@selector(insertSkillPlan:) object:plan];
+    [character removeSkillPlan:plan];
     [self refreshPlanView];
 }
 
