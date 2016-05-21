@@ -1743,7 +1743,7 @@
 				PER_ARCH_CFLAGS_i386 = "";
 				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.9;
 			};
 			name = Debug;
 		};
@@ -1768,7 +1768,7 @@
 				PER_ARCH_CFLAGS_i386 = "";
 				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.9;
 			};
 			name = Release;
 		};
@@ -1776,6 +1776,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_LINK_OBJC_RUNTIME = NO;
 				CURRENT_PROJECT_VERSION = 0.2.4;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1801,7 +1802,7 @@
 				PER_ARCH_CFLAGS_i386 = "-fsingle-precision-constant";
 				PER_ARCH_CFLAGS_ppc = "-fsingle-precision-constant";
 				PRODUCT_NAME = Vitality;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.9;
 				VALID_ARCHS = "i386 x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1811,6 +1812,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_LINK_OBJC_RUNTIME = NO;
 				CURRENT_PROJECT_VERSION = 0.2.4;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = HAVE_SPARKLE;
@@ -1834,7 +1836,7 @@
 				PER_ARCH_CFLAGS_i386 = "-fsingle-precision-constant";
 				PER_ARCH_CFLAGS_ppc = "-fsingle-precision-constant";
 				PRODUCT_NAME = Vitality;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.9;
 				VALID_ARCHS = "i386 x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1844,6 +1846,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_LINK_OBJC_RUNTIME = NO;
 				CURRENT_PROJECT_VERSION = 0.2.4;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = "";
@@ -1866,7 +1869,7 @@
 				PER_ARCH_CFLAGS_i386 = "-fsingle-precision-constant";
 				PER_ARCH_CFLAGS_ppc = "-fsingle-precision-constant";
 				PRODUCT_NAME = "";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.9;
 				VALID_ARCHS = "i386 x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1892,7 +1895,7 @@
 				PER_ARCH_CFLAGS_i386 = "";
 				PER_ARCH_CFLAGS_ppc = "";
 				PRODUCT_NAME = Vitality;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.9;
 			};
 			name = "Test Release";
 		};
