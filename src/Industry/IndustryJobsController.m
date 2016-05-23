@@ -15,6 +15,10 @@
 #import <sqlite3.h>
 #import "Helpers.h"
 
+/* TODO: Add a way for the user to request finished jobs: /char/IndustryJobsHistory.xml.aspx
+ see: https://eveonline-third-party-documentation.readthedocs.io/en/latest/xmlapi/character/char_industryjobshistory.html
+ */
+
 @interface IndustryJobsController()
 @property (readwrite,retain) NSMutableArray *dbJobs;
 @end
@@ -212,13 +216,25 @@
     }
     else if( [colID isEqualToString:@"activityID"] )
     {
-        value = [NSNumber numberWithInteger:[job activityID]];
+        value = [job jobTypeName];
     }
     else if( [colID isEqualToString:@"status"] )
     {
         value = [job jobStatus];
     }
-    
+    else if( [colID isEqualToString:@"startDate"] )
+    {
+        value = [job startDate];
+    }
+    else if( [colID isEqualToString:@"endDate"] )
+    {
+        value = [job endDate];
+    }
+    else if( [colID isEqualToString:@"completedDate"] )
+    {
+        value = [job completedDate]?[job completedDate]:@"";
+    }
+
     return value;
 }
 
@@ -312,7 +328,9 @@
         [job setStartDate:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,22)]];
         [job setEndDate:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,23)]];
         [job setPauseDate:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,24)]];
-        [job setCompletedDate:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,25)]];
+        NSInteger *cdt = sqlite3_column_nsint(read_stmt,25);
+        if( 0 != cdt )
+            [job setCompletedDate:[NSDate dateWithTimeIntervalSince1970:sqlite3_column_nsint(read_stmt,25)]];
         [job setCompletedCharacterID:sqlite3_column_nsint(read_stmt,26)];
 
         [existingItems addObject:job];
@@ -380,7 +398,10 @@
         sqlite3_bind_nsint( insert_item_stmt, 23, [[item startDate] timeIntervalSince1970] );
         sqlite3_bind_nsint( insert_item_stmt, 24, [[item endDate] timeIntervalSince1970] );
         sqlite3_bind_nsint( insert_item_stmt, 25, [[item pauseDate] timeIntervalSince1970] );
-        sqlite3_bind_nsint( insert_item_stmt, 26, [[item completedDate] timeIntervalSince1970] );
+        if( [item completedDate] )
+            sqlite3_bind_nsint( insert_item_stmt, 26, [[item completedDate] timeIntervalSince1970] );
+        else
+            sqlite3_bind_null( insert_item_stmt, 26 );
         sqlite3_bind_nsint( insert_item_stmt, 27, [item completedCharacterID] );
         
         rc = sqlite3_step(insert_item_stmt);
@@ -390,7 +411,10 @@
             sqlite3_bind_nsint( update_item_stmt, 1, [item status] );
             sqlite3_bind_nsint( update_item_stmt, 2, [[item endDate] timeIntervalSince1970] );
             sqlite3_bind_nsint( update_item_stmt, 3, [[item pauseDate] timeIntervalSince1970] );
-            sqlite3_bind_nsint( update_item_stmt, 4, [[item completedDate] timeIntervalSince1970] );
+            if( [item completedDate] )
+                sqlite3_bind_nsint( update_item_stmt, 4, [[item completedDate] timeIntervalSince1970] );
+            else
+                sqlite3_bind_null( insert_item_stmt, 4 );
             sqlite3_bind_nsint( update_item_stmt, 5, [item completedCharacterID] );
             sqlite3_bind_nsint( update_item_stmt, 5, [item jobID] );
             

@@ -108,5 +108,15 @@
     return _stationName;
 }
 
-
+- (NSString *)jobTypeName
+{
+    switch( self.activityID )
+    {
+        case JobTypeManufacture: return NSLocalizedString( @"Manufacture", @"Industry Job Manufacture String" ); break;
+        case JobTypeResearchTime: return NSLocalizedString( @"TE", @"Industry Job TE String" ); break;
+        case JobTypeResearchMaterial: return NSLocalizedString( @"ME", @"Industry Job ME String" ); break;
+        case JobTypeCopy: return NSLocalizedString( @"Copy", @"Industry Job Copy String" ); break;
+    }
+    return [NSString stringWithFormat:@"Unknown: %ld", (long)self.activityID];
+}
 @end

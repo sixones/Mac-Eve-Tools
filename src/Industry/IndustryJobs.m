@@ -104,7 +104,7 @@ static NSString *XMLAPI_CHAR_INDUSTRYJOBS = @"/char/IndustryJobs.xml.aspx";
         return;
     }
     
-    [[rowset xmlData] writeToFile:@"/tmp/jobs.xml" atomically:YES]; // for debugging only
+    //[[rowset xmlData] writeToFile:@"/tmp/jobs.xml" atomically:YES]; // for debugging only
     
     NSArray *newOrders = [self industryJobsFromRowset:rowset];
     
@@ -166,9 +166,13 @@ static NSString *XMLAPI_CHAR_INDUSTRYJOBS = @"/char/IndustryJobs.xml.aspx";
             [job setStartDate:[NSDate dateWithNaturalLanguageString:[properties objectForKey:@"startDate"]]];
             [job setEndDate:[NSDate dateWithNaturalLanguageString:[properties objectForKey:@"endDate"]]];
             [job setPauseDate:[NSDate dateWithNaturalLanguageString:[properties objectForKey:@"pauseDate"]]];
-            [job setCompletedDate:[NSDate dateWithNaturalLanguageString:[properties objectForKey:@"completedDate"]]];
             [job setCompletedCharacterID:[[properties objectForKey:@"completedCharacterID"] integerValue]];
-            
+            NSString *compDate = [properties objectForKey:@"completedDate"];
+            if( [@"0001-01-01 00:00:00" isEqualToString:compDate] )
+                [job setCompletedDate:nil];
+            else
+                [job setCompletedDate:[NSDate dateWithNaturalLanguageString:compDate]];
+
             [localJobs addObject:job];
         }
     }

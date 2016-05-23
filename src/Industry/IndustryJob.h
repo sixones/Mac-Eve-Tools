@@ -49,6 +49,13 @@ typedef enum {
     JobStatusUnknown = -1
 } JobStatusType;
 
+typedef enum {
+    JobTypeManufacture = 1,
+    JobTypeResearchTime = 3,
+    JobTypeResearchMaterial = 4,
+    JobTypeCopy = 5
+} JobTypeType;
+
 @interface IndustryJob : NSObject
 {
     NSInteger _jobID;
@@ -115,6 +122,6 @@ typedef enum {
 
 - (NSString *)typeName;
 - (NSString *)jobStatus;
-
+- (NSString *)jobTypeName; // e.g. Manufacture, ME Research, etc.
 
 @end
