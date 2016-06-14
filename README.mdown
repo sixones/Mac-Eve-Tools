@@ -3,10 +3,26 @@ Vitality, based on Mac EVE Tools
 
 This project is licenced under the GNU GPL v3.
 
-Building:
+Installation
+------------
+
+Vitality is a self-contained application, so download one of the .zip files from [Releases][Releases] and double-click to uncompress it, if necessary. Drag the Vitality application to your Applications folder, or wherever you want it.
+
+The first time it's run Vitality will install a database with parts of the EVE Online static database. That and all other Vitality files are in this directory: ~/Library/Application Support/Vitality.
+
+You may see a Gatekeeper related error when you try to run Vitality: “Vitality” can’t be opened because it is from an unidentified developer.
+The only way around that is to disable Gatekeeper:
+
+Go to System Preferences, then "Security & Privacy", choose the General tab, Click the lock to make changes and make sure that "Allow apps downloaded from:" is set to Anywhere. (Directions are for OS X 10.9)
+
+[Releases]:https://github.com/sixones/vitality/releases
+
+Building
+--------
 
 Requires Snow Leopard and Xcode 3.2
 It can be made to work on Leopard 10.5 with a little effort.
+The oldest current build machine is OS 10.9, Xcode 6.1.
 
 The "Documentation" build target generates HTML documentation for
 Vitality's classes; the documentation is added to Xcode's Documentation
@@ -57,12 +73,4 @@ build the database that MET uses.  It's a modified and heavily cut down
 version of the CCP database export, and is built by connecting to
 a MySQL server that hosts the CCP DB export and fetching and processing
 the required data.  See the dbscripts/README file for more info.
-
-Signing
--------
-
-Save the private key to dsa_priv.pem on the Desktop and export the build there. Signing seems to fail when using different directories.
-
-cd ~/Desktop
-ruby sign_update.rb vitality-X.X.X.zip dsa_priv.pem
 
