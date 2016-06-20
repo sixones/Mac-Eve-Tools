@@ -389,6 +389,7 @@
  
 http://community.eveonline.com/news/dev-blogs/long-distance-travel-changes-inbound/
  
+ TODO: Convert from using a dictionary to properties on the Character class
  
  And next available clone jump using this plus skills:
  <cloneJumpDate>2014-10-08 20:54:50</cloneJumpDate>
@@ -398,6 +399,16 @@ http://community.eveonline.com/news/dev-blogs/long-distance-travel-changes-inbou
  <row trainingEnd="2014-12-11 14:15:16" />
  <row trainingEnd="2014-12-11 20:20:20" />
  </rowset>
+ 
+ More info we should grab and display:
+ <corporationName>Ravens of Morrighan</corporationName>
+ <corporationID>98464925</corporationID>
+ <allianceName />
+ <allianceID>0</allianceID>
+ <factionName />
+ <factionID>0</factionID>
+ <freeSkillPoints>310000</freeSkillPoints>
+ <freeRespecs>2</freeRespecs>
 */
 -(BOOL) parseXmlSheet:(xmlDoc*)document
 {

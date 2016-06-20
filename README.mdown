@@ -13,7 +13,9 @@ The first time it's run Vitality will install a database with parts of the EVE O
 You may see a Gatekeeper related error when you try to run Vitality: “Vitality” can’t be opened because it is from an unidentified developer.
 The only way around that is to disable Gatekeeper:
 
-Go to System Preferences, then "Security & Privacy", choose the General tab, Click the lock to make changes and make sure that "Allow apps downloaded from:" is set to Anywhere. (Directions are for OS X 10.9)
+Go to System Preferences, then "Security & Privacy", choose the General tab, Click the lock to make changes and make sure that "Allow apps downloaded from:" is set to Anywhere. (Directions are for OS X 10.9, but should be similar for newer versions of OS X)
+
+Alternatively, you can right click on the Vitality app and choose the open command. You'll be warned that the app is unsigned, but you can open it anyway. After doing that once, you can open Vitality as normal.
 
 [Releases]:https://github.com/sixones/vitality/releases
 
