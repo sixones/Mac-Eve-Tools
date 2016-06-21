@@ -16,6 +16,7 @@
     Character *_character;
     NSMutableArray *_jobs;
     METRowsetEnumerator *industryJobsAPI;
+    METRowsetEnumerator *industryHistoryAPI;
 
     id _delegate;    
 }
@@ -25,6 +26,4 @@
 
 - (IBAction)reload:(id)sender;
 - (void)sortUsingDescriptors:(NSArray *)descriptors;
-
-- (void)requestIndustryJob:(NSNumber *)jobID;
 @end

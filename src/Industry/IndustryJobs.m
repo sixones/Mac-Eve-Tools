@@ -21,6 +21,7 @@
 #include <assert.h>
 
 static NSString *XMLAPI_CHAR_INDUSTRYJOBS = @"/char/IndustryJobs.xml.aspx";
+static NSString *XMLAPI_CHAR_INDUSTRYHISTORY = @"/char/IndustryJobsHistory.xml.aspx";
 
 @interface IndustryJobs()
 @end
@@ -37,6 +38,7 @@ static NSString *XMLAPI_CHAR_INDUSTRYJOBS = @"/char/IndustryJobs.xml.aspx";
     {
         _jobs = [[NSMutableArray alloc] init];
         industryJobsAPI = [[METRowsetEnumerator alloc] initWithCharacter:nil API:XMLAPI_CHAR_INDUSTRYJOBS forDelegate:self];
+        industryHistoryAPI = [[METRowsetEnumerator alloc] initWithCharacter:nil API:XMLAPI_CHAR_INDUSTRYHISTORY forDelegate:self];
     }
     return self;
 }
@@ -45,6 +47,7 @@ static NSString *XMLAPI_CHAR_INDUSTRYJOBS = @"/char/IndustryJobs.xml.aspx";
 {
     [_jobs release];
     [industryJobsAPI release];
+    [industryHistoryAPI release];
     [super dealloc];
 }
 
@@ -62,6 +65,8 @@ static NSString *XMLAPI_CHAR_INDUSTRYJOBS = @"/char/IndustryJobs.xml.aspx";
         [[self jobs] removeAllObjects];
         [industryJobsAPI cancel];
         [industryJobsAPI setCharacter:character];
+        [industryHistoryAPI cancel];
+        [industryHistoryAPI setCharacter:character];
     }
 }
 
@@ -75,20 +80,17 @@ static NSString *XMLAPI_CHAR_INDUSTRYJOBS = @"/char/IndustryJobs.xml.aspx";
     [industryJobsAPI run];
 }
 
-- (void)requestIndustryJob:(NSNumber *)orderID
-{
-    NSAssert( nil != orderID, @"Missing order ID in [IndustryJobs requestIndustryJob]" );
-    METRowsetEnumerator *temp = [[METRowsetEnumerator alloc] initWithCharacter:[self character] API:XMLAPI_CHAR_ORDERS forDelegate:self];
-    [temp setCheckCachedDate:NO];
-    [temp runWithURLExtras:[NSString stringWithFormat:@"&orderID=%ld", (unsigned long)[orderID unsignedIntegerValue]]];
-}
-
 - (void)apiDidFinishLoading:(METRowsetEnumerator *)rowset withError:(NSError *)error
 {
     if( error )
     {
         if( [error code] == METRowsetCached )
-            NSLog( @"Skipping Industry Jobs because of Cached Until date." ); // handle cachedUntil errors differently
+        {
+            if( rowset == industryJobsAPI )
+                NSLog( @"Skipping Industry Jobs because of Cached Until date." ); // handle cachedUntil errors differently
+            else if( rowset == industryHistoryAPI )
+                NSLog( @"Skipping Industry History because of Cached Until date." ); // handle cachedUntil errors differently
+        }
         else if( [error code] == METRowsetMissingCharacter )
             ; // don't bother logging an error but maybe add an assert?
         else
@@ -99,7 +101,7 @@ static NSString *XMLAPI_CHAR_INDUSTRYJOBS = @"/char/IndustryJobs.xml.aspx";
             [[self delegate] performSelector:@selector(jobsSkippedUpdating)];
         }
         
-        if( rowset != industryJobsAPI )
+        if( (rowset != industryJobsAPI) && (rowset != industryHistoryAPI) )
             [rowset release];
         return;
     }
@@ -108,7 +110,7 @@ static NSString *XMLAPI_CHAR_INDUSTRYJOBS = @"/char/IndustryJobs.xml.aspx";
     
     NSArray *newOrders = [self industryJobsFromRowset:rowset];
     
-    if( rowset == industryJobsAPI )
+    if( (rowset == industryJobsAPI) || (rowset == industryHistoryAPI) )
     {
         [[self jobs] removeAllObjects];
         [[self jobs] addObjectsFromArray:newOrders];
@@ -117,14 +119,12 @@ static NSString *XMLAPI_CHAR_INDUSTRYJOBS = @"/char/IndustryJobs.xml.aspx";
         {
             [[self delegate] performSelector:@selector(jobsFinishedUpdating:) withObject:[self jobs]];
         }
+        if( rowset == industryJobsAPI )
+            [industryHistoryAPI run];
     }
     else
     {
-        if( [[self delegate] respondsToSelector:@selector(jobFinishedUpdating:)] )
-        {
-            [[self delegate] performSelector:@selector(jobFinishedUpdating:) withObject:newOrders];
-        }
-        [rowset release];
+        NSAssert(YES, @"Invalid industry job enumerator" );
     }
 }
 

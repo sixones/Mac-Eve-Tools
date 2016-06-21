@@ -53,7 +53,8 @@ typedef enum {
     JobTypeManufacture = 1,
     JobTypeResearchTime = 3,
     JobTypeResearchMaterial = 4,
-    JobTypeCopy = 5
+    JobTypeCopy = 5,
+    JobTypeInvent = 8
 } JobTypeType;
 
 @interface IndustryJob : NSObject

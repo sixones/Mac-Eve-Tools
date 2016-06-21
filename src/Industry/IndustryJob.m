@@ -78,7 +78,12 @@
 {
     switch( self.status )
     {
-        case JobStatusActive: return NSLocalizedString( @"Active", @"Industry Job Active String" ); break;
+        case JobStatusActive:
+            if( NSOrderedAscending == [self.endDate compare:[NSDate date]] )
+                return NSLocalizedString( @"Completed", @"Industry Job Completed String" );
+            else
+                return NSLocalizedString( @"Active", @"Industry Job Active String" );
+            break;
         case JobStatusPaused: return NSLocalizedString( @"Paused", @"Industry Job Paused String" ); break;
         case JobStatusReady: return NSLocalizedString( @"Ready", @"Industry Job Ready String" ); break;
         case JobStatusDelivered: return NSLocalizedString( @"Delivered", @"Industry Job Delivered String" ); break;
@@ -116,6 +121,7 @@
         case JobTypeResearchTime: return NSLocalizedString( @"TE", @"Industry Job TE String" ); break;
         case JobTypeResearchMaterial: return NSLocalizedString( @"ME", @"Industry Job ME String" ); break;
         case JobTypeCopy: return NSLocalizedString( @"Copy", @"Industry Job Copy String" ); break;
+        case JobTypeInvent: return NSLocalizedString( @"Invention", @"Industry Job Invention String" ); break;
     }
     return [NSString stringWithFormat:@"Unknown: %ld", (long)self.activityID];
 }
