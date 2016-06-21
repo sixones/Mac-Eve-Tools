@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">13F34</string>
+		<string key="IBDocument.SystemVersion">13F1134</string>
 		<string key="IBDocument.InterfaceBuilderVersion">6250</string>
 		<string key="IBDocument.AppKitVersion">1265.21</string>
 		<string key="IBDocument.HIToolboxVersion">698.00</string>
@@ -962,6 +962,26 @@
 							<bool key="NSToolbarIsUserRemovable">YES</bool>
 							<int key="NSToolbarItemVisibilityPriority">0</int>
 						</object>
+						<object class="NSToolbarItem" key="A7B3C8B5-E869-4AAA-B87E-F75F3C444946" id="994142170">
+							<string key="NSToolbarItemIdentifier">A7B3C8B5-E869-4AAA-B87E-F75F3C444946</string>
+							<string key="NSToolbarItemLabel">Industry Jobs</string>
+							<string key="NSToolbarItemPaletteLabel">Industry Jobs</string>
+							<string key="NSToolbarItemToolTip"/>
+							<nil key="NSToolbarItemView"/>
+							<object class="NSCustomResource" key="NSToolbarItemImage">
+								<string key="NSClassName">NSImage</string>
+								<string key="NSResourceName">Industry</string>
+							</object>
+							<nil key="NSToolbarItemTarget"/>
+							<nil key="NSToolbarItemAction"/>
+							<string key="NSToolbarItemMinSize">{0, 0}</string>
+							<string key="NSToolbarItemMaxSize">{0, 0}</string>
+							<bool key="NSToolbarItemEnabled">YES</bool>
+							<bool key="NSToolbarItemAutovalidates">YES</bool>
+							<int key="NSToolbarItemTag">5</int>
+							<bool key="NSToolbarIsUserRemovable">YES</bool>
+							<int key="NSToolbarItemVisibilityPriority">0</int>
+						</object>
 						<object class="NSToolbarItem" key="C73175B8-2072-43A6-832A-D121F4B9D671" id="387465990">
 							<object class="NSMutableString" key="NSToolbarItemIdentifier">
 								<characters key="NS.bytes">C73175B8-2072-43A6-832A-D121F4B9D671</characters>
@@ -1108,7 +1128,7 @@
 							</object>
 						</object>
 					</dictionary>
-					<array key="NSToolbarIBAllowedItems">
+					<array class="NSMutableArray" key="NSToolbarIBAllowedItems">
 						<reference ref="732200072"/>
 						<reference ref="421915489"/>
 						<reference ref="588602844"/>
@@ -1122,8 +1142,9 @@
 						<reference ref="527424721"/>
 						<reference ref="715936680"/>
 						<reference ref="377413346"/>
+						<reference ref="994142170"/>
 					</array>
-					<array key="NSToolbarIBDefaultItems">
+					<array class="NSMutableArray" key="NSToolbarIBDefaultItems">
 						<reference ref="836748729"/>
 						<reference ref="421915489"/>
 						<reference ref="421915489"/>
@@ -2150,6 +2171,14 @@
 					<int key="connectionID">1049</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">toolbarButtonClick:</string>
+						<reference key="source" ref="664569807"/>
+						<reference key="destination" ref="994142170"/>
+					</object>
+					<int key="connectionID">1053</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">contentView</string>
 						<reference key="source" ref="1063450362"/>
@@ -2506,6 +2535,7 @@
 							<reference ref="17688787"/>
 							<reference ref="387465990"/>
 							<reference ref="527424721"/>
+							<reference ref="994142170"/>
 						</array>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -3048,6 +3078,12 @@
 						<reference key="object" ref="77104083"/>
 						<reference key="parent" ref="835318025"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1052</int>
+						<reference key="object" ref="994142170"/>
+						<reference key="parent" ref="756288834"/>
+						<string key="objectName">Toolbar Item - Market Orders</string>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -3067,6 +3103,8 @@
 				<string key="1048.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<boolean value="YES" key="1048.toolbarItem.selectable"/>
 				<string key="1050.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1052.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<boolean value="YES" key="1052.toolbarItem.selectable"/>
 				<string key="106.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="111.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="112.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3200,7 +3238,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1051</int>
+			<int key="maxID">1053</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3882,6 +3920,7 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="Industry">{64, 64}</string>
 			<string key="NSMenuCheckmark">{11, 11}</string>
 			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSRefreshTemplate">{10, 12}</string>

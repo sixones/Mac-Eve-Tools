@@ -36,6 +36,7 @@
 #import "MarketViewController.h"
 #import "ContractsViewController.h"
 #import "VitalityMail.h"
+#import "IndustryJobsController.h"
 #import "METPair.h"
 
 #import "GeneralPrefViewController.h"
@@ -373,6 +374,12 @@
     [mvc setInstance:self];
     [viewControllers addObject:mvc];
     [mvc release];
+
+    mvc = [[IndustryJobsController alloc] init];
+    [mvc view];//trigger the awakeFromNib
+    [mvc setInstance:self];
+    [viewControllers addObject:mvc];
+    [(NSObject*)mvc release];
 
 	[[self window] makeMainWindow];
 	[[self window] setDelegate:self];
