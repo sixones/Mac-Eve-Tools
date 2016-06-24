@@ -416,7 +416,7 @@
             else
                 sqlite3_bind_null( insert_item_stmt, 4 );
             sqlite3_bind_nsint( update_item_stmt, 5, [item completedCharacterID] );
-            sqlite3_bind_nsint( update_item_stmt, 5, [item jobID] );
+            sqlite3_bind_nsint( update_item_stmt, 6, [item jobID] );
             
             if( (rc = sqlite3_step(update_item_stmt)) != SQLITE_DONE )
             {
