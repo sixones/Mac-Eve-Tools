@@ -94,6 +94,11 @@
 		A12813301C518D8000B2B7D1 /* MTNotificationsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A128132F1C518D8000B2B7D1 /* MTNotificationsWindow.xib */; };
 		A12813361C518E3900B2B7D1 /* MTNotificationTicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = A12813341C518E3900B2B7D1 /* MTNotificationTicker.xib */; };
 		A12813391C518F7000B2B7D1 /* MTNotificationCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A12813381C518F7000B2B7D1 /* MTNotificationCellView.m */; };
+		A12B87671CEA218E007F4E60 /* IndustryJob.m in Sources */ = {isa = PBXBuildFile; fileRef = A12B87621CEA218E007F4E60 /* IndustryJob.m */; };
+		A12B87681CEA218E007F4E60 /* IndustryJobs.m in Sources */ = {isa = PBXBuildFile; fileRef = A12B87641CEA218E007F4E60 /* IndustryJobs.m */; };
+		A12B87691CEA218E007F4E60 /* IndustryJobsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12B87661CEA218E007F4E60 /* IndustryJobsController.m */; };
+		A12B876C1CEA227B007F4E60 /* IndustryJobs.xib in Resources */ = {isa = PBXBuildFile; fileRef = A12B876E1CEA227B007F4E60 /* IndustryJobs.xib */; };
+		A12B87711CEA74C5007F4E60 /* Industry.png in Resources */ = {isa = PBXBuildFile; fileRef = A12B876F1CEA74C5007F4E60 /* Industry.png */; };
 		A12EE8D4197D98E000ED6478 /* METTrait.m in Sources */ = {isa = PBXBuildFile; fileRef = A12EE8D3197D98E000ED6478 /* METTrait.m */; };
 		A12FC60817EA31420053DC23 /* METConquerableStations.m in Sources */ = {isa = PBXBuildFile; fileRef = A12FC60717EA31420053DC23 /* METConquerableStations.m */; };
 		A137B5001B38AB4800A0C7B1 /* METFittingController.m in Sources */ = {isa = PBXBuildFile; fileRef = A137B4FE1B38AB4800A0C7B1 /* METFittingController.m */; };
@@ -338,6 +343,14 @@
 		A12813351C518E3900B2B7D1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = EveNotifications/English.lproj/MTNotificationTicker.xib; sourceTree = SOURCE_ROOT; };
 		A12813371C518F7000B2B7D1 /* MTNotificationCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MTNotificationCellView.h; path = EveNotifications/MTNotificationCellView.h; sourceTree = SOURCE_ROOT; };
 		A12813381C518F7000B2B7D1 /* MTNotificationCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MTNotificationCellView.m; path = EveNotifications/MTNotificationCellView.m; sourceTree = SOURCE_ROOT; };
+		A12B87611CEA218E007F4E60 /* IndustryJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndustryJob.h; sourceTree = "<group>"; };
+		A12B87621CEA218E007F4E60 /* IndustryJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndustryJob.m; sourceTree = "<group>"; };
+		A12B87631CEA218E007F4E60 /* IndustryJobs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndustryJobs.h; sourceTree = "<group>"; };
+		A12B87641CEA218E007F4E60 /* IndustryJobs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndustryJobs.m; sourceTree = "<group>"; };
+		A12B87651CEA218E007F4E60 /* IndustryJobsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndustryJobsController.h; sourceTree = "<group>"; };
+		A12B87661CEA218E007F4E60 /* IndustryJobsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndustryJobsController.m; sourceTree = "<group>"; };
+		A12B876D1CEA227B007F4E60 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IndustryJobs.xib; sourceTree = "<group>"; };
+		A12B87701CEA74C5007F4E60 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = en; path = en.lproj/Industry.png; sourceTree = "<group>"; };
 		A12EE8D2197D98E000ED6478 /* METTrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METTrait.h; sourceTree = "<group>"; };
 		A12EE8D3197D98E000ED6478 /* METTrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = METTrait.m; sourceTree = "<group>"; };
 		A12FC60617EA31420053DC23 /* METConquerableStations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = METConquerableStations.h; sourceTree = "<group>"; };
@@ -655,6 +668,7 @@
 				A11F720E1AD6F5D9002E1906 /* MarketOrders */,
 				A10C369C19E5F70F00A0EB2B /* VitalityMail */,
 				A13DED271BC6D11C00041A2A /* EveNotifications */,
+				A12B87601CEA218E007F4E60 /* Industry */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -766,6 +780,21 @@
 				A1D592471AFD5C0500448F17 /* contracts.png */,
 			);
 			path = English.lproj;
+			sourceTree = "<group>";
+		};
+		A12B87601CEA218E007F4E60 /* Industry */ = {
+			isa = PBXGroup;
+			children = (
+				A12B87611CEA218E007F4E60 /* IndustryJob.h */,
+				A12B87621CEA218E007F4E60 /* IndustryJob.m */,
+				A12B87631CEA218E007F4E60 /* IndustryJobs.h */,
+				A12B87641CEA218E007F4E60 /* IndustryJobs.m */,
+				A12B87651CEA218E007F4E60 /* IndustryJobsController.h */,
+				A12B87661CEA218E007F4E60 /* IndustryJobsController.m */,
+				A12B876E1CEA227B007F4E60 /* IndustryJobs.xib */,
+				A12B876F1CEA74C5007F4E60 /* Industry.png */,
+			);
+			path = Industry;
 			sourceTree = "<group>";
 		};
 		A137B5021B38B0AB00A0C7B1 /* Fittings */ = {
@@ -1299,11 +1328,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A13DED2F1BC7086E00041A2A /* NotificationTypeIDs.plist in Resources */,
+				A12B87711CEA74C5007F4E60 /* Industry.png in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				A1D5924F1AFD5E6600448F17 /* marketorders.png in Resources */,
 				A12813301C518D8000B2B7D1 /* MTNotificationsWindow.xib in Resources */,
 				C9FF4566105508950044BBAC /* charsheet.png in Resources */,
 				C9FF4567105508950044BBAC /* darkgray.tiff in Resources */,
+				A12B876C1CEA227B007F4E60 /* IndustryJobs.xib in Resources */,
 				C9FF4568105508950044BBAC /* green.tiff in Resources */,
 				C9FF4569105508950044BBAC /* icon12_02.png in Resources */,
 				C9FF456A105508950044BBAC /* icon22_41.png in Resources */,
@@ -1400,6 +1431,7 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				A1D592551B05275600448F17 /* SkillPlanNote.m in Sources */,
 				C9FF478310550BA60044BBAC /* Account.m in Sources */,
+				A12B87671CEA218E007F4E60 /* IndustryJob.m in Sources */,
 				C9FF478410550BA60044BBAC /* bsd-base64.c in Sources */,
 				A11F72191AD6F84C002E1906 /* MarketOrder.m in Sources */,
 				C9FF478510550BA60044BBAC /* Character.m in Sources */,
@@ -1424,6 +1456,7 @@
 				C9FF479710550BA60044BBAC /* Helpers.m in Sources */,
 				A11F72311AEEE198002E1906 /* Contracts.m in Sources */,
 				C9FF479B10550BA60044BBAC /* ServerMonitor.m in Sources */,
+				A12B87681CEA218E007F4E60 /* IndustryJobs.m in Sources */,
 				C9FF479C10550BA60044BBAC /* EvemonXmlPlanIO.m in Sources */,
 				C9FF479E10550BA60044BBAC /* Skill.m in Sources */,
 				C9FF479F10550BA60044BBAC /* SkillGroup.m in Sources */,
@@ -1468,6 +1501,7 @@
 				C9F514951056721300654F6D /* MainController.m in Sources */,
 				C9F514981056721300654F6D /* MTTableViewCategory.m in Sources */,
 				C9F514A11056725600654F6D /* CharacterManager.m in Sources */,
+				A12B87691CEA218E007F4E60 /* IndustryJobsController.m in Sources */,
 				C9EB4EC9105A0883009192BC /* CharacterTemplate.m in Sources */,
 				A11F72301AEEE198002E1906 /* ContractItem.m in Sources */,
 				A137B5051B38B0CF00A0C7B1 /* METFitting.m in Sources */,
@@ -1626,6 +1660,22 @@
 				A12813351C518E3900B2B7D1 /* English */,
 			);
 			name = MTNotificationTicker.xib;
+			sourceTree = "<group>";
+		};
+		A12B876E1CEA227B007F4E60 /* IndustryJobs.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A12B876D1CEA227B007F4E60 /* en */,
+			);
+			name = IndustryJobs.xib;
+			sourceTree = "<group>";
+		};
+		A12B876F1CEA74C5007F4E60 /* Industry.png */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A12B87701CEA74C5007F4E60 /* en */,
+			);
+			name = Industry.png;
 			sourceTree = "<group>";
 		};
 		A154A64217A83E090076603D /* Localizable.strings */ = {
