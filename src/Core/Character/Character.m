@@ -26,6 +26,7 @@
 #import "SkillPlan.h"
 #import "CharacterTemplate.h"
 #import "CharacterDatabase.h"
+#include "METPair.h"
 
 #import "GlobalData.h"
 
@@ -568,6 +569,34 @@
         }
     }
     return template;
+}
+
+-(METPair *)getAttributeAndBonus:(NSInteger)attr
+{
+    return [METPair pairWithFirst:[NSNumber numberWithInteger:baseAttributes[attr]]
+                           second:[NSNumber numberWithInteger:implantAttributes[attr]]];
+}
+
+-(METPair *)getIntelligenceAndBonus
+{
+    return [self getAttributeAndBonus:ATTR_INTELLIGENCE];
+}
+
+-(METPair *)getMemoryAndBonus
+{
+    return [self getAttributeAndBonus:ATTR_MEMORY];
+}
+-(METPair *)getCharismaAndBonus
+{
+    return [self getAttributeAndBonus:ATTR_CHARISMA];
+}
+-(METPair *)getPerceptionAndBonus
+{
+    return [self getAttributeAndBonus:ATTR_PERCEPTION];
+}
+-(METPair *)getWillpowerAndBonus
+{
+    return [self getAttributeAndBonus:ATTR_WILLPOWER];
 }
 
 @end

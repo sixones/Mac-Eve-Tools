@@ -32,6 +32,7 @@
 @class Character;
 @class CharacterTemplate;
 @class CharacterDatabase;
+@class METPair;
 
 /**
  The `Character` class represents all the information found in the EVE
@@ -638,5 +639,16 @@
  @return The `CharacterTemplate` corresponding to this character.
  */
 -(CharacterTemplate *)template;
+
+/**
+ Each of these get a pair of NSNumber's.
+ First is the character's raw attribute.
+ Second is any bonus from implants.
+ */
+-(METPair *)getIntelligenceAndBonus;
+-(METPair *)getMemoryAndBonus;
+-(METPair *)getCharismaAndBonus;
+-(METPair *)getPerceptionAndBonus;
+-(METPair *)getWillpowerAndBonus;
 
 @end

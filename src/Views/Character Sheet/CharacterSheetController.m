@@ -31,6 +31,7 @@
 #import "MTEveSkillQueueHeader.h"
 #import "SkillQueueDatasource.h"
 #import "METJumpCloneController.h"
+#import "METPair.h"
 
 #import "SkillPlan.h"
 #import "MTNotifications.h"
@@ -100,6 +101,19 @@
 	[queueHeader setNeedsDisplay:YES];
 }
 
+- (NSString *)formatAttributeAndBonus:(METPair *)attrs
+{
+    /* I'm not sure how people will interpret the "20 (+3)" format.
+     I intend it to be read as: Attribute is at 20, which includes a +3 bonus from an implant.
+     So for now, leave it as a combined value.
+     
+    if( [[attrs second] intValue] > 0 )
+        return [NSString stringWithFormat:@"%d (+%d)", ([[attrs first] intValue] + [[attrs second] intValue]), [[attrs second] intValue]];
+    return [NSString stringWithFormat:@"%d", [[attrs first] intValue]];
+    */
+    return [NSString stringWithFormat:@"%d", ([[attrs first] intValue] + [[attrs second] intValue])];
+}
+
 -(void) showCharDetails:(Character*)character
 {
 	if([character charSheetError]){
@@ -113,11 +127,11 @@
 	[charName sizeToFit];
 	[charRace sizeToFit];
 	
-	[charInt setStringValue:[character getAttributeString:ATTR_INTELLIGENCE]];
-	[charPerc setStringValue:[character getAttributeString:ATTR_PERCEPTION]];
-	[charChar setStringValue:[character getAttributeString:ATTR_CHARISMA]];
-	[charWill setStringValue:[character getAttributeString:ATTR_WILLPOWER]];
-	[charMem setStringValue:[character getAttributeString:ATTR_MEMORY]];
+	[charInt setStringValue:[self formatAttributeAndBonus:[character getIntelligenceAndBonus]]];
+	[charPerc setStringValue:[self formatAttributeAndBonus:[character getPerceptionAndBonus]]];
+	[charChar setStringValue:[self formatAttributeAndBonus:[character getCharismaAndBonus]]];
+	[charWill setStringValue:[self formatAttributeAndBonus:[character getWillpowerAndBonus]]];
+	[charMem setStringValue:[self formatAttributeAndBonus:[character getMemoryAndBonus]]];
 	
 	[charInt sizeToFit];
 	[charPerc sizeToFit];
