@@ -9,8 +9,8 @@
 DBEXPORT=database.sql
 
 # This should match what's in the application's user defaults under UD_DATABASE_MIN_VERSION
-DBVERSION=32
-DBEXPANSION="Citadel 1.0"
+DBVERSION=33
+DBEXPANSION="118.6"
 
 VERQUERY="INSERT INTO version VALUES ($DBVERSION,'$DBEXPANSION');"
 

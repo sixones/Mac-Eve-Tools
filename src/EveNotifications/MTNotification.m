@@ -484,6 +484,20 @@ static MTISKFormatter *iskFormatter = nil;
     }
 }
 
+// endDate: 131119703400000000
+// startDate: 131047127400000000
+- (void)getDatePrefix:(NSString *)prefix fromLine:(NSString *)line values:(NSMutableDictionary *)values
+{
+    NSInteger dateInt = [[line substringFromIndex:([prefix length]+2)] integerValue];
+    if( dateInt )
+    {
+        dateInt = (dateInt / 10000000) - (NSInteger)11644473600; // Very bizzare data in Microsoft epoch format (starts on jan 1 1601)
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateInt];
+        if( date )
+            [values setObject:date forKey:prefix];
+    }
+}
+
 - (NSDictionary *)formattedBodyValues
 {
     NSMutableDictionary *values = [NSMutableDictionary dictionary];
@@ -588,6 +602,16 @@ static MTISKFormatter *iskFormatter = nil;
             if( etype )
                 [values setObject:etype forKey:@"campaignEventType"];
         }
+        else if( [line hasPrefix:@"shipName:"] )
+        {
+            NSString *name = [line substringFromIndex:10];
+            if( name )
+                [values setObject:name forKey:@"shipName"];
+        }
+        else if( [line hasPrefix:@"endDate:"] || [line hasPrefix:@"startDate:"] )
+        {
+            [self getDatePrefix:prefix fromLine:line values:values];
+        }
     }
     return values;
 }
@@ -651,10 +675,25 @@ static MTISKFormatter *iskFormatter = nil;
             plainString = [NSString stringWithFormat:@"%@ insurance payout for losing a ship", priceStr];
             break;
         }
+        case 54: // Insurance policy expired
+        {
+            /*
+             573331391|54|1000132|1469922720|1|endDate: 131119703400000000
+             shipID: 1020842576611
+             shipName: Which Witch?
+             startDate: 131047127400000000
+             
+             Looks like the only way to get a ship type from the shipID is to use data from the AssetList API call.
+             */
+            plainString = [NSString stringWithFormat:@"The insurance on your ship named '%@' expired on %@", [values objectForKey:@"shipName"],
+                           [NSDateFormatter localizedStringFromDate:[values objectForKey:@"endDate"] dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterShortStyle]];
+            break;
+        }
         case 55: // Insurance policy taken out
         {
             // level: 99.99999999999999 = Platinum
-            plainString = [NSString stringWithFormat:@"Your %@ was insured", [values objectForKey:@"typeName"]];
+            plainString = [NSString stringWithFormat:@"Your %@ was insured until %@", [values objectForKey:@"typeName"],
+                           [NSDateFormatter localizedStringFromDate:[values objectForKey:@"endDate"] dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterShortStyle]];
             break;
         }
         case 93: // Orbital Structure Attacked
