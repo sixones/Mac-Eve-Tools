@@ -103,15 +103,11 @@
 
 - (NSString *)formatAttributeAndBonus:(METPair *)attrs
 {
-    /* I'm not sure how people will interpret the "20 (+3)" format.
-     I intend it to be read as: Attribute is at 20, which includes a +3 bonus from an implant.
-     So for now, leave it as a combined value.
-     
     if( [[attrs second] intValue] > 0 )
-        return [NSString stringWithFormat:@"%d (+%d)", ([[attrs first] intValue] + [[attrs second] intValue]), [[attrs second] intValue]];
+    {
+        return [NSString stringWithFormat:@"%d (%d +%d)", ([[attrs first] intValue] + [[attrs second] intValue]), [[attrs first] intValue], [[attrs second] intValue]];
+    }
     return [NSString stringWithFormat:@"%d", [[attrs first] intValue]];
-    */
-    return [NSString stringWithFormat:@"%d", ([[attrs first] intValue] + [[attrs second] intValue])];
 }
 
 -(void) showCharDetails:(Character*)character
