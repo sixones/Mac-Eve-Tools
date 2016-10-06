@@ -27,7 +27,23 @@
 #import <libxml/parser.h>
 #import <libxml/tree.h>
 
+/* TODO: Add a call to account/AccountStatus.xml.aspx?keyID=${KEYID}&vCode=${VCODE} to get multi-character training end dates
+ <?xml version='1.0' encoding='UTF-8'?>
+ <eveapi version="2">
+ <currentTime>2016-08-09 15:44:03</currentTime>
+ <result>
+ <paidUntil>2016-12-11 01:26:39</paidUntil>
+ <createDate>2012-03-19 21:38:29</createDate>
+ <logonCount>1786</logonCount>
+ <logonMinutes>149517</logonMinutes>
+ <rowset name="multiCharacterTraining" key="trainingEnd" columns="trainingEnd">
+ <row trainingEnd="2016-10-07 19:18:00" />
+ </rowset>
+ </result>
+ <cachedUntil>2016-08-09 16:41:03</cachedUntil>
+ </eveapi>
 
+ */
 @interface Account (AccountPrivate) <XmlFetcherDelegate>
 -(void) xmlDocumentFinished:(BOOL)status xmlPath:(NSString*)path xmlDocName:(NSString*)docName;
 
