@@ -612,6 +612,18 @@ static MTISKFormatter *iskFormatter = nil;
         {
             [self getDatePrefix:prefix fromLine:line values:values];
         }
+        else if( [prefix isEqualToString:@"level"] )
+        {
+            NSNumber *level = [NSNumber numberWithInteger:[[line substringFromIndex:([prefix length]+2)] integerValue]];
+            if( level )
+                [values setObject:level forKey:@"level"];
+        }
+        else if( [prefix isEqualToString:@"message"] )
+        {
+            NSString *msg = [line substringFromIndex:([prefix length]+2)];
+            if( msg && ![msg isEqualToString:@"''"] )
+                [values setObject:msg forKey:@"message"];
+        }
     }
     return values;
 }
@@ -694,6 +706,13 @@ static MTISKFormatter *iskFormatter = nil;
             // level: 99.99999999999999 = Platinum
             plainString = [NSString stringWithFormat:@"Your %@ was insured until %@", [values objectForKey:@"typeName"],
                            [NSDateFormatter localizedStringFromDate:[values objectForKey:@"endDate"] dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterShortStyle]];
+            break;
+        }
+        case 89: // Added as Contact
+        {
+            plainString = [NSString stringWithFormat:@"Added as a contact with standing of %@", [values objectForKey:@"level"]];
+            if( [[values objectForKey:@"message"] length] > 0 )
+                plainString = [plainString stringByAppendingFormat:@"\nMessage: %@", [values objectForKey:@"message"]];
             break;
         }
         case 93: // Orbital Structure Attacked
@@ -841,6 +860,14 @@ static MTISKFormatter *iskFormatter = nil;
     {
         case 14: rows = 1; break;
         case 34: rows = 1; break;
+        case 89:
+        {
+            // if this added a contact notification has a message, then use 2 rows. Possibly more if the message is long?
+            NSString *msg = [_formattedBodyValues objectForKey:@"message"];
+            if( [msg length] > 0 )
+                rows = 2;
+            break;
+        }
         case 112: rows = 1; break;
         case 140: rows = 2; break;
         case 141: rows = 2; break;

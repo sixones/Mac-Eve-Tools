@@ -9,8 +9,8 @@
 DBEXPORT=database.sql
 
 # This should match what's in the application's user defaults under UD_DATABASE_MIN_VERSION
-DBVERSION=33
-DBEXPANSION="118.6"
+DBVERSION=34
+DBEXPANSION="Ascension"
 
 VERQUERY="INSERT INTO version VALUES ($DBVERSION,'$DBEXPANSION');"
 
