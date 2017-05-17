@@ -6,6 +6,22 @@
     <description>Most recent changes.</description>
     <language>en</language>
      <item>
+        <title>Version 0.3.9b</title>
+        <pubDate>May 17, 2017 00:00:00 +0000</pubDate>
+        <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.9b/Vitality_v0.3.9b.zip" sparkle:version="0.3.9b" length="6005813" type="application/octet-stream" />
+		<description>
+			<![CDATA[
+<div><strong>0.3.9b</strong></div>
+<div>Industry Jobs and Minor fixes</div>
+<ul>
+    <li>Added a very basic view of industry jobs.</li>
+    <li>Added several more detailed notification descriptions. Fixed a crashing bug if a notification type does not have an entry in the notification list.</li>
+    <li>Other minor bug fixes.</li>
+</ul>
+			]]>
+		</description>
+     </item>
+     <item>
         <title>Version 0.3.7b</title>
         <pubDate>May 3, 2016 00:00:00 +0000</pubDate>
         <enclosure url="https://github.com/sixones/vitality/releases/download/v0.3.7b/Vitality_v0.3.7b.zip" sparkle:version="0.3.7b" length="5637161" type="application/octet-stream" />
