@@ -1737,7 +1737,7 @@ select tr.skillID, tr.bonus, tr.bonusText, un.displayName from invTraits tr LEFT
      from dgmTypeAttributes, however, this does show the table relationships should we need them.
      */
     const char query[] =
-    "SELECT d.attributeID, d.attributeName, t.valueInt "
+    "SELECT d.attributeID, d.attributeName, coalesce(t.valueFloat, t.valueInt) "
     "FROM dgmAttributeTypes d, dgmTypeAttributes t "
     "WHERE t.typeID = ? AND d.attributeID = t.attributeID AND d.attributeID BETWEEN 175 AND 179 ORDER BY d.attributeID;";
     sqlite3_stmt *read_stmt;

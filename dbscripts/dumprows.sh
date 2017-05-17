@@ -68,19 +68,6 @@ $PYEXE $SCRIPT -t trnTranslations -f $1 \
 $PYEXE $SCRIPT -t trnTranslationColumns -f $1 \
 -q "SELECT tcGroupID,tcID,tableName,columnName,masterID FROM trnTranslationColumns;"
 
-# Pre-Rubicon certificate tables
-#$PYEXE $SCRIPT -t crtCategories -f $1 \
-#-q "SELECT categoryID, categoryName FROM crtCategories WHERE categoryID <> 17;"
-#
-#$PYEXE $SCRIPT -t crtCertificates -f $1 \
-#-q "SELECT certificateID, categoryID, classID, grade, description FROM crtCertificates;";
-#
-#$PYEXE $SCRIPT -t crtClasses -f $1 \
-#-q "SELECT classID, className FROM crtClasses;";
-#
-#$PYEXE $SCRIPT -t crtRelationships -f $1 \
-#-q "SELECT relationshipID, parentID, parentTypeID, parentLevel, childID from crtRelationships;";
-
 # For Market Orders UI
 $PYEXE $SCRIPT -t metStations -f $1 \
 -q "SELECT stationID, solarSystemID, stationName FROM staStations;";
@@ -100,7 +87,7 @@ $PYEXE $SCRIPT -t mapConstellations -f $1 \
 $PYEXE $SCRIPT -t mapRegions -f $1 \
 -q "SELECT * FROM mapRegions;";
 
-$PYEXE dump_certificates.py certificates.yaml >> $1
+cat certificates.sql >> $1
 $PYEXE dump_pre.py >> $1
 $PYEXE dump_attrs.py -f $1
 
