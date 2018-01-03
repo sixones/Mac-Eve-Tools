@@ -10,7 +10,6 @@
 
 #import "Config.h"
 #import "GlobalData.h"
-#import "XmlHelpers.h"
 #import "Character.h"
 #import "CharacterTemplate.h"
 #import "MarketOrder.h"
@@ -19,13 +18,7 @@
 #import "METRowsetEnumerator.h"
 #import "METXmlNode.h"
 
-#import "XMLDownloadOperation.h"
-#import "XMLParseOperation.h"
-
 #include <assert.h>
-
-#include <libxml/tree.h>
-#include <libxml/parser.h>
 
 @interface MarketOrders()
 @property (readwrite,retain) NSString *xmlPath;

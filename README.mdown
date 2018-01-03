@@ -3,6 +3,27 @@ Vitality, based on Mac EVE Tools
 
 This project is licenced under the GNU GPL v3.
 
+Future
+------
+
+Vitality will almost certainly stop working as of May 8th, 2018. For a brief explanation of why and for links to more detailed information check out this [Third Party Developer Blog](https://developers.eveonline.com/blog/article/important-information-on-the-future-of-the-eve-api) from CCP.
+
+## Some background
+
+EVE Online has had at least three entirely different and incompatible API systems:
+
+* XML API - the oldest of the three, largely supported by Vitality
+* CREST - the middle child. Not at all supported by Vitality
+* ESI - the latest and greatest. Again, no support by Vitality
+
+The problem with both the CREST and ESI API's is that they require a developer key to be embedded in the application. This means that an enterprising user could extract the key and pretend to be that developer for nefarious purposes. I (Bleyddyn) am not willing to risk that and as far as I know, there is no way around it. Most of the example code I've seen assumes a web application where the developer key would remain safely on the server, not accessible to users.
+
+I (still Bleyddyn) have been the only person working on Vitality for a couple of years now. Given how little I've been playing EVE and the above problem I don't think I'll be working on switching Vitality to use ESI.
+
+Vitality has no tracking code so there's no way to know how many people use it, nor is there any reasonable way to contact people who do. So I have no idea how many people this will impact. If there are enough people who still use Vitality, then there's a chance that one or more of them will step forward and keep it going. One of the few good points is that most of the XML API specific code is at least reasonably well hidden behind classes which should minimize the amount of code that needs to be changed, as long as ESI really does cover all the same functionality as the XML API.
+
+I created a [project issue](https://github.com/sixones/vitality/issues/59) that can be used to discuss the problem, or just to commiserate with fellow Vitality users!
+
 Installation
 ------------
 
